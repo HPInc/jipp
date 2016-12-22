@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: "idea"
+apply plugin: "net.ltgt.apt"
+
+dependencies {
+    compileOnly "com.google.auto.value:auto-value:1.2"
+    apt "com.google.auto.value:auto-value:1.2"
+    compile 'com.google.guava:guava:20.0'
+
+    testCompile 'junit:junit:4.12'
+
+    targetCompatibility="1.7"
+    sourceCompatibility="1.7"
+}
