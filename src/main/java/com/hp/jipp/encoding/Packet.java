@@ -20,9 +20,26 @@ public abstract class Packet {
     private static final byte[] EMPTY_DATA = new byte[0];
 
     abstract public int getVersionNumber();
+
+    /**
+     * Return this packet's operation code (for a request) or status code (for a response).
+     */
     abstract public int getOperation();
+
+    /**
+     * Return the request ID for this packet
+     */
     abstract public int getRequestId();
+
+    /**
+     * Return the attribute groups in this packet
+     */
     abstract public ImmutableList<AttributeGroup> getAttributeGroups();
+
+    /**
+     * Return the packet's data field (bytes found after all attributes)
+     */
+    @SuppressWarnings("mutable")
     abstract public byte[] getData();
 
     /** Construct and return a builder for creating packets */
