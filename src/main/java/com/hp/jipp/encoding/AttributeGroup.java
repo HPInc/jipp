@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttributeGroup {
-    private byte startTag;
+    private Tag startTag;
     private List<Attribute> attributes = new ArrayList<>();
 
-    private AttributeGroup(byte startTag) {
+    private AttributeGroup(Tag startTag) {
         this.startTag = startTag;
     }
 
@@ -19,7 +19,7 @@ public class AttributeGroup {
         attributes = new ArrayList<>(other.attributes);
     }
 
-    public byte getStartTag() {
+    public Tag getStartTag() {
         return startTag;
     }
 
@@ -29,59 +29,61 @@ public class AttributeGroup {
     }
 
     public void write(DataOutputStream out) throws IOException {
-        out.writeByte(startTag);
+        out.writeByte(startTag.getValue());
         for(Attribute attribute : attributes) {
             attribute.write(out);
         }
     }
 
-    public static AttributeGroup read(int startTag, DataInputStream in) throws IOException {
-        Builder builder = new Builder((byte) startTag);
+    public static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
+        Builder builder = new Builder(startTag);
         boolean attributes = true;
         while(attributes) {
             in.mark(1);
-            byte valueTag = in.readByte();
-            if (Tags.isDelimiter(valueTag)) {
+            Tag valueTag = Tag.toTag(in.readByte());
+            if (valueTag.isDelimiter()) {
                 in.reset();
                 attributes = false;
             } else {
-
                 builder.addAttribute(readAttribute(in, valueTag));
             }
         }
         return builder.build();
     }
 
-    public static Attribute readAttribute(DataInputStream in, byte valueTag) throws IOException {
-        if (IntegerAttribute.hasTag(valueTag)) {
-            return IntegerAttribute.read(in, valueTag);
-        } else if (StringAttribute.hasTag(valueTag)) {
-            return StringAttribute.read(in, valueTag);
-        } else if (BooleanAttribute.hasTag(valueTag)) {
-            return BooleanAttribute.read(in, valueTag);
-        } else if (CollectionAttribute.hasTag(valueTag)) {
-            return CollectionAttribute.read(in, valueTag);
-        }
+    public static Attribute readAttribute(DataInputStream in, Tag valueTag) throws IOException {
+        Attribute attr;
+
+        attr = IntegerAttribute.read(in, valueTag);
+        if (attr != null) return attr;
+
+        attr = StringAttribute.read(in, valueTag);
+        if (attr != null) return attr;
+
+        attr = BooleanAttribute.read(in, valueTag);
+        if (attr != null) return attr;
+
+        attr = CollectionAttribute.read(in, valueTag);
+        if (attr != null) return attr;
 
         // TODO: RangeOfInteger attribute
         // TODO: 1setofX
         // TODO: resolution
         // TODO: dateTime
         // TODO: LanguageStringAttribute
-        // TODO: Collection! ugh.
         return OctetAttribute.read(in, valueTag);
     }
 
     @Override
     public String toString() {
-        return "tag=" + Tags.toString(startTag) +
+        return "tag=" + startTag +
                 " attrs=" + attributes;
     }
 
     public static class Builder {
         final AttributeGroup prototype;
 
-        public Builder(byte startTag) {
+        public Builder(Tag startTag) {
             prototype = new AttributeGroup(startTag);
         }
 

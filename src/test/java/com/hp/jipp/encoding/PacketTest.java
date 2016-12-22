@@ -91,7 +91,7 @@ public class PacketTest {
     @Test
     public void writeSingleEmptyAttributeGroupPacket() throws IOException {
         List<AttributeGroup> emptyGroup = new ArrayList<>();
-        emptyGroup.add(new AttributeGroup.Builder(Tags.OperationAttributes).build());
+        emptyGroup.add(new AttributeGroup.Builder(Tag.OperationAttributes).build());
         packet = Packet.builder(defaultPacket).setAttributeGroups(emptyGroup).build();
         packet.write(out);
         assertArrayEquals(new byte[]{
@@ -111,35 +111,35 @@ public class PacketTest {
     @Test
     public void readSingleEmptyAttributeGroupPacket() throws IOException {
         List<AttributeGroup> emptyGroup = new ArrayList<>();
-        emptyGroup.add(new AttributeGroup.Builder(Tags.OperationAttributes).build());
+        emptyGroup.add(new AttributeGroup.Builder(Tag.OperationAttributes).build());
         packet = cycle(Packet.builder(defaultPacket).setAttributeGroups(emptyGroup).build());
         assertEquals(1, packet.getAttributeGroups().size());
-        assertEquals(Tags.OperationAttributes, packet.getAttributeGroups().get(0).getStartTag());
+        assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getStartTag());
     }
 
     @Test
     public void readMultiEmptyAttributeGroupPacket() throws IOException {
         List<AttributeGroup> groups = new ArrayList<>();
-        groups.add(new AttributeGroup.Builder(Tags.OperationAttributes).build());
-        groups.add(new AttributeGroup.Builder(Tags.JobAttributes).build());
-        groups.add(new AttributeGroup.Builder((byte)0x08).build()); // reserved but legal
+        groups.add(new AttributeGroup.Builder(Tag.OperationAttributes).build());
+        groups.add(new AttributeGroup.Builder(Tag.JobAttributes).build());
+        groups.add(new AttributeGroup.Builder(Tag.toTag((byte)0x08)).build()); // reserved but legal
         Packet.Builder builder = defaultBuilder.setAttributeGroups(groups);
 
         packet = cycle(builder.build());
         assertEquals(3, packet.getAttributeGroups().size());
-        assertEquals(Tags.OperationAttributes, packet.getAttributeGroups().get(0).getStartTag());
-        assertEquals(Tags.JobAttributes, packet.getAttributeGroups().get(1).getStartTag());
-        assertEquals(0x08, packet.getAttributeGroups().get(2).getStartTag());
+        assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getStartTag());
+        assertEquals(Tag.JobAttributes, packet.getAttributeGroups().get(1).getStartTag());
+        assertEquals(Tag.toTag((byte)0x08), packet.getAttributeGroups().get(2).getStartTag());
     }
 
     @Test
     public void writeSingleAttributePacket() throws IOException {
         OctetAttribute simpleAttribute = new OctetAttribute(
-                Tags.Charset,
+                Tag.Charset,
                 "attributes-charset",
                 "US-ASCII".getBytes());
         List<AttributeGroup> group = new ArrayList<>();
-        group.add(new AttributeGroup.Builder(Tags.OperationAttributes).addAttribute(simpleAttribute)
+        group.add(new AttributeGroup.Builder(Tag.OperationAttributes).addAttribute(simpleAttribute)
                 .build());
         packet = defaultBuilder.setAttributeGroups(group).build();
         packet.write(out);
@@ -168,17 +168,17 @@ public class PacketTest {
     @Test
     public void readSingleAttributePacket() throws IOException {
         StringAttribute stringAttribute = new StringAttribute(
-                Tags.Charset,
+                Tag.Charset,
                 "attributes-charset",
                 "US-ASCII");
         List<AttributeGroup> group = new ArrayList<>();
-        group.add(new AttributeGroup.Builder(Tags.OperationAttributes)
+        group.add(new AttributeGroup.Builder(Tag.OperationAttributes)
                 .addAttribute(stringAttribute)
                 .build());
         packet = cycle(defaultBuilder.setAttributeGroups(group));
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
-        assertEquals(Tags.Charset, readAttribute.getValueTag());
+        assertEquals(Tag.Charset, readAttribute.getValueTag());
         assertEquals("US-ASCII", ((StringAttribute)readAttribute).getValues().get(0));
     }
 
@@ -188,12 +188,12 @@ public class PacketTest {
         values.add("US-ASCII");
         values.add("UTF-8");
         StringAttribute multiValueAttribute = new StringAttribute(
-                Tags.Charset,
+                Tag.Charset,
                 "attributes-charset",
                 values);
 
         List<AttributeGroup> group = new ArrayList<>();
-        group.add(new AttributeGroup.Builder(Tags.OperationAttributes).addAttribute(multiValueAttribute)
+        group.add(new AttributeGroup.Builder(Tag.OperationAttributes).addAttribute(multiValueAttribute)
                 .build());
         packet = defaultBuilder.setAttributeGroups(group).build();
         packet.write(out);
@@ -223,6 +223,7 @@ public class PacketTest {
                 'U', 'T', 'F', '-', '8',
                 (byte) 0x03,
         }, outBytes.toByteArray());
+        System.out.println(packet.toString());
     }
 
     @Test
@@ -231,12 +232,12 @@ public class PacketTest {
         values.add("US-ASCII");
         values.add("UTF-8");
         StringAttribute multiValueAttribute = new StringAttribute(
-                Tags.Charset,
+                Tag.Charset,
                 "attributes-charset",
                 values);
 
         List<AttributeGroup> group = new ArrayList<>();
-        group.add(new AttributeGroup.Builder(Tags.OperationAttributes).addAttribute(multiValueAttribute)
+        group.add(new AttributeGroup.Builder(Tag.OperationAttributes).addAttribute(multiValueAttribute)
                 .build());
         packet = cycle(defaultBuilder.setAttributeGroups(group));
         System.out.println(packet); // Exercise debug output

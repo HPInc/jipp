@@ -17,7 +17,7 @@ public class AttributeTest {
 
     @Test
     public void octetString() throws IOException {
-        OctetAttribute attribute = new OctetAttribute(Tags.NameWithoutLanguage, "name", "value".getBytes());
+        OctetAttribute attribute = new OctetAttribute(Tag.NameWithoutLanguage, "name", "value".getBytes());
         assertArrayEquals(new byte[] {
                 (byte)0x42,
                 (byte)0x00,
@@ -28,14 +28,14 @@ public class AttributeTest {
                 'v', 'a', 'l', 'u', 'e'
         }, toBytes(attribute));
         attribute = cycleOctet(attribute);
-        assertEquals(Tags.NameWithoutLanguage, attribute.getValueTag());
+        assertEquals(Tag.NameWithoutLanguage, attribute.getValueTag());
         assertEquals("name", attribute.getName());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
     }
 
     @Test
     public void multiOctetString() throws IOException {
-        OctetAttribute attribute = new OctetAttribute(Tags.NameWithoutLanguage, "name",
+        OctetAttribute attribute = new OctetAttribute(Tag.NameWithoutLanguage, "name",
                 "value".getBytes(),
                 "value2".getBytes());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
@@ -45,7 +45,7 @@ public class AttributeTest {
 
     @Test
     public void multiBoolean() throws IOException {
-        BooleanAttribute attribute = cycleBoolean(new BooleanAttribute(Tags.NameWithoutLanguage, "name", true, false));
+        BooleanAttribute attribute = cycleBoolean(new BooleanAttribute(Tag.BooleanValue, "name", true, false));
         assertEquals(new ArrayList<Boolean>() {{
             add(true);
             add(false);
@@ -55,7 +55,7 @@ public class AttributeTest {
 
     @Test
     public void multiInteger() throws IOException {
-        IntegerAttribute attribute = cycleInteger(new IntegerAttribute(Tags.Integer, "name", -50505, 50505));
+        IntegerAttribute attribute = cycleInteger(new IntegerAttribute(Tag.IntegerValue, "name", -50505, 50505));
         assertEquals(new ArrayList<Integer>() {{
             add(-50505);
             add(50505);
@@ -78,12 +78,12 @@ public class AttributeTest {
         //       y-dimension = 5
         //     }
         //  }
-        mediaSize1.put("x-dimension", new IntegerAttribute(Tags.Integer, "", 6));
-        mediaSize1.put("y-dimension", new IntegerAttribute(Tags.Integer, "", 4));
-        mediaSize2.put("x-dimension", new IntegerAttribute(Tags.Integer, "", 12));
-        mediaSize2.put("y-dimension", new IntegerAttribute(Tags.Integer, "", 5));
+        mediaSize1.put("x-dimension", new IntegerAttribute(Tag.IntegerValue, "", 6));
+        mediaSize1.put("y-dimension", new IntegerAttribute(Tag.IntegerValue, "", 4));
+        mediaSize2.put("x-dimension", new IntegerAttribute(Tag.IntegerValue, "", 12));
+        mediaSize2.put("y-dimension", new IntegerAttribute(Tag.IntegerValue, "", 5));
         CollectionAttribute mediaSizes = new CollectionAttribute("", mediaSize1, mediaSize2);
-        media.put("media-color", new StringAttribute(Tags.Keyword, "", "blue"));
+        media.put("media-color", new StringAttribute(Tag.Keyword, "", "blue"));
         media.put("media-size", mediaSizes);
         CollectionAttribute mediaCol = cycleCollection(
                 new CollectionAttribute("media-col", media));
@@ -96,22 +96,22 @@ public class AttributeTest {
 
     private OctetAttribute cycleOctet(OctetAttribute attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return OctetAttribute.read(in, in.readByte());
+        return OctetAttribute.read(in, Tag.read(in));
     }
 
     private BooleanAttribute cycleBoolean(BooleanAttribute attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return BooleanAttribute.read(in, in.readByte());
+        return BooleanAttribute.read(in, Tag.read(in));
     }
 
     private IntegerAttribute cycleInteger(IntegerAttribute attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return IntegerAttribute.read(in, in.readByte());
+        return IntegerAttribute.read(in, Tag.read(in));
     }
 
     private CollectionAttribute cycleCollection(CollectionAttribute attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return CollectionAttribute.read(in, in.readByte());
+        return CollectionAttribute.read(in, Tag.read(in));
     }
 
     private byte[] toBytes(Attribute attribute) throws IOException {

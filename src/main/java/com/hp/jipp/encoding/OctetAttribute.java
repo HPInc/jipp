@@ -11,11 +11,11 @@ import java.util.List;
 public class OctetAttribute extends Attribute<byte[]> {
     final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-    public OctetAttribute(byte valueTag, String name, List<byte[]> values) {
+    public OctetAttribute(Tag valueTag, String name, List<byte[]> values) {
         super(valueTag, name, values);
     }
 
-    public OctetAttribute(byte valueTag, String name, byte[]... value) {
+    public OctetAttribute(Tag valueTag, String name, byte[]... value) {
         super(valueTag, name, new ArrayList<byte[]>());
         values.addAll(Arrays.asList(value));
     }
@@ -27,13 +27,13 @@ public class OctetAttribute extends Attribute<byte[]> {
     }
 
     /**
-     * Read an attribute from the input stream, assuming an initial valueTag
+     * Read an attribute from the input stream, assuming an initial valueTag. Note: this
+     * is a "catch-all" attribute and will always succeed for good input, regardless of the actual
+     * valueTag type.
      */
-    public static OctetAttribute read(DataInputStream in, int valueTag) throws IOException {
+    public static OctetAttribute read(DataInputStream in, Tag valueTag) throws IOException {
         OctetAttribute attribute = new OctetAttribute(
-                (byte) valueTag,
-                readName(in),
-                new ArrayList<byte[]>());
+                valueTag, readName(in), new ArrayList<byte[]>());
         readValues(in, attribute);
         return attribute;
     }

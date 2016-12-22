@@ -13,24 +13,24 @@ import java.util.Map;
 public class CollectionAttribute extends Attribute<Map<String, Attribute>> {
 
     public CollectionAttribute(String name, List<Map<String, Attribute>> values) {
-        super(Tags.BeginCollection, name, values);
+        super(Tag.BeginCollection, name, values);
     }
 
     @SafeVarargs
     public CollectionAttribute(String name, Map<String, Attribute>... value) {
-        super(Tags.BeginCollection, name, new ArrayList<Map<String, Attribute>>());
+        super(Tag.BeginCollection, name, new ArrayList<Map<String, Attribute>>());
         values.addAll(Arrays.asList(value));
     }
 
     private static final Attribute EndCollectionAttribute =
-            new StringAttribute(Tags.EndCollection, "", "");
+            new StringAttribute(Tag.EndCollection, "", "");
 
     @Override
     void writeValue(DataOutputStream out, Map<String, Attribute> value) throws IOException {
         out.writeShort(0); // Empty value
         // One pair of attributes for each item in map
         for(Map.Entry<String, Attribute> entry : value.entrySet()) {
-            new StringAttribute(Tags.MemberAttributeName, "", entry.getKey()).write(out);
+            new StringAttribute(Tag.MemberAttributeName, "", entry.getKey()).write(out);
             entry.getValue().write(out);
         }
         // Terminating attribute
@@ -47,42 +47,37 @@ public class CollectionAttribute extends Attribute<Map<String, Attribute>> {
 
         // Read attribute pairs until EndCollection is reached.
         while(true) {
-            byte tag = in.readByte();
-            if (tag == Tags.EndCollection) {
+            Tag tag = Tag.read(in);
+            if (tag == Tag.EndCollection) {
                 // Skip the rest of this attr and return.
                 nameLength = in.readShort();
                 in.skip(nameLength);
                 valueLength = in.readShort();
                 in.skip(valueLength);
                 break;
-            } else if (tag == Tags.MemberAttributeName) {
+            } else if (tag == Tag.MemberAttributeName) {
                 nameLength = in.readShort();
                 in.skip(nameLength);
                 valueLength = in.readShort();
                 byte bytes[] = new byte[valueLength];
                 in.read(bytes);
                 String memberName = new String(bytes);
-                Attribute memberValue = AttributeGroup.readAttribute(in, in.readByte());
+                Attribute memberValue = AttributeGroup.readAttribute(in, Tag.read(in));
                 members.put(memberName, memberValue);
             } else {
-                throw new IOException("Unexpected tag in collection: " + Tags.toString(tag));
+                throw new IOException("Bad tag: " + tag);
             }
         }
         return members;
     }
 
-    public static CollectionAttribute read(DataInputStream in, int valueTag) throws IOException {
-        if (valueTag != Tags.BeginCollection) {
-            throw new IOException("Attempt to read collection from " + Tags.toString(valueTag));
+    public static CollectionAttribute read(DataInputStream in, Tag valueTag) throws IOException {
+        if (valueTag != Tag.BeginCollection) {
+            return null;
         }
-        CollectionAttribute attribute = new CollectionAttribute(
-                readName(in),
+        CollectionAttribute attribute = new CollectionAttribute(readName(in),
                 new ArrayList<Map<String, Attribute>>());
         readValues(in, attribute);
         return attribute;
-    }
-
-    public static boolean hasTag(byte tag) {
-        return tag == Tags.BeginCollection;
     }
 }

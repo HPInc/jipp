@@ -50,7 +50,7 @@ public abstract class Operation {
     public static Operation toOperation(int operationCode) {
         Operation found = CODE_TO_OPERATION.get(operationCode);
         if (found != null) return found;
-        return create("UNKNOWN(" + operationCode + ")", operationCode);
+        return create("UNKNOWN(x" + Integer.toHexString(operationCode) + ")", operationCode);
     }
 
     /**
@@ -64,4 +64,9 @@ public abstract class Operation {
 
     abstract public String getName();
     abstract public int getValue();
+
+    @Override
+    public final String toString() {
+        return getName();
+    }
 }

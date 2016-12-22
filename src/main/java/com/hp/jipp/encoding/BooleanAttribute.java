@@ -9,11 +9,11 @@ import java.util.List;
 
 public class BooleanAttribute extends Attribute<Boolean> {
 
-    public BooleanAttribute(byte valueTag, String name, List<Boolean> values) {
+    public BooleanAttribute(Tag valueTag, String name, List<Boolean> values) {
         super(valueTag, name, values);
     }
 
-    public BooleanAttribute(byte valueTag, String name, Boolean... value) {
+    public BooleanAttribute(Tag valueTag, String name, Boolean... value) {
         super(valueTag, name, new ArrayList<Boolean>());
         values.addAll(Arrays.asList(value));
     }
@@ -32,17 +32,12 @@ public class BooleanAttribute extends Attribute<Boolean> {
         return in.readByte() != 0;
     }
 
-    public static BooleanAttribute read(DataInputStream in, int valueTag) throws IOException {
+    /** Read value into an Attribute or null if not handled here */
+    public static BooleanAttribute read(DataInputStream in, Tag valueTag) throws IOException {
+        if (valueTag != Tag.BooleanValue) return null;
         BooleanAttribute attribute = new BooleanAttribute(
-                (byte) valueTag,
-                readName(in),
-                new ArrayList<Boolean>());
+                valueTag, readName(in), new ArrayList<Boolean>());
         readValues(in, attribute);
         return attribute;
     }
-
-    public static boolean hasTag(byte valueTag) {
-        return valueTag == Tags.Boolean;
-    }
-
 }

@@ -61,7 +61,7 @@ public abstract class Packet {
         for (AttributeGroup group : getAttributeGroups()) {
             group.write(out);
         }
-        out.writeByte(Tags.EndOfAttributes);
+        out.writeByte(Tag.EndOfAttributes.getValue());
         out.write(getData());
     }
 
@@ -74,8 +74,8 @@ public abstract class Packet {
 
         boolean moreAttributes = true;
         while(moreAttributes) {
-            int tag = in.readByte();
-            if (tag == Tags.EndOfAttributes) {
+            Tag tag = Tag.toTag(in.readByte());
+            if (tag == Tag.EndOfAttributes) {
                 if (in.available() > 0) {
                     byte data[] = new byte[in.available()];
                     int size = in.read(data);
@@ -84,7 +84,7 @@ public abstract class Packet {
                     builder.setData(data);
                 }
                 moreAttributes = false;
-            } else if (Tags.isDelimiter(tag)) {
+            } else if (tag.isDelimiter()) {
                 AttributeGroup attributeGroup = AttributeGroup.read(tag, in);
                 attributeGroupsBuilder.add(attributeGroup);
             } else {
@@ -112,5 +112,15 @@ public abstract class Packet {
         }
         abstract public Builder setData(byte[] data);
         abstract public Packet build();
+    }
+
+    @Override
+    public final String toString() {
+        return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
+                ",o=" + Operation.toOperation(getOperation()) +
+                ",rid=x" + Integer.toHexString(getRequestId()) +
+                ",a=" + getAttributeGroups() +
+                (getData().length == 0 ? "" : ",dlen=" + getData().length) +
+                "}";
     }
 }

@@ -6,20 +6,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Superclass for all Attribute types */
+/**
+ * A Generic IPP Attribute. Every attribute has a one-byte "value tag" suggesting its type,
+ * a string name, and one or more values.
+ */
 abstract class Attribute<T> {
+    // TODO: Convert to immutable
 
     private final String name;
-    private final byte valueTag;
+    private final Tag valueTag;
     protected final List<T> values;
 
-    public Attribute(byte valueTag, String name, List<T> values) {
+    public Attribute(Tag valueTag, String name, List<T> values) {
         this.values = values;
         this.name = name;
         this.valueTag = valueTag;
     }
 
-    public byte getValueTag() {
+    public Tag getValueTag() {
         return valueTag;
     }
 
@@ -41,10 +45,10 @@ abstract class Attribute<T> {
      * @throws IOException
      */
     public void write(DataOutputStream out) throws IOException {
-        writeHeader(out, valueTag, name);
+        writeHeader(out, valueTag.getValue(), name);
         writeValue(out, values.get(0));
         for (int i = 1; i < values.size(); i++) {
-            writeHeader(out, valueTag);
+            writeHeader(out, valueTag.getValue());
             writeValue(out, values.get(i));
         }
     }
@@ -73,7 +77,7 @@ abstract class Attribute<T> {
         for (T value: values) {
             strings.add(valueToString(value));
         }
-        return "<tag=" + Tags.toString(valueTag) +
+        return "<tag=" + valueTag +
                 " name=" + name +
                 " values=" + strings + ">";
     }
@@ -87,7 +91,7 @@ abstract class Attribute<T> {
     static private <T> boolean readAdditionalValue(DataInputStream in, Attribute<T> attribute) throws IOException {
         if (in.available() < 3) return false;
         in.mark(3);
-        int tag = in.readByte();
+        Tag tag = Tag.toTag(in.readByte());
         if (tag == attribute.getValueTag()) {
             int nameLength = in.readShort();
             if (nameLength == 0) {
