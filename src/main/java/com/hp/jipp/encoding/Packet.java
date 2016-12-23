@@ -7,20 +7,19 @@ import com.hp.jipp.model.Operation;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A request packet as specified in RFC2910.
  */
 @AutoValue
 public abstract class Packet {
-    /** Default version number to be sent in a packet (0x0101 for v1.1). */
+    /** Default version number to be sent in a packet (0x0101 for IPP 1.1) */
     public static final int DEFAULT_VERSION_NUMBER = 0x0101;
     private static final byte[] EMPTY_DATA = new byte[0];
 
     abstract public int getVersionNumber();
 
+    // TODO: Call it a code, and interpret as Status or Operation accordingly
     /**
      * Return this packet's operation code (for a request) or status code (for a response).
      */
@@ -45,12 +44,27 @@ public abstract class Packet {
     /** Construct and return a builder for creating packets */
     public static Builder builder() {
         return new AutoValue_Packet.Builder().setVersionNumber(DEFAULT_VERSION_NUMBER)
-                .setAttributeGroups(ImmutableList.<AttributeGroup>of()).setData(EMPTY_DATA);
+                .setAttributeGroups().setData(EMPTY_DATA);
     }
 
     /** Construct and return a builder based on an existing packet */
     public static Builder builder(Packet source) {
         return new AutoValue_Packet.Builder(source);
+    }
+
+    /**
+     * Construct a packet containing the default version number and the specified operation
+     * and request ID
+     */
+    public static Builder builder(Operation operation, int requestId) {
+        return builder().setOperation(operation).setRequestId(requestId);
+    }
+
+    /**
+     * Construct and return a complete packet
+     */
+    public static Packet create(Operation operation, int requestId, AttributeGroup... groups) {
+        return builder(operation, requestId).setAttributeGroups(groups).build();
     }
 
     /** Write the contents of this object to the output stream as per RFC2910 */
@@ -103,13 +117,8 @@ public abstract class Packet {
             return setOperation(operation.getValue());
         }
         abstract public Builder setRequestId(int requestId);
-        abstract public Builder setAttributeGroups(ImmutableList<AttributeGroup> groups);
-        public Builder setAttributeGroups(Iterable<AttributeGroup> groups) {
-            return setAttributeGroups(ImmutableList.copyOf(groups));
-        }
-        public Builder setAttributeGroup(AttributeGroup group) {
-            return setAttributeGroups(ImmutableList.of(group));
-        }
+        abstract public Builder setAttributeGroups(Iterable<AttributeGroup> groups);
+        abstract public Builder setAttributeGroups(AttributeGroup... groups);
         abstract public Builder setData(byte[] data);
         abstract public Packet build();
     }
@@ -117,10 +126,10 @@ public abstract class Packet {
     @Override
     public final String toString() {
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ",o=" + Operation.toOperation(getOperation()) +
-                ",rid=x" + Integer.toHexString(getRequestId()) +
-                ",a=" + getAttributeGroups() +
-                (getData().length == 0 ? "" : ",dlen=" + getData().length) +
+                ", o=" + Operation.toOperation(getOperation()) +
+                ", rid=x" + Integer.toHexString(getRequestId()) +
+                ", a=" + getAttributeGroups() +
+                (getData().length == 0 ? "" : ", dlen=" + getData().length) +
                 "}";
     }
 }

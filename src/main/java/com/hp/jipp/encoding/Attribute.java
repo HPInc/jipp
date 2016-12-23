@@ -13,12 +13,24 @@ import java.util.Map;
  * a string name, and one or more values.
  */
 @AutoValue
-abstract class Attribute<T> {
+abstract public class Attribute<T> {
 
     /** Create and Return a new Attribute builder */
     static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
         return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
     }
+
+    /** Return a new String attribute */
+    public static Attribute<String> create(Tag valueTag, String name, String... values) {
+        return StringAttributes.create(valueTag, name, values);
+    }
+
+    /** Return a new Boolean attribute */
+    public static Attribute<Boolean> create(Tag valueTag, String name, Boolean... values) {
+        return BooleanAttributes.create(valueTag, name, values);
+    }
+
+    // TODO: continue with additional attribute creators/builders here.
 
     abstract public Tag getValueTag();
     abstract public String getName();
@@ -44,7 +56,6 @@ abstract class Attribute<T> {
     @SuppressWarnings("unchecked")
     private <T> Attribute<T> as(Class<T> cls) {
         for (ClassEncoder classEncoder : ENCODERS) {
-            System.out.println("tag " + getValueTag() + " vs " + classEncoder.getEncoder());
             if (classEncoder.getEncoder().valid(getValueTag())) {
                 if (!classEncoder.getEncodedClass().equals(cls)) {
                     throw new IllegalArgumentException("Attribute<" +
@@ -181,6 +192,8 @@ abstract class Attribute<T> {
     @Override
     public final String toString() {
         // TODO: Fix byte[] output
-        return "Attr{t=" + getValueTag() + ",n=" + getName() + ",v=" + getValues() + "}";
+        return "Attr{t=" + getValueTag() +
+                (getName().equals("") ? "" : ", n=" + getName()) +
+                ", v=" + getValues() + "}";
     }
 }

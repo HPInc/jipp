@@ -7,12 +7,12 @@ import java.io.IOException;
 /** Tools for encoding String attributes */
 public class StringAttributes {
 
-    /** Return a new integer attribute builder */
+    /** Return a new String attribute builder */
     public static Attribute.Builder<String> builder(Tag valueTag) {
         return Attribute.builder(ENCODER, valueTag);
     }
 
-    /** Return a new integer attribute */
+    /** Return a new String attribute */
     public static Attribute<String> create(Tag valueTag, String name, String... values) {
         return builder(valueTag).setValues(values).setName(name).build();
     }

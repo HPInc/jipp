@@ -1,44 +1,51 @@
 package com.hp.jipp.encoding;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Represents a group of attributes */
-public class AttributeGroup {
+@AutoValue
+abstract public class AttributeGroup {
 
-    private Tag startTag;
-    private List<Attribute> attributes = new ArrayList<>();
-
-    private AttributeGroup(Tag startTag) {
-        this.startTag = startTag;
+    public static Builder builder(Tag startTag) {
+        if (!startTag.isDelimiter()) throw new IllegalArgumentException("Not a delimiter: " + startTag);
+        return new AutoValue_AttributeGroup.Builder().setStartTag(startTag);
     }
 
-    public AttributeGroup(AttributeGroup other) {
-        this(other.startTag);
-        attributes = new ArrayList<>(other.attributes);
+    public static AttributeGroup create(Tag startTag, Attribute<?>... attributes) {
+        return builder(startTag).setAttributes(attributes).build();
     }
 
-    Tag getStartTag() {
-        return startTag;
-    }
+    abstract public Tag getStartTag();
+    abstract public ImmutableList<Attribute<?>> getAttributes();
 
-    /** Return the list of attributes. Do not modify this list */
-    public List<Attribute> getAttributes() {
-        return attributes;
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder setStartTag(Tag startTag);
+        public abstract Builder setAttributes(ImmutableList<Attribute<?>> attributes);
+        public abstract Builder setAttributes(Attribute<?>... values);
+        abstract ImmutableList.Builder<Attribute<?>> attributesBuilder();
+        public abstract AttributeGroup build();
+
+        public final Builder addAttribute(Attribute<?>... attribute) {
+            attributesBuilder().add(attribute);
+            return this;
+        }
     }
 
     void write(DataOutputStream out) throws IOException {
-        out.writeByte(startTag.getValue());
-        for(Attribute attribute : attributes) {
+        out.writeByte(getStartTag().getValue());
+        for(Attribute attribute : getAttributes()) {
             attribute.write(out);
         }
     }
 
     static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
-        Builder builder = new Builder(startTag);
+        Builder builder = builder(startTag);
         boolean attributes = true;
         while(attributes) {
             in.mark(1);
@@ -60,28 +67,5 @@ public class AttributeGroup {
             }
         }
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return "tag=" + startTag +
-                " attrs=" + attributes;
-    }
-
-    public static class Builder {
-        final AttributeGroup prototype;
-
-        public Builder(Tag startTag) {
-            prototype = new AttributeGroup(startTag);
-        }
-
-        public Builder addAttribute(Attribute attribute) {
-            prototype.attributes.add(attribute);
-            return this;
-        }
-
-        public AttributeGroup build() {
-            return new AttributeGroup(prototype);
-        }
     }
 }
