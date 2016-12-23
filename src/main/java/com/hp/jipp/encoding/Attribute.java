@@ -131,16 +131,16 @@ abstract class Attribute<T> {
     }
 
     static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
-            ClassEncoder.create(Integer.class, IntegerAttribute.ENCODER),
-            ClassEncoder.create(String.class, StringAttribute.ENCODER),
-            ClassEncoder.create(Boolean.class, BooleanAttribute.ENCODER),
-            ClassEncoder.create(Map.class, CollectionAttribute.ENCODER),
+            ClassEncoder.create(Integer.class, IntegerAttributes.ENCODER),
+            ClassEncoder.create(String.class, StringAttributes.ENCODER),
+            ClassEncoder.create(Boolean.class, BooleanAttributes.ENCODER),
+            ClassEncoder.create(Map.class, CollectionAttributes.ENCODER),
 //            // TODO: RangeOfInteger attribute
 //            // TODO: 1setofX
 //            // TODO: resolution
 //            // TODO: dateTime
 //            // TODO: LanguageStringAttribute
-            ClassEncoder.create(byte[].class, OctetAttribute.ENCODER));
+            ClassEncoder.create(byte[].class, OctetAttributes.ENCODER));
 
 
 
@@ -178,4 +178,9 @@ abstract class Attribute<T> {
         out.write(name.getBytes());
     }
 
+    @Override
+    public final String toString() {
+        // TODO: Fix byte[] output
+        return "Attr{t=" + getValueTag() + ",n=" + getName() + ",v=" + getValues() + "}";
+    }
 }

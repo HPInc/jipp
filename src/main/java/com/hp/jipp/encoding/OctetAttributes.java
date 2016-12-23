@@ -3,12 +3,9 @@ package com.hp.jipp.encoding;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-/** An attribute containing a series of Octet buffers */
-public class OctetAttribute {
+/** Tools for encoding Octet String (byte[]) attributes */
+public class OctetAttributes {
 
     /** Return a new integer attribute builder */
     public static Attribute.Builder<byte[]> builder(Tag valueTag) {
@@ -33,7 +30,7 @@ public class OctetAttribute {
 
         @Override
         public Attribute.Builder<byte[]> builder(Tag valueTag) {
-            return OctetAttribute.builder(valueTag);
+            return OctetAttributes.builder(valueTag);
         }
 
         @Override

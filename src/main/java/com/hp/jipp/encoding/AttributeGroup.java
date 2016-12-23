@@ -1,15 +1,12 @@
 package com.hp.jipp.encoding;
 
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+/** Represents a group of attributes */
 public class AttributeGroup {
 
     private Tag startTag;
@@ -24,7 +21,7 @@ public class AttributeGroup {
         attributes = new ArrayList<>(other.attributes);
     }
 
-    public Tag getStartTag() {
+    Tag getStartTag() {
         return startTag;
     }
 
@@ -33,14 +30,14 @@ public class AttributeGroup {
         return attributes;
     }
 
-    public void write(DataOutputStream out) throws IOException {
+    void write(DataOutputStream out) throws IOException {
         out.writeByte(startTag.getValue());
         for(Attribute attribute : attributes) {
             attribute.write(out);
         }
     }
 
-    public static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
+    static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
         Builder builder = new Builder(startTag);
         boolean attributes = true;
         while(attributes) {
@@ -56,7 +53,7 @@ public class AttributeGroup {
         return builder.build();
     }
 
-    public static Attribute<?> readAttribute(DataInputStream in, Tag valueTag) throws IOException {
+    static Attribute<?> readAttribute(DataInputStream in, Tag valueTag) throws IOException {
         for (Attribute.ClassEncoder classEncoder: Attribute.ENCODERS) {
             if (classEncoder.getEncoder().valid(valueTag)) {
                 return classEncoder.getEncoder().read(in, valueTag);

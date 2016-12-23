@@ -3,11 +3,9 @@ package com.hp.jipp.encoding;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class BooleanAttribute {
+/** Tools for encoding Boolean attributes */
+public class BooleanAttributes {
 
     /** Return a new boolean attribute builder */
     public static Attribute.Builder<Boolean> builder(Tag valueTag) {
@@ -37,7 +35,7 @@ public class BooleanAttribute {
 
         @Override
         public Attribute.Builder<Boolean> builder(Tag valueTag) {
-            return BooleanAttribute.builder(valueTag);
+            return BooleanAttributes.builder(valueTag);
         }
 
         @Override

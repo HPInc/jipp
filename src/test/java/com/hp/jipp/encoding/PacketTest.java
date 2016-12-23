@@ -134,7 +134,7 @@ public class PacketTest {
 
     @Test
     public void writeSingleAttributePacket() throws IOException {
-        Attribute<byte[]> simpleAttribute = OctetAttribute.create(
+        Attribute<byte[]> simpleAttribute = OctetAttributes.create(
                 Tag.Charset,
                 "attributes-charset",
                 "US-ASCII".getBytes());
@@ -167,7 +167,7 @@ public class PacketTest {
 
     @Test
     public void readSingleAttributePacket() throws IOException {
-        Attribute<String> stringAttribute = StringAttribute.create(
+        Attribute<String> stringAttribute = StringAttributes.create(
                 Tag.Charset,
                 "attributes-charset",
                 "US-ASCII");
@@ -184,7 +184,7 @@ public class PacketTest {
 
     @Test
     public void writeMultiValueAttributePacket() throws IOException {
-        Attribute<String> multiValueAttribute = StringAttribute.create(
+        Attribute<String> multiValueAttribute = StringAttributes.create(
                 Tag.Charset, "attributes-charset", "US-ASCII", "UTF-8");
 
         List<AttributeGroup> group = new ArrayList<>();
@@ -223,7 +223,7 @@ public class PacketTest {
 
     @Test
     public void readMultiValueAttributePacket() throws IOException {
-        Attribute<String> multiValueAttribute = StringAttribute.create(
+        Attribute<String> multiValueAttribute = StringAttributes.create(
                 Tag.Charset, "attributes-charset", "US-ASCII", "UTF-8");
 
         List<AttributeGroup> group = new ArrayList<>();

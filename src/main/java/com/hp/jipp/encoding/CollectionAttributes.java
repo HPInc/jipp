@@ -7,12 +7,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-/** An attribute encoding a collection of named attributes as per RFC3382 */
-public class CollectionAttribute {
+/** Tools for encoding collections of named attributes as per RFC3382 */
+public class CollectionAttributes {
 
     /** Used to terminate a collection */
     private static final Attribute EndCollectionAttribute =
-            StringAttribute.create(Tag.EndCollection, "", "");
+            StringAttributes.create(Tag.EndCollection, "", "");
 
     /** Return a new collection attribute builder */
     public static Attribute.Builder<Map<String, Attribute<?>>> builder() {
@@ -83,7 +83,7 @@ public class CollectionAttribute {
 
         @Override
         public Attribute.Builder<Map<String, Attribute<?>>> builder(Tag valueTag) {
-            return CollectionAttribute.builder();
+            return CollectionAttributes.builder();
         }
 
         @Override

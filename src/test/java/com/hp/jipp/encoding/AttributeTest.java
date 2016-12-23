@@ -18,7 +18,7 @@ public class AttributeTest {
 
     @Test
     public void octetString() throws IOException {
-        Attribute<byte[]> attribute = OctetAttribute.create(Tag.OctetString, "name", "value".getBytes());
+        Attribute<byte[]> attribute = OctetAttributes.create(Tag.OctetString, "name", "value".getBytes());
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -36,7 +36,7 @@ public class AttributeTest {
 
     @Test
     public void multiOctetString() throws IOException {
-        Attribute<byte[]> attribute = OctetAttribute.create(Tag.NameWithoutLanguage, "name",
+        Attribute<byte[]> attribute = OctetAttributes.create(Tag.NameWithoutLanguage, "name",
                 "value".getBytes(),
                 "value2".getBytes());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
@@ -46,14 +46,14 @@ public class AttributeTest {
 
     @Test
     public void multiBoolean() throws IOException {
-        Attribute<Boolean> attribute = cycle(BooleanAttribute.create(Tag.BooleanValue, "name",
+        Attribute<Boolean> attribute = cycle(BooleanAttributes.create(Tag.BooleanValue, "name",
                 true, false));
         assertEquals(ImmutableList.of(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
-        Attribute<Integer> attribute = cycle(IntegerAttribute.create(Tag.IntegerValue, "name",
+        Attribute<Integer> attribute = cycle(IntegerAttributes.create(Tag.IntegerValue, "name",
                 -50505, 50505));
         assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
     }
@@ -73,17 +73,17 @@ public class AttributeTest {
         //  }
 
         // Hideously ugly but accurate attribute construction
-        Attribute<Map<String, Attribute<?>>> mediaCol = CollectionAttribute.create("media-col",
+        Attribute<Map<String, Attribute<?>>> mediaCol = CollectionAttributes.create("media-col",
                 ImmutableMap.<String, Attribute<?>>builder()
-                        .put("media-color", StringAttribute.create(Tag.Keyword, "", "blue"))
-                        .put("media-size", CollectionAttribute.create(
+                        .put("media-color", StringAttributes.create(Tag.Keyword, "", "blue"))
+                        .put("media-size", CollectionAttributes.create(
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", IntegerAttribute.create(Tag.IntegerValue, "", 6))
-                                        .put("y-dimension", IntegerAttribute.create(Tag.IntegerValue, "", 4))
+                                        .put("x-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 6))
+                                        .put("y-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 4))
                                         .build(),
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", IntegerAttribute.create(Tag.IntegerValue, "", 12))
-                                        .put("y-dimension", IntegerAttribute.create(Tag.IntegerValue, "", 5))
+                                        .put("x-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 12))
+                                        .put("y-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 5))
                                         .build()))
                         .build());
 
@@ -93,6 +93,7 @@ public class AttributeTest {
         assertEquals("blue", mediaCol.getValues().get(0).get("media-color").getValues().get(0));
         assertEquals(6, mediaCol.getValue(0).get("media-size").asCollection()
                 .getValue(0).get("x-dimension").getValue(0));
+        System.out.println("mediaCol: " + mediaCol);
     }
 
 //    @Test

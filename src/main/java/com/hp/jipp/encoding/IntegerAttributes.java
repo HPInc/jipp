@@ -4,10 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/**
- * Tools for handling Integer attributes
- */
-public class IntegerAttribute {
+/** Tools for encoding Integer attributes */
+public class IntegerAttributes {
 
     /** Return a new integer attribute builder */
     public static Attribute.Builder<Integer> builder(Tag valueTag) {
@@ -37,7 +35,7 @@ public class IntegerAttribute {
 
         @Override
         public Attribute.Builder<Integer> builder(Tag valueTag) {
-            return IntegerAttribute.builder(valueTag);
+            return IntegerAttributes.builder(valueTag);
         }
 
         @Override

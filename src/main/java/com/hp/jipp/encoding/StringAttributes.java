@@ -3,11 +3,9 @@ package com.hp.jipp.encoding;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class StringAttribute {
+/** Tools for encoding String attributes */
+public class StringAttributes {
 
     /** Return a new integer attribute builder */
     public static Attribute.Builder<String> builder(Tag valueTag) {
@@ -32,7 +30,7 @@ public class StringAttribute {
 
         @Override
         public Attribute.Builder<String> builder(Tag valueTag) {
-            return StringAttribute.builder(valueTag);
+            return StringAttributes.builder(valueTag);
         }
 
         @Override
