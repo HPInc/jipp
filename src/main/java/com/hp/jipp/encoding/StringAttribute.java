@@ -7,38 +7,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StringAttribute extends Attribute<String> {
+public class StringAttribute {
 
-    public StringAttribute(Tag valueTag, String name, List<String> values) {
-        super(valueTag, name, values);
+    /** Return a new integer attribute builder */
+    public static Attribute.Builder<String> builder(Tag valueTag) {
+        return Attribute.builder(ENCODER, valueTag);
     }
 
-    public StringAttribute(Tag valueTag, String name, String... value) {
-        super(valueTag, name, new ArrayList<String>());
-        values.addAll(Arrays.asList(value));
+    /** Return a new integer attribute */
+    public static Attribute<String> create(Tag valueTag, String name, String... values) {
+        return builder(valueTag).setValues(values).setName(name).build();
     }
 
-    @Override
-    void writeValue(DataOutputStream out, String value) throws IOException {
-        byte bytes[] = value.getBytes();
-        out.writeShort(bytes.length);
-        out.write(bytes);
-    }
+    static Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>() {
+        @Override
+        public void writeValue(DataOutputStream out, String value) throws IOException {
+            writeValueBytes(out, value.getBytes());
+        }
 
-    @Override
-    String readValue(DataInputStream in) throws IOException {
-        byte bytes[] = new byte[in.readShort()];
-        in.read(bytes);
-        return new String(bytes);
-    }
+        @Override
+        public String readValue(DataInputStream in, Tag valueTag) throws IOException {
+            return new String(readValueBytes(in));
+        }
 
-    /** Read value into an Attribute or null if not handled here */
-    public static StringAttribute read(DataInputStream in, Tag valueTag) throws IOException {
-        if ((valueTag.getValue() & 0x40) != 0x40) return null;
+        @Override
+        public Attribute.Builder<String> builder(Tag valueTag) {
+            return StringAttribute.builder(valueTag);
+        }
 
-        StringAttribute attribute = new StringAttribute(
-                valueTag, readName(in), new ArrayList<String>());
-        readValues(in, attribute);
-        return attribute;
-    }
+        @Override
+        boolean valid(Tag valueTag) {
+            return (valueTag.getValue() & 0x40) == 0x40;
+        }
+    };
 }

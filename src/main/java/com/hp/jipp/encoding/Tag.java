@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -81,6 +82,11 @@ public abstract class Tag {
     /** Read and return a tag from the input stream */
     public static Tag read(DataInputStream in) throws IOException {
         return toTag(in.readByte());
+    }
+
+    /** Write this tag to the output stream */
+    public void write(DataOutputStream out) throws IOException {
+        out.writeByte(getValue());
     }
 
     /**

@@ -1,12 +1,17 @@
 package com.hp.jipp.encoding;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AttributeGroup {
+
     private Tag startTag;
     private List<Attribute> attributes = new ArrayList<>();
 
@@ -51,27 +56,13 @@ public class AttributeGroup {
         return builder.build();
     }
 
-    public static Attribute readAttribute(DataInputStream in, Tag valueTag) throws IOException {
-        Attribute attr;
-
-        attr = IntegerAttribute.read(in, valueTag);
-        if (attr != null) return attr;
-
-        attr = StringAttribute.read(in, valueTag);
-        if (attr != null) return attr;
-
-        attr = BooleanAttribute.read(in, valueTag);
-        if (attr != null) return attr;
-
-        attr = CollectionAttribute.read(in, valueTag);
-        if (attr != null) return attr;
-
-        // TODO: RangeOfInteger attribute
-        // TODO: 1setofX
-        // TODO: resolution
-        // TODO: dateTime
-        // TODO: LanguageStringAttribute
-        return OctetAttribute.read(in, valueTag);
+    public static Attribute<?> readAttribute(DataInputStream in, Tag valueTag) throws IOException {
+        for (Attribute.ClassEncoder classEncoder: Attribute.ENCODERS) {
+            if (classEncoder.getEncoder().valid(valueTag)) {
+                return classEncoder.getEncoder().read(in, valueTag);
+            }
+        }
+        return null;
     }
 
     @Override

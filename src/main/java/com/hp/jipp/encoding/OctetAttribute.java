@@ -8,49 +8,46 @@ import java.util.Arrays;
 import java.util.List;
 
 /** An attribute containing a series of Octet buffers */
-public class OctetAttribute extends Attribute<byte[]> {
-    final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
+public class OctetAttribute {
 
-    public OctetAttribute(Tag valueTag, String name, List<byte[]> values) {
-        super(valueTag, name, values);
+    /** Return a new integer attribute builder */
+    public static Attribute.Builder<byte[]> builder(Tag valueTag) {
+        return Attribute.builder(ENCODER, valueTag);
     }
 
-    public OctetAttribute(Tag valueTag, String name, byte[]... value) {
-        super(valueTag, name, new ArrayList<byte[]>());
-        values.addAll(Arrays.asList(value));
+    /** Return a new integer attribute */
+    public static Attribute<byte[]> create(Tag valueTag, String name, byte[]... values) {
+        return builder(valueTag).setValues(values).setName(name).build();
     }
 
-    @Override
-    void writeValue(DataOutputStream out, byte[] value) throws IOException {
-        out.writeShort(value.length);
-        out.write(value);
-    }
-
-    /**
-     * Read an attribute from the input stream, assuming an initial valueTag. Note: this
-     * is a "catch-all" attribute and will always succeed for good input, regardless of the actual
-     * valueTag type.
-     */
-    public static OctetAttribute read(DataInputStream in, Tag valueTag) throws IOException {
-        OctetAttribute attribute = new OctetAttribute(
-                valueTag, readName(in), new ArrayList<byte[]>());
-        readValues(in, attribute);
-        return attribute;
-    }
-
-    @Override
-    byte[] readValue(DataInputStream in) throws IOException {
-        return readValueBytes(in);
-    }
-
-    @Override
-    String valueToString(byte bytes[]) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    static Attribute.Encoder<byte []> ENCODER = new Attribute.Encoder<byte[]>() {
+        @Override
+        public void writeValue(DataOutputStream out, byte[] value) throws IOException {
+            writeValueBytes(out, value);
         }
-        return new String(hexChars);
-    }
+
+        @Override
+        public byte[] readValue(DataInputStream in, Tag valueTag) throws IOException {
+            return readValueBytes(in);
+        }
+
+        @Override
+        public Attribute.Builder<byte[]> builder(Tag valueTag) {
+            return OctetAttribute.builder(valueTag);
+        }
+
+        @Override
+        boolean valid(Tag valueTag) {
+            return true;
+        }
+    };
+//    String valueToString(byte bytes[]) {
+//        char[] hexChars = new char[bytes.length * 2];
+//        for (int j = 0; j < bytes.length; j++) {
+//            int v = bytes[j] & 0xFF;
+//            hexChars[j * 2] = hexArray[v >>> 4];
+//            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+//        }
+//        return new String(hexChars);
+//    }
 }

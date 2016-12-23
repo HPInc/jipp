@@ -7,37 +7,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BooleanAttribute extends Attribute<Boolean> {
+public class BooleanAttribute {
 
-    public BooleanAttribute(Tag valueTag, String name, List<Boolean> values) {
-        super(valueTag, name, values);
+    /** Return a new boolean attribute builder */
+    public static Attribute.Builder<Boolean> builder(Tag valueTag) {
+        return Attribute.builder(ENCODER, valueTag);
     }
 
-    public BooleanAttribute(Tag valueTag, String name, Boolean... value) {
-        super(valueTag, name, new ArrayList<Boolean>());
-        values.addAll(Arrays.asList(value));
+    /** Return a new boolean attribute */
+    public static Attribute<Boolean> create(Tag valueTag, String name, Boolean... values) {
+        return builder(valueTag).setValues(values).setName(name).build();
     }
 
-    @Override
-    void writeValue(DataOutputStream out, Boolean value) throws IOException {
-        out.writeShort(1);
-        out.writeByte(value ? 0x01 : 0x00);
-    }
+    static Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>() {
+        @Override
+        public void writeValue(DataOutputStream out, Boolean value) throws IOException {
+            out.writeShort(1);
+            out.writeByte(value ? 0x01 : 0x00);
+        }
 
-    @Override
-    Boolean readValue(DataInputStream in) throws IOException {
-        int length = in.readShort(); // Must be 4, throw away
-        if (length != 1) throw new IOException("tag " + getValueTag() +
-                " value length=" + length + " (1 expected for Boolean)");
-        return in.readByte() != 0;
-    }
+        @Override
+        public Boolean readValue(DataInputStream in, Tag valueTag) throws IOException {
+            int length = in.readShort();
+            if (length != 1) {
+                throw new IOException("tag " + valueTag + " value expected 1 got " + length);
+            }
+            return in.readByte() != 0;
+        }
 
-    /** Read value into an Attribute or null if not handled here */
-    public static BooleanAttribute read(DataInputStream in, Tag valueTag) throws IOException {
-        if (valueTag != Tag.BooleanValue) return null;
-        BooleanAttribute attribute = new BooleanAttribute(
-                valueTag, readName(in), new ArrayList<Boolean>());
-        readValues(in, attribute);
-        return attribute;
-    }
+        @Override
+        public Attribute.Builder<Boolean> builder(Tag valueTag) {
+            return BooleanAttribute.builder(valueTag);
+        }
+
+        @Override
+        boolean valid(Tag valueTag) {
+            return valueTag == Tag.BooleanValue;
+        }
+    };
 }

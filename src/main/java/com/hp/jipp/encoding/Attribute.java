@@ -1,131 +1,181 @@
 package com.hp.jipp.encoding;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * A Generic IPP Attribute. Every attribute has a one-byte "value tag" suggesting its type,
  * a string name, and one or more values.
  */
+@AutoValue
 abstract class Attribute<T> {
-    // TODO: Convert to immutable
 
-    private final String name;
-    private final Tag valueTag;
-    protected final List<T> values;
-
-    public Attribute(Tag valueTag, String name, List<T> values) {
-        this.values = values;
-        this.name = name;
-        this.valueTag = valueTag;
+    /** Create and Return a new Attribute builder */
+    static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
+        return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
     }
 
-    public Tag getValueTag() {
-        return valueTag;
-    }
-
-    public String getName() {
-        return name;
-    }
+    abstract public Tag getValueTag();
+    abstract public String getName();
+    abstract public ImmutableList<T> getValues();
+    abstract Encoder<T> getEncoder();
 
     public T getValue(int i) {
-        return values.get(i);
+        return getValues().get(i);
     }
 
-    public List<T> getValues() {
-        return values;
+    public Attribute<Boolean> asBoolean() { return as(Boolean.class); }
+    public Attribute<Integer> asInteger() { return as(Integer.class); }
+    public Attribute<String> asString() { return as(String.class); }
+    public Attribute<byte[]> asOctetString() { return as(byte[].class); }
+
+    @SuppressWarnings("unchecked")
+    public Attribute<Map<String, Attribute>> asCollection() {
+        // Special because Map<>.class doesn't work
+        as(Map.class);
+        return (Attribute<Map<String, Attribute>>)this;
     }
 
-    /**
-     * Write this entire
-     * @param out
-     * @throws IOException
-     */
-    public void write(DataOutputStream out) throws IOException {
-        writeHeader(out, valueTag.getValue(), name);
-        writeValue(out, values.get(0));
-        for (int i = 1; i < values.size(); i++) {
-            writeHeader(out, valueTag.getValue());
-            writeValue(out, values.get(i));
-        }
-    }
-
-    /**
-     * Write the specified value to the output stream, including a two-byte length
-     */
-    abstract void writeValue(DataOutputStream out, T value) throws IOException;
-
-    /**
-     * Read and return a single value from the input stream
-     */
-    abstract T readValue(DataInputStream in) throws IOException;
-
-    /**
-     * Return a string representation of a value for debugging purposes. Override to replace
-     * the default implementation which uses toString on the value.
-     */
-    String valueToString(T value) {
-        return value.toString();
-    }
-
-    @Override
-    public String toString() {
-        List<String> strings = new ArrayList<>();
-        for (T value: values) {
-            strings.add(valueToString(value));
-        }
-        return "<tag=" + valueTag +
-                " name=" + name +
-                " values=" + strings + ">";
-    }
-
-    /** Read the value in the current attribute, and check for additional following attributes as well */
-    static <T> void readValues(DataInputStream in, Attribute<T> attribute) throws IOException {
-        attribute.values.add(attribute.readValue(in));
-        while(readAdditionalValue(in, attribute));
-    }
-
-    static private <T> boolean readAdditionalValue(DataInputStream in, Attribute<T> attribute) throws IOException {
-        if (in.available() < 3) return false;
-        in.mark(3);
-        Tag tag = Tag.toTag(in.readByte());
-        if (tag == attribute.getValueTag()) {
-            int nameLength = in.readShort();
-            if (nameLength == 0) {
-                attribute.values.add(attribute.readValue(in));
-                return true;
+    @SuppressWarnings("unchecked")
+    private <T> Attribute<T> as(Class<T> cls) {
+        for (ClassEncoder classEncoder : ENCODERS) {
+            System.out.println("tag " + getValueTag() + " vs " + classEncoder.getEncoder());
+            if (classEncoder.getEncoder().valid(getValueTag())) {
+                if (!classEncoder.getEncodedClass().equals(cls)) {
+                    throw new IllegalArgumentException("Attribute<" +
+                            classEncoder.getEncodedClass() + "> does not enclose " + cls);
+                }
+                return (Attribute<T>) this;
             }
         }
-        // Actually this is *not* an additional value, so back up and quit.
-        in.reset();
-        return false;
+        throw new IllegalArgumentException("Unknown type " + cls);
+    }
+
+    abstract static class Encoder<T> {
+        /** Return a new builder for the specified valueTag or null if no possible */
+        abstract Builder<T> builder(Tag valueTag);
+
+        /** Read a single value from the input stream */
+        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+
+        /** Write a single value to the output stream */
+        abstract void writeValue(DataOutputStream out, T value) throws IOException;
+
+        /** Return true if this tag can be handled by this encoder */
+        abstract boolean valid(Tag valueTag);
+
+        /** Read an attribute and its values from the data stream or null for unrecognized tag */
+        Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
+            Builder<T> builder = builder(valueTag);
+            if (builder == null) return null;
+
+            builder.setName(new String(readValueBytes(in)));
+
+            T value = readValue(in, valueTag);
+            builder.addValue(value);
+
+            while((value = readAdditionalValue(in, valueTag)) != null) {
+                builder.addValue(value);
+            }
+            return builder.build();
+        }
+
+        /** Read a single additional value into the builder, returning true if more */
+        private T readAdditionalValue(DataInputStream in, Tag valueTag) throws IOException {
+            if (in.available() < 3) return null;
+            in.mark(3);
+            if (Tag.read(in) == valueTag) {
+                int nameLength = in.readShort();
+                if (nameLength == 0) {
+                    return readValue(in, valueTag);
+                }
+            }
+            // Failed to read an additional value so back up and quit.
+            in.reset();
+            return null;
+        }
+
+        /** Write a length-value tuple */
+        void writeValueBytes(DataOutputStream out, byte[] bytes) throws IOException {
+            out.writeShort(bytes.length);
+            out.write(bytes);
+        }
+
+        /** Read and return value bytes from a length-value pair */
+        byte[] readValueBytes(DataInputStream in) throws IOException {
+            int valueLength = in.readShort();
+            byte valueBytes[] = new byte[valueLength];
+            if (valueLength != in.read(valueBytes)) throw new IOException("Value too short");
+            return valueBytes;
+        }
+
+        /** Skip (discard) a length-value pair */
+        void skipValueBytes(DataInputStream in) throws IOException {
+            int valueLength = in.readShort();
+            if (valueLength != in.skip(valueLength)) throw new IOException("Value too short");
+        }
+    }
+
+    @AutoValue
+    abstract static class ClassEncoder {
+        public static ClassEncoder create(Class<?> cls, Attribute.Encoder<?> encoder) {
+            return new AutoValue_Attribute_ClassEncoder(cls, encoder);
+        }
+        public abstract Class<?> getEncodedClass();
+        public abstract Attribute.Encoder<?> getEncoder();
+    }
+
+    static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
+            ClassEncoder.create(Integer.class, IntegerAttribute.ENCODER),
+            ClassEncoder.create(String.class, StringAttribute.ENCODER),
+            ClassEncoder.create(Boolean.class, BooleanAttribute.ENCODER),
+            ClassEncoder.create(Map.class, CollectionAttribute.ENCODER),
+//            // TODO: RangeOfInteger attribute
+//            // TODO: 1setofX
+//            // TODO: resolution
+//            // TODO: dateTime
+//            // TODO: LanguageStringAttribute
+            ClassEncoder.create(byte[].class, OctetAttribute.ENCODER));
+
+
+
+    /** A generic attribute builder. Must be subclassed for specific types of T */
+    @AutoValue.Builder
+    abstract public static class Builder<T> {
+        abstract Builder<T> setEncoder(Encoder<T> encoder);
+        abstract Builder<T> setValueTag(Tag valueTag);
+        abstract Builder<T> setName(String name);
+        abstract Builder<T> setValues(T... values);
+        abstract ImmutableList.Builder<T> valuesBuilder();
+        abstract public Attribute<T> build();
+
+        @SafeVarargs
+        public final Builder<T> addValue(T... value) {
+            valuesBuilder().add(value);
+            return this;
+        }
+    }
+
+    /** Write this attribute (including all of its values) to the output stream */
+    public void write(DataOutputStream out) throws IOException {
+        writeHeader(out, getValueTag(), getName());
+        getEncoder().writeValue(out, getValue(0));
+        for (int i = 1; i < getValues().size(); i++) {
+            writeHeader(out, getValueTag(), "");
+            getEncoder().writeValue(out, getValues().get(i));
+        }
     }
 
     /** Write value tag and name components of an attribute */
-    static void writeHeader(DataOutputStream out, byte valueTag, String name) throws IOException {
-        out.writeByte(valueTag);
+    private void writeHeader(DataOutputStream out, Tag valueTag, String name) throws IOException {
+        valueTag.write(out);
         out.writeShort(name.length());
         out.write(name.getBytes());
     }
 
-    /** Write value tag and empty name components of an attribute */
-    static void writeHeader(DataOutputStream out, byte valueTag) throws IOException {
-        out.writeByte(valueTag);
-        out.writeShort(0);
-    }
-
-    static byte[] readValueBytes(DataInputStream in) throws IOException {
-        // Read value
-        int valueLength = in.readShort();
-        byte valueBytes[] = new byte[valueLength];
-        in.read(valueBytes);
-        return valueBytes;
-    }
-
-    static String readName(DataInputStream in) throws IOException {
-        return new String(readValueBytes(in));
-    }
 }
