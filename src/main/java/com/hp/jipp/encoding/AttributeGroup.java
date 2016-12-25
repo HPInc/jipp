@@ -1,11 +1,17 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /** Represents a group of attributes */
 @AutoValue
@@ -22,6 +28,24 @@ abstract public class AttributeGroup {
 
     abstract public Tag getStartTag();
     abstract public ImmutableList<Attribute<?>> getAttributes();
+
+    private ImmutableListMultimap<String, Attribute<?>> mAttributeMap;
+
+    /** Return a map of attribute name to matching attributes */
+    public ListMultimap<String, Attribute<?>> getAttributesMap() {
+        if (mAttributeMap == null) {
+            synchronized (this) {
+                if (mAttributeMap != null) return mAttributeMap;
+                ImmutableListMultimap.Builder<String, Attribute<?>> builder =
+                        new ImmutableListMultimap.Builder<>();
+                for (Attribute<?> attribute : getAttributes()) {
+                    builder.put(attribute.getName(), attribute);
+                }
+                mAttributeMap = builder.build();
+            }
+        }
+        return mAttributeMap;
+    }
 
     @AutoValue.Builder
     public abstract static class Builder {

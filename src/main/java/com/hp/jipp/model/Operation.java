@@ -3,12 +3,15 @@ package com.hp.jipp.model;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.hp.jipp.encoding.Attribute;
+import com.hp.jipp.encoding.EnumEncoder;
+import com.hp.jipp.encoding.NameCode;
 
 /**
- * An operation identifier
+ * An operation code, as found in request packets
  */
 @AutoValue
-public abstract class Operation {
+public abstract class Operation extends NameCode {
 
     public final static Operation PrintJob = create("Print-Job", 0x0002);
     public final static Operation PrintUri = create("Print-URI", 0x0003);
@@ -28,42 +31,47 @@ public abstract class Operation {
     public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
-    /** A set of all known Operation identifiers */
-    public final static ImmutableSet<Operation> All = new ImmutableSet.Builder<Operation>().add(
-            PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob,
-            GetJobAttributes, GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob,
-            PausePrinter, ResumePrinter, PurgeJobs
-    ).build();
+    public static final EnumEncoder<Operation> Encoder = EnumEncoder.create("operation-id",
+            ImmutableSet.of(Attribute.OperationsSupported),
+            new ImmutableSet.Builder<Operation>().add(
+                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob,
+                    GetJobAttributes, GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob,
+                    RestartJob, PausePrinter, ResumePrinter, PurgeJobs
+            ).build(),
+            new EnumEncoder.Factory<Operation>() {
+                @Override
+                public Operation create(String name, int code) {
+                    return new AutoValue_Operation(name, code);
+                }
+            });
 
-    private final static ImmutableMap<Integer, Operation> CODE_TO_OPERATION;
-    static {
-        ImmutableMap.Builder<Integer, Operation> builder = new ImmutableMap.Builder<>();
-        for (Operation op : All) {
-            builder.put(op.getValue(), op);
-        }
-        CODE_TO_OPERATION = builder.build();
+    public static Attribute<Operation> attribute(String name, Operation... values) {
+        return Encoder.createAttribute(name, values);
+    }
+
+    /** Returns true if this is a known operation code */
+    public static boolean isKnown(int code) {
+        return Encoder.getEnumsMap().containsKey(code);
     }
 
     /**
      * Look up or convert an operation code into an Operation object
      */
-    public static Operation toOperation(int operationCode) {
-        Operation found = CODE_TO_OPERATION.get(operationCode);
-        if (found != null) return found;
-        return create("UNKNOWN(x" + Integer.toHexString(operationCode) + ")", operationCode);
+    public static Operation toOperation(int code) {
+        return Encoder.getEnum(code);
     }
 
     /**
      * Returns a new instance
      * @param name human-readable name of the the operation
-     * @param value machine-readable identifier for the operation
+     * @param code machine-readable identifier for the operation
      */
-    public static Operation create(String name, int value) {
-        return new AutoValue_Operation(name, value);
+    public static Operation create(String name, int code) {
+        return new AutoValue_Operation(name, code);
     }
 
     abstract public String getName();
-    abstract public int getValue();
+    abstract public int getCode();
 
     @Override
     public final String toString() {

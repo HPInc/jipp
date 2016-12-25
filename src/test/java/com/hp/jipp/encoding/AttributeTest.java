@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
 
@@ -53,9 +54,17 @@ public class AttributeTest {
 
     @Test
     public void multiInteger() throws IOException {
-        Attribute<Integer> attribute = cycle(IntegerAttributes.create(Tag.IntegerValue, "name",
+        Attribute<Integer> attribute = cycle(IntegerEncoder.create(Tag.IntegerValue, "name",
                 -50505, 50505));
         assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
+    }
+
+    @Test
+    public void enumAttribute() throws IOException {
+        Attribute<Operation> attribute = cycle(Operation.attribute(Attribute.OperationsSupported,
+                Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob));
+        assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
+                attribute.getValues());
     }
 
     @Test
@@ -75,15 +84,15 @@ public class AttributeTest {
         // Hideously ugly but accurate attribute construction
         Attribute<Map<String, Attribute<?>>> mediaCol = CollectionAttributes.create("media-col",
                 ImmutableMap.<String, Attribute<?>>builder()
-                        .put("media-color", StringAttributes.create(Tag.Keyword, "", "blue"))
+                        .put("media-color", Attribute.create(Tag.Keyword, "", "blue"))
                         .put("media-size", CollectionAttributes.create(
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 6))
-                                        .put("y-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 4))
+                                        .put("x-dimension", Attribute.create(Tag.IntegerValue, "", 6))
+                                        .put("y-dimension", Attribute.create(Tag.IntegerValue, "", 4))
                                         .build(),
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 12))
-                                        .put("y-dimension", IntegerAttributes.create(Tag.IntegerValue, "", 5))
+                                        .put("x-dimension", Attribute.create(Tag.IntegerValue, "", 12))
+                                        .put("y-dimension", Attribute.create(Tag.IntegerValue, "", 5))
                                         .build()))
                         .build());
 

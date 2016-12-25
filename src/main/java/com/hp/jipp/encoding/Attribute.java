@@ -2,6 +2,7 @@ package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.model.Operation;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,6 +15,8 @@ import java.util.Map;
  */
 @AutoValue
 abstract public class Attribute<T> {
+
+    public final static String OperationsSupported = "operations-supported";
 
     /** Create and Return a new Attribute builder */
     static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
@@ -28,6 +31,11 @@ abstract public class Attribute<T> {
     /** Return a new Boolean attribute */
     public static Attribute<Boolean> create(Tag valueTag, String name, Boolean... values) {
         return BooleanAttributes.create(valueTag, name, values);
+    }
+
+    /** Return a new Boolean attribute */
+    public static Attribute<Integer> create(Tag valueTag, String name, Integer... values) {
+        return IntegerEncoder.create(valueTag, name, values);
     }
 
     // TODO: continue with additional attribute creators/builders here.
@@ -54,14 +62,14 @@ abstract public class Attribute<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Attribute<T> as(Class<T> cls) {
+    public <U> Attribute<U> as(Class<U> cls) {
         for (ClassEncoder classEncoder : ENCODERS) {
             if (classEncoder.getEncoder().valid(getValueTag())) {
                 if (!classEncoder.getEncodedClass().equals(cls)) {
                     throw new IllegalArgumentException("Attribute<" +
                             classEncoder.getEncodedClass() + "> does not enclose " + cls);
                 }
-                return (Attribute<T>) this;
+                return (Attribute<U>) this;
             }
         }
         throw new IllegalArgumentException("Unknown type " + cls);
@@ -142,7 +150,8 @@ abstract public class Attribute<T> {
     }
 
     static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
-            ClassEncoder.create(Integer.class, IntegerAttributes.ENCODER),
+            ClassEncoder.create(Operation.class, Operation.Encoder),
+            ClassEncoder.create(Integer.class, IntegerEncoder.getInstance()),
             ClassEncoder.create(String.class, StringAttributes.ENCODER),
             ClassEncoder.create(Boolean.class, BooleanAttributes.ENCODER),
             ClassEncoder.create(Map.class, CollectionAttributes.ENCODER),

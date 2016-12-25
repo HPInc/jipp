@@ -16,8 +16,8 @@ import com.hp.jipp.model.Operation;
 
 public class PacketTest {
     private Packet packet;
-    private Packet defaultPacket = Packet.builder().setVersionNumber(0x102).setOperation(0x304)
-            .setRequestId(0x50607).build();
+    private Packet defaultPacket = Packet.builder().setVersionNumber(0x102)
+            .setOperation(Operation.HoldJob).setRequestId(0x50607).build();
     private Packet.Builder defaultBuilder = Packet.builder(defaultPacket);
     private ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
     private DataOutputStream out = new DataOutputStream(outBytes);
@@ -27,8 +27,8 @@ public class PacketTest {
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -54,8 +54,8 @@ public class PacketTest {
         assertArrayEquals(new byte[]{
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -80,8 +80,8 @@ public class PacketTest {
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -99,8 +99,8 @@ public class PacketTest {
         assertArrayEquals(new byte[]{
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -148,8 +148,8 @@ public class PacketTest {
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -195,8 +195,8 @@ public class PacketTest {
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
-                (byte) 0x03,
-                (byte) 0x04,
+                (byte) 0x00,
+                (byte) 0x0C,
                 (byte) 0x00,
                 (byte) 0x05,
                 (byte) 0x06,
@@ -229,7 +229,7 @@ public class PacketTest {
                                 Tag.Charset, "attributes-charset", "US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
-        assertEquals(packet.getOperation(), Operation.GetJobAttributes.getValue());
+        assertEquals(packet.getOperation(), Operation.GetJobAttributes);
         assertEquals(packet.getRequestId(), 0x1010);
         assertEquals(packet.getAttributeGroups().get(0).getStartTag(), Tag.OperationAttributes);
         Attribute<String> attribute = packet.getAttributeGroups().get(0).getAttributes().get(0).asString();

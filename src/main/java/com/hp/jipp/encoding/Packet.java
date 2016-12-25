@@ -3,6 +3,7 @@ package com.hp.jipp.encoding;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Operation;
+import com.hp.jipp.model.Status;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,11 +20,16 @@ public abstract class Packet {
 
     abstract public int getVersionNumber();
 
-    // TODO: Call it a code, and interpret as Status or Operation accordingly
     /**
      * Return this packet's operation code (for a request) or status code (for a response).
      */
-    abstract public int getOperation();
+    abstract public int getCode();
+
+    /** Return this request packet's operation */
+    public Operation getOperation() { return Operation.toOperation(getCode()); }
+
+    /** Return this response packet's status */
+    public Status getStatus() { return Status.toStatus(getCode()); }
 
     /**
      * Return the request ID for this packet
@@ -70,7 +76,7 @@ public abstract class Packet {
     /** Write the contents of this object to the output stream as per RFC2910 */
     public void write(DataOutputStream out) throws IOException {
         out.writeShort(getVersionNumber());
-        out.writeShort(getOperation());
+        out.writeShort(getCode());
         out.writeInt(getRequestId());
         for (AttributeGroup group : getAttributeGroups()) {
             group.write(out);
@@ -82,7 +88,7 @@ public abstract class Packet {
     /** Read the contents of the input stream, returning a parsed Packet or throwing an exception */
     public static Packet read(DataInputStream in) throws IOException {
         Packet.Builder builder = builder().setVersionNumber(in.readShort())
-                .setOperation(in.readShort()).setRequestId(in.readInt());
+                .setCode(in.readShort()).setRequestId(in.readInt());
         ImmutableList.Builder<AttributeGroup> attributeGroupsBuilder =
                 new ImmutableList.Builder<>();
 
@@ -112,9 +118,9 @@ public abstract class Packet {
     @AutoValue.Builder
     abstract public static class Builder {
         abstract public Builder setVersionNumber(int versionNumber);
-        abstract public Builder setOperation(int operation);
+        abstract public Builder setCode(int code);
         public Builder setOperation(Operation operation) {
-            return setOperation(operation.getValue());
+            return setCode(operation.getCode());
         }
         abstract public Builder setRequestId(int requestId);
         abstract public Builder setAttributeGroups(Iterable<AttributeGroup> groups);
@@ -126,7 +132,7 @@ public abstract class Packet {
     @Override
     public final String toString() {
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", o=" + Operation.toOperation(getOperation()) +
+                ", code=" + (Operation.isKnown(getCode()) ? Operation.toOperation(getCode()) : Status.toStatus(getCode())) +
                 ", rid=x" + Integer.toHexString(getRequestId()) +
                 ", a=" + getAttributeGroups() +
                 (getData().length == 0 ? "" : ", dlen=" + getData().length) +
