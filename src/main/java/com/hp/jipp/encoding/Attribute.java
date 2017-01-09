@@ -4,7 +4,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Operation;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -16,37 +15,73 @@ import java.util.Map;
 @AutoValue
 abstract public class Attribute<T> {
 
+    /**
+     * TODO: This should have a type, allowing us to search out only those with the correct type.
+     * As it is, a naughty remote device sould send a Boolean "operations-supported" attribute and
+     * trip us up badly.
+     */
     public final static String OperationsSupported = "operations-supported";
 
+    /* Use cases:
+     * AttributeGroup group
+     * String group.first(Attribute.OperationsSupported)
+     */
+
     /** Create and Return a new Attribute builder */
-    static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
+    static <T> Builder<T> builder(AttributeEncoder<T> encoder, Tag valueTag) {
         return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
     }
 
     /** Return a new String attribute */
     public static Attribute<String> create(Tag valueTag, String name, String... values) {
-        return StringAttributes.create(valueTag, name, values);
+        return StringEncoder.getInstance().builder(valueTag).setValues(values).setName(name)
+                .build();
     }
 
     /** Return a new Boolean attribute */
     public static Attribute<Boolean> create(Tag valueTag, String name, Boolean... values) {
-        return BooleanAttributes.create(valueTag, name, values);
+        return BooleanEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
+                .build();
     }
 
     /** Return a new Boolean attribute */
     public static Attribute<Integer> create(Tag valueTag, String name, Integer... values) {
-        return IntegerEncoder.create(valueTag, name, values);
+        return IntegerEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
+                .build();
     }
 
-    // TODO: continue with additional attribute creators/builders here.
+    public static Attribute<byte[]> create(Tag valueTag, String name, byte[]... values) {
+        return OctetEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
+                .build();
+    }
+
+    /**
+     * Create a named collection attribute (only used at the top of the attribute tree)
+     */
+    public static Attribute<Map<String, Attribute<?>>> create(String name,
+            Map<String, Attribute<?>>... values) {
+        return CollectionEncoder.getInstance().builder(Tag.BeginCollection).setName(name)
+                .setValues(values).build();
+    }
+
+    /**
+     * Create a nameless collection attribute (only used when nesting inside a top-level named
+     * attribute)
+     */
+    public static Attribute<Map<String, Attribute<?>>> create(Map<String, Attribute<?>>... values) {
+        return CollectionEncoder.getInstance().builder(Tag.BeginCollection).setName("")
+                .setValues(values).build();
+    }
+
 
     abstract public Tag getValueTag();
     abstract public String getName();
     abstract public ImmutableList<T> getValues();
-    abstract Encoder<T> getEncoder();
+    abstract AttributeEncoder<T> getEncoder();
 
-    public T getValue(int i) {
-        return getValues().get(i);
+    /** Return the n'th value in this attribute */
+    public T getValue(int n) {
+        return getValues().get(n);
     }
 
     public Attribute<Boolean> asBoolean() { return as(Boolean.class); }
@@ -61,6 +96,10 @@ abstract public class Attribute<T> {
         return (Attribute<Map<String, Attribute>>)this;
     }
 
+    /**
+     * Cast this attribute to one of the specified value type. Only do this if you are
+     * sure of the expected attribute's type.
+     */
     @SuppressWarnings("unchecked")
     public <U> Attribute<U> as(Class<U> cls) {
         for (ClassEncoder classEncoder : ENCODERS) {
@@ -75,99 +114,34 @@ abstract public class Attribute<T> {
         throw new IllegalArgumentException("Unknown type " + cls);
     }
 
-    abstract static class Encoder<T> {
-        /** Return a new builder for the specified valueTag or null if no possible */
-        abstract Builder<T> builder(Tag valueTag);
-
-        /** Read a single value from the input stream */
-        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
-
-        /** Write a single value to the output stream */
-        abstract void writeValue(DataOutputStream out, T value) throws IOException;
-
-        /** Return true if this tag can be handled by this encoder */
-        abstract boolean valid(Tag valueTag);
-
-        /** Read an attribute and its values from the data stream or null for unrecognized tag */
-        Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
-            Builder<T> builder = builder(valueTag);
-            if (builder == null) return null;
-
-            builder.setName(new String(readValueBytes(in)));
-
-            T value = readValue(in, valueTag);
-            builder.addValue(value);
-
-            while((value = readAdditionalValue(in, valueTag)) != null) {
-                builder.addValue(value);
-            }
-            return builder.build();
-        }
-
-        /** Read a single additional value into the builder, returning true if more */
-        private T readAdditionalValue(DataInputStream in, Tag valueTag) throws IOException {
-            if (in.available() < 3) return null;
-            in.mark(3);
-            if (Tag.read(in) == valueTag) {
-                int nameLength = in.readShort();
-                if (nameLength == 0) {
-                    return readValue(in, valueTag);
-                }
-            }
-            // Failed to read an additional value so back up and quit.
-            in.reset();
-            return null;
-        }
-
-        /** Write a length-value tuple */
-        void writeValueBytes(DataOutputStream out, byte[] bytes) throws IOException {
-            out.writeShort(bytes.length);
-            out.write(bytes);
-        }
-
-        /** Read and return value bytes from a length-value pair */
-        byte[] readValueBytes(DataInputStream in) throws IOException {
-            int valueLength = in.readShort();
-            byte valueBytes[] = new byte[valueLength];
-            if (valueLength != in.read(valueBytes)) throw new IOException("Value too short");
-            return valueBytes;
-        }
-
-        /** Skip (discard) a length-value pair */
-        void skipValueBytes(DataInputStream in) throws IOException {
-            int valueLength = in.readShort();
-            if (valueLength != in.skip(valueLength)) throw new IOException("Value too short");
-        }
-    }
-
     @AutoValue
     abstract static class ClassEncoder {
-        public static ClassEncoder create(Class<?> cls, Attribute.Encoder<?> encoder) {
+        public static ClassEncoder create(Class<?> cls, AttributeEncoder<?> encoder) {
             return new AutoValue_Attribute_ClassEncoder(cls, encoder);
         }
         public abstract Class<?> getEncodedClass();
-        public abstract Attribute.Encoder<?> getEncoder();
+        public abstract AttributeEncoder<?> getEncoder();
     }
 
     static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
             ClassEncoder.create(Operation.class, Operation.Encoder),
             ClassEncoder.create(Integer.class, IntegerEncoder.getInstance()),
-            ClassEncoder.create(String.class, StringAttributes.ENCODER),
-            ClassEncoder.create(Boolean.class, BooleanAttributes.ENCODER),
-            ClassEncoder.create(Map.class, CollectionAttributes.ENCODER),
+            ClassEncoder.create(String.class, StringEncoder.getInstance()),
+            ClassEncoder.create(Boolean.class, BooleanEncoder.getInstance()),
+            ClassEncoder.create(Map.class, CollectionEncoder.getInstance()),
 //            // TODO: RangeOfInteger attribute
 //            // TODO: 1setofX
 //            // TODO: resolution
 //            // TODO: dateTime
 //            // TODO: LanguageStringAttribute
-            ClassEncoder.create(byte[].class, OctetAttributes.ENCODER));
+            ClassEncoder.create(byte[].class, OctetEncoder.getInstance()));
 
 
 
     /** A generic attribute builder. Must be subclassed for specific types of T */
     @AutoValue.Builder
     abstract public static class Builder<T> {
-        abstract Builder<T> setEncoder(Encoder<T> encoder);
+        abstract Builder<T> setEncoder(AttributeEncoder<T> encoder);
         abstract Builder<T> setValueTag(Tag valueTag);
         abstract Builder<T> setName(String name);
         abstract Builder<T> setValues(T... values);

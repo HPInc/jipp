@@ -19,7 +19,7 @@ public class AttributeTest {
 
     @Test
     public void octetString() throws IOException {
-        Attribute<byte[]> attribute = OctetAttributes.create(Tag.OctetString, "name", "value".getBytes());
+        Attribute<byte[]> attribute = Attribute.create(Tag.OctetString, "name", "value".getBytes());
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -37,7 +37,7 @@ public class AttributeTest {
 
     @Test
     public void multiOctetString() throws IOException {
-        Attribute<byte[]> attribute = OctetAttributes.create(Tag.NameWithoutLanguage, "name",
+        Attribute<byte[]> attribute = Attribute.create(Tag.NameWithoutLanguage, "name",
                 "value".getBytes(),
                 "value2".getBytes());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
@@ -47,14 +47,14 @@ public class AttributeTest {
 
     @Test
     public void multiBoolean() throws IOException {
-        Attribute<Boolean> attribute = cycle(BooleanAttributes.create(Tag.BooleanValue, "name",
+        Attribute<Boolean> attribute = cycle(Attribute.create(Tag.BooleanValue, "name",
                 true, false));
         assertEquals(ImmutableList.of(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
-        Attribute<Integer> attribute = cycle(IntegerEncoder.create(Tag.IntegerValue, "name",
+        Attribute<Integer> attribute = cycle(Attribute.create(Tag.IntegerValue, "name",
                 -50505, 50505));
         assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
     }
@@ -82,10 +82,10 @@ public class AttributeTest {
         //  }
 
         // Hideously ugly but accurate attribute construction
-        Attribute<Map<String, Attribute<?>>> mediaCol = CollectionAttributes.create("media-col",
+        Attribute<Map<String, Attribute<?>>> mediaCol = Attribute.create("media-col",
                 ImmutableMap.<String, Attribute<?>>builder()
                         .put("media-color", Attribute.create(Tag.Keyword, "", "blue"))
-                        .put("media-size", CollectionAttributes.create(
+                        .put("media-size", Attribute.create(
                                 ImmutableMap.<String, Attribute<?>>builder()
                                         .put("x-dimension", Attribute.create(Tag.IntegerValue, "", 6))
                                         .put("y-dimension", Attribute.create(Tag.IntegerValue, "", 4))

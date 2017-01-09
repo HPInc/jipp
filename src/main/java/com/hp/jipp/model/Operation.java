@@ -1,7 +1,6 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.EnumEncoder;
@@ -38,7 +37,7 @@ public abstract class Operation extends NameCode {
                     GetJobAttributes, GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob,
                     RestartJob, PausePrinter, ResumePrinter, PurgeJobs
             ).build(),
-            new EnumEncoder.Factory<Operation>() {
+            new NameCode.Factory<Operation>() {
                 @Override
                 public Operation create(String name, int code) {
                     return new AutoValue_Operation(name, code);
@@ -46,7 +45,7 @@ public abstract class Operation extends NameCode {
             });
 
     public static Attribute<Operation> attribute(String name, Operation... values) {
-        return Encoder.createAttribute(name, values);
+        return Encoder.toAttribute(name, values);
     }
 
     /** Returns true if this is a known operation code */
@@ -68,13 +67,5 @@ public abstract class Operation extends NameCode {
      */
     public static Operation create(String name, int code) {
         return new AutoValue_Operation(name, code);
-    }
-
-    abstract public String getName();
-    abstract public int getCode();
-
-    @Override
-    public final String toString() {
-        return getName();
     }
 }

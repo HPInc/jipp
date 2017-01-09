@@ -5,18 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /** Tools for encoding Integer attributes */
-public class IntegerEncoder extends Attribute.Encoder<Integer> {
+public class IntegerEncoder extends AttributeEncoder<Integer> {
 
     private static IntegerEncoder INSTANCE = new IntegerEncoder();
 
     /** Return the singleton encoder */
     static IntegerEncoder getInstance() {
         return INSTANCE;
-    }
-
-    /** Return a new integer attribute */
-    public static Attribute<Integer> create(Tag valueTag, String name, Integer... values) {
-        return INSTANCE.builder(valueTag).setValues(values).setName(name).build();
     }
 
     @Override
@@ -27,16 +22,8 @@ public class IntegerEncoder extends Attribute.Encoder<Integer> {
 
     @Override
     public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
-        int length = in.readShort();
-        if (length != 4) {
-            throw new IOException("tag " + valueTag + " value expected 4 got " + length);
-        }
+        expectLength(in, 4);
         return in.readInt();
-    }
-
-    @Override
-    public Attribute.Builder<Integer> builder(Tag valueTag) {
-        return Attribute.builder(this, valueTag);
     }
 
     @Override

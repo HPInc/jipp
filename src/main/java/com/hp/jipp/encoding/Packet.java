@@ -1,7 +1,10 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 
@@ -40,6 +43,14 @@ public abstract class Packet {
      * Return the attribute groups in this packet
      */
     abstract public ImmutableList<AttributeGroup> getAttributeGroups();
+
+    /** Returns the first attribute with the specified delimiter */
+    public Optional<AttributeGroup> findAttributeGroup(final Tag delimiter) {
+        for (AttributeGroup group : getAttributeGroups()) {
+            if (group.getStartTag() == delimiter) return Optional.of(group);
+        }
+        return Optional.absent();
+    }
 
     /**
      * Return the packet's data field (bytes found after all attributes)

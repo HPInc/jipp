@@ -1,14 +1,16 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.hp.jipp.encoding.NameCode;
+
+import java.util.Map;
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
  */
 @AutoValue
-public abstract class Status {
+public abstract class Status extends NameCode {
 
     public static final Status Ok = create("ok", 0x0000);
     public static final Status ClientErrorBadRequest = create("client-error-bad-request", 0x0400);
@@ -60,20 +62,13 @@ public abstract class Status {
             ServerErrorBusy, ServerErrorJobCanceled, ServerErrorMultipleDocumentJobsNotSupported
     ).build();
 
-    private final static ImmutableMap<Integer, Status> CODE_TO_STATUS;
-    static {
-        ImmutableMap.Builder<Integer, Status> builder = new ImmutableMap.Builder<>();
-        for (Status status: All) {
-            builder.put(status.getValue(), status);
-        }
-        CODE_TO_STATUS = builder.build();
-    }
+    private final static Map<Integer, Status> CodeToStatus = NameCode.toMap(All);
 
     /**
      * Look up or convert an operation code into an Operation object
      */
     public static Status toStatus(int code) {
-        Status found = CODE_TO_STATUS.get(code);
+        Status found = CodeToStatus.get(code);
         if (found != null) return found;
         return create("UNKNOWN(x" + Integer.toHexString(code) + ")", code);
     }
@@ -81,17 +76,9 @@ public abstract class Status {
     /**
      * Returns a new instance
      * @param name human-readable name of the the operation
-     * @param value machine-readable identifier for the operation
+     * @param code machine-readable identifier for the operation
      */
-    public static Status create(String name, int value) {
-        return new AutoValue_Status(name, value);
-    }
-
-    abstract public String getName();
-    abstract public int getValue();
-
-    @Override
-    public final String toString() {
-        return getName();
+    public static Status create(String name, int code) {
+        return new AutoValue_Status(name, code);
     }
 }

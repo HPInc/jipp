@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
  */
 @AutoValue
 public abstract class Tag {
+    // Delimiter tags
     public static final Tag OperationAttributes = create("operation-attributes", (byte)0x01);
     public static final Tag JobAttributes = create("job-attributes", (byte)0x02);
     public static final Tag EndOfAttributes = create("end-of-attributes", (byte)0x03);
@@ -68,14 +70,14 @@ public abstract class Tag {
     }
 
     /**
-     * Return or create a tag corresponding to the value. This is not particularly
+     * Return or toAttribute a tag corresponding to the value. This is not particularly
      * efficient for unrecognized tags.
      *
      * Known tags can be tested for equality with ==.
      */
     public static Tag toTag(byte value) {
-        Tag tag = CODE_TO_TAG.get(value);
-        if (tag != null) return tag;
+        Optional<Tag> tag = Optional.fromNullable(CODE_TO_TAG.get(value));
+        if (tag.isPresent()) return tag.get();
         return create("UNKNOWN(x" + Integer.toHexString((int)value) + ")", value);
     }
 
