@@ -105,7 +105,7 @@ public abstract class Packet {
 
         boolean moreAttributes = true;
         while(moreAttributes) {
-            Tag tag = Tag.toTag(in.readByte());
+            Tag tag = Tag.read(in);
             if (tag == Tag.EndOfAttributes) {
                 if (in.available() > 0) {
                     byte data[] = new byte[in.available()];

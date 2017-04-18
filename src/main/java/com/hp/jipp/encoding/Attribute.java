@@ -2,36 +2,31 @@ package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.Hook;
 import com.hp.jipp.model.Operation;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 /**
- * A Generic IPP Attribute. Every attribute has a one-byte "value tag" suggesting its type,
- * a string name, and one or more values.
+ * An IPP attribute, composed of a one-byte "value tag" suggesting its type, a human-readable string name, and one or
+ * more values according to its type.
  */
 @AutoValue
-abstract public class Attribute<T> {
-
-    /**
-     * TODO: This should have a type, allowing us to search out only those with the correct type.
-     * As it is, a naughty remote device sould send a Boolean "operations-supported" attribute and
-     * trip us up badly.
-     */
-    public final static String OperationsSupported = "operations-supported";
-
-    /* Use cases:
-     * AttributeGroup group
-     * String group.first(Attribute.OperationsSupported)
-     */
+public abstract class Attribute<T> {
+    /** Set to false in {@link Hook} to disable builders that accept invalid tags. */
+    public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = AttributeEncoder.class.getName() +
+            ".HOOK_ALLOW_BUILD_INVALID_TAGS";
 
     /** Create and Return a new Attribute builder */
     static <T> Builder<T> builder(AttributeEncoder<T> encoder, Tag valueTag) {
         return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
     }
 
+    // TODO: Remove the create() methods below
     /** Return a new String attribute */
     public static Attribute<String> create(Tag valueTag, String name, String... values) {
         return StringEncoder.getInstance().builder(valueTag).setValues(values).setName(name)
@@ -73,6 +68,17 @@ abstract public class Attribute<T> {
                 .setValues(values).build();
     }
 
+    /**
+     * Read an attribute from an input stream, based on its tag
+     */
+    public static Attribute<?> read(DataInputStream in, Tag valueTag) throws IOException {
+        for (Attribute.ClassEncoder classEncoder: Attribute.ENCODERS) {
+            if (classEncoder.getEncoder().valid(valueTag)) {
+                return classEncoder.getEncoder().read(in, valueTag);
+            }
+        }
+        throw new RuntimeException("Unreadable attribute " + valueTag);
+    }
 
     abstract public Tag getValueTag();
     abstract public String getName();
@@ -123,10 +129,11 @@ abstract public class Attribute<T> {
         public abstract AttributeEncoder<?> getEncoder();
     }
 
-    static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
+    private static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
             ClassEncoder.create(Operation.class, Operation.Encoder),
             ClassEncoder.create(Integer.class, IntegerEncoder.getInstance()),
             ClassEncoder.create(String.class, StringEncoder.getInstance()),
+            ClassEncoder.create(URI.class, UriEncoder.getInstance()),
             ClassEncoder.create(Boolean.class, BooleanEncoder.getInstance()),
             ClassEncoder.create(Map.class, CollectionEncoder.getInstance()),
 //            // TODO: RangeOfInteger attribute
@@ -158,6 +165,11 @@ abstract public class Attribute<T> {
     /** Write this attribute (including all of its values) to the output stream */
     public void write(DataOutputStream out) throws IOException {
         writeHeader(out, getValueTag(), getName());
+        if (getValues().isEmpty()) {
+            out.writeShort(0);
+            return;
+        }
+
         getEncoder().writeValue(out, getValue(0));
         for (int i = 1; i < getValues().size(); i++) {
             writeHeader(out, getValueTag(), "");
@@ -179,4 +191,17 @@ abstract public class Attribute<T> {
                 (getName().equals("") ? "" : ", n=" + getName()) +
                 ", v=" + getValues() + "}";
     }
+
+    public static <T extends NameCode> AttributeType<T> enumType(AttributeEncoder<T> encoder, Tag tag, String name) {
+        return new AttributeType<>(encoder, tag, name);
+    }
+
+    public static AttributeType<URI> uriType(Tag tag, String name) {
+        return new AttributeType<>(UriEncoder.getInstance(), tag, name);
+    }
+
+    public static AttributeType<String> stringType(Tag tag, String name) {
+        return new AttributeType<>(StringEncoder.getInstance(), tag, name);
+    }
+
 }

@@ -17,8 +17,7 @@ public class CollectionEncoder extends AttributeEncoder<Map<String, Attribute<?>
 
     /** Used to terminate a collection */
     private static final Attribute EndCollectionAttribute =
-            StringEncoder.getInstance().builder(Tag.EndCollection).setName("").setValues("")
-                    .build();
+            OctetEncoder.getInstance().builder(Tag.EndCollection).setName("").build();
 
     @Override
     public void writeValue(DataOutputStream out, Map<String, Attribute<?>> value)
@@ -58,7 +57,7 @@ public class CollectionEncoder extends AttributeEncoder<Map<String, Attribute<?>
             } else if (tag == Tag.MemberAttributeName) {
                 skipValueBytes(in);
                 String memberName = new String(readValueBytes(in));
-                Attribute memberValue = AttributeGroup.readAttribute(in, Tag.read(in));
+                Attribute memberValue = Attribute.read(in, Tag.read(in));
                 members.put(memberName, memberValue);
             } else {
                 throw new IOException("Bad tag: " + tag);

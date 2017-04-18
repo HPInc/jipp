@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
@@ -61,7 +62,7 @@ public class AttributeTest {
 
     @Test
     public void enumAttribute() throws IOException {
-        Attribute<Operation> attribute = cycle(Operation.attribute(Attribute.OperationsSupported,
+        Attribute<Operation> attribute = cycle(Operation.attribute(Operation.NAME,
                 Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
                 attribute.getValues());
@@ -122,7 +123,7 @@ public class AttributeTest {
     @SuppressWarnings("unchecked")
     private <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) AttributeGroup.readAttribute(in, Tag.read(in));
+        return (Attribute<T>) Attribute.read(in, Tag.read(in));
     }
 
     private byte[] toBytes(Attribute attribute) throws IOException {

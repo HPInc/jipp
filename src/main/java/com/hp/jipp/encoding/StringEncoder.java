@@ -24,6 +24,6 @@ public class StringEncoder extends AttributeEncoder<String> {
 
     @Override
     boolean valid(Tag valueTag) {
-        return (valueTag.getValue() & 0x40) == 0x40;
+        return (valueTag.getValue() & 0x40) == 0x40 && valueTag != Tag.Uri;
     }
 }

@@ -21,6 +21,7 @@ public class PacketTest {
     private Packet.Builder defaultBuilder = Packet.builder(defaultPacket);
     private ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
     private DataOutputStream out = new DataOutputStream(outBytes);
+
     @Test
     public void writeEmptyPacket() throws IOException {
         defaultPacket.write(out);

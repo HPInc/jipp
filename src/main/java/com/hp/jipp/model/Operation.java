@@ -7,7 +7,7 @@ import com.hp.jipp.encoding.EnumEncoder;
 import com.hp.jipp.encoding.NameCode;
 
 /**
- * An operation code, as found in request packets
+ * An operation code, as defined in RFC 2911 and found in request packets
  */
 @AutoValue
 public abstract class Operation extends NameCode {
@@ -21,8 +21,7 @@ public abstract class Operation extends NameCode {
     public final static Operation CancelJob = create("Cancel-Job", 0x0008);
     public final static Operation GetJobAttributes = create("Get-Job-Attributes", 0x0009);
     public final static Operation GetJobs = create("Get-Jobs", 0x000A);
-    public final static Operation GetPrinterAttributes = create("Get-Printer-Attributes",
-            0x000B);
+    public final static Operation GetPrinterAttributes = create("Get-Printer-Attributes", 0x000B);
     public final static Operation HoldJob = create("Hold-Job", 0x000C);
     public final static Operation ReleaseJob = create("Release-Job", 0x000D);
     public final static Operation RestartJob = create("Restart-Job", 0x000E);
@@ -30,12 +29,14 @@ public abstract class Operation extends NameCode {
     public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
+    public final static String NAME = "operations-supported";
+
     public static final EnumEncoder<Operation> Encoder = EnumEncoder.create("operation-id",
-            ImmutableSet.of(Attribute.OperationsSupported),
+            ImmutableSet.of(NAME),
             new ImmutableSet.Builder<Operation>().add(
-                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob,
-                    GetJobAttributes, GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob,
-                    RestartJob, PausePrinter, ResumePrinter, PurgeJobs
+                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
+                    GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,
+                    PurgeJobs
             ).build(),
             new NameCode.Factory<Operation>() {
                 @Override

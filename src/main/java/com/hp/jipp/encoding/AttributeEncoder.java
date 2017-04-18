@@ -1,13 +1,16 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
+import com.hp.jipp.Hook;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
-abstract class AttributeEncoder<T> {
+/**
+ * Allows for reading/writing of attributes and their values according to the attribute's type
+ */
+public abstract class AttributeEncoder<T> {
     /** Read a single value from the input stream */
     abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
 
@@ -25,14 +28,21 @@ abstract class AttributeEncoder<T> {
         }
     }
 
-    /** Return a new Attribute builder for the specified valueTag (assumes a valid valueTag) */
+    /**
+     * Return a new Attribute builder for the specified valueTag (assumes a valid valueTag).
+     * @param valueTag value-tag for attributes that can be built for the returned builder.
+     *                 Must be a known tag for this encoder or throws.
+     */
     Attribute.Builder<T> builder(Tag valueTag) {
+        if (!(valid(valueTag) || Hook.is(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
+            throw new RuntimeException(valueTag.toString() + " is not a valid tag for " + this);
+        }
+
         return Attribute.builder(this, valueTag);
     }
 
     /** Read an attribute and its values from the data stream */
-    Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
-
+    public Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
         Attribute.Builder<T> builder = builder(valueTag)
                 .setName(new String(readValueBytes(in)))
                 .addValue(readValue(in, valueTag));

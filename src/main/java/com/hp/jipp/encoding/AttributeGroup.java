@@ -33,14 +33,12 @@ abstract public class AttributeGroup {
     /** Return all attributes in this group */
     abstract public ImmutableList<Attribute<?>> getAttributes();
 
-
     /** Lazy attribute map, generated only when needed */
     private Supplier<ImmutableMap<String, Attribute<?>>> mAttributeMap =
             Suppliers.memoize(new Supplier<ImmutableMap<String, Attribute<?>>>() {
                 @Override
                 public ImmutableMap<String, Attribute<?>> get() {
-                    ImmutableMap.Builder<String, Attribute<?>> builder =
-                            new ImmutableMap.Builder<>();
+                    ImmutableMap.Builder<String, Attribute<?>> builder = new ImmutableMap.Builder<>();
                     for (Attribute<?> attribute : getAttributes()) {
                         builder.put(attribute.getName(), attribute);
                     }
@@ -49,14 +47,33 @@ abstract public class AttributeGroup {
             });
 
     /** Return a lazily-created, read-only map of attribute name to a list of matching attributes */
-    public Map<String, Attribute<?>> getAttributesMap() {
+    public Map<String, Attribute<?>> getMap() {
         return mAttributeMap.get();
     }
 
     /** Finds an attribute in the group matching the name */
-    public Optional<Attribute<?>> getAttribute(String name) {
+    public Optional<Attribute<?>> get(String name) {
         // TODO: need AttributeType so that type assumptions can be made
-        return Optional.<Attribute<?>>fromNullable(getAttributesMap().get(name));
+        return Optional.<Attribute<?>>fromNullable(getMap().get(name));
+    }
+
+    /** Return a attribute from this group. */
+    public <T> Optional<Attribute<T>> get(AttributeType<T> attributeType) {
+        Attribute<?> attribute = getMap().get(attributeType.getName());
+        if (attribute != null && attributeType.isValid(attribute)) {
+            return Optional.of((Attribute<T>) attribute);
+        } else {
+            return Optional.absent();
+        }
+    }
+
+    /**
+     * Return values for the specified attribute type in this group. If the attribute is missing, return an empty list.
+     */
+    public <T> ImmutableList<T> getValues(AttributeType<T> attributeType) {
+        Optional<Attribute<T>> attribute = get(attributeType);
+        if (!attribute.isPresent()) return ImmutableList.of();
+        return attribute.get().getValues();
     }
 
     @AutoValue.Builder
@@ -75,11 +92,15 @@ abstract public class AttributeGroup {
         }
     }
 
-    void write(DataOutputStream out) throws IOException {
+    public void write(DataOutputStream out) throws IOException {
         out.writeByte(getStartTag().getValue());
         for(Attribute attribute : getAttributes()) {
             attribute.write(out);
         }
+    }
+
+    public static AttributeGroup read(DataInputStream in) throws IOException {
+        return read(Tag.read(in), in);
     }
 
     static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
@@ -92,18 +113,9 @@ abstract public class AttributeGroup {
                 in.reset();
                 attributes = false;
             } else {
-                builder.addAttribute(readAttribute(in, valueTag));
+                builder.addAttribute(Attribute.read(in, valueTag));
             }
         }
         return builder.build();
-    }
-
-    static Attribute<?> readAttribute(DataInputStream in, Tag valueTag) throws IOException {
-        for (Attribute.ClassEncoder classEncoder: Attribute.ENCODERS) {
-            if (classEncoder.getEncoder().valid(valueTag)) {
-                return classEncoder.getEncoder().read(in, valueTag);
-            }
-        }
-        throw new RuntimeException("Unreadable attribute " + valueTag);
     }
 }

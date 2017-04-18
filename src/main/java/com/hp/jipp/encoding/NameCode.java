@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A tuple holding a user-visible name and a machine-readable integer code.
- *
- * Intended to be subclassed into a {@link com.google.auto.value.AutoValue} with more specificity.
+ * An object holding a human-readable name and a corresponding machine-readable integer code.
  */
 public abstract class NameCode {
     public abstract String getName();
@@ -23,6 +21,7 @@ public abstract class NameCode {
     public static <T extends NameCode> Map<Integer, T> toMap(Set<T> enums) {
         ImmutableMap.Builder<Integer, T> builder = new ImmutableMap.Builder<>();
         for (T e : enums) {
+            //noinspection ResultOfMethodCallIgnored
             builder.put(e.getCode(), e);
         }
         return builder.build();
