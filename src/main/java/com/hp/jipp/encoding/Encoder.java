@@ -8,9 +8,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Allows for reading/writing of attributes and their values according to the attribute's type
+ * Reads/writes attributes and values according to the attribute's type
  */
-public abstract class AttributeEncoder<T> {
+public abstract class Encoder<T> {
     /** Read a single value from the input stream */
     abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
 
@@ -31,13 +31,12 @@ public abstract class AttributeEncoder<T> {
     /**
      * Return a new Attribute builder for the specified valueTag (assumes a valid valueTag).
      * @param valueTag value-tag for attributes that can be built for the returned builder.
-     *                 Must be a known tag for this encoder or throws.
+     *                 Throws if not a known tag for this encoder.
      */
     Attribute.Builder<T> builder(Tag valueTag) {
         if (!(valid(valueTag) || Hook.is(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
             throw new RuntimeException(valueTag.toString() + " is not a valid tag for " + this);
         }
-
         return Attribute.builder(this, valueTag);
     }
 

@@ -11,6 +11,7 @@ import java.net.URI;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Attributes;
 
 
@@ -28,6 +29,20 @@ public class AttributeGroupTest {
         assertTrue(group.get("attributes-charset").isPresent());
         assertTrue(group.get("attributes-natural-language").isPresent());
         assertTrue(group.get("printer-uri").isPresent());
+    }
+
+    @Test
+    public void multiMultiAttribute() throws Exception {
+        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+                Attributes.AttributesCharset.create("utf-8","utf-16")));
+        assertEquals(ImmutableList.of("utf-8", "utf-16"), group.getValues(Attributes.AttributesCharset));
+    }
+
+    @Test
+    public void missingAttribute() throws Exception {
+        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+                Attributes.PrinterUri.create(URI.create("ipp://10.0.0.23/ipp/printer"))));
+        assertEquals(0, group.getValues(Attributes.AttributesNaturalLanguage).size());
     }
 
     private AttributeGroup cycle(AttributeGroup group) throws IOException {

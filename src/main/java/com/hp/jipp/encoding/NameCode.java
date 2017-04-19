@@ -2,8 +2,9 @@ package com.hp.jipp.encoding;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * An object holding a human-readable name and a corresponding machine-readable integer code.
@@ -17,8 +18,8 @@ public abstract class NameCode {
         T create(String name, int code);
     }
 
-    /** Convert a set of T into a Map of integers to T, where T is a NameCode subclass. */
-    public static <T extends NameCode> Map<Integer, T> toMap(Set<T> enums) {
+    /** Convert a List of T into a Map of integers to T, where T is a NameCode subclass. */
+    public static <T extends NameCode> Map<Integer, T> toMap(Collection<T> enums) {
         ImmutableMap.Builder<Integer, T> builder = new ImmutableMap.Builder<>();
         for (T e : enums) {
             //noinspection ResultOfMethodCallIgnored

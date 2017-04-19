@@ -1,8 +1,10 @@
 package com.hp.jipp.model;
 
-import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.EnumType;
+import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
+import com.hp.jipp.encoding.UriType;
 
 import java.net.URI;
 
@@ -10,16 +12,16 @@ import java.net.URI;
 public class Attributes {
 
     public static final AttributeType<String> AttributesNaturalLanguage =
-            Attribute.stringType(Tag.NaturalLanguage, "attributes-natural-language");
+            new StringType(Tag.NaturalLanguage, "attributes-natural-language");
 
     public static final AttributeType<String> AttributesCharset =
-            Attribute.stringType(Tag.Charset, "attributes-charset");
+            new StringType(Tag.Charset, "attributes-charset");
 
     public static final AttributeType<URI> PrinterUri =
-            Attribute.uriType(Tag.Uri, "printer-uri");
+            new UriType(Tag.Uri, "printer-uri");
 
     public static final AttributeType<Operation> OperationsSupported =
-            Attribute.enumType(Operation.Encoder, Tag.EnumValue, Operation.NAME);
+            new EnumType<>(Operation.Encoder, Tag.EnumValue,  "operations-supported");
 
     // TODO: Add the other 1001...
 

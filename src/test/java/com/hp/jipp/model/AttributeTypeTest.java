@@ -16,6 +16,8 @@ import java.io.IOException;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.IntegerType;
+import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
 public class AttributeTypeTest {
@@ -43,13 +45,13 @@ public class AttributeTypeTest {
     public void ignoreBadTypeNaturalLanguage() throws Exception {
         exception.expect(RuntimeException.class);
         // Throws because NaturalLanguage is not 5
-        Attribute.create(Tag.NaturalLanguage, "attributes-natural-language", 5);
+        new IntegerType(Tag.NaturalLanguage, "attributes-natural-language");
     }
 
     @Test
     public void ignoreBadNameNaturalLanguage() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
-                Attribute.create(Tag.NaturalLanguage, "attributes-NATURAL-language", "en")));
+                new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").create("en")));
         assertFalse(group.get(Attributes.AttributesNaturalLanguage).isPresent());
     }
 

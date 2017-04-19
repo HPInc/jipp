@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /** Tools for encoding collections of named attributes as per RFC3382 */
-public class CollectionEncoder extends AttributeEncoder<Map<String, Attribute<?>>> {
+public class CollectionEncoder extends Encoder<Map<String, Attribute<?>>> {
+    // TODO: We should be able to store a pile of attributes inside a collection and turn their names into keys
 
     private static final CollectionEncoder INSTANCE = new CollectionEncoder();
     public static CollectionEncoder getInstance() {
@@ -16,8 +17,7 @@ public class CollectionEncoder extends AttributeEncoder<Map<String, Attribute<?>
     }
 
     /** Used to terminate a collection */
-    private static final Attribute EndCollectionAttribute =
-            OctetEncoder.getInstance().builder(Tag.EndCollection).setName("").build();
+    private static final Attribute EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").create();
 
     @Override
     public void writeValue(DataOutputStream out, Map<String, Attribute<?>> value)

@@ -1,9 +1,9 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
-import com.hp.jipp.encoding.EnumEncoder;
+import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.NameCode;
 
 /**
@@ -29,19 +29,15 @@ public abstract class Operation extends NameCode {
     public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
-    public final static String NAME = "operations-supported";
-
-    public static final EnumEncoder<Operation> Encoder = EnumEncoder.create("operation-id",
-            ImmutableSet.of(NAME),
-            new ImmutableSet.Builder<Operation>().add(
-                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
-                    GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,
-                    PurgeJobs
-            ).build(),
+    public static final EnumType.Encoder<Operation> Encoder = EnumType.encoder("operation-id",
+            ImmutableList.of(PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob,
+                    GetJobAttributes, GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter,
+                    ResumePrinter, PurgeJobs
+            ),
             new NameCode.Factory<Operation>() {
                 @Override
                 public Operation create(String name, int code) {
-                    return new AutoValue_Operation(name, code);
+                    return Operation.create(name, code);
                 }
             });
 

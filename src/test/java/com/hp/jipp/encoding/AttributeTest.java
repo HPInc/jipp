@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
 
     @Test
     public void octetString() throws IOException {
-        Attribute<byte[]> attribute = Attribute.create(Tag.OctetString, "name", "value".getBytes());
+        AttributeType<byte[]> octetStringType = new OctetStringType(Tag.OctetString, "name");
+        Attribute<byte[]> attribute = octetStringType.create("value".getBytes());
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -38,9 +38,8 @@ public class AttributeTest {
 
     @Test
     public void multiOctetString() throws IOException {
-        Attribute<byte[]> attribute = Attribute.create(Tag.NameWithoutLanguage, "name",
-                "value".getBytes(),
-                "value2".getBytes());
+        AttributeType<byte[]> stringType = new OctetStringType(Tag.NameWithoutLanguage, "name");
+        Attribute<byte[]> attribute = stringType.create("value".getBytes(), "value2".getBytes());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
         assertArrayEquals("value2".getBytes(), attribute.getValue(1));
     }
@@ -48,23 +47,33 @@ public class AttributeTest {
 
     @Test
     public void multiBoolean() throws IOException {
-        Attribute<Boolean> attribute = cycle(Attribute.create(Tag.BooleanValue, "name",
-                true, false));
+        AttributeType<Boolean> booleanType = new BooleanType(Tag.BooleanValue, "name");
+        Attribute<Boolean> attribute = cycle(booleanType.create(true, false));
         assertEquals(ImmutableList.of(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
-        Attribute<Integer> attribute = cycle(Attribute.create(Tag.IntegerValue, "name",
-                -50505, 50505));
+        AttributeType<Integer> integerType = new IntegerType(Tag.IntegerValue, "name");
+        Attribute<Integer> attribute = cycle(integerType.create(-50505, 50505));
         assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
     }
 
     @Test
     public void enumAttribute() throws IOException {
-        Attribute<Operation> attribute = cycle(Operation.attribute(Operation.NAME,
+        Attribute<Operation> attribute = cycle(Operation.attribute("something",
                 Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
+                attribute.getValues());
+    }
+
+    @Test
+    public void surpriseEnum() throws IOException {
+        Attribute<Operation> attribute = cycle(Operation.attribute("something",
+                Operation.create("vendor-specific", 0x4040)));
+        // We can't know it's called "vendor-specific" after parsing, since we just made it up.
+        // So expect the unrecognized format
+        assertEquals(ImmutableList.of(Operation.create("operation-id(x4040)", 0x4040)),
                 attribute.getValues());
     }
 
@@ -82,18 +91,21 @@ public class AttributeTest {
         //     }
         //  }
 
+        IntegerType namelessInt = new IntegerType(Tag.IntegerValue, "");
+        StringType keywordType = new StringType(Tag.Keyword, "");
+
         // Hideously ugly but accurate attribute construction
         Attribute<Map<String, Attribute<?>>> mediaCol = Attribute.create("media-col",
                 ImmutableMap.<String, Attribute<?>>builder()
-                        .put("media-color", Attribute.create(Tag.Keyword, "", "blue"))
+                        .put("media-color", keywordType.create("blue"))
                         .put("media-size", Attribute.create(
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", Attribute.create(Tag.IntegerValue, "", 6))
-                                        .put("y-dimension", Attribute.create(Tag.IntegerValue, "", 4))
+                                        .put("x-dimension", namelessInt.create(6))
+                                        .put("y-dimension", namelessInt.create(4))
                                         .build(),
                                 ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", Attribute.create(Tag.IntegerValue, "", 12))
-                                        .put("y-dimension", Attribute.create(Tag.IntegerValue, "", 5))
+                                        .put("x-dimension", namelessInt.create(12))
+                                        .put("y-dimension", namelessInt.create(5))
                                         .build()))
                         .build());
 

@@ -18,36 +18,12 @@ import java.util.Map;
 @AutoValue
 public abstract class Attribute<T> {
     /** Set to false in {@link Hook} to disable builders that accept invalid tags. */
-    public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = AttributeEncoder.class.getName() +
+    public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = Encoder.class.getName() +
             ".HOOK_ALLOW_BUILD_INVALID_TAGS";
 
-    /** Create and Return a new Attribute builder */
-    static <T> Builder<T> builder(AttributeEncoder<T> encoder, Tag valueTag) {
+    /** Create and return a new Attribute builder */
+    static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
         return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
-    }
-
-    // TODO: Remove the create() methods below
-    /** Return a new String attribute */
-    public static Attribute<String> create(Tag valueTag, String name, String... values) {
-        return StringEncoder.getInstance().builder(valueTag).setValues(values).setName(name)
-                .build();
-    }
-
-    /** Return a new Boolean attribute */
-    public static Attribute<Boolean> create(Tag valueTag, String name, Boolean... values) {
-        return BooleanEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
-                .build();
-    }
-
-    /** Return a new Boolean attribute */
-    public static Attribute<Integer> create(Tag valueTag, String name, Integer... values) {
-        return IntegerEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
-                .build();
-    }
-
-    public static Attribute<byte[]> create(Tag valueTag, String name, byte[]... values) {
-        return OctetEncoder.getInstance().builder(valueTag).setName(name).setValues(values)
-                .build();
     }
 
     /**
@@ -80,20 +56,58 @@ public abstract class Attribute<T> {
         throw new RuntimeException("Unreadable attribute " + valueTag);
     }
 
+    @AutoValue
+    abstract static class ClassEncoder {
+        public static ClassEncoder create(Class<?> cls, Encoder<?> encoder) {
+            return new AutoValue_Attribute_ClassEncoder(cls, encoder);
+        }
+        public abstract Class<?> getEncodedClass();
+        public abstract Encoder<?> getEncoder();
+    }
+
+    /** Encoders available to parse incoming data */
+    private static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
+            ClassEncoder.create(Operation.class, Operation.Encoder),
+            ClassEncoder.create(Integer.class, IntegerType.ENCODER),
+            ClassEncoder.create(String.class, StringType.ENCODER),
+            ClassEncoder.create(URI.class, UriType.ENCODER),
+            ClassEncoder.create(Boolean.class, BooleanType.ENCODER),
+            ClassEncoder.create(Map.class, CollectionEncoder.getInstance()),
+//            // TODO: RangeOfInteger attribute
+//            // TODO: 1setofX
+//            // TODO: resolution
+//            // TODO: dateTime
+//            // TODO: LanguageStringAttribute
+            ClassEncoder.create(byte[].class, OctetStringType.ENCODER));
+
+
+
+    /** A generic attribute builder. Must be subclassed for specific types of T */
+    @AutoValue.Builder
+    abstract public static class Builder<T> {
+        abstract Builder<T> setEncoder(Encoder<T> encoder);
+        abstract Builder<T> setValueTag(Tag valueTag);
+        abstract Builder<T> setName(String name);
+        abstract Builder<T> setValues(T... values);
+        abstract ImmutableList.Builder<T> valuesBuilder();
+        abstract public Attribute<T> build();
+
+        @SafeVarargs
+        public final Builder<T> addValue(T... value) {
+            valuesBuilder().add(value);
+            return this;
+        }
+    }
+
     abstract public Tag getValueTag();
     abstract public String getName();
     abstract public ImmutableList<T> getValues();
-    abstract AttributeEncoder<T> getEncoder();
+    abstract Encoder<T> getEncoder();
 
     /** Return the n'th value in this attribute */
     public T getValue(int n) {
         return getValues().get(n);
     }
-
-    public Attribute<Boolean> asBoolean() { return as(Boolean.class); }
-    public Attribute<Integer> asInteger() { return as(Integer.class); }
-    public Attribute<String> asString() { return as(String.class); }
-    public Attribute<byte[]> asOctetString() { return as(byte[].class); }
 
     @SuppressWarnings("unchecked")
     public Attribute<Map<String, Attribute>> asCollection() {
@@ -107,7 +121,7 @@ public abstract class Attribute<T> {
      * sure of the expected attribute's type.
      */
     @SuppressWarnings("unchecked")
-    public <U> Attribute<U> as(Class<U> cls) {
+    private <U> Attribute<U> as(Class<U> cls) {
         for (ClassEncoder classEncoder : ENCODERS) {
             if (classEncoder.getEncoder().valid(getValueTag())) {
                 if (!classEncoder.getEncodedClass().equals(cls)) {
@@ -118,48 +132,6 @@ public abstract class Attribute<T> {
             }
         }
         throw new IllegalArgumentException("Unknown type " + cls);
-    }
-
-    @AutoValue
-    abstract static class ClassEncoder {
-        public static ClassEncoder create(Class<?> cls, AttributeEncoder<?> encoder) {
-            return new AutoValue_Attribute_ClassEncoder(cls, encoder);
-        }
-        public abstract Class<?> getEncodedClass();
-        public abstract AttributeEncoder<?> getEncoder();
-    }
-
-    private static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
-            ClassEncoder.create(Operation.class, Operation.Encoder),
-            ClassEncoder.create(Integer.class, IntegerEncoder.getInstance()),
-            ClassEncoder.create(String.class, StringEncoder.getInstance()),
-            ClassEncoder.create(URI.class, UriEncoder.getInstance()),
-            ClassEncoder.create(Boolean.class, BooleanEncoder.getInstance()),
-            ClassEncoder.create(Map.class, CollectionEncoder.getInstance()),
-//            // TODO: RangeOfInteger attribute
-//            // TODO: 1setofX
-//            // TODO: resolution
-//            // TODO: dateTime
-//            // TODO: LanguageStringAttribute
-            ClassEncoder.create(byte[].class, OctetEncoder.getInstance()));
-
-
-
-    /** A generic attribute builder. Must be subclassed for specific types of T */
-    @AutoValue.Builder
-    abstract public static class Builder<T> {
-        abstract Builder<T> setEncoder(AttributeEncoder<T> encoder);
-        abstract Builder<T> setValueTag(Tag valueTag);
-        abstract Builder<T> setName(String name);
-        abstract Builder<T> setValues(T... values);
-        abstract ImmutableList.Builder<T> valuesBuilder();
-        abstract public Attribute<T> build();
-
-        @SafeVarargs
-        public final Builder<T> addValue(T... value) {
-            valuesBuilder().add(value);
-            return this;
-        }
     }
 
     /** Write this attribute (including all of its values) to the output stream */
@@ -191,17 +163,4 @@ public abstract class Attribute<T> {
                 (getName().equals("") ? "" : ", n=" + getName()) +
                 ", v=" + getValues() + "}";
     }
-
-    public static <T extends NameCode> AttributeType<T> enumType(AttributeEncoder<T> encoder, Tag tag, String name) {
-        return new AttributeType<>(encoder, tag, name);
-    }
-
-    public static AttributeType<URI> uriType(Tag tag, String name) {
-        return new AttributeType<>(UriEncoder.getInstance(), tag, name);
-    }
-
-    public static AttributeType<String> stringType(Tag tag, String name) {
-        return new AttributeType<>(StringEncoder.getInstance(), tag, name);
-    }
-
 }

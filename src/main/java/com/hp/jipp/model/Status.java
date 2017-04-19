@@ -53,7 +53,6 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             create("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-
     public final static ImmutableSet<Status> All = new ImmutableSet.Builder<Status>().add(
             Ok, ClientErrorBadRequest, ClientErrorBadRequest, ClientErrorForbidden, ClientErrorNotAuthenticated,
             ClientErrorNotAuthorized, ClientErrorNotPossible, ClientErrorTimeout, ClientErrorNotFound, ClientErrorGone,
@@ -70,7 +69,7 @@ public abstract class Status extends NameCode {
     private final static Map<Integer, Status> CodeToStatus = NameCode.toMap(All);
 
     /**
-     * Look up or convert an operation code into an Operation object
+     * Look up or convert an operation code into an Status object
      */
     public static Status toStatus(int code) {
         Status found = CodeToStatus.get(code);

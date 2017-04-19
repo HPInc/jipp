@@ -137,10 +137,8 @@ public class PacketTest {
 
     @Test
     public void writeSingleAttributePacket() throws IOException {
-        Attribute<byte[]> simpleAttribute = Attribute.create(
-                Tag.Charset,
-                "attributes-charset",
-                "US-ASCII".getBytes());
+        Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.Charset, "attributes-charset")
+                .create("US-ASCII".getBytes());
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(simpleAttribute)
                 .build());
@@ -170,23 +168,21 @@ public class PacketTest {
 
     @Test
     public void readSingleAttributePacket() throws IOException {
-        Attribute<String> stringAttribute = Attribute.create(
-                Tag.Charset,
-                "attributes-charset",
-                "US-ASCII");
+        Attribute<String> stringAttribute = new StringType(Tag.Charset, "attributes-charset")
+                .create("US-ASCII");
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.create(Tag.OperationAttributes, stringAttribute));
         packet = cycle(defaultBuilder.setAttributeGroups(group));
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
         assertEquals(Tag.Charset, readAttribute.getValueTag());
-        assertEquals("US-ASCII", readAttribute.asString().getValues().get(0));
+        assertEquals("US-ASCII", readAttribute.getValue(0));
     }
 
     @Test
     public void writeMultiValueAttributePacket() throws IOException {
-        Attribute<String> multiValueAttribute = Attribute.create(
-                Tag.Charset, "attributes-charset", "US-ASCII", "UTF-8");
+        Attribute<String> multiValueAttribute = new StringType(Tag.Charset, "attributes-charset")
+                .create("US-ASCII", "UTF-8");
 
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(multiValueAttribute)
@@ -226,13 +222,13 @@ public class PacketTest {
     public void readMultiValueAttributePacket() throws IOException {
         packet = Packet.create(Operation.GetJobAttributes, 0x1010,
                 AttributeGroup.create(Tag.OperationAttributes,
-                        Attribute.create(Tag.Charset, "attributes-charset", "US-ASCII", "UTF-8")));
+                        new StringType(Tag.Charset, "attributes-charset").create("US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
         assertEquals(packet.getOperation(), Operation.GetJobAttributes);
         assertEquals(packet.getRequestId(), 0x1010);
         assertEquals(packet.getAttributeGroups().get(0).getStartTag(), Tag.OperationAttributes);
-        Attribute<String> attribute = packet.getAttributeGroups().get(0).getAttributes().get(0).asString();
+        Attribute<String> attribute = (Attribute<String>)packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("US-ASCII", attribute.getValues().get(0));
         assertEquals("UTF-8", attribute.getValues().get(1));
     }
