@@ -20,9 +20,9 @@ public class AttributeGroupTest {
     @Test
     public void multiAttribute() throws Exception {
         AttributeGroup group = AttributeGroup.create(Tag.OperationAttributes,
-                Attributes.AttributesCharset.create("utf-8"),
-                Attributes.AttributesNaturalLanguage.create("en"),
-                Attributes.PrinterUri.create(URI.create("ipp://10.0.0.23/ipp/printer")));
+                Attributes.AttributesCharset.of("utf-8"),
+                Attributes.AttributesNaturalLanguage.of("en"),
+                Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer")));
         group = cycle(group);
 
         assertEquals(group.getStartTag(), Tag.OperationAttributes);
@@ -34,14 +34,14 @@ public class AttributeGroupTest {
     @Test
     public void multiMultiAttribute() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
-                Attributes.AttributesCharset.create("utf-8","utf-16")));
+                Attributes.AttributesCharset.of("utf-8","utf-16")));
         assertEquals(ImmutableList.of("utf-8", "utf-16"), group.getValues(Attributes.AttributesCharset));
     }
 
     @Test
     public void missingAttribute() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
-                Attributes.PrinterUri.create(URI.create("ipp://10.0.0.23/ipp/printer"))));
+                Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
         assertEquals(0, group.getValues(Attributes.AttributesNaturalLanguage).size());
     }
 

@@ -28,14 +28,14 @@ public class AttributeTypeTest {
     @Test
     public void naturalLanguage() throws Exception {
         Attribute<String> attribute = cycle(Attributes.AttributesNaturalLanguage,
-                Attributes.AttributesNaturalLanguage.create("en"));
+                Attributes.AttributesNaturalLanguage.of("en"));
         assertEquals(ImmutableList.of("en"), attribute.getValues());
     }
 
     @Test
     public void naturalLanguageFromGroup() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
-                Attributes.AttributesNaturalLanguage.create("en")));
+                Attributes.AttributesNaturalLanguage.of("en")));
 
         Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage).get();
         assertEquals(ImmutableList.of("en"), attribute.getValues());
@@ -51,14 +51,14 @@ public class AttributeTypeTest {
     @Test
     public void ignoreBadNameNaturalLanguage() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
-                new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").create("en")));
+                new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").of("en")));
         assertFalse(group.get(Attributes.AttributesNaturalLanguage).isPresent());
     }
 
     @Test
     public void enumAttributeType() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.PrinterAttributes,
-                Attributes.OperationsSupported.create(Operation.CancelJob, Operation.CreateJob)));
+                Attributes.OperationsSupported.of(Operation.CancelJob, Operation.CreateJob)));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).get().getValues());
     }

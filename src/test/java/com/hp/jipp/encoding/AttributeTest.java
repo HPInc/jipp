@@ -7,12 +7,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
@@ -20,7 +18,7 @@ public class AttributeTest {
     @Test
     public void octetString() throws IOException {
         AttributeType<byte[]> octetStringType = new OctetStringType(Tag.OctetString, "name");
-        Attribute<byte[]> attribute = octetStringType.create("value".getBytes());
+        Attribute<byte[]> attribute = octetStringType.of("value".getBytes());
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -39,7 +37,7 @@ public class AttributeTest {
     @Test
     public void multiOctetString() throws IOException {
         AttributeType<byte[]> stringType = new OctetStringType(Tag.NameWithoutLanguage, "name");
-        Attribute<byte[]> attribute = stringType.create("value".getBytes(), "value2".getBytes());
+        Attribute<byte[]> attribute = stringType.of("value".getBytes(), "value2".getBytes());
         assertArrayEquals("value".getBytes(), attribute.getValue(0));
         assertArrayEquals("value2".getBytes(), attribute.getValue(1));
     }
@@ -48,14 +46,14 @@ public class AttributeTest {
     @Test
     public void multiBoolean() throws IOException {
         AttributeType<Boolean> booleanType = new BooleanType(Tag.BooleanValue, "name");
-        Attribute<Boolean> attribute = cycle(booleanType.create(true, false));
+        Attribute<Boolean> attribute = cycle(booleanType.of(true, false));
         assertEquals(ImmutableList.of(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
         AttributeType<Integer> integerType = new IntegerType(Tag.IntegerValue, "name");
-        Attribute<Integer> attribute = cycle(integerType.create(-50505, 50505));
+        Attribute<Integer> attribute = cycle(integerType.of(-50505, 50505));
         assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
     }
 
@@ -91,46 +89,50 @@ public class AttributeTest {
         //     }
         //  }
 
-        IntegerType namelessInt = new IntegerType(Tag.IntegerValue, "");
-        StringType keywordType = new StringType(Tag.Keyword, "");
+        CollectionType mediaColType = new CollectionType("media-col");
+        CollectionType mediaSizeType = new CollectionType("media-size");
+        StringType colorType = new StringType(Tag.Keyword, "media-color");
+        IntegerType xDimensionType = new IntegerType(Tag.IntegerValue, "x-dimension");
+        IntegerType yDimensionType = new IntegerType(Tag.IntegerValue, "y-dimension");
 
-        // Hideously ugly but accurate attribute construction
-        Attribute<Map<String, Attribute<?>>> mediaCol = Attribute.create("media-col",
-                ImmutableMap.<String, Attribute<?>>builder()
-                        .put("media-color", keywordType.create("blue"))
-                        .put("media-size", Attribute.create(
-                                ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", namelessInt.create(6))
-                                        .put("y-dimension", namelessInt.create(4))
-                                        .build(),
-                                ImmutableMap.<String, Attribute<?>>builder()
-                                        .put("x-dimension", namelessInt.create(12))
-                                        .put("y-dimension", namelessInt.create(5))
-                                        .build()))
-                        .build());
+        // Not so ugly
+//        Attribute<List<Attribute<?>>> mediaCol = mediaColType.create(
+//                CollectionType.listOf(
+//                        colorType.create("blue"),
+//                        mediaSizeType.create(
+//                                CollectionType.listOf(
+//                                        xDimensionType.create(6),
+//                                        yDimensionType.create(4)),
+//                                CollectionType.listOf(
+//                                        xDimensionType.create(12),
+//                                        yDimensionType.create(5))
+//                )));
+//
+        Attribute<AttributeCollection> mediaCol = mediaColType.of(
+                AttributeCollection.of(
+                        colorType.of("blue"),
+                        mediaSizeType.of(
+                                AttributeCollection.of(
+                                        xDimensionType.of(6),
+                                        yDimensionType.of(4)),
+                                AttributeCollection.of(
+                                        xDimensionType.of(12),
+                                        yDimensionType.of(5))
+
+                )));
 
         mediaCol = cycle(mediaCol);
 
         assertEquals("media-col", mediaCol.getName());
-        assertEquals("blue", mediaCol.getValues().get(0).get("media-color").getValues().get(0));
-        assertEquals(6, mediaCol.getValue(0).get("media-size").asCollection()
-                .getValue(0).get("x-dimension").getValue(0));
+        assertEquals("blue", mediaCol.getValues().get(0).values(colorType).get(0));
+        assertEquals(Integer.valueOf(12),
+                mediaCol.getValues().get(0)
+                        .values(mediaSizeType).get(1)
+                        .values(xDimensionType).get(0));
+
         System.out.println("mediaCol: " + mediaCol);
     }
 
-//    @Test
-//    public void simpleCollection() throws IOException {
-//        Map<String, ?> map = ImmutableMap.of(
-//                "media-color", TagValue(Tag.Keyword, "blue"),
-//                "media-size", ImmutableList.of(
-//                        ImmutableMap.of(
-//                                "x-dimension", 6,
-//                                "y-dimension", 4),
-//                        ImmutableMap.of(
-//                                "x-dimension", 12,
-//                                "y-dimension", 5)));
-//
-//    }
 
     @SuppressWarnings("unchecked")
     private <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {

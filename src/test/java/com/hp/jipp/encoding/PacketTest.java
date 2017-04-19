@@ -138,7 +138,7 @@ public class PacketTest {
     @Test
     public void writeSingleAttributePacket() throws IOException {
         Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.Charset, "attributes-charset")
-                .create("US-ASCII".getBytes());
+                .of("US-ASCII".getBytes());
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(simpleAttribute)
                 .build());
@@ -169,7 +169,7 @@ public class PacketTest {
     @Test
     public void readSingleAttributePacket() throws IOException {
         Attribute<String> stringAttribute = new StringType(Tag.Charset, "attributes-charset")
-                .create("US-ASCII");
+                .of("US-ASCII");
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.create(Tag.OperationAttributes, stringAttribute));
         packet = cycle(defaultBuilder.setAttributeGroups(group));
@@ -182,7 +182,7 @@ public class PacketTest {
     @Test
     public void writeMultiValueAttributePacket() throws IOException {
         Attribute<String> multiValueAttribute = new StringType(Tag.Charset, "attributes-charset")
-                .create("US-ASCII", "UTF-8");
+                .of("US-ASCII", "UTF-8");
 
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(multiValueAttribute)
@@ -222,7 +222,7 @@ public class PacketTest {
     public void readMultiValueAttributePacket() throws IOException {
         packet = Packet.create(Operation.GetJobAttributes, 0x1010,
                 AttributeGroup.create(Tag.OperationAttributes,
-                        new StringType(Tag.Charset, "attributes-charset").create("US-ASCII", "UTF-8")));
+                        new StringType(Tag.Charset, "attributes-charset").of("US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
         assertEquals(packet.getOperation(), Operation.GetJobAttributes);

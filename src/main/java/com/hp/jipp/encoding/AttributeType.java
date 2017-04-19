@@ -1,6 +1,10 @@
 package com.hp.jipp.encoding;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.Hook;
+
+import java.util.List;
 
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
@@ -20,8 +24,9 @@ public class AttributeType<T> {
         this.name = name;
     }
 
+    /** Create an attribute of this attribute type with supplied values */
     @SafeVarargs
-    public final Attribute<T> create(T... values) {
+    public final Attribute<T> of(T... values) {
         return getEncoder().builder(getTag()).setValues(values).setName(getName()).build();
     }
 
@@ -37,7 +42,8 @@ public class AttributeType<T> {
         return name;
     }
 
+    /** Return true if the attribute has a matching encoder */
     public boolean isValid(Attribute<?> attribute) {
-        return attribute.getEncoder() == getEncoder();
+        return attribute.getEncoder().equals(getEncoder());
     }
 }

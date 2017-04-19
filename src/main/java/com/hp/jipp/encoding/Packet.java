@@ -2,9 +2,7 @@ package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 

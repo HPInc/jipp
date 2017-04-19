@@ -43,8 +43,10 @@ public abstract class Encoder<T> {
     /** Read an attribute and its values from the data stream */
     public Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
         Attribute.Builder<T> builder = builder(valueTag)
-                .setName(new String(readValueBytes(in)))
-                .addValue(readValue(in, valueTag));
+                .setName(new String(readValueBytes(in)));
+
+        // Read first value...there always has to be one, right?
+        builder.addValue(readValue(in, valueTag));
 
         Optional<T> value;
         while ((value = readAdditionalValue(in, valueTag)).isPresent()) {
@@ -87,4 +89,5 @@ public abstract class Encoder<T> {
         int valueLength = in.readShort();
         if (valueLength != in.skip(valueLength)) throw new IOException("Value too short");
     }
+
 }

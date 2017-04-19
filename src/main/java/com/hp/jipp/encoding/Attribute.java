@@ -27,24 +27,6 @@ public abstract class Attribute<T> {
     }
 
     /**
-     * Create a named collection attribute (only used at the top of the attribute tree)
-     */
-    public static Attribute<Map<String, Attribute<?>>> create(String name,
-            Map<String, Attribute<?>>... values) {
-        return CollectionEncoder.getInstance().builder(Tag.BeginCollection).setName(name)
-                .setValues(values).build();
-    }
-
-    /**
-     * Create a nameless collection attribute (only used when nesting inside a top-level named
-     * attribute)
-     */
-    public static Attribute<Map<String, Attribute<?>>> create(Map<String, Attribute<?>>... values) {
-        return CollectionEncoder.getInstance().builder(Tag.BeginCollection).setName("")
-                .setValues(values).build();
-    }
-
-    /**
      * Read an attribute from an input stream, based on its tag
      */
     public static Attribute<?> read(DataInputStream in, Tag valueTag) throws IOException {
@@ -72,7 +54,7 @@ public abstract class Attribute<T> {
             ClassEncoder.create(String.class, StringType.ENCODER),
             ClassEncoder.create(URI.class, UriType.ENCODER),
             ClassEncoder.create(Boolean.class, BooleanType.ENCODER),
-            ClassEncoder.create(Map.class, CollectionEncoder.getInstance()),
+            ClassEncoder.create(Map.class, CollectionType.ENCODER),
 //            // TODO: RangeOfInteger attribute
 //            // TODO: 1setofX
 //            // TODO: resolution
@@ -104,34 +86,18 @@ public abstract class Attribute<T> {
     abstract public ImmutableList<T> getValues();
     abstract Encoder<T> getEncoder();
 
+    /** Return a copy of this attribute with a different name */
+    Attribute<T> withName(String newName) {
+        Attribute.Builder<T> builder = Attribute.builder(getEncoder(), getValueTag()).setName(newName);
+        for (T value : getValues()) {
+            builder.addValue(value);
+        }
+        return builder.build();
+    }
+
     /** Return the n'th value in this attribute */
     public T getValue(int n) {
         return getValues().get(n);
-    }
-
-    @SuppressWarnings("unchecked")
-    public Attribute<Map<String, Attribute>> asCollection() {
-        // Special because Map<>.class doesn't work
-        as(Map.class);
-        return (Attribute<Map<String, Attribute>>)this;
-    }
-
-    /**
-     * Cast this attribute to one of the specified value type. Only do this if you are
-     * sure of the expected attribute's type.
-     */
-    @SuppressWarnings("unchecked")
-    private <U> Attribute<U> as(Class<U> cls) {
-        for (ClassEncoder classEncoder : ENCODERS) {
-            if (classEncoder.getEncoder().valid(getValueTag())) {
-                if (!classEncoder.getEncodedClass().equals(cls)) {
-                    throw new IllegalArgumentException("Attribute<" +
-                            classEncoder.getEncodedClass() + "> does not enclose " + cls);
-                }
-                return (Attribute<U>) this;
-            }
-        }
-        throw new IllegalArgumentException("Unknown type " + cls);
     }
 
     /** Write this attribute (including all of its values) to the output stream */

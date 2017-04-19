@@ -9,7 +9,7 @@ import com.hp.jipp.encoding.UriType;
 import java.net.URI;
 
 /** A library of attribute types as defined by RFC2911 */
-public class Attributes {
+public final class Attributes {
 
     public static final AttributeType<String> AttributesNaturalLanguage =
             new StringType(Tag.NaturalLanguage, "attributes-natural-language");

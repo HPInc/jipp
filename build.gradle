@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+        // TODO: Consider: classpath "net.sf.proguard:proguard:4.3"
     }
 }
 
