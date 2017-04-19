@@ -13,6 +13,7 @@ import java.net.URI;
 
 import static org.junit.Assert.*;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Attributes;
 
@@ -56,6 +57,30 @@ public class AttributeGroupTest {
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesCharset.of("utf-8"));
     }
+
+    @Test
+    public void stringFromLang() throws Exception {
+        LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
+        AttributeGroup group = cycle(AttributeGroup.create(Tag.JobAttributes,
+                jobNameLang.of(LangString.of("my job", "fr"))));
+
+        // If I don't care about the language encoding:
+        StringType jobName = new StringType(Tag.NameWithoutLanguage, "job-name");
+        assertEquals("my job", group.getValues(jobName).get(0));
+    }
+
+    @Test
+    public void langFromString() throws Exception {
+        StringType jobName = new StringType(Tag.NameWithoutLanguage, "job-name");
+        AttributeGroup group = cycle(AttributeGroup.create(Tag.JobAttributes,
+                jobName.of("my job")));
+
+        // If I don't care about the language encoding:
+        LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
+        assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
+        assertEquals(Optional.absent(),group.getValues(jobNameLang).get(0).getLang());
+    }
+
 
     private AttributeGroup cycle(AttributeGroup group) throws IOException {
         return AttributeGroup.read(new DataInputStream(new ByteArrayInputStream(toBytes(group))));

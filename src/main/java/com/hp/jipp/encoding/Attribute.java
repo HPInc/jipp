@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -55,6 +56,7 @@ public abstract class Attribute<T> {
             ClassEncoder.create(URI.class, UriType.ENCODER),
             ClassEncoder.create(Boolean.class, BooleanType.ENCODER),
             ClassEncoder.create(Map.class, CollectionType.ENCODER),
+            ClassEncoder.create(LangString.class, LangStringType.ENCODER),
 //            // TODO: RangeOfInteger attribute
 //            // TODO: 1setofX
 //            // TODO: resolution
@@ -71,6 +73,7 @@ public abstract class Attribute<T> {
         abstract Builder<T> setValueTag(Tag valueTag);
         abstract Builder<T> setName(String name);
         abstract Builder<T> setValues(T... values);
+        abstract Builder<T> setValues(Collection<T> values);
         abstract ImmutableList.Builder<T> valuesBuilder();
         abstract public Attribute<T> build();
 
@@ -86,18 +89,14 @@ public abstract class Attribute<T> {
     abstract public ImmutableList<T> getValues();
     abstract Encoder<T> getEncoder();
 
-    /** Return a copy of this attribute with a different name */
-    Attribute<T> withName(String newName) {
-        Attribute.Builder<T> builder = Attribute.builder(getEncoder(), getValueTag()).setName(newName);
-        for (T value : getValues()) {
-            builder.addValue(value);
-        }
-        return builder.build();
-    }
-
-    /** Return the n'th value in this attribute */
+    /** Return the n'th value in this attribute, assuming it is present */
     public T getValue(int n) {
         return getValues().get(n);
+    }
+
+    /** Return a copy of this attribute with a different name */
+    Attribute<T> withName(String newName) {
+        return Attribute.builder(getEncoder(), getValueTag()).setName(newName).setValues(getValues()).build();
     }
 
     /** Write this attribute (including all of its values) to the output stream */

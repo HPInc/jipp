@@ -20,6 +20,7 @@ public class OctetStringType extends AttributeType<byte[]> {
 
         @Override
         boolean valid(Tag valueTag) {
+            // OctetString is a fallback for all types we don't otherwise understand
             return true;
         }
     };

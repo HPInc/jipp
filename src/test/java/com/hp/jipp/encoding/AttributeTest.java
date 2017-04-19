@@ -47,7 +47,6 @@ public class AttributeTest {
         assertArrayEquals("value2".getBytes(), attribute.getValue(1));
     }
 
-
     @Test
     public void multiBoolean() throws IOException {
         AttributeType<Boolean> booleanType = new BooleanType(Tag.BooleanValue, "name");
@@ -136,6 +135,15 @@ public class AttributeTest {
         exception.expect(BuildError.class);
         // String is not Integer; should throw.
         new StringType(Tag.IntegerValue, "something");
+    }
+
+    @Test
+    public void languageStrings() throws Exception {
+        LangStringType nameType = new LangStringType(Tag.NameWithLanguage, "job-name");
+        Attribute<LangString> name = cycle(nameType.of(LangString.of("my job", "fr")));
+        System.out.println("name: " + name);
+        assertEquals("my job", name.getValue(0).getString());
+        assertEquals("fr", name.getValue(0).getLang().get());
     }
 
     @SuppressWarnings("unchecked")

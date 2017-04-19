@@ -15,41 +15,41 @@ import java.io.IOException;
 @AutoValue
 public abstract class Tag {
     // Delimiter tags
-    public static final Tag OperationAttributes = create("operation-attributes", (byte)0x01);
-    public static final Tag JobAttributes = create("job-attributes", (byte)0x02);
-    public static final Tag EndOfAttributes = create("end-of-attributes", (byte)0x03);
-    public static final Tag PrinterAttributes = create("printer-attributes", (byte)0x04);
-    public static final Tag UnsupportedAttributes = create("unsupported-attributes", (byte)0x05);
+    public static final Tag OperationAttributes = create("operation-attributes", 0x01);
+    public static final Tag JobAttributes = create("job-attributes", 0x02);
+    public static final Tag EndOfAttributes = create("end-of-attributes", 0x03);
+    public static final Tag PrinterAttributes = create("printer-attributes", 0x04);
+    public static final Tag UnsupportedAttributes = create("unsupported-attributes", 0x05);
 
-    public static final Tag Unsupported = create("unsupported", (byte)0x10);
-    public static final Tag Unknown = create("unknown", (byte)0x12);
-    public static final Tag NoValue = create("no-value", (byte)0x13);
+    public static final Tag Unsupported = create("unsupported", 0x10);
+    public static final Tag Unknown = create("unknown", 0x12);
+    public static final Tag NoValue = create("no-value", 0x13);
 
     // Integer values
-    public static final Tag IntegerValue = create("integer", (byte)0x21);
-    public static final Tag BooleanValue = create("boolean", (byte)0x22);
-    public static final Tag EnumValue = create("enum", (byte)0x23);
+    public static final Tag IntegerValue = create("integer", 0x21);
+    public static final Tag BooleanValue = create("boolean", 0x22);
+    public static final Tag EnumValue = create("enum", 0x23);
 
     // Octet-string values
-    public static final Tag OctetString = create("octetString", (byte)0x30);
-    public static final Tag DateTime = create("dateTime", (byte)0x31);
-    public static final Tag Resolution = create("resolution", (byte)0x32);
-    public static final Tag RangeOfInteger = create("rangeOfInteger", (byte)0x33);
-    public static final Tag BeginCollection = create("begCollection", (byte)0x34);
-    public static final Tag TextWithLanguage = create("textWithLanguage", (byte)0x35);
-    public static final Tag NameWithLanguage = create("nameWithLanguage", (byte)0x36);
-    public static final Tag EndCollection = create("endCollection", (byte)0x37);
+    public static final Tag OctetString = create("octetString", 0x30);
+    public static final Tag DateTime = create("dateTime", 0x31);
+    public static final Tag Resolution = create("resolution", 0x32);
+    public static final Tag RangeOfInteger = create("rangeOfInteger", 0x33);
+    public static final Tag BeginCollection = create("begCollection", 0x34);
+    public static final Tag TextWithLanguage = create("textWithLanguage", 0x35);
+    public static final Tag NameWithLanguage = create("nameWithLanguage", 0x36);
+    public static final Tag EndCollection = create("endCollection", 0x37);
 
     // Character-string values
-    public static final Tag TextWithoutLanguage = create("textWithoutLanguage", (byte)0x41);
-    public static final Tag NameWithoutLanguage = create("nameWithoutLanguage", (byte)0x42);
-    public static final Tag Keyword = create("keyword", (byte)0x44);
-    public static final Tag Uri = create("uri", (byte)0x45);
-    public static final Tag UriScheme = create("uriScheme", (byte)0x46);
-    public static final Tag Charset = create("charset", (byte)0x47);
-    public static final Tag NaturalLanguage = create("naturalLanguage", (byte)0x48);
-    public static final Tag MimeMediaType = create("mimeMediaType", (byte)0x49);
-    public static final Tag MemberAttributeName = create("memberAttrName", (byte)0x4A);
+    public static final Tag TextWithoutLanguage = create("textWithoutLanguage", 0x41);
+    public static final Tag NameWithoutLanguage = create("nameWithoutLanguage", 0x42);
+    public static final Tag Keyword = create("keyword", 0x44);
+    public static final Tag Uri = create("uri", 0x45);
+    public static final Tag UriScheme = create("uriScheme", 0x46);
+    public static final Tag Charset = create("charset", 0x47);
+    public static final Tag NaturalLanguage = create("naturalLanguage", 0x48);
+    public static final Tag MimeMediaType = create("mimeMediaType", 0x49);
+    public static final Tag MemberAttributeName = create("memberAttrName", 0x4A);
 
     public final static ImmutableSet<Tag> All = new ImmutableSet.Builder<Tag>().add(
             OperationAttributes, JobAttributes, EndOfAttributes, PrinterAttributes,
@@ -60,9 +60,9 @@ public abstract class Tag {
             MimeMediaType, MemberAttributeName
     ).build();
 
-    private final static ImmutableMap<Byte, Tag> CODE_TO_TAG;
+    private final static ImmutableMap<Integer, Tag> CODE_TO_TAG;
     static {
-        ImmutableMap.Builder<Byte, Tag> builder = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<Integer, Tag> builder = new ImmutableMap.Builder<>();
         for (Tag op : All) {
             builder.put(op.getValue(), op);
         }
@@ -75,10 +75,10 @@ public abstract class Tag {
      *
      * Known tags can be tested for equality with ==.
      */
-    public static Tag toTag(byte value) {
+    public static Tag toTag(int value) {
         Optional<Tag> tag = Optional.fromNullable(CODE_TO_TAG.get(value));
         if (tag.isPresent()) return tag.get();
-        return create("UNKNOWN(x" + Integer.toHexString((int)value) + ")", value);
+        return create("UNKNOWN(x" + Integer.toHexString(value) + ")", value);
     }
 
     /** Read and return a tag from the input stream */
@@ -88,20 +88,20 @@ public abstract class Tag {
 
     /** Write this tag to the output stream */
     public void write(DataOutputStream out) throws IOException {
-        out.writeByte(getValue());
+        out.writeByte((byte)getValue());
     }
 
     /**
      * Returns a new instance
-     * @param name human-readable name of the the operation
-     * @param value machine-readable identifier for the operation
+     * @param name human-readable name
+     * @param value machine-readable identifier
      */
-    public static Tag create(String name, byte value) {
+    public static Tag create(String name, int value) {
         return new AutoValue_Tag(name, value);
     }
 
     abstract public String getName();
-    abstract public byte getValue();
+    abstract public int getValue();
 
     /** Return true if this tag is a delimiter tag */
     public boolean isDelimiter() {

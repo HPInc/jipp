@@ -1,9 +1,11 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.Hook;
@@ -11,6 +13,7 @@ import com.hp.jipp.Hook;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -58,11 +61,14 @@ abstract public class AttributeGroup {
 
     /** Return a attribute from this group. */
     public <T> Optional<Attribute<T>> get(AttributeType<T> attributeType) {
+
+        if (!getMap().containsKey(attributeType.getName())) return Optional.absent();
+
         Attribute<?> attribute = getMap().get(attributeType.getName());
-        if (attribute != null && attributeType.isValid(attribute)) {
+        if (attributeType.isValid(attribute)) {
             return Optional.of((Attribute<T>) attribute);
         } else {
-            return Optional.absent();
+            return attributeType.adopt(attribute);
         }
     }
 
