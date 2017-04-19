@@ -1,6 +1,6 @@
 test:
   override:
+    ./gradlew check jar
     cp -r ./build/docs $CIRCLE_ARTIFACTS/javadoc
     cp -r ./build/reports $CIRCLE_ARTIFACTS/reports
     cp build/libs/lib.jar $CIRCLE_ARTIFACTS/lib.jar
-
