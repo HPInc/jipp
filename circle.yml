@@ -1,0 +1,9 @@
+machine:
+  java:
+    version: openjdk8
+test:
+  override:
+    - ./gradlew check javadoc jar
+  post:
+    - cp -r ./build/docs $CIRCLE_ARTIFACTS/javadoc
+    - cp -r ./build/reports $CIRCLE_ARTIFACTS/reports
