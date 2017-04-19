@@ -14,18 +14,34 @@ public final class Attributes {
     // RFC2911 3.1.4.1 Request Operation Attributes
     // RFC2911 3.1.4.2 Response Operation Attributes
 
-    public static final AttributeType<String> AttributesCharset =
+    public static final StringType AttributesCharset =
             new StringType(Tag.Charset, "attributes-charset");
 
-    public static final AttributeType<String> AttributesNaturalLanguage =
+    public static final StringType AttributesNaturalLanguage =
             new StringType(Tag.NaturalLanguage, "attributes-natural-language");
 
     // RFC2911 3.1.6 Operation Response Status Codes and Status Messages
-    // Actually this is NOT a string but a LangString or something
-//    public static final AttributeType<String> StatusMessage =
-//            new StringType(Tag.TextWithLanguage, "status-message");
+    public static final StringType StatusMessage =
+            new StringType(Tag.TextWithoutLanguage, "status-message");
 
-    public static final AttributeType<URI> PrinterUri =
+    public static final StringType DetailedStatusMessage =
+            new StringType(Tag.TextWithoutLanguage, "detailed-status-message");
+
+    public static final StringType DocumentAccessError =
+            new StringType(Tag.TextWithoutLanguage, "document-access-error");
+
+
+
+    public static final StringType RequestingUserName =
+            new StringType(Tag.TextWithoutLanguage, "requesting-user-name");
+
+    public static final StringType JobName =
+            new StringType(Tag.TextWithoutLanguage, "job-name");
+
+    public static final StringType DocumentName =
+            new StringType(Tag.TextWithoutLanguage, "document-name");
+
+    public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
 
     public static final AttributeType<Operation> OperationsSupported =

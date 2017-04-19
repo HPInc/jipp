@@ -9,7 +9,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-/** An attribute bearing a string for which language is irrelevant */
+/**
+ * An attribute bearing a string for which language is irrelevant.
+ *
+ * Some string types have a length-limit.
+ */
 public class StringType extends AttributeType<String> {
 
     static final Encoder<String> ENCODER = new Encoder<String>() {

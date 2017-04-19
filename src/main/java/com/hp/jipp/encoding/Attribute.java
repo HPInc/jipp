@@ -59,14 +59,11 @@ public abstract class Attribute<T> {
             ClassEncoder.create(Boolean.class, BooleanType.ENCODER),
             ClassEncoder.create(Map.class, CollectionType.ENCODER),
             ClassEncoder.create(LangString.class, LangStringType.ENCODER),
-//            // TODO: RangeOfInteger attribute
-//            // TODO: 1setofX
-//            // TODO: resolution
-//            // TODO: dateTime
-//            // TODO: LanguageStringAttribute
+            // TODO: RangeOfInteger attribute
+            // TODO: 1setofX
+            // TODO: resolution
+            // TODO: dateTime
             ClassEncoder.create(byte[].class, OctetStringType.ENCODER));
-
-
 
     /** A generic attribute builder. Must be subclassed for specific types of T */
     @AutoValue.Builder
