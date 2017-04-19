@@ -1,3 +1,6 @@
+machine:
+  java:
+    version: openjdk7
 test:
   override:
     ./gradlew check jar
