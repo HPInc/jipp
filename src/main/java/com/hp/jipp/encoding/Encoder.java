@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.Hook;
 import com.hp.jipp.Util;
 
@@ -47,12 +48,14 @@ public abstract class Encoder<T> {
                 .setName(new String(readValueBytes(in), Util.UTF8));
 
         // Read first value...there always has to be one, right?
-        builder.addValue(readValue(in, valueTag));
+        ImmutableList.Builder<T> valueBuilder = new ImmutableList.Builder<>();
+        valueBuilder.add(readValue(in, valueTag));
 
         Optional<T> value;
         while ((value = readAdditionalValue(in, valueTag)).isPresent()) {
-            builder.addValue(value.get());
+            valueBuilder.add(value.get());
         }
+        builder.setValues(valueBuilder.build());
         return builder.build();
     }
 

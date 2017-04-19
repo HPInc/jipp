@@ -4,11 +4,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.Assert.*;
@@ -17,8 +12,11 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Attributes;
 
+import static com.hp.jipp.Cycler.*;
+
 
 public class AttributeGroupTest {
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -79,18 +77,5 @@ public class AttributeGroupTest {
         LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
         assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
         assertEquals(Optional.absent(),group.getValues(jobNameLang).get(0).getLang());
-    }
-
-
-    private AttributeGroup cycle(AttributeGroup group) throws IOException {
-        return AttributeGroup.read(new DataInputStream(new ByteArrayInputStream(toBytes(group))));
-    }
-
-    private byte[] toBytes(AttributeGroup group) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(bytesOut);
-        group.write(out);
-        Tag.EndOfAttributes.write(out);
-        return bytesOut.toByteArray();
     }
 }

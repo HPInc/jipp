@@ -16,17 +16,17 @@ import com.hp.jipp.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
+import static com.hp.jipp.Cycler.*;
+
 public class PacketTest {
     private Packet packet;
     private Packet defaultPacket = Packet.builder().setVersionNumber(0x102)
             .setOperation(Operation.HoldJob).setRequestId(0x50607).build();
     private Packet.Builder defaultBuilder = Packet.builder(defaultPacket);
-    private ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-    private DataOutputStream out = new DataOutputStream(outBytes);
+
 
     @Test
     public void writeEmptyPacket() throws IOException {
-        defaultPacket.write(out);
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
@@ -37,7 +37,7 @@ public class PacketTest {
                 (byte) 0x06,
                 (byte) 0x07,
                 (byte) 0x03,
-        }, outBytes.toByteArray());
+        }, toBytes(defaultPacket));
     }
 
     @Test
@@ -53,7 +53,6 @@ public class PacketTest {
         packet = Packet.builder(defaultPacket)
                 .setData(new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 0xFD})
                 .build();
-        packet.write(out);
         assertArrayEquals(new byte[]{
                 (byte) 0x01,
                 (byte) 0x02,
@@ -67,7 +66,7 @@ public class PacketTest {
                 (byte) 0xFF,
                 (byte) 0xFE,
                 (byte) 0xFD,
-        }, outBytes.toByteArray());
+        }, toBytes(packet));
     }
 
     @Test
@@ -77,28 +76,12 @@ public class PacketTest {
         assertArrayEquals(data, packet.getData());
     }
 
-    @Test
-    public void writeEmptyAttributeGroupPacket() throws IOException {
-        defaultPacket.write(out);
-        assertArrayEquals(new byte[] {
-                (byte) 0x01,
-                (byte) 0x02,
-                (byte) 0x00,
-                (byte) 0x0C,
-                (byte) 0x00,
-                (byte) 0x05,
-                (byte) 0x06,
-                (byte) 0x07,
-                (byte) 0x03,
-        }, outBytes.toByteArray());
-    }
 
     @Test
     public void writeSingleEmptyAttributeGroupPacket() throws IOException {
         List<AttributeGroup> emptyGroup = new ArrayList<>();
         emptyGroup.add(AttributeGroup.builder(Tag.OperationAttributes).build());
         packet = Packet.builder(defaultPacket).setAttributeGroups(emptyGroup).build();
-        packet.write(out);
         assertArrayEquals(new byte[]{
                 (byte) 0x01,
                 (byte) 0x02,
@@ -110,7 +93,7 @@ public class PacketTest {
                 (byte) 0x07,
                 (byte) 0x01,
                 (byte) 0x03,
-        }, outBytes.toByteArray());
+        }, toBytes(packet));
     }
 
     @Test
@@ -145,7 +128,6 @@ public class PacketTest {
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(simpleAttribute)
                 .build());
         packet = defaultBuilder.setAttributeGroups(group).build();
-        packet.write(out);
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
@@ -165,7 +147,7 @@ public class PacketTest {
                 (byte) 0x08,
                 'U', 'S', '-', 'A', 'S', 'C', 'I', 'I',
                 (byte) 0x03,
-        }, outBytes.toByteArray());
+        }, toBytes(packet));
     }
 
     @Test
@@ -190,7 +172,6 @@ public class PacketTest {
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(multiValueAttribute)
                 .build());
         packet = defaultBuilder.setAttributeGroups(group).build();
-        packet.write(out);
         assertArrayEquals(new byte[] {
                 (byte) 0x01,
                 (byte) 0x02,
@@ -216,7 +197,7 @@ public class PacketTest {
                 (byte) 0x05,
                 'U', 'T', 'F', '-', '8',
                 (byte) 0x03,
-        }, outBytes.toByteArray());
+        }, toBytes(packet));
         System.out.println(packet.toString());
     }
 
@@ -233,15 +214,5 @@ public class PacketTest {
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();
         assertEquals("US-ASCII", attribute.getValues().get(0));
         assertEquals("UTF-8", attribute.getValues().get(1));
-    }
-
-    // Write it, read it, return it.
-    private Packet cycle(Packet in) throws IOException {
-        in.write(out);
-        return Packet.read(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())));
-    }
-
-    private Packet cycle(Packet.Builder in) throws IOException {
-        return cycle(in.build());
     }
 }

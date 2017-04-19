@@ -2,12 +2,14 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.hp.jipp.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 public class LangStringType extends AttributeType<LangString> {
 
@@ -44,7 +46,6 @@ public class LangStringType extends AttributeType<LangString> {
             return Optional.absent();
         }
         // Apply conversion from LangStringType to a StringType on demand
-        return Optional.of(of(Collections2.transform((Collection<String>) attribute.getValues(),
-                LangString.FromStringFunc)));
+        return Optional.of(of(Lists.transform((List<String>) attribute.getValues(), LangString.FromStringFunc)));
     }
 }

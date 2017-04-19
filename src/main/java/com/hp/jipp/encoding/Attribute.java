@@ -4,13 +4,14 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.Hook;
 import com.hp.jipp.Util;
-import com.hp.jipp.model.Operation;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +53,7 @@ public abstract class Attribute<T> {
 
     /** Encoders available to parse incoming data */
     private static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
-            ClassEncoder.create(Operation.class, Operation.Encoder),
+//            ClassEncoder.create(Operation.class, Operation.ENCODER), // no no no we need enumtype I think
             ClassEncoder.create(Integer.class, IntegerType.ENCODER),
             ClassEncoder.create(String.class, StringType.ENCODER),
             ClassEncoder.create(URI.class, UriType.ENCODER),
@@ -71,22 +72,18 @@ public abstract class Attribute<T> {
         abstract Builder<T> setEncoder(Encoder<T> encoder);
         abstract Builder<T> setValueTag(Tag valueTag);
         abstract Builder<T> setName(String name);
+        abstract Builder<T> setValues(List<T> values);
         @SuppressWarnings("unchecked")
-        abstract Builder<T> setValues(T... values);
-        abstract Builder<T> setValues(Collection<T> values);
-        abstract ImmutableList.Builder<T> valuesBuilder();
-        abstract public Attribute<T> build();
-
-        @SafeVarargs
-        public final Builder<T> addValue(T... value) {
-            valuesBuilder().add(value);
+        public Builder<T> setValues(T... values) {
+            setValues(Arrays.asList(values));
             return this;
         }
+        abstract public Attribute<T> build();
     }
 
     abstract public Tag getValueTag();
     abstract public String getName();
-    abstract public ImmutableList<T> getValues();
+    abstract public List<T> getValues();
     abstract Encoder<T> getEncoder();
 
     /** Return the n'th value in this attribute, assuming it is present */

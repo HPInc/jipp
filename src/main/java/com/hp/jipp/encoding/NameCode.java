@@ -3,11 +3,10 @@ package com.hp.jipp.encoding;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
- * An object holding a human-readable name and a corresponding machine-readable integer code.
+ * A machine-readable integer code paired with a human-readable name.
  */
 public abstract class NameCode {
     public abstract String getName();

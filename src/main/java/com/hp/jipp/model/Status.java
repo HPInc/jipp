@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 import com.hp.jipp.encoding.NameCode;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -53,7 +54,7 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             create("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-    public final static ImmutableSet<Status> All = new ImmutableSet.Builder<Status>().add(
+    final static Collection<Status> All = ImmutableSet.of(
             Ok, ClientErrorBadRequest, ClientErrorBadRequest, ClientErrorForbidden, ClientErrorNotAuthenticated,
             ClientErrorNotAuthorized, ClientErrorNotPossible, ClientErrorTimeout, ClientErrorNotFound, ClientErrorGone,
             ClientErrorRequestEntityTooLarge, ClientErrorRequestValueTooLong, ClientErrorDocumentFormatNotSupported,
@@ -64,7 +65,7 @@ public abstract class Status extends NameCode {
             ServerErrorVersionNotSupported, ServerErrorDeviceError, ServerErrorTemporaryError,
             ServerErrorNotAcceptingJobs, ServerErrorBusy, ServerErrorJobCanceled,
             ServerErrorMultipleDocumentJobsNotSupported
-    ).build();
+    );
 
     private final static Map<Integer, Status> CodeToStatus = NameCode.toMap(All);
 

@@ -4,17 +4,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.Cycler;
 import com.hp.jipp.Util;
+import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
+
+import static com.hp.jipp.Cycler.*;
 
 public class AttributeTest {
 
@@ -64,20 +64,22 @@ public class AttributeTest {
 
     @Test
     public void enumAttribute() throws IOException {
-        Attribute<Operation> attribute = cycle(Operation.attribute("something",
-                Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob));
+        AttributeGroup group = Cycler.cycle(AttributeGroup.create(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(
+                        Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob)));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
-                attribute.getValues());
+                group.getValues(Attributes.OperationsSupported));
     }
 
     @Test
     public void surpriseEnum() throws IOException {
-        Attribute<Operation> attribute = cycle(Operation.attribute("something",
-                Operation.create("vendor-specific", 0x4040)));
+        AttributeGroup group = Cycler.cycle(AttributeGroup.create(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(
+                        Operation.create("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
         assertEquals(ImmutableList.of(Operation.create("operation-id(x4040)", 0x4040)),
-                attribute.getValues());
+                group.getValues(Attributes.OperationsSupported));
     }
 
     @Test
@@ -147,15 +149,4 @@ public class AttributeTest {
         assertEquals("fr", name.getValue(0).getLang().get());
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.read(in, Tag.read(in));
-    }
-
-    private byte[] toBytes(Attribute attribute) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        attribute.write(new DataOutputStream(bytesOut));
-        return bytesOut.toByteArray();
-    }
 }

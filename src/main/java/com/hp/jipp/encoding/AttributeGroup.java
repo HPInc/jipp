@@ -12,6 +12,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ abstract public class AttributeGroup {
     /**
      * Return values for the specified attribute type in this group. If the attribute is missing, return an empty list.
      */
-    public <T> ImmutableList<T> getValues(AttributeType<T> attributeType) {
+    public <T> List<T> getValues(AttributeType<T> attributeType) {
         Optional<Attribute<T>> attribute = get(attributeType);
         if (!attribute.isPresent()) return ImmutableList.of();
         return attribute.get().getValues();

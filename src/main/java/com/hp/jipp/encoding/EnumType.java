@@ -1,18 +1,23 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 public class EnumType<T extends NameCode> extends AttributeType<T> {
 
     /** Create and return a new encoder */
-    public static <T extends NameCode> Encoder<T> encoder(String name, List<T> enums, NameCode.Factory<T> factory) {
+    public static <T extends NameCode> Encoder<T> encoder(String name, Collection<T> enums,
+            NameCode.Factory<T> factory) {
         return new AutoValue_EnumType_Encoder<>(name,
                 new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toMap(enums)).build(),
                 factory);
@@ -58,7 +63,23 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
         }
     }
 
-    public EnumType(Encoder<T> encoder, Tag tag, String name) {
-        super(encoder, tag, name);
+    private final Function<Integer, T> toEnum = new Function<Integer, T>() {
+        @Override
+        public T apply(Integer input) {
+            return ((Encoder<T>)getEncoder()).getEnum(input);
+        }
+    };
+
+    public EnumType(Encoder<T> encoder, String name) {
+        super(encoder, Tag.EnumValue, name);
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public Optional<Attribute<T>> adopt(Attribute<?> attribute) {
+        if (attribute.getValueTag() != Tag.EnumValue) {
+            return Optional.absent();
+        }
+        return Optional.of(of(Lists.transform((List<Integer>)attribute.getValues(), toEnum)));
     }
 }

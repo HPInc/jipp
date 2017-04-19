@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.hp.jipp.Hook;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
@@ -30,7 +31,7 @@ public class AttributeType<T> {
     }
 
     /** Create an attribute of this attribute type with supplied values */
-    public final Attribute<T> of(Collection<T> values) {
+    public final Attribute<T> of(List<T> values) {
         return getEncoder().builder(getTag()).setValues(values).setName(getName()).build();
     }
 

@@ -31,7 +31,6 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "document-access-error");
 
 
-
     public static final StringType RequestingUserName =
             new StringType(Tag.TextWithoutLanguage, "requesting-user-name");
 
@@ -45,7 +44,7 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri");
 
     public static final AttributeType<Operation> OperationsSupported =
-            new EnumType<>(Operation.Encoder, Tag.EnumValue,  "operations-supported");
+            new EnumType<>(Operation.ENCODER, "operations-supported");
 
     // TODO: Add the other 1001...
 

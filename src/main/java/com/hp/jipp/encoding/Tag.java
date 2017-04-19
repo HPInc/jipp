@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
@@ -51,22 +52,22 @@ public abstract class Tag {
     public static final Tag MimeMediaType = create("mimeMediaType", 0x49);
     public static final Tag MemberAttributeName = create("memberAttrName", 0x4A);
 
-    public final static ImmutableSet<Tag> All = new ImmutableSet.Builder<Tag>().add(
+    private final static Set<Tag> All = ImmutableSet.of(
             OperationAttributes, JobAttributes, EndOfAttributes, PrinterAttributes,
             UnsupportedAttributes, Unsupported, Unknown, NoValue, IntegerValue, BooleanValue,
             EnumValue, OctetString, DateTime, Resolution, RangeOfInteger, BeginCollection,
             TextWithLanguage, NameWithLanguage, EndCollection, TextWithoutLanguage,
             NameWithoutLanguage, Keyword, Uri, UriScheme, Charset, NaturalLanguage,
             MimeMediaType, MemberAttributeName
-    ).build();
+    );
 
-    private final static ImmutableMap<Integer, Tag> CODE_TO_TAG;
+    private final static ImmutableMap<Integer, Tag> CodeToTag;
     static {
         ImmutableMap.Builder<Integer, Tag> builder = new ImmutableMap.Builder<>();
         for (Tag op : All) {
             builder.put(op.getValue(), op);
         }
-        CODE_TO_TAG = builder.build();
+        CodeToTag = builder.build();
     }
 
     /**
@@ -76,7 +77,7 @@ public abstract class Tag {
      * Known tags can be tested for equality with ==.
      */
     public static Tag toTag(int value) {
-        Optional<Tag> tag = Optional.fromNullable(CODE_TO_TAG.get(value));
+        Optional<Tag> tag = Optional.fromNullable(CodeToTag.get(value));
         if (tag.isPresent()) return tag.get();
         return create("UNKNOWN(x" + Integer.toHexString(value) + ")", value);
     }
