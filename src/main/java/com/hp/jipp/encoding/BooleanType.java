@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/** Represents a boolean attribute type */
+/** A boolean attribute type */
 public class BooleanType extends AttributeType<Boolean> {
     static final Encoder<Boolean> ENCODER = new Encoder<Boolean>() {
         @Override

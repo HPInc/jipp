@@ -41,6 +41,11 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+javadoc {
+    options.links "http://google.github.io/guava/releases/20.0/api/docs"
+    options.links "http://docs.oracle.com/javase/7/docs/api/"
+}
+
 dependencies {
     compileOnly "com.google.auto.value:auto-value:1.2"
     apt "com.google.auto.value:auto-value:1.2"

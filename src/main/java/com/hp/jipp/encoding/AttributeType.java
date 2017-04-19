@@ -3,7 +3,6 @@ package com.hp.jipp.encoding;
 import com.google.common.base.Optional;
 import com.hp.jipp.Hook;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,12 +47,12 @@ public class AttributeType<T> {
     }
 
     /** Return true if the attribute has a matching encoder */
-    public boolean isValid(Attribute<?> attribute) {
+    boolean isValid(Attribute<?> attribute) {
         return attribute.getEncoder().equals(getEncoder());
     }
 
-    /** Convert the other attribute into this one if reasonable */
-    public Optional<Attribute<T>> adopt(Attribute<?> attribute) {
+    /** If possible, convert the supplied attribute into an attribute of this type. */
+    public Optional<Attribute<T>> from(Attribute<?> attribute) {
         return Optional.absent();
     }
 }

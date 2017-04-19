@@ -44,7 +44,7 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri");
 
     public static final AttributeType<Operation> OperationsSupported =
-            new EnumType<>(Operation.ENCODER, "operations-supported");
+            Operation.createType("operations-supported");
 
     // TODO: Add the other 1001...
 

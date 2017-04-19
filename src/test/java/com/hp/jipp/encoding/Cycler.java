@@ -1,9 +1,4 @@
-package com.hp.jipp;
-
-import com.hp.jipp.encoding.Attribute;
-import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.Packet;
-import com.hp.jipp.encoding.Tag;
+package com.hp.jipp.encoding;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +17,13 @@ public class Cycler {
         group.write(out);
         Tag.EndOfAttributes.write(out);
         return bytesOut.toByteArray();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
+            throws IOException {
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
+        return attributeType.getEncoder().read(in, Tag.read(in));
     }
 
     @SuppressWarnings("unchecked")
@@ -50,6 +52,4 @@ public class Cycler {
         in.write(out);
         return bytesOut.toByteArray();
     }
-
-
 }

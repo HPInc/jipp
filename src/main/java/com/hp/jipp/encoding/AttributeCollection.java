@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-/** A collection of attributes, used by {@link CollectionType} to model the contents of an RFC3382 collection. */
+/** The collection of attributes found within a {@link CollectionType} attribute. */
 public class AttributeCollection {
 
     public static AttributeCollection of(Attribute<?>... attr) {

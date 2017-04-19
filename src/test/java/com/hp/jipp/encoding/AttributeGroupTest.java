@@ -12,7 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Attributes;
 
-import static com.hp.jipp.Cycler.*;
+import static com.hp.jipp.encoding.Cycler.*;
 
 
 public class AttributeGroupTest {
@@ -28,7 +28,7 @@ public class AttributeGroupTest {
                 Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer")));
         group = cycle(group);
 
-        assertEquals(group.getStartTag(), Tag.OperationAttributes);
+        assertEquals(group.getTag(), Tag.OperationAttributes);
         assertTrue(group.get(Attributes.AttributesCharset).isPresent());
         assertTrue(group.get(Attributes.AttributesNaturalLanguage).isPresent());
         assertTrue(group.get(Attributes.PrinterUri).isPresent());

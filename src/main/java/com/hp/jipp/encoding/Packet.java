@@ -9,6 +9,8 @@ import com.hp.jipp.model.Status;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A request packet as specified in RFC2910.
@@ -40,12 +42,12 @@ public abstract class Packet {
     /**
      * Return the attribute groups in this packet
      */
-    abstract public ImmutableList<AttributeGroup> getAttributeGroups();
+    abstract public List<AttributeGroup> getAttributeGroups();
 
     /** Returns the first attribute with the specified delimiter */
     public Optional<AttributeGroup> getAttributeGroup(Tag delimiter) {
         for (AttributeGroup group : getAttributeGroups()) {
-            if (group.getStartTag() == delimiter) return Optional.of(group);
+            if (group.getTag() == delimiter) return Optional.of(group);
         }
         return Optional.absent();
     }
@@ -59,7 +61,7 @@ public abstract class Packet {
     /** Construct and return a builder for creating packets */
     public static Builder builder() {
         return new AutoValue_Packet.Builder().setVersionNumber(DEFAULT_VERSION_NUMBER)
-                .setAttributeGroups().setData(EMPTY_DATA);
+                .setAttributeGroups(ImmutableList.<AttributeGroup>of()).setData(EMPTY_DATA);
     }
 
     /** Construct and return a builder based on an existing packet */
@@ -79,7 +81,7 @@ public abstract class Packet {
      * Construct and return a complete packet
      */
     public static Packet create(Operation operation, int requestId, AttributeGroup... groups) {
-        return builder(operation, requestId).setAttributeGroups(groups).build();
+        return builder(operation, requestId).setAttributeGroups(Arrays.asList(groups)).build();
     }
 
     /** Write the contents of this object to the output stream as per RFC2910 */
@@ -131,8 +133,7 @@ public abstract class Packet {
             return setCode(operation.getCode());
         }
         abstract public Builder setRequestId(int requestId);
-        abstract public Builder setAttributeGroups(Iterable<AttributeGroup> groups);
-        abstract public Builder setAttributeGroups(AttributeGroup... groups);
+        abstract public Builder setAttributeGroups(List<AttributeGroup> groups);
         abstract public Builder setData(byte[] data);
         abstract public Packet build();
     }

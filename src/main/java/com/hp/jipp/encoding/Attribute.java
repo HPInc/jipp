@@ -10,7 +10,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -66,9 +65,9 @@ public abstract class Attribute<T> {
             // TODO: dateTime
             ClassEncoder.create(byte[].class, OctetStringType.ENCODER));
 
-    /** A generic attribute builder. Must be subclassed for specific types of T */
+    /** A generic attribute builder to be subclassed for specific types of T. */
     @AutoValue.Builder
-    abstract public static class Builder<T> {
+    abstract static class Builder<T> {
         abstract Builder<T> setEncoder(Encoder<T> encoder);
         abstract Builder<T> setValueTag(Tag valueTag);
         abstract Builder<T> setName(String name);
@@ -84,6 +83,7 @@ public abstract class Attribute<T> {
     abstract public Tag getValueTag();
     abstract public String getName();
     abstract public List<T> getValues();
+
     abstract Encoder<T> getEncoder();
 
     /** Return the n'th value in this attribute, assuming it is present */

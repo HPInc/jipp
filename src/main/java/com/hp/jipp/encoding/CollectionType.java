@@ -7,6 +7,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * A collection attribute type.
+ *
+ * @see <a href="https://tools.ietf.org/html/rfc3382">RFC3382</a>
+ */
 public class CollectionType extends AttributeType<AttributeCollection> {
 
     /** Used to terminate a collection */

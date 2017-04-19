@@ -1,20 +1,18 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hp.jipp.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
+/** An language-encoded string attribute type */
 public class LangStringType extends AttributeType<LangString> {
 
     static final Encoder<LangString> ENCODER = new Encoder<LangString>() {
-
         @Override
         LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
             String lang = new String(readValueBytes(in), Util.UTF8);
@@ -40,7 +38,7 @@ public class LangStringType extends AttributeType<LangString> {
 
     @Override
     @SuppressWarnings({"PMD.UselessParentheses", "unchecked"})
-    public Optional<Attribute<LangString>> adopt(Attribute<?> attribute) {
+    public Optional<Attribute<LangString>> from(Attribute<?> attribute) {
         if (!(attribute.getValueTag().equals(Tag.NameWithoutLanguage) && getTag().equals(Tag.NameWithLanguage)) ||
                 (attribute.getValueTag().equals(Tag.TextWithoutLanguage) && getTag().equals(Tag.TextWithLanguage))) {
             return Optional.absent();

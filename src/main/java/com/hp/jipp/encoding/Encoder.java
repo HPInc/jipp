@@ -10,9 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Reads/writes attributes and values according to the attribute's type
+ * Reads/writes attributes and values according to the attribute's type.
  */
-public abstract class Encoder<T> {
+abstract class Encoder<T> {
     /** Read a single value from the input stream */
     abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
 
@@ -43,7 +43,7 @@ public abstract class Encoder<T> {
     }
 
     /** Read an attribute and its values from the data stream */
-    public Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
+    Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
         Attribute.Builder<T> builder = builder(valueTag)
                 .setName(new String(readValueBytes(in), Util.UTF8));
 

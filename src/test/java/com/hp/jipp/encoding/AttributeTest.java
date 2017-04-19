@@ -9,12 +9,11 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.Cycler;
 import com.hp.jipp.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
-import static com.hp.jipp.Cycler.*;
+import static com.hp.jipp.encoding.Cycler.*;
 
 public class AttributeTest {
 

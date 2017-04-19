@@ -7,11 +7,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
@@ -19,6 +14,8 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
+
+import static com.hp.jipp.encoding.Cycler.*;
 
 public class AttributeTypeTest {
 
@@ -62,29 +59,4 @@ public class AttributeTypeTest {
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).get().getValues());
     }
-
-    @SuppressWarnings("unchecked")
-    private <T> Attribute<T> cycle(com.hp.jipp.encoding.AttributeType attributeType, Attribute<T> attribute) throws IOException {
-        DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return attributeType.getEncoder().read(in, Tag.read(in));
-    }
-
-    private byte[] toBytes(Attribute attribute) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        attribute.write(new DataOutputStream(bytesOut));
-        return bytesOut.toByteArray();
-    }
-
-    private AttributeGroup cycle(AttributeGroup group) throws IOException {
-        return AttributeGroup.read(new DataInputStream(new ByteArrayInputStream(toBytes(group))));
-    }
-
-    private byte[] toBytes(AttributeGroup group) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(bytesOut);
-        group.write(out);
-        Tag.EndOfAttributes.write(out);
-        return bytesOut.toByteArray();
-    }
-
 }

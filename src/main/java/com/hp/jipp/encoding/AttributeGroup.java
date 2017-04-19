@@ -11,33 +11,36 @@ import com.hp.jipp.Hook;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Represents a group of attributes */
+/** A specific group of attributes found in a packet.  */
 @AutoValue
 abstract public class AttributeGroup {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
-    /** Return a builder, allowing attributes to be added progressively */
-    public static Builder builder(Tag startTag) {
-        if (!startTag.isDelimiter()) throw new BuildError("Not a delimiter: " + startTag);
-        return new AutoValue_AttributeGroup.Builder().setStartTag(startTag);
+    /** Return a complete attribute group */
+    public static AttributeGroup create(Tag startTag, Attribute<?>... attributes) {
+        return create(startTag, Arrays.asList(attributes));
     }
 
-    /** Return a complete attribute group with all attributes */
-    public static AttributeGroup create(Tag startTag, Attribute<?>... attributes) {
-        return builder(startTag).setAttributes(attributes).build();
+    /** Return a complete attribute group */
+    public static AttributeGroup create(Tag startTag, List<Attribute<?>> attributes) {
+        if (!startTag.isDelimiter()) throw new BuildError("Not a delimiter: " + startTag);
+        return new AutoValue_AttributeGroup.Builder()
+                .setTag(startTag)
+                .setAttributes(attributes).build();
     }
 
     /** Return the tag that delimits this group */
-    abstract public Tag getStartTag();
+    abstract public Tag getTag();
 
     /** Return all attributes in this group */
-    abstract public ImmutableList<Attribute<?>> getAttributes();
+    abstract public List<Attribute<?>> getAttributes();
 
     /** Lazy attribute map, generated only when needed */
     private Supplier<ImmutableMap<String, Attribute<?>>> mAttributeMap =
@@ -67,7 +70,7 @@ abstract public class AttributeGroup {
         if (attributeType.isValid(attribute)) {
             return Optional.of((Attribute<T>) attribute);
         } else {
-            return attributeType.adopt(attribute);
+            return attributeType.from(attribute);
         }
     }
 
@@ -81,17 +84,13 @@ abstract public class AttributeGroup {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder {
+    abstract static class Builder {
 
-        public abstract Builder setStartTag(Tag startTag);
+        abstract Builder setTag(Tag startTag);
 
-        public abstract Builder setAttributes(ImmutableList<Attribute<?>> attributes);
+        public abstract Builder setAttributes(List<Attribute<?>> attributes);
 
-        public abstract Builder setAttributes(Attribute<?>... values);
-
-        abstract ImmutableList<Attribute<?>> getAttributes();
-
-        abstract ImmutableList.Builder<Attribute<?>> attributesBuilder();
+        abstract List<Attribute<?>> getAttributes();
 
         abstract AttributeGroup autoBuild();
 
@@ -109,15 +108,10 @@ abstract public class AttributeGroup {
             }
             return autoBuild();
         }
-
-        public final Builder addAttribute(Attribute<?>... attribute) {
-            attributesBuilder().add(attribute);
-            return this;
-        }
     }
 
     public void write(DataOutputStream out) throws IOException {
-        out.writeByte(getStartTag().getValue());
+        out.writeByte(getTag().getValue());
         for(Attribute attribute : getAttributes()) {
             attribute.write(out);
         }
@@ -128,8 +122,9 @@ abstract public class AttributeGroup {
     }
 
     static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
-        Builder builder = builder(startTag);
         boolean attributes = true;
+        ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
+
         while(attributes) {
             in.mark(1);
             Tag valueTag = Tag.toTag(in.readByte());
@@ -137,9 +132,9 @@ abstract public class AttributeGroup {
                 in.reset();
                 attributes = false;
             } else {
-                builder.addAttribute(Attribute.read(in, valueTag));
+                attributesBuilder.add(Attribute.read(in, valueTag));
             }
         }
-        return builder.build();
+        return create(startTag, attributesBuilder.build());
     }
 }

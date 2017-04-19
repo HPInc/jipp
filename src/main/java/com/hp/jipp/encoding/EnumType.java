@@ -3,7 +3,6 @@ package com.hp.jipp.encoding;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -12,10 +11,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class EnumType<T extends NameCode> extends AttributeType<T> {
 
-    /** Create and return a new encoder */
+    /** Create a new enumeration encoder */
     public static <T extends NameCode> Encoder<T> encoder(String name, Collection<T> enums,
             NameCode.Factory<T> factory) {
         return new AutoValue_EnumType_Encoder<>(name,
@@ -23,22 +23,23 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
                 factory);
     }
 
+    /**
+     * An encoder for NameCode enumerations. Use {@link #encoder(String, Collection, NameCode.Factory)}
+     * to create instance for new EnumTypes.
+     */
     @AutoValue
     public abstract static class Encoder<T extends NameCode> extends com.hp.jipp.encoding.Encoder<T> {
 
+        /** Return the user-visible name of the enum (for debugging purposes) */
         public abstract String getName();
 
-        public abstract ImmutableMap<Integer, T> getEnumsMap();
+        /** Return the map all known enums */
+        public abstract Map<Integer, T> getEnumsMap();
 
+        /** Return a factory for constructing new enum instances */
         abstract NameCode.Factory<T> getFactory();
 
-        /** Create a new enum attribute containing specified values */
-        @SafeVarargs
-        public final Attribute<T> toAttribute(String name, T... values) {
-            return builder(Tag.EnumValue).setName(name).setValues(values).build();
-        }
-
-        /** Returns a known enum, or creates a new T instance if not found */
+        /** Returns a known enum, or creates a new instance if not found */
         public T getEnum(int code) {
             Optional<T> e = Optional.fromNullable(getEnumsMap().get(code));
             if (e.isPresent()) return e.get();
@@ -76,7 +77,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
 
     @Override
     @SuppressWarnings({"unchecked"})
-    public Optional<Attribute<T>> adopt(Attribute<?> attribute) {
+    public Optional<Attribute<T>> from(Attribute<?> attribute) {
         if (attribute.getValueTag() != Tag.EnumValue) {
             return Optional.absent();
         }

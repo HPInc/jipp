@@ -2,14 +2,15 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.NameCode;
 
 import java.util.Collection;
 
 /**
- * An operation code, as defined in RFC 2911 and found in request packets
+ * An operation code as found in request packets and elsewhere.
+ *
+ * @see <a href="https://tools.ietf.org/html/rfc2911#section-5.2.2">RFC2911 Section 5.2.2</a>
  */
 @AutoValue
 public abstract class Operation extends NameCode {
@@ -31,19 +32,22 @@ public abstract class Operation extends NameCode {
     public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
-    private final static Collection<Operation> ALL = ImmutableSet.of(
-            PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
-            GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter, PurgeJobs
-    );
+    private final static EnumType.Encoder<Operation> ENCODER = EnumType.encoder(
+            "operation-id", ImmutableSet.of(
+                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
+                    GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,
+                    PurgeJobs
+            ), new NameCode.Factory<Operation>() {
+                @Override
+                public Operation create(String name, int code) {
+                    return Operation.create(name, code);
+                }
+            });
 
-    private final static NameCode.Factory<Operation> FACTORY = new NameCode.Factory<Operation>() {
-        @Override
-        public Operation create(String name, int code) {
-            return Operation.create(name, code);
-        }
-    };
-
-    public final static EnumType.Encoder<Operation> ENCODER = EnumType.encoder("operation-id", ALL, FACTORY);
+    /** Create and return a {@link EnumType} based on this NameCode */
+    public static EnumType<Operation> createType(String attributeName) {
+        return new EnumType<>(ENCODER, attributeName);
+    }
 
     /** Return true if this is a known operation code */
     public static boolean isKnown(int code) {
