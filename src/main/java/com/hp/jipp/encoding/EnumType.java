@@ -54,7 +54,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
 
         @Override
         boolean valid(Tag valueTag) {
-            return (valueTag == Tag.EnumValue);
+            return valueTag == Tag.EnumValue;
         }
     }
 

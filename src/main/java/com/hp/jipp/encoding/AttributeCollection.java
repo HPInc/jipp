@@ -19,6 +19,7 @@ public class AttributeCollection {
     }
 
     /** Return the first attribute matching the type */
+    @SuppressWarnings("unchecked")
     public <T> Optional<Attribute<T>> get(AttributeType<T> type) {
         for (Attribute<?> attribute : this.attributes) {
             if (attribute.getValueTag().equals(type.getTag()) && attribute.getName().equals(type.getName())) {

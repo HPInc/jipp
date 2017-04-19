@@ -2,6 +2,7 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.hp.jipp.Hook;
+import com.hp.jipp.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -43,7 +44,7 @@ public abstract class Encoder<T> {
     /** Read an attribute and its values from the data stream */
     public Attribute<T> read(DataInputStream in, Tag valueTag) throws IOException {
         Attribute.Builder<T> builder = builder(valueTag)
-                .setName(new String(readValueBytes(in)));
+                .setName(new String(readValueBytes(in), Util.UTF8));
 
         // Read first value...there always has to be one, right?
         builder.addValue(readValue(in, valueTag));

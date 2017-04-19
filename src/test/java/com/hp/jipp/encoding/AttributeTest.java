@@ -13,6 +13,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.Util;
 import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
@@ -23,7 +24,7 @@ public class AttributeTest {
     @Test
     public void octetString() throws IOException {
         AttributeType<byte[]> octetStringType = new OctetStringType(Tag.OctetString, "name");
-        Attribute<byte[]> attribute = octetStringType.of("value".getBytes());
+        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Util.UTF8));
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -36,15 +37,15 @@ public class AttributeTest {
         attribute = cycle(attribute);
         assertEquals(Tag.OctetString, attribute.getValueTag());
         assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(), attribute.getValue(0));
+        assertArrayEquals("value".getBytes(Util.UTF8), attribute.getValue(0));
     }
 
     @Test
     public void multiOctetString() throws IOException {
         AttributeType<byte[]> stringType = new OctetStringType(Tag.NameWithoutLanguage, "name");
-        Attribute<byte[]> attribute = stringType.of("value".getBytes(), "value2".getBytes());
-        assertArrayEquals("value".getBytes(), attribute.getValue(0));
-        assertArrayEquals("value2".getBytes(), attribute.getValue(1));
+        Attribute<byte[]> attribute = stringType.of("value".getBytes(Util.UTF8), "value2".getBytes(Util.UTF8));
+        assertArrayEquals("value".getBytes(Util.UTF8), attribute.getValue(0));
+        assertArrayEquals("value2".getBytes(Util.UTF8), attribute.getValue(1));
     }
 
     @Test

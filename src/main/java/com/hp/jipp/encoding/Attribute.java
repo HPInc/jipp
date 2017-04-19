@@ -3,6 +3,7 @@ package com.hp.jipp.encoding;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.Hook;
+import com.hp.jipp.Util;
 import com.hp.jipp.model.Operation;
 
 import java.io.DataInputStream;
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 @AutoValue
 public abstract class Attribute<T> {
+
     /** Set to false in {@link Hook} to disable builders that accept invalid tags. */
     public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = Encoder.class.getName() +
             ".HOOK_ALLOW_BUILD_INVALID_TAGS";
@@ -72,6 +74,7 @@ public abstract class Attribute<T> {
         abstract Builder<T> setEncoder(Encoder<T> encoder);
         abstract Builder<T> setValueTag(Tag valueTag);
         abstract Builder<T> setName(String name);
+        @SuppressWarnings("unchecked")
         abstract Builder<T> setValues(T... values);
         abstract Builder<T> setValues(Collection<T> values);
         abstract ImmutableList.Builder<T> valuesBuilder();
@@ -118,7 +121,7 @@ public abstract class Attribute<T> {
     private void writeHeader(DataOutputStream out, Tag valueTag, String name) throws IOException {
         valueTag.write(out);
         out.writeShort(name.length());
-        out.write(name.getBytes());
+        out.write(name.getBytes(Util.UTF8));
     }
 
     @Override

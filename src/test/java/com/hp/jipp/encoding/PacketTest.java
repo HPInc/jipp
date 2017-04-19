@@ -12,6 +12,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+import com.hp.jipp.Util;
+import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
 public class PacketTest {
@@ -138,7 +140,7 @@ public class PacketTest {
     @Test
     public void writeSingleAttributePacket() throws IOException {
         Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.Charset, "attributes-charset")
-                .of("US-ASCII".getBytes());
+                .of("US-ASCII".getBytes(Util.UTF8));
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.builder(Tag.OperationAttributes).addAttribute(simpleAttribute)
                 .build());
@@ -222,13 +224,13 @@ public class PacketTest {
     public void readMultiValueAttributePacket() throws IOException {
         packet = Packet.create(Operation.GetJobAttributes, 0x1010,
                 AttributeGroup.create(Tag.OperationAttributes,
-                        new StringType(Tag.Charset, "attributes-charset").of("US-ASCII", "UTF-8")));
+                        Attributes.AttributesCharset.of("US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
         assertEquals(packet.getOperation(), Operation.GetJobAttributes);
         assertEquals(packet.getRequestId(), 0x1010);
         assertEquals(packet.getAttributeGroups().get(0).getStartTag(), Tag.OperationAttributes);
-        Attribute<String> attribute = (Attribute<String>)packet.getAttributeGroups().get(0).getAttributes().get(0);
+        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();
         assertEquals("US-ASCII", attribute.getValues().get(0));
         assertEquals("UTF-8", attribute.getValues().get(1));
     }

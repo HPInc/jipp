@@ -1,8 +1,8 @@
 package com.hp.jipp.encoding;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.hp.jipp.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,16 +12,16 @@ import java.util.Collection;
 /** An attribute bearing a string for which language is irrelevant */
 public class StringType extends AttributeType<String> {
 
-    static Encoder<String> ENCODER = new Encoder<String>() {
+    static final Encoder<String> ENCODER = new Encoder<String>() {
 
         @Override
         public void writeValue(DataOutputStream out, String value) throws IOException {
-            writeValueBytes(out, value.getBytes());
+            writeValueBytes(out, value.getBytes(Util.UTF8));
         }
 
         @Override
         public String readValue(DataInputStream in, Tag valueTag) throws IOException {
-            return new String(readValueBytes(in));
+            return new String(readValueBytes(in), Util.UTF8);
         }
 
         @Override
@@ -35,9 +35,10 @@ public class StringType extends AttributeType<String> {
     }
 
     @Override
+    @SuppressWarnings({"PMD.UselessParentheses", "unchecked"})
     public Optional<Attribute<String>> adopt(Attribute<?> attribute) {
-        if (!((attribute.getValueTag().equals(Tag.NameWithLanguage) && getTag().equals(Tag.NameWithoutLanguage)) ||
-                (attribute.getValueTag().equals(Tag.TextWithLanguage) && getTag().equals(Tag.TextWithoutLanguage)))) {
+        if (!(attribute.getValueTag().equals(Tag.NameWithLanguage) && getTag().equals(Tag.NameWithoutLanguage)) ||
+                (attribute.getValueTag().equals(Tag.TextWithLanguage) && getTag().equals(Tag.TextWithoutLanguage))) {
             return Optional.absent();
         }
         // Apply conversion from StringType to a LangStringType attribute

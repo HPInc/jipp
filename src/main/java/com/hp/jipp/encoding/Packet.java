@@ -43,7 +43,7 @@ public abstract class Packet {
     abstract public ImmutableList<AttributeGroup> getAttributeGroups();
 
     /** Returns the first attribute with the specified delimiter */
-    public Optional<AttributeGroup> findAttributeGroup(final Tag delimiter) {
+    public Optional<AttributeGroup> getAttributeGroup(Tag delimiter) {
         for (AttributeGroup group : getAttributeGroups()) {
             if (group.getStartTag() == delimiter) return Optional.of(group);
         }

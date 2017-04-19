@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,7 +12,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
     /** Used to terminate a collection */
     private static final Attribute EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
 
-    static Encoder<AttributeCollection> ENCODER = new Encoder<AttributeCollection>() {
+    static final Encoder<AttributeCollection> ENCODER = new Encoder<AttributeCollection>() {
 
         @Override
         public void writeValue(DataOutputStream out, AttributeCollection value)
@@ -22,7 +23,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 // Write a MemberAttributeName attribute
                 Tag.MemberAttributeName.write(out);
                 out.writeShort(0);
-                writeValueBytes(out, attribute.getName().getBytes());
+                writeValueBytes(out, attribute.getName().getBytes(Util.UTF8));
 
                 // Write the attribute, but without its name
                 attribute.withName("").write(out);
@@ -48,7 +49,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                     break;
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
-                    String memberName = new String(readValueBytes(in));
+                    String memberName = new String(readValueBytes(in), Util.UTF8);
                     Attribute memberValue = Attribute.read(in, Tag.read(in));
                     builder.add(memberValue.withName(memberName));
                 } else {
