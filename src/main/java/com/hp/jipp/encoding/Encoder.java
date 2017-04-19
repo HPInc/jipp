@@ -24,7 +24,7 @@ public abstract class Encoder<T> {
     void expectLength(DataInputStream in, int length) throws IOException {
         int readLength = in.readShort();
         if (readLength != length) {
-            throw new IOException("expected " + length + " but got " + readLength);
+            throw new ParseError("expected " + length + " but got " + readLength);
         }
     }
 
@@ -35,7 +35,7 @@ public abstract class Encoder<T> {
      */
     Attribute.Builder<T> builder(Tag valueTag) {
         if (!(valid(valueTag) || Hook.is(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
-            throw new RuntimeException(valueTag.toString() + " is not a valid tag for " + this);
+            throw new BuildError(valueTag.toString() + " is not a valid tag for " + this);
         }
         return Attribute.builder(this, valueTag);
     }
@@ -80,14 +80,14 @@ public abstract class Encoder<T> {
     byte[] readValueBytes(DataInputStream in) throws IOException {
         int valueLength = in.readShort();
         byte valueBytes[] = new byte[valueLength];
-        if (valueLength != in.read(valueBytes)) throw new IOException("Value too short");
+        if (valueLength != in.read(valueBytes)) throw new ParseError("Value too short");
         return valueBytes;
     }
 
     /** Skip (discard) a length-value pair */
     void skipValueBytes(DataInputStream in) throws IOException {
         int valueLength = in.readShort();
-        if (valueLength != in.skip(valueLength)) throw new IOException("Value too short");
+        if (valueLength != in.skip(valueLength)) throw new ParseError("Value too short");
     }
 
 }

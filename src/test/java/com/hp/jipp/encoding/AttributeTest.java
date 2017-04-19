@@ -1,6 +1,8 @@
 package com.hp.jipp.encoding;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +16,9 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Operation;
 
 public class AttributeTest {
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void octetString() throws IOException {
@@ -95,19 +100,6 @@ public class AttributeTest {
         IntegerType xDimensionType = new IntegerType(Tag.IntegerValue, "x-dimension");
         IntegerType yDimensionType = new IntegerType(Tag.IntegerValue, "y-dimension");
 
-        // Not so ugly
-//        Attribute<List<Attribute<?>>> mediaCol = mediaColType.create(
-//                CollectionType.listOf(
-//                        colorType.create("blue"),
-//                        mediaSizeType.create(
-//                                CollectionType.listOf(
-//                                        xDimensionType.create(6),
-//                                        yDimensionType.create(4)),
-//                                CollectionType.listOf(
-//                                        xDimensionType.create(12),
-//                                        yDimensionType.create(5))
-//                )));
-//
         Attribute<AttributeCollection> mediaCol = mediaColType.of(
                 AttributeCollection.of(
                         colorType.of("blue"),
@@ -123,6 +115,7 @@ public class AttributeTest {
 
         mediaCol = cycle(mediaCol);
 
+        // Spot-check elements of the collection
         assertEquals("media-col", mediaCol.getName());
         assertEquals("blue", mediaCol.getValues().get(0).values(colorType).get(0));
         assertEquals(Integer.valueOf(12),
@@ -130,9 +123,20 @@ public class AttributeTest {
                         .values(mediaSizeType).get(1)
                         .values(xDimensionType).get(0));
 
-        System.out.println("mediaCol: " + mediaCol);
+        // Make sure we're covering some empty cases
+        assertFalse(mediaCol.getValues().get(0).get(xDimensionType).isPresent());
+        assertEquals(0, mediaCol.getValues().get(0).values(xDimensionType).size());
+
+        // Output is helpful for inspection
+        System.out.println(mediaCol);
     }
 
+    @Test
+    public void invalidTag() {
+        exception.expect(BuildError.class);
+        // String is not Integer; should throw.
+        new StringType(Tag.IntegerValue, "something");
+    }
 
     @SuppressWarnings("unchecked")
     private <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {

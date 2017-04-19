@@ -6,19 +6,24 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.hp.jipp.Hook;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /** Represents a group of attributes */
 @AutoValue
 abstract public class AttributeGroup {
+    public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
+            AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
     /** Return a builder, allowing attributes to be added progressively */
     public static Builder builder(Tag startTag) {
-        if (!startTag.isDelimiter()) throw new IllegalArgumentException("Not a delimiter: " + startTag);
+        if (!startTag.isDelimiter()) throw new BuildError("Not a delimiter: " + startTag);
         return new AutoValue_AttributeGroup.Builder().setStartTag(startTag);
     }
 
@@ -47,14 +52,8 @@ abstract public class AttributeGroup {
             });
 
     /** Return a lazily-created, read-only map of attribute name to a list of matching attributes */
-    public Map<String, Attribute<?>> getMap() {
+    Map<String, Attribute<?>> getMap() {
         return mAttributeMap.get();
-    }
-
-    /** Finds an attribute in the group matching the name */
-    public Optional<Attribute<?>> get(String name) {
-        // TODO: need AttributeType so that type assumptions can be made
-        return Optional.<Attribute<?>>fromNullable(getMap().get(name));
     }
 
     /** Return a attribute from this group. */
@@ -78,13 +77,33 @@ abstract public class AttributeGroup {
 
     @AutoValue.Builder
     public abstract static class Builder {
+
         public abstract Builder setStartTag(Tag startTag);
+
         public abstract Builder setAttributes(ImmutableList<Attribute<?>> attributes);
+
         public abstract Builder setAttributes(Attribute<?>... values);
+
+        abstract ImmutableList<Attribute<?>> getAttributes();
+
         abstract ImmutableList.Builder<Attribute<?>> attributesBuilder();
 
-        // TODO: Add some validation here to prevent multiple attributes of the same name
-        public abstract AttributeGroup build();
+        abstract AttributeGroup autoBuild();
+
+        public AttributeGroup build() {
+            // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
+            // is malformed (see [RFC2911] section 3.1.3).
+            // Throw if someone attempts this.
+            Set<String> exist = new HashSet<>();
+            for (Attribute<?> attribute : getAttributes()) {
+                if (exist.contains(attribute.getName()) && !Hook.is(HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP)) {
+                    throw new BuildError("Attribute Group contains more than one '" + attribute.getName() +
+                            "' in " + getAttributes());
+                }
+                exist.add(attribute.getName());
+            }
+            return autoBuild();
+        }
 
         public final Builder addAttribute(Attribute<?>... attribute) {
             attributesBuilder().add(attribute);

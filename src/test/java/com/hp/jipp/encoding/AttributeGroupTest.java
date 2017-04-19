@@ -1,6 +1,8 @@
 package com.hp.jipp.encoding;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +18,8 @@ import com.hp.jipp.model.Attributes;
 
 
 public class AttributeGroupTest {
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void multiAttribute() throws Exception {
@@ -26,9 +30,9 @@ public class AttributeGroupTest {
         group = cycle(group);
 
         assertEquals(group.getStartTag(), Tag.OperationAttributes);
-        assertTrue(group.get("attributes-charset").isPresent());
-        assertTrue(group.get("attributes-natural-language").isPresent());
-        assertTrue(group.get("printer-uri").isPresent());
+        assertTrue(group.get(Attributes.AttributesCharset).isPresent());
+        assertTrue(group.get(Attributes.AttributesNaturalLanguage).isPresent());
+        assertTrue(group.get(Attributes.PrinterUri).isPresent());
     }
 
     @Test
@@ -43,6 +47,14 @@ public class AttributeGroupTest {
         AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
                 Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
         assertEquals(0, group.getValues(Attributes.AttributesNaturalLanguage).size());
+    }
+
+    @Test
+    public void duplicateName() throws Exception {
+        exception.expect(BuildError.class);
+        AttributeGroup.create(Tag.OperationAttributes,
+                Attributes.AttributesCharset.of("utf-8"),
+                Attributes.AttributesCharset.of("utf-8"));
     }
 
     private AttributeGroup cycle(AttributeGroup group) throws IOException {

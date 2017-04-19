@@ -5,13 +5,14 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
+/** A collection of attributes, used by {@link CollectionType} to model the contents of an RFC3382 collection. */
 public class AttributeCollection {
-    List<Attribute<?>> attributes;
 
-    // TODO: Use this in some kind of static way
     public static AttributeCollection of(Attribute<?>... attr) {
         return new AttributeCollection(ImmutableList.copyOf(attr));
     }
+
+    private List<Attribute<?>> attributes;
 
     public AttributeCollection(List<Attribute<?>> attributes) {
         this.attributes = attributes;
@@ -38,5 +39,10 @@ public class AttributeCollection {
 
     public List<Attribute<?>> getAttributes() {
         return attributes;
+    }
+
+    @Override
+    public String toString() {
+        return attributes.toString();
     }
 }

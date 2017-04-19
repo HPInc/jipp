@@ -11,11 +11,19 @@ import java.net.URI;
 /** A library of attribute types as defined by RFC2911 */
 public final class Attributes {
 
-    public static final AttributeType<String> AttributesNaturalLanguage =
-            new StringType(Tag.NaturalLanguage, "attributes-natural-language");
+    // RFC2911 3.1.4.1 Request Operation Attributes
+    // RFC2911 3.1.4.2 Response Operation Attributes
 
     public static final AttributeType<String> AttributesCharset =
             new StringType(Tag.Charset, "attributes-charset");
+
+    public static final AttributeType<String> AttributesNaturalLanguage =
+            new StringType(Tag.NaturalLanguage, "attributes-natural-language");
+
+    // RFC2911 3.1.6 Operation Response Status Codes and Status Messages
+    // Actually this is NOT a string but a LangString or something
+//    public static final AttributeType<String> StatusMessage =
+//            new StringType(Tag.TextWithLanguage, "status-message");
 
     public static final AttributeType<URI> PrinterUri =
             new UriType(Tag.Uri, "printer-uri");

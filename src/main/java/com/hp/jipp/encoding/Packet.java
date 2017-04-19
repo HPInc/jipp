@@ -108,8 +108,7 @@ public abstract class Packet {
                 if (in.available() > 0) {
                     byte data[] = new byte[in.available()];
                     int size = in.read(data);
-                    if (size != data.length) throw new IOException(
-                            "Failed to read " + data.length + ": " + size);
+                    if (size != data.length) throw new ParseError("Failed to read " + data.length + ": " + size);
                     builder.setData(data);
                 }
                 moreAttributes = false;
@@ -117,7 +116,7 @@ public abstract class Packet {
                 AttributeGroup attributeGroup = AttributeGroup.read(tag, in);
                 attributeGroupsBuilder.add(attributeGroup);
             } else {
-                throw new IOException("Illegal delimiter tag " + tag);
+                throw new ParseError("Illegal delimiter tag " + tag);
             }
         }
         builder.setAttributeGroups(attributeGroupsBuilder.build());

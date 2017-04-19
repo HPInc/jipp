@@ -1,10 +1,6 @@
 package com.hp.jipp.encoding;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.Hook;
-
-import java.util.List;
 
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
@@ -17,7 +13,7 @@ public class AttributeType<T> {
 
     public AttributeType(Encoder<T> encoder, Tag tag, String name) {
         if (!(encoder.valid(tag) || Hook.is(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
-            throw new RuntimeException("Invalid tag " + tag + " for encoder " + encoder);
+            throw new BuildError("Invalid tag " + tag + " for encoder " + encoder);
         }
         this.encoder = encoder;
         this.tag = tag;

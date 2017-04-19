@@ -35,7 +35,7 @@ public abstract class Attribute<T> {
                 return classEncoder.getEncoder().read(in, valueTag);
             }
         }
-        throw new RuntimeException("Unreadable attribute " + valueTag);
+        throw new ParseError("Unreadable attribute " + valueTag);
     }
 
     @AutoValue

@@ -52,7 +52,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                     Attribute memberValue = Attribute.read(in, Tag.read(in));
                     builder.add(memberValue.withName(memberName));
                 } else {
-                    throw new IOException("Bad tag: " + tag);
+                    throw new ParseError("Bad tag: " + tag);
                 }
             }
             return new AttributeCollection(builder.build());
