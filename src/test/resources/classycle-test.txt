@@ -1,0 +1,5 @@
+show allResults
+
+{package} = com.hp.jipp
+
+check absenceOfPackageCycles > 1 in ${package}.*

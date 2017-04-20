@@ -1,17 +1,16 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.Hook;
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Hook;
+import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An IPP attribute, composed of a one-byte "value tag" suggesting its type, a human-readable string name, and one or
@@ -32,38 +31,111 @@ public abstract class Attribute<T> {
     /**
      * Read an attribute from an input stream, based on its tag
      */
-    public static Attribute<?> read(DataInputStream in, Tag valueTag) throws IOException {
-        for (Attribute.ClassEncoder classEncoder: Attribute.ENCODERS) {
-            if (classEncoder.getEncoder().valid(valueTag)) {
-                return classEncoder.getEncoder().read(in, valueTag);
+    static Attribute<?> read(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+        for (Attribute.Encoder<?> classEncoder: encoders) {
+            if (classEncoder.valid(valueTag)) {
+                return classEncoder.read(in, encoders, valueTag);
             }
         }
         throw new ParseError("Unreadable attribute " + valueTag);
     }
 
-    @AutoValue
-    abstract static class ClassEncoder {
-        public static ClassEncoder create(Class<?> cls, Encoder<?> encoder) {
-            return new AutoValue_Attribute_ClassEncoder(cls, encoder);
+    /**
+     * Reads/writes attributes to the attribute's type.
+     */
+    abstract static class Encoder<T> {
+        /** Read a single value from the input stream */
+        T readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+            return readValue(in, valueTag);
         }
-        public abstract Class<?> getEncodedClass();
-        public abstract Encoder<?> getEncoder();
-    }
 
-    /** Encoders available to parse incoming data */
-    private static ImmutableList<ClassEncoder> ENCODERS = ImmutableList.of(
-//            ClassEncoder.create(Operation.class, Operation.ENCODER), // no no no we need enumtype I think
-            ClassEncoder.create(Integer.class, IntegerType.ENCODER),
-            ClassEncoder.create(String.class, StringType.ENCODER),
-            ClassEncoder.create(URI.class, UriType.ENCODER),
-            ClassEncoder.create(Boolean.class, BooleanType.ENCODER),
-            ClassEncoder.create(Map.class, CollectionType.ENCODER),
-            ClassEncoder.create(LangString.class, LangStringType.ENCODER),
-            // TODO: RangeOfInteger attribute
-            // TODO: 1setofX
-            // TODO: resolution
-            // TODO: dateTime
-            ClassEncoder.create(byte[].class, OctetStringType.ENCODER));
+        /** Write a single value to the output stream */
+        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, T value) throws IOException {
+            writeValue(out, value);
+        }
+
+        /** Read a single value from the input stream */
+        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+
+        /** Write a single value to the output stream */
+        abstract void writeValue(DataOutputStream out, T value) throws IOException;
+
+        /** Return true if this tag can be handled by this encoder */
+        abstract boolean valid(Tag valueTag);
+
+        /** Reads a two-byte length field, asserting that it is of a specific length */
+        void expectLength(DataInputStream in, int length) throws IOException {
+            int readLength = in.readShort();
+            if (readLength != length) {
+                throw new ParseError("expected " + length + " but got " + readLength);
+            }
+        }
+
+        /**
+         * Return a new Attribute builder for the specified valueTag (assumes a valid valueTag).
+         * @param valueTag value-tag for attributes that can be built for the returned builder.
+         *                 Throws if not a known tag for this encoder.
+         */
+        Builder<T> builder(Tag valueTag) {
+            if (!(valid(valueTag) || Hook.is(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
+                throw new BuildError(valueTag.toString() + " is not a valid tag for " + this);
+            }
+            return Attribute.builder(this, valueTag);
+        }
+
+        /** Read an attribute and its values from the data stream */
+        Attribute<T> read(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+            Builder<T> builder = builder(valueTag)
+                    .setName(new String(readValueBytes(in), Util.UTF8));
+
+            // Read first value...there always has to be one, right?
+            ImmutableList.Builder<T> valueBuilder = new ImmutableList.Builder<>();
+            valueBuilder.add(readValue(in, encoders, valueTag));
+
+            Optional<T> value;
+            while ((value = readAdditionalValue(in, valueTag, encoders)).isPresent()) {
+                valueBuilder.add(value.get());
+            }
+            builder.setValues(valueBuilder.build());
+            return builder.build();
+        }
+
+        /** Read a single additional value into the builder, returning true if more */
+        private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, List<Attribute.Encoder<?>> encoders)
+                throws IOException {
+            if (in.available() < 3) return Optional.absent();
+            in.mark(3);
+            if (Tag.read(in) == valueTag) {
+                int nameLength = in.readShort();
+                if (nameLength == 0) {
+                    return Optional.of(readValue(in, encoders, valueTag));
+                }
+            }
+            // Failed to read an additional value so back up and quit.
+            in.reset();
+            return Optional.absent();
+        }
+
+        /** Write a length-value tuple */
+        void writeValueBytes(DataOutputStream out, byte[] bytes) throws IOException {
+            out.writeShort(bytes.length);
+            out.write(bytes);
+        }
+
+        /** Read and return value bytes from a length-value pair */
+        byte[] readValueBytes(DataInputStream in) throws IOException {
+            int valueLength = in.readShort();
+            byte valueBytes[] = new byte[valueLength];
+            if (valueLength != in.read(valueBytes)) throw new ParseError("Value too short");
+            return valueBytes;
+        }
+
+        /** Skip (discard) a length-value pair */
+        void skipValueBytes(DataInputStream in) throws IOException {
+            int valueLength = in.readShort();
+            if (valueLength != in.skip(valueLength)) throw new ParseError("Value too short");
+        }
+    }
 
     /** A generic attribute builder to be subclassed for specific types of T. */
     @AutoValue.Builder
@@ -83,7 +155,6 @@ public abstract class Attribute<T> {
     abstract public Tag getValueTag();
     abstract public String getName();
     abstract public List<T> getValues();
-
     abstract Encoder<T> getEncoder();
 
     /** Return the n'th value in this attribute, assuming it is present */
@@ -97,17 +168,17 @@ public abstract class Attribute<T> {
     }
 
     /** Write this attribute (including all of its values) to the output stream */
-    public void write(DataOutputStream out) throws IOException {
+    void write(DataOutputStream out, List<Attribute.Encoder<?>> encoders) throws IOException {
         writeHeader(out, getValueTag(), getName());
         if (getValues().isEmpty()) {
             out.writeShort(0);
             return;
         }
 
-        getEncoder().writeValue(out, getValue(0));
+        getEncoder().writeValue(out, encoders, getValue(0));
         for (int i = 1; i < getValues().size(); i++) {
             writeHeader(out, getValueTag(), "");
-            getEncoder().writeValue(out, getValues().get(i));
+            getEncoder().writeValue(out, encoders, getValues().get(i));
         }
     }
 

@@ -1,4 +1,4 @@
-package com.hp.jipp;
+package com.hp.jipp.util;
 
 import java.util.Collections;
 import java.util.HashMap;

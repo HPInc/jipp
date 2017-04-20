@@ -9,7 +9,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 

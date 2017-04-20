@@ -1,14 +1,12 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,7 +16,7 @@ import java.util.List;
  */
 public class StringType extends AttributeType<String> {
 
-    static final Encoder<String> ENCODER = new Encoder<String>() {
+    static final Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>() {
 
         @Override
         public void writeValue(DataOutputStream out, String value) throws IOException {

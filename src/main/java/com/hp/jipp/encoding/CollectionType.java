@@ -1,11 +1,12 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * A collection attribute type.
@@ -15,12 +16,12 @@ import java.io.IOException;
 public class CollectionType extends AttributeType<AttributeCollection> {
 
     /** Used to terminate a collection */
-    private static final Attribute EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
+    private static final Attribute<byte[]> EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
 
-    static final Encoder<AttributeCollection> ENCODER = new Encoder<AttributeCollection>() {
+    static final Attribute.Encoder<AttributeCollection> ENCODER = new Attribute.Encoder<AttributeCollection>() {
 
         @Override
-        public void writeValue(DataOutputStream out, AttributeCollection value)
+        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, AttributeCollection value)
                 throws IOException {
             out.writeShort(0); // Empty value
 
@@ -31,15 +32,15 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 writeValueBytes(out, attribute.getName().getBytes(Util.UTF8));
 
                 // Write the attribute, but without its name
-                attribute.withName("").write(out);
+                attribute.withName("").write(out, encoders);
             }
 
             // Terminating attribute
-            EndCollectionAttribute.write(out);
+            EndCollectionAttribute.write(out, encoders);
         }
 
         @Override
-        public AttributeCollection readValue(DataInputStream in, Tag valueTag)
+        AttributeCollection readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag)
                 throws IOException {
             skipValueBytes(in);
             ImmutableList.Builder<Attribute<?>> builder = new ImmutableList.Builder<>();
@@ -55,13 +56,25 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
                     String memberName = new String(readValueBytes(in), Util.UTF8);
-                    Attribute memberValue = Attribute.read(in, Tag.read(in));
+                    Attribute memberValue = Attribute.read(in, encoders, Tag.read(in));
                     builder.add(memberValue.withName(memberName));
                 } else {
                     throw new ParseError("Bad tag: " + tag);
                 }
             }
             return new AttributeCollection(builder.build());
+        }
+
+        @Override
+        void writeValue(DataOutputStream out, AttributeCollection value)
+                throws IOException {
+            throw new IllegalArgumentException("Encoders required");
+        }
+
+        @Override
+        AttributeCollection readValue(DataInputStream in, Tag valueTag)
+                throws IOException {
+            throw new IllegalArgumentException("Encoders required");
         }
 
         @Override

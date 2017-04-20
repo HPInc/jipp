@@ -28,7 +28,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
      * to create instance for new EnumTypes.
      */
     @AutoValue
-    public abstract static class Encoder<T extends NameCode> extends com.hp.jipp.encoding.Encoder<T> {
+    public abstract static class Encoder<T extends NameCode> extends Attribute.Encoder<T> {
 
         /** Return the user-visible name of the enum (for debugging purposes) */
         public abstract String getName();

@@ -1,0 +1,27 @@
+#!/bin/bash -e
+#
+# Analyzes dependencies and builds a graph of them. Assumes a recent build.
+# 
+
+REPORT_DIR=build/reports/classycle
+CLASSPATH=build/classes/main/com/hp/jipp
+CLASSYCLE_JAR=classycle.jar
+PACKAGE=com.hp.jipp
+
+mkdir -p $REPORT_DIR
+
+if [ ! -f $CLASSYCLE_JAR ]; then
+    echo "Requires the latest version of classycle.jar (https://sourceforge.net/projects/classycle/files/)"
+    exit -1
+fi
+
+# http://classycle.sourceforge.net/usageAnalyser.html
+java -jar $CLASSYCLE_JAR -xmlFile=$REPORT_DIR/report.xml -excludingClasses="*AutoValue*" -mergeInnerClasses $CLASSPATH
+
+# Use this cute python script to convert xml to dot. It will probably break if the package hierarchy >1
+script/xmlToDot $PACKAGE <$REPORT_DIR/report.xml >$REPORT_DIR/report.dot
+
+dot -T png -o $REPORT_DIR/report.png $REPORT_DIR/report.dot
+
+echo
+echo "Output in $REPORT_DIR/report.dot"

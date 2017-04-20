@@ -1,6 +1,6 @@
 package com.hp.jipp.model;
 
-import com.hp.jipp.Hook;
+import com.hp.jipp.util.Hook;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

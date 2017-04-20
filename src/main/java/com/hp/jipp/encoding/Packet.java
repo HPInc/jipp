@@ -3,8 +3,6 @@ package com.hp.jipp.encoding;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.model.Operation;
-import com.hp.jipp.model.Status;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,20 +17,48 @@ import java.util.List;
 public abstract class Packet {
     /** Default version number to be sent in a packet (0x0101 for IPP 1.1) */
     public static final int DEFAULT_VERSION_NUMBER = 0x0101;
+
     private static final byte[] EMPTY_DATA = new byte[0];
+
+    /** Construct and return a builder for creating packets */
+    public static Builder builder() {
+        return new AutoValue_Packet.Builder().setVersionNumber(DEFAULT_VERSION_NUMBER)
+                .setAttributeGroups(ImmutableList.<AttributeGroup>of()).setData(EMPTY_DATA);
+    }
+
+    /** Construct and return a builder based on an existing packet */
+    public static Builder builder(Packet source) {
+        return new AutoValue_Packet.Builder(source);
+    }
+
+    /**
+     * Construct a packet containing the default version number and the specified operation
+     * and request ID
+     */
+    public static Builder builder(NameCode code, int requestId) {
+        return builder().setCode(code).setRequestId(requestId);
+    }
+
+    /**
+     * Construct and return a complete packet
+     */
+    public static Packet create(NameCode code, int requestId, AttributeGroup... groups) {
+        return builder(code, requestId).setAttributeGroups(Arrays.asList(groups)).build();
+    }
 
     abstract public int getVersionNumber();
 
     /**
-     * Return this packet's operation code (for a request) or status code (for a response).
+     * Return this packet's code.
      */
     abstract public int getCode();
 
-    /** Return this request packet's operation */
-    public Operation getOperation() { return Operation.toOperation(getCode()); }
-
-    /** Return this response packet's status */
-    public Status getStatus() { return Status.toStatus(getCode()); }
+    /**
+     * Return a NameCode corresponding to this packet's code.
+     */
+    public <T extends NameCode> T getCode(EnumType.Encoder<T> encoder) {
+        return encoder.getEnum(getCode());
+    }
 
     /**
      * Return the request ID for this packet
@@ -57,32 +83,6 @@ public abstract class Packet {
      */
     @SuppressWarnings("mutable")
     abstract public byte[] getData();
-
-    /** Construct and return a builder for creating packets */
-    public static Builder builder() {
-        return new AutoValue_Packet.Builder().setVersionNumber(DEFAULT_VERSION_NUMBER)
-                .setAttributeGroups(ImmutableList.<AttributeGroup>of()).setData(EMPTY_DATA);
-    }
-
-    /** Construct and return a builder based on an existing packet */
-    public static Builder builder(Packet source) {
-        return new AutoValue_Packet.Builder(source);
-    }
-
-    /**
-     * Construct a packet containing the default version number and the specified operation
-     * and request ID
-     */
-    public static Builder builder(Operation operation, int requestId) {
-        return builder().setOperation(operation).setRequestId(requestId);
-    }
-
-    /**
-     * Construct and return a complete packet
-     */
-    public static Packet create(Operation operation, int requestId, AttributeGroup... groups) {
-        return builder(operation, requestId).setAttributeGroups(Arrays.asList(groups)).build();
-    }
 
     /** Write the contents of this object to the output stream as per RFC2910 */
     public void write(DataOutputStream out) throws IOException {
@@ -129,8 +129,8 @@ public abstract class Packet {
     abstract public static class Builder {
         abstract public Builder setVersionNumber(int versionNumber);
         abstract public Builder setCode(int code);
-        public Builder setOperation(Operation operation) {
-            return setCode(operation.getCode());
+        public Builder setCode(NameCode code) {
+            return setCode(code.getCode());
         }
         abstract public Builder setRequestId(int requestId);
         abstract public Builder setAttributeGroups(List<AttributeGroup> groups);
@@ -138,13 +138,23 @@ public abstract class Packet {
         abstract public Packet build();
     }
 
+    /** Describes the packet including its code */
+    public final String describe(EnumType.Encoder<?> codeEncoder) {
+        return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
+                ", code=x" + codeEncoder.getEnum(getCode()) +
+                ", rId=x" + Integer.toHexString(getRequestId()) +
+                ", ags=" + getAttributeGroups() +
+                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
+                "}";
+    }
+
     @Override
     public final String toString() {
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", code=" + (Operation.isKnown(getCode()) ? Operation.toOperation(getCode()) : Status.toStatus(getCode())) +
-                ", rid=x" + Integer.toHexString(getRequestId()) +
-                ", a=" + getAttributeGroups() +
-                (getData().length == 0 ? "" : ", dlen=" + getData().length) +
+                ", code=x" + Integer.toHexString(getCode()) +
+                ", rId=x" + Integer.toHexString(getRequestId()) +
+                ", ags=" + getAttributeGroups() +
+                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 "}";
     }
 }

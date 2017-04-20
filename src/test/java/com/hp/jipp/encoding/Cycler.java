@@ -23,18 +23,18 @@ public class Cycler {
     public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return attributeType.getEncoder().read(in, Tag.read(in));
+        return attributeType.getEncoder().read(in, AttributeEncoders.ENCODERS, Tag.read(in));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.read(in, Tag.read(in));
+        return (Attribute<T>) Attribute.read(in, AttributeEncoders.ENCODERS, Tag.read(in));
     }
 
-    public static byte[] toBytes(Attribute attribute) throws IOException {
+    public static byte[] toBytes(Attribute<?> attribute) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        attribute.write(new DataOutputStream(bytesOut));
+        attribute.write(new DataOutputStream(bytesOut), AttributeEncoders.ENCODERS);
         return bytesOut.toByteArray();
     }
 

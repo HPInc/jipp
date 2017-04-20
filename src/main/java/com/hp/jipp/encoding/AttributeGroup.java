@@ -6,7 +6,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.hp.jipp.Hook;
+import com.hp.jipp.util.Hook;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -112,8 +112,8 @@ abstract public class AttributeGroup {
 
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
-        for(Attribute attribute : getAttributes()) {
-            attribute.write(out);
+        for(Attribute<?> attribute : getAttributes()) {
+            attribute.write(out, AttributeEncoders.ENCODERS);
         }
     }
 
@@ -132,7 +132,7 @@ abstract public class AttributeGroup {
                 in.reset();
                 attributes = false;
             } else {
-                attributesBuilder.add(Attribute.read(in, valueTag));
+                attributesBuilder.add(Attribute.read(in, AttributeEncoders.ENCODERS, valueTag));
             }
         }
         return create(startTag, attributesBuilder.build());

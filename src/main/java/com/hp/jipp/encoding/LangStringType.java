@@ -2,7 +2,7 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,7 +12,7 @@ import java.util.List;
 /** An language-encoded string attribute type */
 public class LangStringType extends AttributeType<LangString> {
 
-    static final Encoder<LangString> ENCODER = new Encoder<LangString>() {
+    static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>() {
         @Override
         LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
             String lang = new String(readValueBytes(in), Util.UTF8);

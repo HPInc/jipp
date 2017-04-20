@@ -76,19 +76,19 @@ public abstract class Tag {
      *
      * Known tags can be tested for equality with ==.
      */
-    public static Tag toTag(int value) {
+    static Tag toTag(int value) {
         Optional<Tag> tag = Optional.fromNullable(CodeToTag.get(value));
         if (tag.isPresent()) return tag.get();
         return create("UNKNOWN(x" + Integer.toHexString(value) + ")", value);
     }
 
     /** Read and return a tag from the input stream */
-    public static Tag read(DataInputStream in) throws IOException {
+    static Tag read(DataInputStream in) throws IOException {
         return toTag(in.readByte());
     }
 
     /** Write this tag to the output stream */
-    public void write(DataOutputStream out) throws IOException {
+    void write(DataOutputStream out) throws IOException {
         out.writeByte((byte)getValue());
     }
 
@@ -105,7 +105,7 @@ public abstract class Tag {
     abstract public int getValue();
 
     /** Return true if this tag is a delimiter tag */
-    public boolean isDelimiter() {
+    boolean isDelimiter() {
         return getValue() >= 0x01 && getValue() < 0x10;
     }
 

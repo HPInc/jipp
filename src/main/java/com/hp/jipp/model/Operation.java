@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.NameCode;
 
-import java.util.Collection;
-
 /**
  * An operation code as found in request packets and elsewhere.
  *
@@ -14,12 +12,13 @@ import java.util.Collection;
  */
 @AutoValue
 public abstract class Operation extends NameCode {
+    // Note: this is really an OperationCode. If there are ever real Operation objects, rename.
 
     public final static Operation PrintJob = create("Print-Job", 0x0002);
     public final static Operation PrintUri = create("Print-URI", 0x0003);
     public final static Operation ValidateJob = create("Validate-Job", 0x0004);
     public final static Operation CreateJob = create("Create-Job", 0x0005);
-    public final static Operation SendDocument = create("SendDocument", 0x0006);
+    public final static Operation SendDocument = create("Send-Document", 0x0006);
     public final static Operation SendUri = create("Send-URI", 0x0007);
     public final static Operation CancelJob = create("Cancel-Job", 0x0008);
     public final static Operation GetJobAttributes = create("Get-Job-Attributes", 0x0009);
@@ -32,7 +31,8 @@ public abstract class Operation extends NameCode {
     public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
-    private final static EnumType.Encoder<Operation> ENCODER = EnumType.encoder(
+    /** The encoder for converting integers to Operation objects */
+    public final static EnumType.Encoder<Operation> ENCODER = EnumType.encoder(
             "operation-id", ImmutableSet.of(
                     PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
                     GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,

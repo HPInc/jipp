@@ -1,0 +1,9 @@
+# See http://classycle.sourceforge.net/ddf.html
+show allResults
+
+{package} = com.hp.jipp
+
+[working] = ${package}.* excluding *AutoValue*
+
+check absenceOfPackageCycles > 1 in ${package}.*
+check absenceOfClassCycles > 1 in [working]

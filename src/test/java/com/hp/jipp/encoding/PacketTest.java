@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-import com.hp.jipp.Util;
+import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
@@ -17,7 +17,7 @@ import static com.hp.jipp.encoding.Cycler.*;
 public class PacketTest {
     private Packet packet;
     private Packet defaultPacket = Packet.builder().setVersionNumber(0x102)
-            .setOperation(Operation.HoldJob).setRequestId(0x50607).build();
+            .setCode(Operation.HoldJob).setRequestId(0x50607).build();
     private Packet.Builder defaultBuilder = Packet.builder(defaultPacket);
 
 
@@ -40,7 +40,7 @@ public class PacketTest {
     public void readEmptyPacket() throws IOException {
         packet = cycle(defaultPacket);
         assertEquals(defaultPacket.getVersionNumber(), packet.getVersionNumber());
-        assertEquals(defaultPacket.getOperation(), packet.getOperation());
+        assertEquals(defaultPacket.getCode(), packet.getCode());
         assertEquals(defaultPacket.getRequestId(), packet.getRequestId());
     }
 
@@ -202,7 +202,7 @@ public class PacketTest {
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
-        assertEquals(packet.getOperation(), Operation.GetJobAttributes);
+        assertEquals(packet.getCode(Operation.ENCODER), Operation.GetJobAttributes);
         assertEquals(packet.getRequestId(), 0x1010);
         assertEquals(packet.getAttributeGroups().get(0).getTag(), Tag.OperationAttributes);
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();

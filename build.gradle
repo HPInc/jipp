@@ -8,15 +8,16 @@ buildscript {
     }
     dependencies {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+        classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
     }
 }
 
-// Settings for building the library
 apply plugin: 'java'
 apply plugin: "idea"
 apply plugin: "net.ltgt.apt"
 apply plugin: "pmd"
 apply plugin: "findbugs"
+apply plugin: "pl.squirrel.classycle"
 
 repositories {
     jcenter()
@@ -54,6 +55,4 @@ dependencies {
     compile 'com.google.guava:guava:20.0' // Apache 2.0
 
     testCompile 'junit:junit:4.12'
-    targetCompatibility = 1.7
-    sourceCompatibility = 1.7
 }

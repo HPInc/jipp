@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class IntegerType extends AttributeType<Integer> {
-    static Encoder<Integer> ENCODER = new Encoder<Integer>() {
+    static Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
 
         @Override
         public void writeValue(DataOutputStream out, Integer value) throws IOException {
