@@ -8,9 +8,6 @@ class AttributeEncoders {
     /** Encoders available to parse incoming data */
     static final List<Attribute.Encoder<?>> ENCODERS = ImmutableList.of(
             IntegerType.ENCODER, StringType.ENCODER, UriType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
-            CollectionType.ENCODER, OctetStringType.ENCODER);
-            // TODO: RangeOfInteger attribute
-            // TODO: 1setofX
-            // TODO: resolution
-            // TODO: dateTime
+            CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER,  OctetStringType.ENCODER);
+            // TODO: dateTime?
 }

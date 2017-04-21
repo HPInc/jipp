@@ -1,8 +1,11 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -10,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A request packet as specified in RFC2910.
@@ -107,7 +111,10 @@ public abstract class Packet {
         }
     }
 
-    /** Read the contents of the input stream, returning a parsed Packet or throwing an exception */
+    /**
+     * Read the contents of the input stream, returning a parsed Packet or throwing an exception.
+     * Note: the input stream is not closed.
+     */
     public static Packet read(DataInputStream in) throws IOException {
         Packet.Builder builder = builder().setVersionNumber(in.readShort())
                 .setCode(in.readShort()).setRequestId(in.readInt());
@@ -149,12 +156,28 @@ public abstract class Packet {
         abstract public Packet build();
     }
 
-    /** Describes the packet including its code */
-    public final String describe(EnumType.Encoder<?> codeEncoder) {
+    /** Describes a packet including its proper code and attribute types */
+    public final String describe(EnumType.Encoder<?> codeEncoder, List<AttributeType<?>> attributeTypes) {
+        // Construct a map of attribute names to attributeTypes for speed
+        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(attributeTypes,
+                new Function<AttributeType<?>, String>() {
+                    @Override
+                    public String apply(AttributeType<?> type) {
+                        return type.getName();
+                    }
+                });
+
+        String attributeGroups = Lists.transform(getAttributeGroups(), new Function<AttributeGroup, String>() {
+            @Override
+            public String apply(AttributeGroup input) {
+                return input.describe(attributeTypeMap);
+            }
+        }).toString();
+
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
                 ", code=x" + codeEncoder.getEnum(getCode()) +
                 ", rId=x" + Integer.toHexString(getRequestId()) +
-                ", ags=" + getAttributeGroups() +
+                ", ags=" + attributeGroups +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 "}";
     }

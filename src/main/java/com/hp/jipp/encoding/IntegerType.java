@@ -5,13 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class IntegerType extends AttributeType<Integer> {
-    static Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
-
-        @Override
-        public void writeValue(DataOutputStream out, Integer value) throws IOException {
-            out.writeShort(4);
-            out.writeInt(value);
-        }
+    static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
 
         @Override
         public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
@@ -20,8 +14,14 @@ public class IntegerType extends AttributeType<Integer> {
         }
 
         @Override
+        public void writeValue(DataOutputStream out, Integer value) throws IOException {
+            out.writeShort(4);
+            out.writeInt(value);
+        }
+
+        @Override
         boolean valid(Tag valueTag) {
-            return valueTag == Tag.IntegerValue || valueTag == Tag.EnumValue;
+            return Tag.IntegerValue.equals(valueTag) || Tag.EnumValue.equals(valueTag);
         }
     };
 

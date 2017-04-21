@@ -1,12 +1,12 @@
 package com.hp.jipp.model;
 
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
-import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
 
-import java.net.URI;
+import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
 public final class Attributes {
@@ -30,7 +30,6 @@ public final class Attributes {
     public static final StringType DocumentAccessError =
             new StringType(Tag.TextWithoutLanguage, "document-access-error");
 
-
     // Get-Printer-Attributes request fields
 
     public static final StringType RequestingUserName =
@@ -53,9 +52,23 @@ public final class Attributes {
     public static final StringType DocumentName =
             new StringType(Tag.TextWithoutLanguage, "document-name");
 
-
     // Get-Printer-Attributes response fields
 
-    public static StringType PrinterInfo =
+    public static final StringType PrinterInfo =
             new StringType(Tag.TextWithoutLanguage, "printer-info");
+
+    public static final List<AttributeType<?>> All = ImmutableList.of(
+            AttributesCharset,
+            AttributesNaturalLanguage,
+            DetailedStatusMessage,
+            DocumentAccessError,
+            DocumentName,
+            JobName,
+            OperationsSupported,
+            PrinterInfo,
+            PrinterUri,
+            RequestedAttributes,
+            RequestingUserName,
+            StatusMessage
+    );
 }

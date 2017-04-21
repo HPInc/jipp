@@ -1,14 +1,18 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.io.BaseEncoding;
 import com.hp.jipp.util.Hook;
 import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,20 +49,22 @@ public abstract class Attribute<T> {
      */
     abstract static class Encoder<T> {
         /** Read a single value from the input stream */
-        T readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
-            return readValue(in, valueTag);
-        }
-
-        /** Write a single value to the output stream */
-        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, T value) throws IOException {
-            writeValue(out, value);
-        }
-
-        /** Read a single value from the input stream */
         abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
 
         /** Write a single value to the output stream */
         abstract void writeValue(DataOutputStream out, T value) throws IOException;
+
+        /** Read a single value from the input stream, making use of the set of encoders */
+        T readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+            // This method and writeValue are only present so that CollectionType can make use of the
+            // encoder set. Other subclasses only need the two-argument style so we default to it.
+            return readValue(in, valueTag);
+        }
+
+        /** Write a single value to the output stream, making use of the set of encoders */
+        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, T value) throws IOException {
+            writeValue(out, value);
+        }
 
         /** Return true if this tag can be handled by this encoder */
         abstract boolean valid(Tag valueTag);
@@ -191,9 +197,25 @@ public abstract class Attribute<T> {
 
     @Override
     public final String toString() {
-        // TODO: Fix byte[] output
-        return "Attr{t=" + getValueTag() +
-                (getName().equals("") ? "" : ", n=" + getName()) +
-                ", v=" + getValues() + "}";
+        List<String> values = Lists.transform(getValues(), new Function<T, String>() {
+            @Override
+            public String apply(T input) {
+                if (input instanceof String || input instanceof URI) {
+                    return "\"" + input + "\"";
+                } else if (input instanceof byte[]) {
+                    return "x" + BaseEncoding.base16().encode((byte[]) input);
+                }
+                return input.toString();
+            }
+        });
+        String valueString;
+        if (values.size() == 1) {
+            valueString = values.get(0);
+        } else {
+            valueString = values.toString();
+        }
+        return (getName().equals("") ? "" : getName()) +
+                "(" + getValueTag() + ")" +
+                ": " + valueString;
     }
 }

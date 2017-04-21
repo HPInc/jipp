@@ -1,11 +1,13 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.hp.jipp.util.Hook;
 
 import java.io.DataInputStream;
@@ -34,6 +36,50 @@ abstract public class AttributeGroup {
         return new AutoValue_AttributeGroup.Builder()
                 .setTag(startTag)
                 .setAttributes(attributes).build();
+    }
+
+    @AutoValue.Builder
+    abstract static class Builder {
+
+        abstract Builder setTag(Tag startTag);
+
+        public abstract Builder setAttributes(List<Attribute<?>> attributes);
+
+        abstract List<Attribute<?>> getAttributes();
+
+        abstract AttributeGroup autoBuild();
+
+        public AttributeGroup build() {
+            // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
+            // is malformed (see [RFC2911] section 3.1.3).
+            // Throw if someone attempts this.
+            Set<String> exist = new HashSet<>();
+            for (Attribute<?> attribute : getAttributes()) {
+                if (exist.contains(attribute.getName()) && !Hook.is(HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP)) {
+                    throw new BuildError("Attribute Group contains more than one '" + attribute.getName() +
+                            "' in " + getAttributes());
+                }
+                exist.add(attribute.getName());
+            }
+            return autoBuild();
+        }
+    }
+
+    static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
+        boolean attributes = true;
+        ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
+
+        while(attributes) {
+            in.mark(1);
+            Tag valueTag = Tag.toTag(in.readByte());
+            if (valueTag.isDelimiter()) {
+                in.reset();
+                attributes = false;
+            } else {
+                attributesBuilder.add(Attribute.read(in, AttributeEncoders.ENCODERS, valueTag));
+            }
+        }
+        return create(startTag, attributesBuilder.build());
     }
 
     /** Return the tag that delimits this group */
@@ -83,33 +129,6 @@ abstract public class AttributeGroup {
         return attribute.get().getValues();
     }
 
-    @AutoValue.Builder
-    abstract static class Builder {
-
-        abstract Builder setTag(Tag startTag);
-
-        public abstract Builder setAttributes(List<Attribute<?>> attributes);
-
-        abstract List<Attribute<?>> getAttributes();
-
-        abstract AttributeGroup autoBuild();
-
-        public AttributeGroup build() {
-            // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-            // is malformed (see [RFC2911] section 3.1.3).
-            // Throw if someone attempts this.
-            Set<String> exist = new HashSet<>();
-            for (Attribute<?> attribute : getAttributes()) {
-                if (exist.contains(attribute.getName()) && !Hook.is(HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP)) {
-                    throw new BuildError("Attribute Group contains more than one '" + attribute.getName() +
-                            "' in " + getAttributes());
-                }
-                exist.add(attribute.getName());
-            }
-            return autoBuild();
-        }
-    }
-
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
         for(Attribute<?> attribute : getAttributes()) {
@@ -121,20 +140,22 @@ abstract public class AttributeGroup {
         return read(Tag.read(in), in);
     }
 
-    static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
-        boolean attributes = true;
-        ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
-
-        while(attributes) {
-            in.mark(1);
-            Tag valueTag = Tag.toTag(in.readByte());
-            if (valueTag.isDelimiter()) {
-                in.reset();
-                attributes = false;
-            } else {
-                attributesBuilder.add(Attribute.read(in, AttributeEncoders.ENCODERS, valueTag));
+    /** Similar to toString but applies additional knowledge of enclosed attribute types */
+    public String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
+        String attributes = Lists.transform(getAttributes(), new Function<Attribute<?>, Attribute<?>>() {
+            @Override
+            public Attribute<?> apply(Attribute<?> input) {
+                if (input.getValueTag() == Tag.TextWithLanguage || input.getValueTag() == Tag.NameWithLanguage) {
+                    // Don't convert these because the supplied attributeType might strip the language field
+                    return input;
+                }
+                if (attributeTypeMap.containsKey(input.getName())) {
+                    Optional<? extends Attribute<?>> optAttribute = attributeTypeMap.get(input.getName()).from(input);
+                    if (optAttribute.isPresent()) return optAttribute.get();
+                }
+                return input;
             }
-        }
-        return create(startTag, attributesBuilder.build());
+        }).toString();
+        return "AttributeGroup{tag=" + getTag() + ", attributes=" + attributes;
     }
 }

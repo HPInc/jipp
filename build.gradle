@@ -38,6 +38,24 @@ tasks.withType(FindBugs) {
     }
 }
 
+sourceSets {
+    test {
+        java {
+            srcDirs = [ 'src/test/java' ]
+        }
+        resources {
+            srcDirs = [ 'src/test/resources' ]
+        }
+    }
+}
+
+// This hack puts testing resource files where we can get to them
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources/printer"
+    into "${buildDir}/classes/test/printer"
+}
+processTestResources.dependsOn copyTestResources
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
