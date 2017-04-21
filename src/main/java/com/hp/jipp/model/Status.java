@@ -74,7 +74,7 @@ public abstract class Status extends NameCode {
             "status-code", All, new NameCode.Factory<Status>() {
                 @Override
                 public Status create(String name, int code) {
-                    return Status.create(name, code);
+                    return create(name, code);
                 }
             });
 
@@ -89,8 +89,6 @@ public abstract class Status extends NameCode {
 
     /**
      * Return a new instance
-     * @param name human-readable name of the the operation
-     * @param code machine-readable identifier for the operation
      */
     public static Status create(String name, int code) {
         return new AutoValue_Status(name, code);

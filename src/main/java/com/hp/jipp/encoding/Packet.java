@@ -152,6 +152,9 @@ public abstract class Packet {
         }
         abstract public Builder setRequestId(int requestId);
         abstract public Builder setAttributeGroups(List<AttributeGroup> groups);
+        public Builder setAttributeGroups(AttributeGroup... groups) {
+            return setAttributeGroups(Arrays.asList(groups));
+        }
         abstract public Builder setData(byte[] data);
         abstract public Packet build();
     }
@@ -175,7 +178,7 @@ public abstract class Packet {
         }).toString();
 
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", code=x" + codeEncoder.getEnum(getCode()) +
+                ", code=" + codeEncoder.getEnum(getCode()) +
                 ", rId=x" + Integer.toHexString(getRequestId()) +
                 ", ags=" + attributeGroups +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +

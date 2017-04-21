@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.hp.jipp.model.JobState;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -21,6 +22,10 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
         return new AutoValue_EnumType_Encoder<>(name,
                 new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toMap(enums)).build(),
                 factory);
+    }
+
+    public static <T extends NameCode> EnumType<T> type(Encoder<T> encoder, String name) {
+        return new EnumType<>(encoder, name);
     }
 
     /**

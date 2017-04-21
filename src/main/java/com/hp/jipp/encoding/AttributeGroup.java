@@ -8,6 +8,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.hp.jipp.util.Hook;
 
 import java.io.DataInputStream;
@@ -138,6 +139,16 @@ abstract public class AttributeGroup {
 
     public static AttributeGroup read(DataInputStream in) throws IOException {
         return read(Tag.read(in), in);
+    }
+
+    /** Similar to toString but applies additional knowledge of enclosed attribute types */
+    public String describe(List<AttributeType<?>> attributeTypes) {
+        return describe(Maps.uniqueIndex(attributeTypes, new Function<AttributeType<?>, String>() {
+                    @Override
+                    public String apply(AttributeType<?> type) {
+                        return type.getName();
+                    }
+                }));
     }
 
     /** Similar to toString but applies additional knowledge of enclosed attribute types */

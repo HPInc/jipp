@@ -2,6 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.ResolutionType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
@@ -39,11 +40,29 @@ public final class Attributes {
     public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
 
-    public static final AttributeType<Operation> OperationsSupported =
+    public static final EnumType<Operation> OperationsSupported =
             Operation.createType("operations-supported");
 
     public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
+
+
+    // Get-Printer-Attributes response fields
+
+    public static final StringType PrinterInfo =
+            new StringType(Tag.TextWithoutLanguage, "printer-info");
+
+    public static final EnumType<PrinterState> PrinterState =
+            EnumType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+
+    // 3.2.1.1 Print-Job Request
+
+    public static StringType DocumentFormat =
+            new StringType(Tag.MimeMediaType, "document-format");
+
+    // 3.2.1.1 Print-Job Response
+    public static EnumType<JobState> JobState =
+            EnumType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
     // Others
 
@@ -52,13 +71,6 @@ public final class Attributes {
 
     public static final StringType DocumentName =
             new StringType(Tag.TextWithoutLanguage, "document-name");
-
-    // Get-Printer-Attributes response fields
-
-    public static final StringType PrinterInfo =
-            new StringType(Tag.TextWithoutLanguage, "printer-info");
-
-    // Others
 
     public static final ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
@@ -73,10 +85,13 @@ public final class Attributes {
             JobName,
             OperationsSupported,
             PrinterInfo,
-            PrinterResolutionDefault,
+            PrinterState,
             PrinterUri,
             RequestedAttributes,
             RequestingUserName,
-            StatusMessage
+            StatusMessage,
+            DocumentFormat,
+            JobState,
+            PrinterResolutionDefault
     );
 }
