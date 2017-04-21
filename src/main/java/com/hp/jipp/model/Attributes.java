@@ -2,6 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.ResolutionType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
@@ -57,6 +58,12 @@ public final class Attributes {
     public static final StringType PrinterInfo =
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
+    // Others
+
+    public static final ResolutionType PrinterResolutionDefault =
+            new ResolutionType(Tag.Resolution, "printer-resolution-default");
+
+    /** All attributes, useful when printing contents */
     public static final List<AttributeType<?>> All = ImmutableList.of(
             AttributesCharset,
             AttributesNaturalLanguage,
@@ -66,6 +73,7 @@ public final class Attributes {
             JobName,
             OperationsSupported,
             PrinterInfo,
+            PrinterResolutionDefault,
             PrinterUri,
             RequestedAttributes,
             RequestingUserName,

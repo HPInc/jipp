@@ -21,7 +21,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
     static final Attribute.Encoder<AttributeCollection> ENCODER = new Attribute.Encoder<AttributeCollection>() {
 
         @Override
-        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, AttributeCollection value)
+        void writeValue(DataOutputStream out, AttributeCollection value)
                 throws IOException {
             out.writeShort(0); // Empty value
 
@@ -32,11 +32,11 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 writeValueBytes(out, attribute.getName().getBytes(Util.UTF8));
 
                 // Write the attribute, but without its name
-                attribute.withName("").write(out, encoders);
+                attribute.withName("").write(out);
             }
 
             // Terminating attribute
-            EndCollectionAttribute.write(out, encoders);
+            EndCollectionAttribute.write(out);
         }
 
         @Override
@@ -63,12 +63,6 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 }
             }
             return new AttributeCollection(builder.build());
-        }
-
-        @Override
-        void writeValue(DataOutputStream out, AttributeCollection value)
-                throws IOException {
-            throw new IllegalArgumentException("Encoders required");
         }
 
         @Override

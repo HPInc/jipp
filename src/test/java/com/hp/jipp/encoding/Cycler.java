@@ -34,7 +34,7 @@ public class Cycler {
 
     public static byte[] toBytes(Attribute<?> attribute) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        attribute.write(new DataOutputStream(bytesOut), AttributeEncoders.ENCODERS);
+        attribute.write(new DataOutputStream(bytesOut));
         return bytesOut.toByteArray();
     }
 

@@ -61,11 +61,6 @@ public abstract class Attribute<T> {
             return readValue(in, valueTag);
         }
 
-        /** Write a single value to the output stream, making use of the set of encoders */
-        void writeValue(DataOutputStream out, List<Attribute.Encoder<?>> encoders, T value) throws IOException {
-            writeValue(out, value);
-        }
-
         /** Return true if this tag can be handled by this encoder */
         abstract boolean valid(Tag valueTag);
 
@@ -106,7 +101,7 @@ public abstract class Attribute<T> {
             return builder.build();
         }
 
-        /** Read a single additional value into the builder, returning true if more */
+        /** Read a single additional value if possible */
         private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, List<Attribute.Encoder<?>> encoders)
                 throws IOException {
             if (in.available() < 3) return Optional.absent();
@@ -174,17 +169,17 @@ public abstract class Attribute<T> {
     }
 
     /** Write this attribute (including all of its values) to the output stream */
-    void write(DataOutputStream out, List<Attribute.Encoder<?>> encoders) throws IOException {
+    void write(DataOutputStream out) throws IOException {
         writeHeader(out, getValueTag(), getName());
         if (getValues().isEmpty()) {
             out.writeShort(0);
             return;
         }
 
-        getEncoder().writeValue(out, encoders, getValue(0));
+        getEncoder().writeValue(out, getValue(0));
         for (int i = 1; i < getValues().size(); i++) {
             writeHeader(out, getValueTag(), "");
-            getEncoder().writeValue(out, encoders, getValues().get(i));
+            getEncoder().writeValue(out, getValues().get(i));
         }
     }
 

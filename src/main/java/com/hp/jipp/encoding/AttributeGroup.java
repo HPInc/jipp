@@ -132,7 +132,7 @@ abstract public class AttributeGroup {
     public void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
         for(Attribute<?> attribute : getAttributes()) {
-            attribute.write(out, AttributeEncoders.ENCODERS);
+            attribute.write(out);
         }
     }
 

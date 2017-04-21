@@ -2,12 +2,11 @@ package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.model.Operation;
 
 /**
  * Describes a printing resolution
  *
- * @eee <a href="https://tools.ietf.org/html/rfc2911#section-4.1.15">RFC2911 Section 4.1.15</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2911#section-4.1.15">RFC2911 Section 4.1.15</a>
  */
 @AutoValue
 abstract public class Resolution {
