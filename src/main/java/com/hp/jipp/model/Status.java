@@ -2,6 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
+import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.NameCode;
 
 import java.util.Collection;
@@ -68,6 +69,14 @@ public abstract class Status extends NameCode {
     );
 
     private final static Map<Integer, Status> CodeToStatus = NameCode.toMap(All);
+
+    public final static EnumType.Encoder<Status> ENCODER = EnumType.encoder(
+            "status-code", All, new NameCode.Factory<Status>() {
+                @Override
+                public Status create(String name, int code) {
+                    return Status.create(name, code);
+                }
+            });
 
     /**
      * Look up or convert an operation code into an Status object

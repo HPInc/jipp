@@ -31,14 +31,10 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "document-access-error");
 
 
+    // Get-Printer-Attributes request fields
+
     public static final StringType RequestingUserName =
             new StringType(Tag.TextWithoutLanguage, "requesting-user-name");
-
-    public static final StringType JobName =
-            new StringType(Tag.TextWithoutLanguage, "job-name");
-
-    public static final StringType DocumentName =
-            new StringType(Tag.TextWithoutLanguage, "document-name");
 
     public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
@@ -46,6 +42,20 @@ public final class Attributes {
     public static final AttributeType<Operation> OperationsSupported =
             Operation.createType("operations-supported");
 
-    // TODO: Add the other 1001...
+    public static final StringType RequestedAttributes =
+            new StringType(Tag.Keyword, "requested-attributes");
 
+    // Others
+
+    public static final StringType JobName =
+            new StringType(Tag.TextWithoutLanguage, "job-name");
+
+    public static final StringType DocumentName =
+            new StringType(Tag.TextWithoutLanguage, "document-name");
+
+
+    // Get-Printer-Attributes response fields
+
+    public static StringType PrinterInfo =
+            new StringType(Tag.TextWithoutLanguage, "printer-info");
 }

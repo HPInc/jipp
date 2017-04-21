@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -94,6 +95,16 @@ public abstract class Packet {
         }
         out.writeByte(Tag.EndOfAttributes.getValue());
         out.write(getData());
+    }
+
+    /** Write the entire contents of this packet to a single byte array */
+    public byte[] getBytes() {
+        try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()) {
+            write(new DataOutputStream(outBytes));
+            return outBytes.toByteArray();
+        } catch (IOException ignored) {
+            throw new IllegalArgumentException("Packet could not be written");
+        }
     }
 
     /** Read the contents of the input stream, returning a parsed Packet or throwing an exception */
