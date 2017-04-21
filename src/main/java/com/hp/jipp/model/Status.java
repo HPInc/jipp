@@ -2,11 +2,10 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.EnumType;
+import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
@@ -68,7 +67,7 @@ public abstract class Status extends NameCode {
             ServerErrorMultipleDocumentJobsNotSupported
     );
 
-    public final static EnumType.Encoder<Status> ENCODER = EnumType.encoder(
+    public final static NameCodeType.Encoder<Status> ENCODER = NameCodeType.encoder(
             "status-code", All, new NameCode.Factory<Status>() {
                 @Override
                 public Status create(String name, int code) {

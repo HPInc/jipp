@@ -2,7 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.EnumType;
+import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
 /**
@@ -32,7 +32,7 @@ public abstract class Operation extends NameCode {
     public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
 
     /** The encoder for converting integers to Operation objects */
-    public final static EnumType.Encoder<Operation> ENCODER = EnumType.encoder(
+    public final static NameCodeType.Encoder<Operation> ENCODER = NameCodeType.encoder(
             "operation-id", ImmutableSet.of(
                     PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
                     GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,
@@ -44,9 +44,9 @@ public abstract class Operation extends NameCode {
                 }
             });
 
-    /** Create and return a {@link EnumType} based on this NameCode */
-    public static EnumType<Operation> createType(String attributeName) {
-        return new EnumType<>(ENCODER, attributeName);
+    /** Create and return a {@link NameCodeType} based on this NameCode */
+    public static NameCodeType<Operation> createType(String attributeName) {
+        return new NameCodeType<>(ENCODER, attributeName);
     }
 
     /**

@@ -26,6 +26,12 @@ abstract public class AttributeGroup {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
+    /** Encoders available to parse incoming data */
+    static final List<Attribute.Encoder<?>> ENCODERS = ImmutableList.of(
+            IntegerType.ENCODER, StringType.ENCODER, UriType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
+            CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER,  OctetStringType.ENCODER);
+    // TODO: dateTime?
+
     /** Return a complete attribute group */
     public static AttributeGroup create(Tag startTag, Attribute<?>... attributes) {
         return create(startTag, Arrays.asList(attributes));
@@ -77,7 +83,7 @@ abstract public class AttributeGroup {
                 in.reset();
                 attributes = false;
             } else {
-                attributesBuilder.add(Attribute.read(in, AttributeEncoders.ENCODERS, valueTag));
+                attributesBuilder.add(Attribute.read(in, ENCODERS, valueTag));
             }
         }
         return create(startTag, attributesBuilder.build());

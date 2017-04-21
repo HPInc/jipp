@@ -2,7 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
-import com.hp.jipp.encoding.EnumType;
+import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
 import com.hp.jipp.encoding.StringType;
@@ -41,7 +41,7 @@ public final class Attributes {
     public final static UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
 
-    public final static EnumType<Operation> OperationsSupported =
+    public final static NameCodeType<Operation> OperationsSupported =
             Operation.createType("operations-supported");
 
     public final static StringType RequestedAttributes =
@@ -53,8 +53,8 @@ public final class Attributes {
     public final static StringType PrinterInfo =
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
-    public final static EnumType<PrinterState> PrinterState =
-            EnumType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+    public final static NameCodeType<PrinterState> PrinterState =
+            NameCodeType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
     public final static RangeOfIntegerType CopiesSupported =
             new RangeOfIntegerType("copies-supported");
@@ -65,8 +65,8 @@ public final class Attributes {
             new StringType(Tag.MimeMediaType, "document-format");
 
     // 3.2.1.1 Print-Job Response
-    public final static EnumType<JobState> JobState =
-            EnumType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
+    public final static NameCodeType<JobState> JobState =
+            NameCodeType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
     // Others
 

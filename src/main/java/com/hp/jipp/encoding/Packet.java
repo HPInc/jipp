@@ -61,7 +61,7 @@ public abstract class Packet {
     /**
      * Return a NameCode corresponding to this packet's code.
      */
-    public <T extends NameCode> T getCode(EnumType.Encoder<T> encoder) {
+    public <T extends NameCode> T getCode(NameCodeType.Encoder<T> encoder) {
         return encoder.get(getCode());
     }
 
@@ -160,7 +160,7 @@ public abstract class Packet {
     }
 
     /** Describes a packet including its proper code and attribute types */
-    public final String describe(EnumType.Encoder<?> codeEncoder, List<AttributeType<?>> attributeTypes) {
+    public final String describe(NameCodeType.Encoder<?> codeEncoder, List<AttributeType<?>> attributeTypes) {
         // Construct a map of attribute names to attributeTypes for speed
         final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(attributeTypes,
                 new Function<AttributeType<?>, String>() {

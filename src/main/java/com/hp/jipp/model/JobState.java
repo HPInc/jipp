@@ -2,7 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.EnumType;
+import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
 /**
@@ -21,7 +21,7 @@ public abstract class JobState extends NameCode {
     public static final JobState Aborted = create("aborted", 8);
     public static final JobState Completed = create("completed", 9);
 
-    public final static EnumType.Encoder<JobState> ENCODER = EnumType.encoder(
+    public final static NameCodeType.Encoder<JobState> ENCODER = NameCodeType.encoder(
             "job-state", ImmutableSet.of(
                     Pending, PendingHeld, Processing, ProcessingStopped, Canceled, Aborted, Completed
             ), new NameCode.Factory<JobState>() {

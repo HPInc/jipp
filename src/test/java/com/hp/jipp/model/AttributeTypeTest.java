@@ -19,8 +19,6 @@ import com.hp.jipp.encoding.Tag;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
-import java.util.concurrent.ExecutionException;
-
 public class AttributeTypeTest {
 
     @Rule

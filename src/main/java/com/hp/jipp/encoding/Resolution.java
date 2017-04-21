@@ -42,7 +42,7 @@ abstract public class Resolution {
         }
 
         /** The encoder for converting integers to Operation objects */
-        public final static EnumType.Encoder<Resolution.Unit> ENCODER = EnumType.encoder(
+        public final static NameCodeType.Encoder<Unit> ENCODER = NameCodeType.encoder(
                 "operation-id", ImmutableSet.of(
                         DotsPerInch, DotsPerCentimeter
                 ), new NameCode.Factory<Resolution.Unit>() {

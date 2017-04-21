@@ -13,18 +13,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class EnumType<T extends NameCode> extends AttributeType<T> {
+public class NameCodeType<T extends NameCode> extends AttributeType<T> {
 
     /** Create a new enumeration encoder */
     public static <T extends NameCode> Encoder<T> encoder(String name, Collection<T> enums,
             NameCode.Factory<T> factory) {
-        return new AutoValue_EnumType_Encoder<>(name,
+        return new AutoValue_NameCodeType_Encoder<>(name,
                 new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toMap(enums)).build(),
                 factory);
     }
 
-    public static <T extends NameCode> EnumType<T> type(Encoder<T> encoder, String name) {
-        return new EnumType<>(encoder, name);
+    public static <T extends NameCode> NameCodeType<T> type(Encoder<T> encoder, String name) {
+        return new NameCodeType<>(encoder, name);
     }
 
     /**
@@ -74,7 +74,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
         }
     };
 
-    public EnumType(Encoder<T> encoder, String name) {
+    public NameCodeType(Encoder<T> encoder, String name) {
         super(encoder, Tag.EnumValue, name);
     }
 
