@@ -49,18 +49,6 @@ public abstract class Operation extends NameCode {
         return new EnumType<>(ENCODER, attributeName);
     }
 
-    /** Return true if this is a known operation code */
-    public static boolean isKnown(int code) {
-        return ENCODER.getEnumsMap().containsKey(code);
-    }
-
-    /**
-     * Look up or convert an operation code into an Operation object
-     */
-    public static Operation toOperation(int code) {
-        return ENCODER.getEnum(code);
-    }
-
     /**
      * Returns a new instance
      * @param name human-readable name of the the operation

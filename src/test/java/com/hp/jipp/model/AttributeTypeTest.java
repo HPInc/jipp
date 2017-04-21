@@ -9,13 +9,17 @@ import org.junit.rules.ExpectedException;
 
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IntegerType;
+import com.hp.jipp.encoding.Resolution;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
 import static com.hp.jipp.encoding.Cycler.*;
+
+import java.util.concurrent.ExecutionException;
 
 public class AttributeTypeTest {
 
@@ -59,4 +63,26 @@ public class AttributeTypeTest {
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).get().getValues());
     }
+
+    @Test
+    public void customEnumValue() throws Exception {
+        assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
+    }
+
+    @Test
+    public void rangeOfIntegers() throws Exception {
+        Range range = cycle(Attributes.CopiesSupported.of(Range.closed(0, 99))).getValue(0);
+        assertEquals(0, range.lowerEndpoint());
+        assertEquals(99, range.upperEndpoint());
+    }
+
+    @Test
+    public void resolution() throws Exception {
+        Resolution resolution = cycle(Attributes.PrinterResolutionDefault.of(
+                Resolution.of(300, 600, Resolution.Unit.DotsPerInch))).getValue(0);
+        assertEquals(300, resolution.getCrossFeedResolution());
+        assertEquals(600, resolution.getFeedResolution());
+        assertEquals(Resolution.Unit.DotsPerInch, resolution.getUnit());
+    }
+
 }

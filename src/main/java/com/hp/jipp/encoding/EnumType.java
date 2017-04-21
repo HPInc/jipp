@@ -5,7 +5,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.hp.jipp.model.JobState;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -45,7 +44,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
         abstract NameCode.Factory<T> getFactory();
 
         /** Returns a known enum, or creates a new instance if not found */
-        public T getEnum(int code) {
+        public T get(int code) {
             Optional<T> e = Optional.fromNullable(getEnumsMap().get(code));
             if (e.isPresent()) return e.get();
             return getFactory().create(getName() + "(x" + Integer.toHexString(code) + ")", code);
@@ -54,13 +53,12 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
         @Override
         T readValue(DataInputStream in, Tag valueTag) throws IOException {
             expectLength(in, 4);
-            return getEnum(in.readInt());
+            return get(in.readInt());
         }
 
         @Override
         void writeValue(DataOutputStream out, T value) throws IOException {
-            out.writeShort(4);
-            out.writeInt(value.getCode());
+            IntegerType.ENCODER.writeValue(out, value.getCode());
         }
 
         @Override
@@ -72,7 +70,7 @@ public class EnumType<T extends NameCode> extends AttributeType<T> {
     private final Function<Integer, T> toEnum = new Function<Integer, T>() {
         @Override
         public T apply(Integer input) {
-            return ((Encoder<T>)getEncoder()).getEnum(input);
+            return ((Encoder<T>)getEncoder()).get(input);
         }
     };
 

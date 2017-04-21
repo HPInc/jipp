@@ -62,7 +62,7 @@ public abstract class Packet {
      * Return a NameCode corresponding to this packet's code.
      */
     public <T extends NameCode> T getCode(EnumType.Encoder<T> encoder) {
-        return encoder.getEnum(getCode());
+        return encoder.get(getCode());
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class Packet {
         }).toString();
 
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", code=" + codeEncoder.getEnum(getCode()) +
+                ", code=" + codeEncoder.get(getCode()) +
                 ", rId=x" + Integer.toHexString(getRequestId()) +
                 ", ags=" + attributeGroups +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +

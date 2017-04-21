@@ -47,7 +47,7 @@ public class BinaryTest {
         for (File binFile : getBinFiles()) {
             byte[] bytes = Files.toByteArray(binFile);
             Stopwatch timer = Stopwatch.createStarted();
-            int reps = 5000;
+            int reps = 1000;
             for (int i = 0; i < reps; i++) {
                 try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
                     Packet.read(in);

@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableSet;
 @AutoValue
 abstract public class Resolution {
 
-    public static Resolution create(int x, int y, Unit unit) {
+    public static Resolution of(int x, int y, Unit unit) {
         return new AutoValue_Resolution(x, y, unit);
     }
 

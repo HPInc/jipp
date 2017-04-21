@@ -10,8 +10,8 @@ public class ResolutionType extends AttributeType<Resolution> {
         @Override
         Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
             expectLength(in, 9);
-            return Resolution.create(in.readInt(), in.readInt(),
-                    Resolution.Unit.ENCODER.getEnum(in.readByte()));
+            return Resolution.of(in.readInt(), in.readInt(),
+                    Resolution.Unit.ENCODER.get(in.readByte()));
         }
 
         @Override

@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding;
 
-
 import com.google.common.collect.Range;
 
 import java.io.DataInputStream;
@@ -32,7 +31,7 @@ public class RangeOfIntegerType extends AttributeType<Range<Integer>> {
         }
     };
 
-    public RangeOfIntegerType(Tag tag, String name) {
-        super(ENCODER, tag, name);
+    public RangeOfIntegerType(String name) {
+        super(ENCODER, Tag.RangeOfInteger, name);
     }
 }

@@ -55,7 +55,7 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             create("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-    final static Collection<Status> All = ImmutableSet.of(
+    private final static Collection<Status> All = ImmutableSet.of(
             Ok, ClientErrorBadRequest, ClientErrorBadRequest, ClientErrorForbidden, ClientErrorNotAuthenticated,
             ClientErrorNotAuthorized, ClientErrorNotPossible, ClientErrorTimeout, ClientErrorNotFound, ClientErrorGone,
             ClientErrorRequestEntityTooLarge, ClientErrorRequestValueTooLong, ClientErrorDocumentFormatNotSupported,
@@ -68,24 +68,13 @@ public abstract class Status extends NameCode {
             ServerErrorMultipleDocumentJobsNotSupported
     );
 
-    private final static Map<Integer, Status> CodeToStatus = NameCode.toMap(All);
-
     public final static EnumType.Encoder<Status> ENCODER = EnumType.encoder(
             "status-code", All, new NameCode.Factory<Status>() {
                 @Override
                 public Status create(String name, int code) {
-                    return create(name, code);
+                    return Status.create(name, code);
                 }
             });
-
-    /**
-     * Look up or convert an operation code into an Status object
-     */
-    public static Status toStatus(int code) {
-        Status found = CodeToStatus.get(code);
-        if (found != null) return found;
-        return create("UNKNOWN(x" + Integer.toHexString(code) + ")", code);
-    }
 
     /**
      * Return a new instance

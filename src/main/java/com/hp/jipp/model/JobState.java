@@ -27,7 +27,7 @@ public abstract class JobState extends NameCode {
             ), new NameCode.Factory<JobState>() {
                 @Override
                 public JobState create(String name, int code) {
-                    return create(name, code);
+                    return JobState.create(name, code);
                 }
             });
 

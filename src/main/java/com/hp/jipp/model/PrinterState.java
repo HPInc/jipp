@@ -18,7 +18,7 @@ public abstract class PrinterState extends NameCode {
             ), new NameCode.Factory<PrinterState>() {
                 @Override
                 public PrinterState create(String name, int code) {
-                    return create(name, code);
+                    return PrinterState.create(name, code);
                 }
             });
 
