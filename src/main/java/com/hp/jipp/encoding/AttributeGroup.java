@@ -136,7 +136,7 @@ abstract public class AttributeGroup {
         return attribute.get().getValues();
     }
 
-    public void write(DataOutputStream out) throws IOException {
+    void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
         for(Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
@@ -158,7 +158,7 @@ abstract public class AttributeGroup {
     }
 
     /** Similar to toString but applies additional knowledge of enclosed attribute types */
-    public String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
+    String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
         String attributes = Lists.transform(getAttributes(), new Function<Attribute<?>, Attribute<?>>() {
             @Override
             public Attribute<?> apply(Attribute<?> input) {

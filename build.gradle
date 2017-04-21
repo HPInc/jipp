@@ -38,17 +38,6 @@ tasks.withType(FindBugs) {
     }
 }
 
-sourceSets {
-    test {
-        java {
-            srcDirs = [ 'src/test/java' ]
-        }
-        resources {
-            srcDirs = [ 'src/test/resources' ]
-        }
-    }
-}
-
 // This hack puts testing resource files where we can get to them
 task copyTestResources(type: Copy) {
     from "${projectDir}/src/test/resources/printer"
