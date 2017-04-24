@@ -128,12 +128,21 @@ abstract public class AttributeGroup {
     }
 
     /**
-     * Return values for the specified attribute type in this group. If the attribute is missing, return an empty list.
+     * Return values for the specified attribute type in this group, or an empty list if not present
      */
     public <T> List<T> getValues(AttributeType<T> attributeType) {
         Optional<Attribute<T>> attribute = get(attributeType);
         if (!attribute.isPresent()) return ImmutableList.of();
         return attribute.get().getValues();
+    }
+
+    /**
+     * Return a single value, if any exist for this attribute
+     */
+    public <T> Optional<T> getValue(AttributeType<T> attributeType) {
+        List<T> values = getValues(attributeType);
+        if (values.isEmpty()) return Optional.absent();
+        return Optional.of(values.get(0));
     }
 
     void write(DataOutputStream out) throws IOException {

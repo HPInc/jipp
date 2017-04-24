@@ -59,6 +59,9 @@ public final class Attributes {
     public final static RangeOfIntegerType CopiesSupported =
             new RangeOfIntegerType("copies-supported");
 
+    public final static UriType PrinterIcons =
+            new UriType(Tag.Uri, "printer-icons");
+
     // 3.2.1.1 Print-Job Request
 
     public final static StringType DocumentFormat =
