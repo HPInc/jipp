@@ -80,7 +80,7 @@ public final class Attributes {
             new UriType(Tag.Uri, "job-uri");
 
     // 3.3.1.1 Send-Document Request
-    public static BooleanType LastDocument =
+    public final static BooleanType LastDocument =
             new BooleanType(Tag.BooleanValue, "last-document");
 
     // Others
