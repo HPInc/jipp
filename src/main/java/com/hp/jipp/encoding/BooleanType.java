@@ -25,7 +25,7 @@ public class BooleanType extends AttributeType<Boolean> {
         }
     };
 
-    BooleanType(Tag tag, String name) {
+    public BooleanType(Tag tag, String name) {
         super(ENCODER, tag, name);
     }
 }

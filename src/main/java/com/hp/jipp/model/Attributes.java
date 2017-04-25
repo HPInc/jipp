@@ -2,6 +2,7 @@ package com.hp.jipp.model;
 
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
@@ -78,6 +79,10 @@ public final class Attributes {
     public final static UriType JobUri =
             new UriType(Tag.Uri, "job-uri");
 
+    // 3.3.1.1 Send-Document Request
+    public static BooleanType LastDocument =
+            new BooleanType(Tag.BooleanValue, "last-document");
+
     // Others
 
     public final static StringType JobName =
@@ -88,6 +93,7 @@ public final class Attributes {
 
     public final static ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
+
 
     /** All attributes, useful when printing contents */
     public static final List<AttributeType<?>> All = ImmutableList.of(
@@ -107,6 +113,7 @@ public final class Attributes {
             RequestedAttributes,
             RequestingUserName,
             StatusMessage,
+            LastDocument,
             DocumentFormat,
             JobState,
             PrinterResolutionDefault
