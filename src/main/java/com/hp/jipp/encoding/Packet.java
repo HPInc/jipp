@@ -83,6 +83,15 @@ public abstract class Packet {
         return Optional.absent();
     }
 
+    /** Return a value from the specified group if present */
+    public <T> Optional<T> getValue(Tag groupDelimiter, AttributeType<T> attributeType) {
+        Optional<AttributeGroup> group = getAttributeGroup(groupDelimiter);
+        if (group.isPresent()) {
+            return group.get().getValue(attributeType);
+        }
+        return Optional.absent();
+    }
+
     /**
      * Return the packet's data field (bytes found after all attributes)
      */

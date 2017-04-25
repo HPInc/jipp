@@ -62,14 +62,21 @@ public final class Attributes {
     public final static UriType PrinterIcons =
             new UriType(Tag.Uri, "printer-icons");
 
+    public final static StringType DocumentFormatSupported =
+            new StringType(Tag.MimeMediaType, "document-format-supported");
+
     // 3.2.1.1 Print-Job Request
 
     public final static StringType DocumentFormat =
             new StringType(Tag.MimeMediaType, "document-format");
 
     // 3.2.1.1 Print-Job Response
+
     public final static NameCodeType<JobState> JobState =
             NameCodeType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
+
+    public final static UriType JobUri =
+            new UriType(Tag.Uri, "job-uri");
 
     // Others
 
@@ -95,6 +102,8 @@ public final class Attributes {
             PrinterState,
             CopiesSupported,
             PrinterUri,
+            PrinterIcons,
+            DocumentFormatSupported,
             RequestedAttributes,
             RequestingUserName,
             StatusMessage,
