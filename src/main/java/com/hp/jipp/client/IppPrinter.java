@@ -31,10 +31,10 @@ public abstract class IppPrinter {
     public abstract AttributeGroup getAttributes();
 
     /** Return a matching object containing the specified attributes */
-    public IppPrinter withResponse(Packet response) throws IOException {
+    IppPrinter withResponse(Packet response) throws IOException {
         Optional<AttributeGroup> attributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (!attributes.isPresent()) throw new IOException("No printer attributes from " + getUri());
-        if (Objects.equal(attributes, Optional.of(getAttributes()))) return this;
+        if (Objects.equal(attributes, Optional.fromNullable(getAttributes()))) return this;
         return new AutoValue_IppPrinter(getUri(), attributes.get());
     }
 

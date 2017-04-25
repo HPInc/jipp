@@ -22,10 +22,11 @@ public class LangStringType extends AttributeType<LangString> {
 
         @Override
         void writeValue(DataOutputStream out, LangString value) throws IOException {
-            if (!value.getLang().isPresent()) {
+            Optional<String> lang = value.getLang();
+            if (!lang.isPresent()) {
                 throw new BuildError("Cannot write a LangString without a language");
             }
-            writeValueBytes(out, value.getLang().get().getBytes(Util.UTF8));
+            writeValueBytes(out, lang.get().getBytes(Util.UTF8));
             writeValueBytes(out, value.getString().getBytes(Util.UTF8));
         }
 

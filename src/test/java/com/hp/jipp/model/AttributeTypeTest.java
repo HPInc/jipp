@@ -64,7 +64,15 @@ public class AttributeTypeTest {
 
     @Test
     public void customEnumValue() throws Exception {
+    }
+
+    @Test
+    public void verifyWeirdEnums() throws Exception {
+        assertEquals("job-state(xff)", JobState.ENCODER.get(0xFF).getName());
         assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
+
+        assertEquals("printer-state(x7)", PrinterState.ENCODER.get(7).getName());
+        assertEquals("status-code(x777)", Status.ENCODER.get(0x777).getName());
     }
 
     @Test

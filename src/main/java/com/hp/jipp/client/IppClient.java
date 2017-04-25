@@ -1,8 +1,10 @@
 package com.hp.jipp.client;
 
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
+import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
@@ -24,7 +26,7 @@ public class IppClient {
         /**
          * Gets the packet, synchronously delivers it to the specified URL, and returns a response.
          */
-        Packet send(URI url, Packet packet) throws IOException;
+        Packet send(URI uri, Packet packet) throws IOException;
     }
 
     private final Transport mTransport;
@@ -34,10 +36,9 @@ public class IppClient {
         mTransport = transport;
     }
 
-    // TODO: We may need to pass along non-200 responses in the case of validate
+    // TODO: May need to pass along non-200 responses in the case of validate
     // TODO: Figure out mystery operations operation-id(x13), operation-id(x39), operation-id(x3b), operation-id(x3c) ...
     // TODO: Draw data directly from the input stream instead of bytes
-    // TODO: Always allow access to the most recent entire packet response
 
     /** Fetch current printer attributes into a new copy of the printer */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
@@ -53,14 +54,13 @@ public class IppClient {
     /** Return a validated job based on information in the job request */
     public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUri();
+
         Packet request = Packet.create(Operation.ValidateJob, 0x02,
                 AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(uri),
-                        Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
-                        // Not sending job-name, ipp-attribute-fidelity, document-name, etc.
-                ));
+                        Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())));
 
         return ValidatedJob.of(jobRequest,  mTransport.send(uri, request));
     }
@@ -76,7 +76,17 @@ public class IppClient {
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printer.getUri())));
-        return PrintJob.toJobs(printer, mTransport.send(printer.getUri(), request));
+
+        Packet response = mTransport.send(printer.getUri(), request);
+
+        ImmutableList.Builder<PrintJob> listBuilder = new ImmutableList.Builder<>();
+        for (AttributeGroup group : response.getAttributeGroups()) {
+            if (group.getTag().equals(Tag.JobAttributes)) {
+                listBuilder.add(PrintJob.of(printer, group));
+            }
+        }
+
+        return listBuilder.build();
     }
 
     /** Fetch current attributes into a new copy of the job */
@@ -91,6 +101,7 @@ public class IppClient {
 
     /** Send a job request, including its document, returning a new print job. */
     public PrintJob printJob(JobRequest jobRequest) throws IOException {
+        // See https://tools.ietf.org/html/rfc2911#section-3.2.1.1
         // Get all document bytes (non-streaming)
         byte[] bytes;
         try (InputStream inStream = jobRequest.getDocument().openDocument()) {
@@ -98,14 +109,22 @@ public class IppClient {
             bytes = ByteStreams.toByteArray(inStream);
         }
 
+        ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
+        attributes.add(Attributes.AttributesCharset.of("utf-8"),
+                Attributes.AttributesNaturalLanguage.of("en"),
+                Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()),
+                Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType()));
+
+        // Add job and document names if request includes a document name
+        if (jobRequest.getDocument().getName() != null) {
+            attributes.add(Attributes.JobName.of(jobRequest.getDocument().getName()),
+                    Attributes.DocumentName.of(jobRequest.getDocument().getName()));
+        }
+
         final Packet request = Packet.builder(Operation.PrintJob, 0x04)
                 .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
-                        Attributes.AttributesCharset.of("utf-8"),
-                        Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()),
-                        Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
-                        // Not sending job-name, ipp-attribute-fidelity, document-name, etc.
-                )).setData(bytes).build();
+                        attributes.build()))
+                .setData(bytes).build();
 
         return PrintJob.of(jobRequest, mTransport.send(jobRequest.getPrinter().getUri(), request));
     }
@@ -115,13 +134,14 @@ public class IppClient {
      * sendDocument to deliver document data.
      */
     public PrintJob createJob(JobRequest jobRequest) throws IOException {
-        // Create a packet to be sent later
-        Packet request = Packet.builder(Operation.CreateJob, 0x05)
-                .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
-                        Attributes.AttributesCharset.of("utf-8"),
-                        Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()))
-                ).build();
+        ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
+        attributes.add(Attributes.AttributesCharset.of("utf-8"),
+                Attributes.AttributesNaturalLanguage.of("en"),
+                Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()));
+
+        Packet request = Packet.create(Operation.CreateJob, 0x05,
+                AttributeGroup.create(Tag.OperationAttributes, attributes.build()));
+
         return PrintJob.of(jobRequest, mTransport.send(jobRequest.getPrinter().getUri(), request));
     }
 

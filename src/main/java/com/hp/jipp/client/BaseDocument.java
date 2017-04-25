@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class BaseDocument {
+
     public abstract String getDocumentType();
     public abstract InputStream openDocument() throws IOException;
 
-    /** Returns the document's name, or null if not known. */
+    /** Returns the document's name, or null if not present. */
     public String getName() {
         return null;
     }

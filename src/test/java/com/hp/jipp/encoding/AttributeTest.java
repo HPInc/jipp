@@ -147,5 +147,4 @@ public class AttributeTest {
         assertEquals("my job", name.getValue(0).getString());
         assertEquals("fr", name.getValue(0).getLang().get());
     }
-
 }

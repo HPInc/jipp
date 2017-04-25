@@ -1,7 +1,12 @@
 package com.hp.jipp.encoding;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +20,9 @@ import com.hp.jipp.model.Operation;
 import static com.hp.jipp.encoding.Cycler.*;
 
 public class PacketTest {
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
     private Packet packet;
     private Packet defaultPacket = Packet.builder().setVersionNumber(0x102)
             .setCode(Operation.HoldJob).setRequestId(0x50607).build();
@@ -42,6 +50,23 @@ public class PacketTest {
         assertEquals(defaultPacket.getVersionNumber(), packet.getVersionNumber());
         assertEquals(defaultPacket.getCode(), packet.getCode());
         assertEquals(defaultPacket.getRequestId(), packet.getRequestId());
+    }
+
+    @Test
+    public void readShortPacket() throws IOException {
+        byte[] in = new byte[] {
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+                (byte) 0x09,
+        };
+        exception.expect(EOFException.class);
+        Packet.read(new DataInputStream(new ByteArrayInputStream(in)));
     }
 
     @Test

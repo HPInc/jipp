@@ -131,7 +131,7 @@ public abstract class Packet {
                 new ImmutableList.Builder<>();
 
         boolean moreAttributes = true;
-        while(moreAttributes) {
+        while (moreAttributes) {
             Tag tag = Tag.read(in);
             if (tag == Tag.EndOfAttributes) {
                 if (in.available() > 0) {

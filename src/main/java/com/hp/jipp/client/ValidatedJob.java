@@ -8,7 +8,6 @@ public abstract class ValidatedJob {
 
     static ValidatedJob of(JobRequest request, Packet response) {
         return new AutoValue_ValidatedJob(request, response);
-        // TODO: Pick apart the packet more
     }
 
     /** The original job request leading to this validation */
