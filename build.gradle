@@ -45,6 +45,13 @@ task copyTestResources(type: Copy) {
 }
 processTestResources.dependsOn copyTestResources
 
+task cleanTestResources(type: Delete) {
+    delete fileTree("${buildDir}/classes/test/printer") {
+        include '**/*.bin'
+    }
+}
+test.finalizedBy cleanTestResources
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
