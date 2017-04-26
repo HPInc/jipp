@@ -24,7 +24,8 @@ public class IppClient {
     /** Transport used to send packets and collect responses */
     public interface Transport {
         /**
-         * Gets the packet, synchronously delivers it to the specified URL, and returns a response.
+         * Gets the packet, synchronously delivers it to the specified URL, and returns the response
+         * or throws if the response is not 200 OK.
          */
         Packet send(URI uri, Packet packet) throws IOException;
     }
@@ -35,10 +36,6 @@ public class IppClient {
     public IppClient(Transport transport) {
         mTransport = transport;
     }
-
-    // TODO: May need to pass along non-200 responses in the case of validate
-    // TODO: Figure out mystery operations operation-id(x13), operation-id(x39), operation-id(x3b), operation-id(x3c) ...
-    // TODO: Draw data directly from the input stream instead of bytes
 
     /** Fetch current printer attributes into a new copy of the printer */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
