@@ -36,5 +36,7 @@ public abstract class LangString {
     abstract public Optional<String> getLang();
 
     @Override
-    public String toString() { return getString(); }
+    public String toString() { return "\"" + getString() + "\" of " +
+            (getLang().isPresent() ? getLang().get() : "?");
+    }
 }

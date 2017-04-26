@@ -127,7 +127,11 @@ public abstract class Attribute<T> {
         byte[] readValueBytes(DataInputStream in) throws IOException {
             int valueLength = in.readShort();
             byte valueBytes[] = new byte[valueLength];
-            if (valueLength != in.read(valueBytes)) throw new ParseError("Value too short");
+            int actual = in.read(valueBytes);
+            if (valueLength != actual) {
+                throw new ParseError("Value too short: expected " + valueBytes.length +
+                        ", received only " + actual);
+            }
             return valueBytes;
         }
 

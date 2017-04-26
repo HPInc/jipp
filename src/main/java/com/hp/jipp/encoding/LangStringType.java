@@ -2,8 +2,11 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.io.BaseEncoding;
 import com.hp.jipp.util.Util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,19 +18,25 @@ public class LangStringType extends AttributeType<LangString> {
     static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>() {
         @Override
         LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
-            String lang = new String(readValueBytes(in), Util.UTF8);
-            String string = new String(readValueBytes(in), Util.UTF8);
+            byte[] bytes = OctetStringType.ENCODER.readValue(in, valueTag);
+            DataInputStream inBytes = new DataInputStream(new ByteArrayInputStream(bytes));
+
+            String lang = new String(readValueBytes(inBytes), Util.UTF8);
+            String string = new String(readValueBytes(inBytes), Util.UTF8);
             return LangString.of(string, lang);
         }
 
         @Override
         void writeValue(DataOutputStream out, LangString value) throws IOException {
+            ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+            DataOutputStream dataOut = new DataOutputStream(bytesOut);
             Optional<String> lang = value.getLang();
             if (!lang.isPresent()) {
                 throw new BuildError("Cannot write a LangString without a language");
             }
-            writeValueBytes(out, lang.get().getBytes(Util.UTF8));
-            writeValueBytes(out, value.getString().getBytes(Util.UTF8));
+            writeValueBytes(dataOut, lang.get().getBytes(Util.UTF8));
+            writeValueBytes(dataOut, value.getString().getBytes(Util.UTF8));
+            OctetStringType.ENCODER.writeValue(out, bytesOut.toByteArray());
         }
 
         @Override

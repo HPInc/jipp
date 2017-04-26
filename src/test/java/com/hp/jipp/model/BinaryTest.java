@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
+import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
 import com.hp.jipp.encoding.Packet;
 
@@ -22,11 +23,10 @@ public class BinaryTest {
         for (File binFile : getBinFiles()) {
             byte[] bytes = Files.toByteArray(binFile);
             // Parse and build each packet to ensure that we can model it perfectly in memory
+            System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = Packet.read(new DataInputStream(new ByteArrayInputStream(bytes)));
-            assertArrayEquals(packet.getBytes(), bytes);
-
-            System.out.println("\nPacket decode for " + binFile.getName());
             System.out.println(packet.describe(Status.ENCODER, Attributes.All));
+            assertArrayEquals(packet.getBytes(), bytes);
         }
     }
 
