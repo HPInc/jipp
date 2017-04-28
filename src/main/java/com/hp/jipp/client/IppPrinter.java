@@ -12,11 +12,11 @@ import java.util.List;
 public abstract class IppPrinter {
 
     public static IppPrinter of(List<URI> uris) {
-        return new AutoValue_IppPrinter(uris, AttributeGroup.empty());
+        return new AutoValue_IppPrinter(uris, Optional.<AttributeGroup>absent());
     }
 
     public static IppPrinter of(List<URI> uris, AttributeGroup group) {
-        return new AutoValue_IppPrinter(uris, group);
+        return new AutoValue_IppPrinter(uris, Optional.of(group));
     }
 
     /**
@@ -25,14 +25,15 @@ public abstract class IppPrinter {
     public abstract List<URI> getUris();
 
     /**
-     * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}) or
-     * an empty attribute group.
+     * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}) if any
      */
-    public abstract AttributeGroup getAttributes();
+    public abstract Optional<AttributeGroup> getAttributes();
 
     @Override
     public String toString() {
-        Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
+        Optional<AttributeGroup> attributes = getAttributes();
+        Optional<String> info = attributes.isPresent() ? attributes.get().getValue(Attributes.PrinterInfo) :
+                Optional.<String>absent();
         return "IppPrinter{uris=" + getUris() +
                 (info.isPresent() ? ", name=" + info.get() : "") + "}";
     }
