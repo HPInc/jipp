@@ -1,9 +1,7 @@
 package com.hp.jipp.client;
 
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 
 import com.hp.jipp.encoding.Attribute;
@@ -17,6 +15,7 @@ import com.hp.jipp.model.Status;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -159,33 +158,57 @@ public class IppClient {
      * Job records returned here will not contain any PrintJobRequest.
      */
     public List<PrintJob> getJobs(IppPrinter printer) throws IOException {
-        URI uri = printer.getUris().get(0);
+        URI printerUri = printer.getUris().get(0);
         Packet request = Packet.create(Operation.GetJobs, 0x03,
                 AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(uri)));
+                        Attributes.PrinterUri.of(printerUri)));
 
-        Packet response = mTransport.send(uri, request);
+        Packet response = mTransport.send(printerUri, request);
 
         ImmutableList.Builder<PrintJob> listBuilder = new ImmutableList.Builder<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
-                listBuilder.add(PrintJob.of(printer, group));
+                Optional<Integer> id= group.getValue(Attributes.JobId);
+                if (!id.isPresent()) {
+                    throw new IOException("Missing Job-ID in job response from " + printer);
+                }
+                listBuilder.add(PrintJob.of(id.get(), printer, group));
             }
         }
 
         return listBuilder.build();
     }
 
+
+    /** Replace the authority in a URI with a known-good authority */
+    private URI swapAuthority(URI uri, URI goodAuthority) {
+        try {
+            return new URI(goodAuthority.getScheme(), goodAuthority.getAuthority(),
+                    uri.getPath(), uri.getQuery(), uri.getFragment());
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Failed to convert URI " + uri, e);
+        }
+    }
+
     /** Fetch current attributes into a new copy of the job */
     public PrintJob getJobAttributes(PrintJob job) throws IOException {
+        URI printerUri = job.getPrinter().getUris().get(0);
         Packet request = Packet.create(Operation.GetJobAttributes, 0x03,
                 AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.JobUri.of(job.getUri())));
-        return job.withResponse(mTransport.send(job.getUri(), request));
+                        Attributes.PrinterUri.of(job.getPrinter().getUris()),
+                        Attributes.JobId.of(job.getId())));
+
+        return jobWithNewAttributes(job, mTransport.send(printerUri, request));
+    }
+
+    private PrintJob jobWithNewAttributes(PrintJob job, Packet response) throws IOException {
+        Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
+        if (!group.isPresent()) throw new IOException("Missing job attributes");
+        return job.withAttributes(group.get());
     }
 
     /** Send a job request, including its document, returning a new print job. */
@@ -211,12 +234,25 @@ public class IppClient {
                     Attributes.DocumentName.of(jobRequest.getDocument().getName()));
         }
 
-        final Packet request = Packet.builder(Operation.PrintJob, 0x04)
+        Packet request = Packet.builder(Operation.PrintJob, 0x04)
                 .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
                         attributes.build()))
                 .setData(bytes).build();
 
-        return PrintJob.of(jobRequest, mTransport.send(printerUri, request));
+        Packet response = mTransport.send(printerUri, request);
+        return toPrintJob(jobRequest, response);
+    }
+
+    private PrintJob toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
+        Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
+        if (!group.isPresent()) {
+            throw new IOException("Missing JobAttributes in response from " + jobRequest.getPrinter());
+        }
+        Optional<Integer> jobId = group.get().getValue(Attributes.JobId);
+        if (!jobId.isPresent()) {
+            throw new IOException("Missing URI in job response from " + jobRequest.getPrinter());
+        }
+        return PrintJob.of(jobId.get(), jobRequest, group.get());
     }
 
     /**
@@ -234,7 +270,8 @@ public class IppClient {
         Packet request = Packet.create(Operation.CreateJob, 0x05,
                 AttributeGroup.create(Tag.OperationAttributes, attributes.build()));
 
-        return PrintJob.of(jobRequest, mTransport.send(printerUri, request));
+        Packet response = mTransport.send(printerUri, request);
+        return toPrintJob(jobRequest, response);
     }
 
     /** Deliver document data for a print job, returning the updated print job. */
@@ -246,25 +283,31 @@ public class IppClient {
             bytes = ByteStreams.toByteArray(inStream);
         }
 
+        URI printerUri = job.getPrinter().getUris().get(0);
+
         // Create a packet to be sent later
         final Packet request = Packet.builder(Operation.SendDocument, 0x05)
                 .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.JobUri.of(job.getUri()),
+                        Attributes.PrinterUri.of(printerUri),
+                        Attributes.JobId.of(job.getId()),
                         Attributes.LastDocument.of(true)))
                 .setData(bytes).build();
+
         // Not sending document-name, compression, document-format, etc.
-        return job.withResponse(mTransport.send(job.getUri(), request));
+        return jobWithNewAttributes(job, mTransport.send(printerUri, request));
     }
 
     /** Send a print job cancellation request */
     public Packet cancelJob(PrintJob job) throws IOException {
+        URI printerUri = job.getPrinter().getUris().get(0);
         Packet request = Packet.create(Operation.CancelJob, 0x03,
                 AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.JobUri.of(job.getUri())));
-        return mTransport.send(job.getUri(), request);
+                        Attributes.PrinterUri.of(printerUri),
+                        Attributes.JobId.of(job.getId())));
+        return mTransport.send(printerUri, request);
     }
 }
