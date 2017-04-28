@@ -29,4 +29,4 @@ JIPP is designed to avoid cyclic dependencies to limit complexity and enable tes
 
 Here is the most recently-generated dependency graph (use `script/analyzeDeps` to regenerate it).
 
-![Dependency graph](doc/dependency.png)
+![Dependency graph](dependency.png)
