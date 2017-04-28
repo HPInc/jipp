@@ -11,14 +11,16 @@ public abstract class LangString {
     static Function<LangString, String> ToStringFunc = new Function<LangString, String>() {
         @Override
         public String apply(LangString input) {
-            return input.getString();
+            Optional<LangString> langString = Optional.fromNullable(input);
+            return langString.isPresent() ? langString.get().getString() : "";
         }
     };
 
     static Function<String, LangString> FromStringFunc = new Function<String, LangString>() {
         @Override
         public LangString apply(String input) {
-            return of(input);
+            Optional<String> string = Optional.fromNullable(input);
+            return string.isPresent() ? of(string.get()) : of("");
         }
     };
 
@@ -34,7 +36,8 @@ public abstract class LangString {
     abstract public Optional<String> getLang();
 
     @Override
-    public String toString() { return "\"" + getString() + "\" of " +
-            (getLang().isPresent() ? getLang().get() : "?");
+    public String toString() {
+        Optional<String> lang = getLang();
+        return "\"" + getString() + "\" of " + (lang.isPresent() ? lang.get() : "?");
     }
 }
