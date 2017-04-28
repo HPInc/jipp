@@ -4,7 +4,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
-import com.hp.jipp.util.Nullable;
 
 import java.net.URI;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public abstract class IppPrinter {
 
     public static IppPrinter of(List<URI> uris) {
-        return new AutoValue_IppPrinter(uris, null);
+        return new AutoValue_IppPrinter(uris, AttributeGroup.empty());
     }
 
     public static IppPrinter of(List<URI> uris, AttributeGroup group) {
@@ -26,15 +25,14 @@ public abstract class IppPrinter {
     public abstract List<URI> getUris();
 
     /**
-     * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}), if any
+     * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}) or
+     * an empty attribute group.
      */
-    @Nullable
     public abstract AttributeGroup getAttributes();
 
     @Override
     public String toString() {
-        AttributeGroup group = getAttributes();
-        Optional<String> info = group == null ? Optional.<String>absent() : group.getValue(Attributes.PrinterInfo);
+        Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
         return "IppPrinter{uris=" + getUris() +
                 (info.isPresent() ? ", name=" + info.get() : "") + "}";
     }

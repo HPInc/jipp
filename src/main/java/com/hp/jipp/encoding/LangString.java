@@ -11,7 +11,6 @@ public abstract class LangString {
     static Function<LangString, String> ToStringFunc = new Function<LangString, String>() {
         @Override
         public String apply(LangString input) {
-            if (input == null) return null;
             return input.getString();
         }
     };
@@ -19,7 +18,6 @@ public abstract class LangString {
     static Function<String, LangString> FromStringFunc = new Function<String, LangString>() {
         @Override
         public LangString apply(String input) {
-            if (input == null) return null;
             return of(input);
         }
     };

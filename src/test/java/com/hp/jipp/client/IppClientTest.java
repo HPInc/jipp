@@ -3,7 +3,9 @@ package com.hp.jipp.client;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -21,6 +23,20 @@ public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
     IppPrinter printer = IppPrinter.of(ImmutableList.of(printerUri));
     FakeTransport transport = new FakeTransport();
+    BaseDocument document = new BaseDocument() {
+        @Override
+        public String getDocumentType() {
+            return "application/whatever";
+        }
+
+        @Override
+        public InputStream openDocument() throws IOException {
+            byte[] bytes = new byte[] {
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+            };
+            return new ByteArrayInputStream(bytes);
+        }
+    };
 
     IppClient client = new IppClient(transport);
 
@@ -37,7 +53,6 @@ public class IppClientTest {
         }
     }
 
-
     public IppClientTest() throws URISyntaxException {
     }
 
@@ -52,4 +67,13 @@ public class IppClientTest {
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
     }
 
+    @Test
+    public void createJob() throws IOException {
+        responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111)));
+        JobRequest jobRequest = JobRequest.of(printer, document);
+        PrintJob job = client.createJob(jobRequest);
+        assertEquals(111, job.getId());
+        job.getJobRequest().get().getDocument();
+    }
 }

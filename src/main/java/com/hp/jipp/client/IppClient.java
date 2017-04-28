@@ -41,8 +41,6 @@ public class IppClient {
 
     /** Fetch current printer attributes into a new copy of the printer, or throws if not possible */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
-        IppPrinter ippPrinter = null;
-
         for (URI uri : printer.getUris()) {
             Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
                     AttributeGroup.of(Tag.OperationAttributes,
@@ -126,16 +124,10 @@ public class IppClient {
                 for (URI oldUri : printer.getUris()) {
                     if (!oldUri.equals(uri)) newUris.add(oldUri);
                 }
-                ippPrinter = IppPrinter.of(newUris.build(), printerAttributes.get());
-                break;
+                return IppPrinter.of(newUris.build(), printerAttributes.get());
             }
         }
-
-        if (ippPrinter == null) {
-            throw new IOException("No valid attributes returned for " + printer);
-        } else {
-            return ippPrinter;
-        }
+        throw new IOException("No valid attributes returned for " + printer);
     }
 
     /** Return a validated job based on information in the job request */
@@ -229,9 +221,10 @@ public class IppClient {
                 Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType()));
 
         // Add job and document names if request includes a document name
-        if (jobRequest.getDocument().getName() != null) {
-            attributes.add(Attributes.JobName.of(jobRequest.getDocument().getName()),
-                    Attributes.DocumentName.of(jobRequest.getDocument().getName()));
+        Optional<String> documentName = jobRequest.getDocument().getName();
+        if (documentName.isPresent()) {
+            attributes.add(Attributes.JobName.of(documentName.get()),
+                    Attributes.DocumentName.of(documentName.get()));
         }
 
         Packet request = Packet.builder(Operation.PrintJob, 0x04)
@@ -278,7 +271,10 @@ public class IppClient {
     public PrintJob sendDocument(PrintJob job) throws IOException {
         // Get all document bytes (non-streaming)
         byte[] bytes;
-        try (InputStream inStream = job.getJobRequest().getDocument().openDocument()) {
+        Optional<JobRequest> jobRequest = job.getJobRequest();
+        if (!jobRequest.isPresent()) throw new IllegalArgumentException("No job request present");
+
+        try (InputStream inStream = jobRequest.get().getDocument().openDocument()) {
             // Copy from the source file
             bytes = ByteStreams.toByteArray(inStream);
         }

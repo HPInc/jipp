@@ -25,6 +25,7 @@ import java.util.Set;
 abstract public class AttributeGroup {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
+    public final static AttributeGroup EMPTY = AttributeGroup.of(Tag.EndOfAttributes);
 
     /** Encoders available to parse incoming data */
     static final List<Attribute.Encoder<?>> ENCODERS = ImmutableList.of(
@@ -43,6 +44,10 @@ abstract public class AttributeGroup {
         return new AutoValue_AttributeGroup.Builder()
                 .setTag(startTag)
                 .setAttributes(attributes).build();
+    }
+
+    public static AttributeGroup empty() {
+        return EMPTY;
     }
 
     @AutoValue.Builder
