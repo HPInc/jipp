@@ -22,6 +22,7 @@ java -jar $CLASSYCLE_JAR -xmlFile=$REPORT_DIR/report.xml -excludingClasses="*Aut
 script/xmlToDot $PACKAGE <$REPORT_DIR/report.xml >$REPORT_DIR/report.dot
 
 dot -T png -o $REPORT_DIR/report.png $REPORT_DIR/report.dot
+cp build/reports/classycle/report.png doc/dependency.png
 
 echo
-echo "Output in $REPORT_DIR/report.dot"
+echo "Output in doc/dependency.png"
