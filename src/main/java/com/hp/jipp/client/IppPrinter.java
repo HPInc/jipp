@@ -1,15 +1,11 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.Packet;
-import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.util.Nullable;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -40,6 +36,6 @@ public abstract class IppPrinter {
         AttributeGroup group = getAttributes();
         Optional<String> info = group == null ? Optional.<String>absent() : group.getValue(Attributes.PrinterInfo);
         return "IppPrinter{uris=" + getUris() +
-                (info.isPresent() ? "name=" + info.get() : "") + "}";
+                (info.isPresent() ? ", name=" + info.get() : "") + "}";
     }
 }

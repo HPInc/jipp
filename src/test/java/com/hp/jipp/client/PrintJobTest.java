@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
@@ -23,7 +24,7 @@ public class PrintJobTest {
 
     URI printerUri = new URI("ipp://sample.com");
     URI jobUri = new URI("ipp://sample.com/jobs/0001");
-    IppPrinter printer = IppPrinter.of(printerUri);
+    IppPrinter printer = IppPrinter.of(ImmutableList.of(printerUri));
     BaseDocument document = new BaseDocument() {
         @Override
         public String getDocumentType() {

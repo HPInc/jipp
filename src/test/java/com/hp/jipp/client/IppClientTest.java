@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
@@ -18,7 +19,7 @@ import com.hp.jipp.model.Attributes;
 
 public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
-    IppPrinter printer = IppPrinter.of(printerUri);
+    IppPrinter printer = IppPrinter.of(ImmutableList.of(printerUri));
     FakeTransport transport = new FakeTransport();
 
     IppClient client = new IppClient(transport);
@@ -47,7 +48,7 @@ public class IppClientTest {
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(printer);
         assertEquals(Operation.GetPrinterAttributes, sendPacket.getCode(Operation.ENCODER));
-        assertEquals(printer.getUri(), sendUri);
+        assertEquals(printer.getUris(), ImmutableList.of(sendUri));
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
     }
 
