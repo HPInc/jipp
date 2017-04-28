@@ -11,18 +11,23 @@ import com.hp.jipp.util.Nullable;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 @AutoValue
 public abstract class IppPrinter {
 
-    public static IppPrinter of(URI uri) {
-        return new AutoValue_IppPrinter(uri, null);
+    public static IppPrinter of(List<URI> uris) {
+        return new AutoValue_IppPrinter(uris, null);
+    }
+
+    public static IppPrinter of(List<URI> uris, AttributeGroup group) {
+        return new AutoValue_IppPrinter(uris, group);
     }
 
     /**
      * The URI at which this printer is available
      */
-    public abstract URI getUri();
+    public abstract List<URI> getUris();
 
     /**
      * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}), if any
@@ -30,19 +35,11 @@ public abstract class IppPrinter {
     @Nullable
     public abstract AttributeGroup getAttributes();
 
-    /** Return a matching object containing the specified attributes */
-    IppPrinter withResponse(Packet response) throws IOException {
-        Optional<AttributeGroup> attributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (!attributes.isPresent()) throw new IOException("No printer attributes from " + getUri());
-        if (Objects.equal(attributes, Optional.fromNullable(getAttributes()))) return this;
-        return new AutoValue_IppPrinter(getUri(), attributes.get());
-    }
-
     @Override
     public String toString() {
         AttributeGroup group = getAttributes();
         Optional<String> info = group == null ? Optional.<String>absent() : group.getValue(Attributes.PrinterInfo);
-        return "IppPrinter{url=" + getUri() +
+        return "IppPrinter{uris=" + getUris() +
                 (info.isPresent() ? "name=" + info.get() : "") + "}";
     }
 }

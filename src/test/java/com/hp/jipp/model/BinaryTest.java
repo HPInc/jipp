@@ -8,6 +8,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
 import com.hp.jipp.encoding.Packet;
+import com.hp.jipp.encoding.Tag;
 
 import static org.junit.Assert.*;
 
@@ -17,6 +18,17 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 public class BinaryTest {
+    @Test
+    public void scanUris() throws Exception {
+        for (File binFile : getBinFiles()) {
+            Packet packet = Packet.read(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
+            if (packet.getAttributeGroup(Tag.PrinterAttributes).isPresent()) {
+                System.out.println("Printer: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
+                        " has URIs: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
+            }
+        }
+    }
+
     @Test
     public void cycleBinaries() throws Exception {
         // For each bin file cycle and print

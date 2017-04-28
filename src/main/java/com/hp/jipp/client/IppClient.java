@@ -1,7 +1,9 @@
 package com.hp.jipp.client;
 
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 
 import com.hp.jipp.encoding.Attribute;
@@ -10,6 +12,7 @@ import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
+import com.hp.jipp.model.Status;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,20 +40,101 @@ public class IppClient {
         mTransport = transport;
     }
 
-    /** Fetch current printer attributes into a new copy of the printer */
+    /** Fetch current printer attributes into a new copy of the printer, or throws if not possible */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
-        Packet request = Packet.create(Operation.GetPrinterAttributes, 0x01,
-                AttributeGroup.create(Tag.OperationAttributes,
-                        Attributes.AttributesCharset.of("utf-8"),
-                        Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(printer.getUri())));
+        for (URI uri : printer.getUris()) {
+            Packet request = Packet.create(Operation.GetPrinterAttributes, 0x01,
+                    AttributeGroup.create(Tag.OperationAttributes,
+                            Attributes.AttributesCharset.of("utf-8"),
+                            Attributes.AttributesNaturalLanguage.of("en"),
+                            Attributes.PrinterUri.of(uri),
+                            Attributes.RequestedAttributes.of(
+                                    "charset-configured",
+                                    "charset-supported",
+                                    "color-supported",
+                                    "compression-supported",
+                                    "copies-supported",
+//                                    "document-format-details-supported",
+//                                    "epcl-version-supported",
+//                                    "finishings-supported",
 
-        return printer.withResponse(mTransport.send(printer.getUri(), request));
+//                                    "number-up-default",
+//                                    "number-up-supported",
+//                                    "output-bin-supported",
+//                                    "pclm-compression-method-preferred",
+//                                    "pclm-raster-back-side",
+//                                    "pclm-source-resolution-supported",
+//                                    "pclm-strip-height-preferred",
+//                                    "pclm-strip-height-supported",
+//                                    "pdf-fit-to-page-supported",
+//                                    "presentation-direction-number-up-default",
+//                                    "presentation-direction-number-up-supported",
+
+                                    "document-format-supported",
+//                                    "fit-to-page-default",
+                                    "ipp-versions-supported",
+//                                    "job-account-id-supported",
+//                                    "job-accounting-user-id-supported",
+//                                    "job-creation-attributes-supported",
+//                                    "job-password-encryption-supported",
+//                                    "job-password-supported",
+                                    "media-bottom-margin-supported",
+                                    "media-col-default",
+                                    "media-col-supported",
+                                    "media-default",
+                                    "media-left-margin-supported",
+                                    "media-right-margin-supported",
+                                    "media-size-supported",
+                                    "media-source-supported",
+                                    "media-supported",
+                                    "media-top-margin-supported",
+                                    "media-type-supported",
+                                    "operations-supported",
+                                    "page-bottom-default",
+                                    "page-left-default",
+                                    "page-right-default",
+                                    "page-top-default",
+                                    "print-color-mode-supported",
+                                    "printer-device-id",
+//                                    "printer-dns-sd-name",
+                                    "printer-icons",
+                                    "printer-info",
+                                    "printer-location",
+                                    "printer-make-and-model",
+                                    "printer-more-info",
+                                    "printer-name",
+                                    "printer-resolution-supported",
+                                    "printer-settable-attributes-supported",
+                                    "printer-supply-info-uri",
+                                    "printer-type",
+                                    "printer-uri-supported",
+                                    "print-quality-default",
+                                    "print-quality-supported",
+//                                    "reference-uri-schemes-supported",
+//                                    "sides-supported",
+                                    "uri-authentication-supported",
+                                    "uri-security-supported"
+                                    )));
+            Packet response = mTransport.send(uri, request);
+            Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+            if (!response.getCode(Status.ENCODER).equals(Status.Ok) || !printerAttributes.isPresent()) {
+                continue;
+            }
+
+            // Sort the first working URI to the top of the list.
+            ImmutableList.Builder<URI> newUris = new ImmutableList.Builder<>();
+            newUris.add(uri);
+            for (URI oldUri: printer.getUris()) {
+                if (!oldUri.equals(uri)) newUris.add(oldUri);
+            }
+            return IppPrinter.of(newUris.build(), printerAttributes.get());
+        }
+        throw new IOException("No valid attributes returned for " + printer);
     }
 
     /** Return a validated job based on information in the job request */
     public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
-        URI uri = jobRequest.getPrinter().getUri();
+        URI uri = jobRequest.getPrinter().getUris().get(0);
 
         Packet request = Packet.create(Operation.ValidateJob, 0x02,
                 AttributeGroup.create(Tag.OperationAttributes,
@@ -68,13 +152,14 @@ public class IppClient {
      * Job records returned here will not contain any PrintJobRequest.
      */
     public List<PrintJob> getJobs(IppPrinter printer) throws IOException {
+        URI uri = printer.getUris().get(0);
         Packet request = Packet.create(Operation.GetJobs, 0x03,
                 AttributeGroup.create(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(printer.getUri())));
+                        Attributes.PrinterUri.of(uri)));
 
-        Packet response = mTransport.send(printer.getUri(), request);
+        Packet response = mTransport.send(uri, request);
 
         ImmutableList.Builder<PrintJob> listBuilder = new ImmutableList.Builder<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
@@ -105,11 +190,12 @@ public class IppClient {
             // Copy from the source file
             bytes = ByteStreams.toByteArray(inStream);
         }
+        URI printerUri = jobRequest.getPrinter().getUris().get(0);
 
         ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
         attributes.add(Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
-                Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()),
+                Attributes.PrinterUri.of(printerUri),
                 Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType()));
 
         // Add job and document names if request includes a document name
@@ -123,7 +209,7 @@ public class IppClient {
                         attributes.build()))
                 .setData(bytes).build();
 
-        return PrintJob.of(jobRequest, mTransport.send(jobRequest.getPrinter().getUri(), request));
+        return PrintJob.of(jobRequest, mTransport.send(printerUri, request));
     }
 
     /**
@@ -131,15 +217,17 @@ public class IppClient {
      * sendDocument to deliver document data.
      */
     public PrintJob createJob(JobRequest jobRequest) throws IOException {
+        URI printerUri = jobRequest.getPrinter().getUris().get(0);
+
         ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
         attributes.add(Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
-                Attributes.PrinterUri.of(jobRequest.getPrinter().getUri()));
+                Attributes.PrinterUri.of(printerUri));
 
         Packet request = Packet.create(Operation.CreateJob, 0x05,
                 AttributeGroup.create(Tag.OperationAttributes, attributes.build()));
 
-        return PrintJob.of(jobRequest, mTransport.send(jobRequest.getPrinter().getUri(), request));
+        return PrintJob.of(jobRequest, mTransport.send(printerUri, request));
     }
 
     /** Deliver document data for a print job, returning the updated print job. */

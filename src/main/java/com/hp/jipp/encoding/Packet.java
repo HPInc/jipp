@@ -92,6 +92,14 @@ public abstract class Packet {
         return Optional.absent();
     }
 
+    public <T> List<T> getValues(Tag groupDelimiter, AttributeType<T> attributeType) {
+        Optional<AttributeGroup> group = getAttributeGroup(groupDelimiter);
+        if (group.isPresent()) {
+            return group.get().getValues(attributeType);
+        }
+        return ImmutableList.of();
+    }
+
     /**
      * Return the packet's data field (bytes found after all attributes)
      */
