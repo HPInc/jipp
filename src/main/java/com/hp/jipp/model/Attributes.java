@@ -3,6 +3,7 @@ package com.hp.jipp.model;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
+import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
@@ -10,6 +11,7 @@ import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
 
+import java.net.URI;
 import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
@@ -79,8 +81,9 @@ public final class Attributes {
     public final static NameCodeType<JobState> JobState =
             NameCodeType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
-    public final static UriType JobUri =
-            new UriType(Tag.Uri, "job-uri");
+    public final static UriType JobUri = new UriType(Tag.Uri, "job-uri");
+
+    public final static IntegerType JobId = new IntegerType(Tag.IntegerValue, "job-id");
 
     // 3.3.1.1 Send-Document Request
     public final static BooleanType LastDocument =

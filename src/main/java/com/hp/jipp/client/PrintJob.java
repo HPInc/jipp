@@ -1,27 +1,23 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.Packet;
-import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Nullable;
 
 import java.io.IOException;
-import java.net.URI;
 
 @AutoValue
 public abstract class PrintJob {
 
-    static PrintJob of(URI uri, IppPrinter printer, AttributeGroup jobAttributes) {
-        return new AutoValue_PrintJob(uri, printer, null, jobAttributes);
+    static PrintJob of(int id, IppPrinter printer, AttributeGroup jobAttributes) {
+        return new AutoValue_PrintJob(id, printer, null, jobAttributes);
     }
 
-    static PrintJob of(URI uri, JobRequest jobRequest, AttributeGroup jobAttributes) {
-        return new AutoValue_PrintJob(uri, jobRequest.getPrinter(), jobRequest, jobAttributes);
+    static PrintJob of(int id, JobRequest jobRequest, AttributeGroup jobAttributes) {
+        return new AutoValue_PrintJob(id, jobRequest.getPrinter(), jobRequest, jobAttributes);
     }
 
-    public abstract URI getUri();
+    public abstract int getId();
 
     public abstract IppPrinter getPrinter();
 
@@ -34,6 +30,6 @@ public abstract class PrintJob {
 
     /** Returns a new PrintJob containing more current JobAttributes from the enclosed response packet */
     PrintJob withAttributes(AttributeGroup newAttributes) throws IOException {
-        return new AutoValue_PrintJob(getUri(), getPrinter(), getJobRequest(), newAttributes);
+        return new AutoValue_PrintJob(getId(), getPrinter(), getJobRequest(), newAttributes);
     }
 }
