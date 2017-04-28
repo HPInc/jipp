@@ -33,7 +33,7 @@ public class AttributeTypeTest {
 
     @Test
     public void naturalLanguageFromGroup() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesNaturalLanguage.of("en")));
 
         Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage).get();
@@ -49,14 +49,14 @@ public class AttributeTypeTest {
 
     @Test
     public void ignoreBadNameNaturalLanguage() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
                 new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").of("en")));
         assertFalse(group.get(Attributes.AttributesNaturalLanguage).isPresent());
     }
 
     @Test
     public void enumAttributeType() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.PrinterAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(Operation.CancelJob, Operation.CreateJob)));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).get().getValues());

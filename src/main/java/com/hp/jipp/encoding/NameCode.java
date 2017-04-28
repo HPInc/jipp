@@ -14,7 +14,7 @@ public abstract class NameCode {
 
     /** A factory for objects of a NameCode subclass */
     public interface Factory<T extends NameCode> {
-        T create(String name, int code);
+        T of(String name, int code);
     }
 
     /** Convert a List of T into a Map of integers to T, where T is a NameCode subclass. */

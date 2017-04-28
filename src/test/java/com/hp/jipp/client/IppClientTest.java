@@ -44,7 +44,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterAttributes() throws IOException {
-        responsePacket = Packet.create(Status.Ok, 0x01, AttributeGroup.create(Tag.PrinterAttributes,
+        responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(printer);
         assertEquals(Operation.GetPrinterAttributes, sendPacket.getCode(Operation.ENCODER));

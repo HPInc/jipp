@@ -22,7 +22,7 @@ public class AttributeGroupTest {
 
     @Test
     public void multiAttribute() throws Exception {
-        AttributeGroup group = AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup group = AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer")));
@@ -36,14 +36,14 @@ public class AttributeGroupTest {
 
     @Test
     public void multiMultiAttribute() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8","utf-16")));
         assertEquals(ImmutableList.of("utf-8", "utf-16"), group.getValues(Attributes.AttributesCharset));
     }
 
     @Test
     public void missingAttribute() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.PrinterUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
         assertEquals(0, group.getValues(Attributes.AttributesNaturalLanguage).size());
     }
@@ -51,7 +51,7 @@ public class AttributeGroupTest {
     @Test
     public void duplicateName() throws Exception {
         exception.expect(BuildError.class);
-        AttributeGroup.create(Tag.OperationAttributes,
+        AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesCharset.of("utf-8"));
     }
@@ -59,7 +59,7 @@ public class AttributeGroupTest {
     @Test
     public void stringFromLang() throws Exception {
         LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.JobAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.JobAttributes,
                 jobNameLang.of(LangString.of("my job", "fr"))));
 
         // If I don't care about the language encoding:
@@ -70,7 +70,7 @@ public class AttributeGroupTest {
     @Test
     public void langFromString() throws Exception {
         StringType jobName = new StringType(Tag.NameWithoutLanguage, "job-name");
-        AttributeGroup group = cycle(AttributeGroup.create(Tag.JobAttributes,
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.JobAttributes,
                 jobName.of("my job")));
 
         // If I don't care about the language encoding:

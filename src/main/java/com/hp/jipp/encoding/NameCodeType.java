@@ -28,8 +28,9 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
     }
 
     /**
-     * An encoder for NameCode enumerations. Use {@link #encoder(String, Collection, NameCode.Factory)}
-     * to create instance for new EnumTypes.
+     * An encoder for NameCode enumerations.
+     * <p>
+     * Use {@link #encoder(String, Collection, NameCode.Factory)} to construct an encoder instance for new EnumTypes.
      */
     @AutoValue
     public abstract static class Encoder<T extends NameCode> extends Attribute.Encoder<T> {
@@ -47,7 +48,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
         public T get(int code) {
             Optional<T> e = Optional.fromNullable(getEnumsMap().get(code));
             if (e.isPresent()) return e.get();
-            return getFactory().create(getName() + "(x" + Integer.toHexString(code) + ")", code);
+            return getFactory().of(getName() + "(x" + Integer.toHexString(code) + ")", code);
         }
 
         @Override

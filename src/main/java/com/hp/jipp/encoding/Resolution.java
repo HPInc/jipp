@@ -34,10 +34,10 @@ abstract public class Resolution {
 
     @AutoValue
     public abstract static class Unit extends NameCode {
-        public final static Unit DotsPerInch = create("dpi", 3);
-        public final static Unit DotsPerCentimeter = create("dpcm", 4);
+        public final static Unit DotsPerInch = of("dpi", 3);
+        public final static Unit DotsPerCentimeter = of("dpcm", 4);
 
-        public static Unit create(String name, int code) {
+        public static Unit of(String name, int code) {
             return new AutoValue_Resolution_Unit(name, code);
         }
 
@@ -47,8 +47,8 @@ abstract public class Resolution {
                         DotsPerInch, DotsPerCentimeter
                 ), new NameCode.Factory<Resolution.Unit>() {
                     @Override
-                    public Resolution.Unit create(String name, int code) {
-                        return Resolution.Unit.create(name, code);
+                    public Resolution.Unit of(String name, int code) {
+                        return Resolution.Unit.of(name, code);
                     }
                 });
     }

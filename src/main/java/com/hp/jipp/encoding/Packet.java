@@ -47,7 +47,7 @@ public abstract class Packet {
     /**
      * Construct and return a complete packet
      */
-    public static Packet create(NameCode code, int requestId, AttributeGroup... groups) {
+    public static Packet of(NameCode code, int requestId, AttributeGroup... groups) {
         return builder(code, requestId).setAttributeGroups(Arrays.asList(groups)).build();
     }
 

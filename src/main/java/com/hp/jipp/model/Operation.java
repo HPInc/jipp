@@ -14,22 +14,22 @@ import com.hp.jipp.encoding.NameCode;
 public abstract class Operation extends NameCode {
     // Note: this is really an OperationCode. If there are ever real Operation objects, rename.
 
-    public final static Operation PrintJob = create("Print-Job", 0x0002);
-    public final static Operation PrintUri = create("Print-URI", 0x0003);
-    public final static Operation ValidateJob = create("Validate-Job", 0x0004);
-    public final static Operation CreateJob = create("Create-Job", 0x0005);
-    public final static Operation SendDocument = create("Send-Document", 0x0006);
-    public final static Operation SendUri = create("Send-URI", 0x0007);
-    public final static Operation CancelJob = create("Cancel-Job", 0x0008);
-    public final static Operation GetJobAttributes = create("Get-Job-Attributes", 0x0009);
-    public final static Operation GetJobs = create("Get-Jobs", 0x000A);
-    public final static Operation GetPrinterAttributes = create("Get-Printer-Attributes", 0x000B);
-    public final static Operation HoldJob = create("Hold-Job", 0x000C);
-    public final static Operation ReleaseJob = create("Release-Job", 0x000D);
-    public final static Operation RestartJob = create("Restart-Job", 0x000E);
-    public final static Operation PausePrinter = create("Pause-Printer", 0x0010);
-    public final static Operation ResumePrinter = create("Resume-Printer", 0x0011);
-    public final static Operation PurgeJobs = create("Purge-Jobs", 0x0012);
+    public final static Operation PrintJob = of("Print-Job", 0x0002);
+    public final static Operation PrintUri = of("Print-URI", 0x0003);
+    public final static Operation ValidateJob = of("Validate-Job", 0x0004);
+    public final static Operation CreateJob = of("Create-Job", 0x0005);
+    public final static Operation SendDocument = of("Send-Document", 0x0006);
+    public final static Operation SendUri = of("Send-URI", 0x0007);
+    public final static Operation CancelJob = of("Cancel-Job", 0x0008);
+    public final static Operation GetJobAttributes = of("Get-Job-Attributes", 0x0009);
+    public final static Operation GetJobs = of("Get-Jobs", 0x000A);
+    public final static Operation GetPrinterAttributes = of("Get-Printer-Attributes", 0x000B);
+    public final static Operation HoldJob = of("Hold-Job", 0x000C);
+    public final static Operation ReleaseJob = of("Release-Job", 0x000D);
+    public final static Operation RestartJob = of("Restart-Job", 0x000E);
+    public final static Operation PausePrinter = of("Pause-Printer", 0x0010);
+    public final static Operation ResumePrinter = of("Resume-Printer", 0x0011);
+    public final static Operation PurgeJobs = of("Purge-Jobs", 0x0012);
 
     /** The encoder for converting integers to Operation objects */
     public final static NameCodeType.Encoder<Operation> ENCODER = NameCodeType.encoder(
@@ -39,8 +39,8 @@ public abstract class Operation extends NameCode {
                     PurgeJobs
             ), new NameCode.Factory<Operation>() {
                 @Override
-                public Operation create(String name, int code) {
-                    return Operation.create(name, code);
+                public Operation of(String name, int code) {
+                    return Operation.of(name, code);
                 }
             });
 
@@ -54,7 +54,7 @@ public abstract class Operation extends NameCode {
      * @param name human-readable name of the the operation
      * @param code machine-readable identifier for the operation
      */
-    public static Operation create(String name, int code) {
+    public static Operation of(String name, int code) {
         return new AutoValue_Operation(name, code);
     }
 }

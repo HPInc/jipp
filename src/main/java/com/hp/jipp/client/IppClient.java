@@ -44,8 +44,8 @@ public class IppClient {
         IppPrinter ippPrinter = null;
 
         for (URI uri : printer.getUris()) {
-            Packet request = Packet.create(Operation.GetPrinterAttributes, 0x01,
-                    AttributeGroup.create(Tag.OperationAttributes,
+            Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
+                    AttributeGroup.of(Tag.OperationAttributes,
                             Attributes.AttributesCharset.of("utf-8"),
                             Attributes.AttributesNaturalLanguage.of("en"),
                             Attributes.PrinterUri.of(uri)
@@ -142,8 +142,8 @@ public class IppClient {
     public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUris().get(0);
 
-        Packet request = Packet.create(Operation.ValidateJob, 0x02,
-                AttributeGroup.create(Tag.OperationAttributes,
+        Packet request = Packet.of(Operation.ValidateJob, 0x02,
+                AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(uri),
@@ -159,8 +159,8 @@ public class IppClient {
      */
     public List<PrintJob> getJobs(IppPrinter printer) throws IOException {
         URI printerUri = printer.getUris().get(0);
-        Packet request = Packet.create(Operation.GetJobs, 0x03,
-                AttributeGroup.create(Tag.OperationAttributes,
+        Packet request = Packet.of(Operation.GetJobs, 0x03,
+                AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri)));
@@ -195,8 +195,8 @@ public class IppClient {
     /** Fetch current attributes into a new copy of the job */
     public PrintJob getJobAttributes(PrintJob job) throws IOException {
         URI printerUri = job.getPrinter().getUris().get(0);
-        Packet request = Packet.create(Operation.GetJobAttributes, 0x03,
-                AttributeGroup.create(Tag.OperationAttributes,
+        Packet request = Packet.of(Operation.GetJobAttributes, 0x03,
+                AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUris()),
@@ -235,7 +235,7 @@ public class IppClient {
         }
 
         Packet request = Packet.builder(Operation.PrintJob, 0x04)
-                .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
+                .setAttributeGroups(AttributeGroup.of(Tag.OperationAttributes,
                         attributes.build()))
                 .setData(bytes).build();
 
@@ -267,8 +267,8 @@ public class IppClient {
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri));
 
-        Packet request = Packet.create(Operation.CreateJob, 0x05,
-                AttributeGroup.create(Tag.OperationAttributes, attributes.build()));
+        Packet request = Packet.of(Operation.CreateJob, 0x05,
+                AttributeGroup.of(Tag.OperationAttributes, attributes.build()));
 
         Packet response = mTransport.send(printerUri, request);
         return toPrintJob(jobRequest, response);
@@ -287,7 +287,7 @@ public class IppClient {
 
         // Create a packet to be sent later
         final Packet request = Packet.builder(Operation.SendDocument, 0x05)
-                .setAttributeGroups(AttributeGroup.create(Tag.OperationAttributes,
+                .setAttributeGroups(AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),
@@ -302,8 +302,8 @@ public class IppClient {
     /** Send a print job cancellation request */
     public Packet cancelJob(PrintJob job) throws IOException {
         URI printerUri = job.getPrinter().getUris().get(0);
-        Packet request = Packet.create(Operation.CancelJob, 0x03,
-                AttributeGroup.create(Tag.OperationAttributes,
+        Packet request = Packet.of(Operation.CancelJob, 0x03,
+                AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),

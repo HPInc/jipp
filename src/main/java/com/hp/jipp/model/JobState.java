@@ -13,25 +13,25 @@ import com.hp.jipp.encoding.NameCode;
 @AutoValue
 public abstract class JobState extends NameCode {
 
-    public static final JobState Pending = create("pending", 3);
-    public static final JobState PendingHeld = create("pending-held", 4);
-    public static final JobState Processing = create("processing", 5);
-    public static final JobState ProcessingStopped = create("processing-stopped", 6);
-    public static final JobState Canceled = create("canceled", 7);
-    public static final JobState Aborted = create("aborted", 8);
-    public static final JobState Completed = create("completed", 9);
+    public static final JobState Pending = of("pending", 3);
+    public static final JobState PendingHeld = of("pending-held", 4);
+    public static final JobState Processing = of("processing", 5);
+    public static final JobState ProcessingStopped = of("processing-stopped", 6);
+    public static final JobState Canceled = of("canceled", 7);
+    public static final JobState Aborted = of("aborted", 8);
+    public static final JobState Completed = of("completed", 9);
 
     public final static NameCodeType.Encoder<JobState> ENCODER = NameCodeType.encoder(
             "job-state", ImmutableSet.of(
                     Pending, PendingHeld, Processing, ProcessingStopped, Canceled, Aborted, Completed
             ), new NameCode.Factory<JobState>() {
                 @Override
-                public JobState create(String name, int code) {
-                    return JobState.create(name, code);
+                public JobState of(String name, int code) {
+                    return JobState.of(name, code);
                 }
             });
 
-    public static JobState create(String name, int code) {
+    public static JobState of(String name, int code) {
         return new AutoValue_JobState(name, code);
     }
 }

@@ -33,12 +33,12 @@ abstract public class AttributeGroup {
     // TODO: dateTime?
 
     /** Return a complete attribute group */
-    public static AttributeGroup create(Tag startTag, Attribute<?>... attributes) {
-        return create(startTag, Arrays.asList(attributes));
+    public static AttributeGroup of(Tag startTag, Attribute<?>... attributes) {
+        return of(startTag, Arrays.asList(attributes));
     }
 
     /** Return a complete attribute group */
-    public static AttributeGroup create(Tag startTag, List<Attribute<?>> attributes) {
+    public static AttributeGroup of(Tag startTag, List<Attribute<?>> attributes) {
         if (!startTag.isDelimiter()) throw new BuildError("Not a delimiter: " + startTag);
         return new AutoValue_AttributeGroup.Builder()
                 .setTag(startTag)
@@ -86,7 +86,7 @@ abstract public class AttributeGroup {
                 attributesBuilder.add(Attribute.read(in, ENCODERS, valueTag));
             }
         }
-        return create(startTag, attributesBuilder.build());
+        return of(startTag, attributesBuilder.build());
     }
 
     /** Return the tag that delimits this group */

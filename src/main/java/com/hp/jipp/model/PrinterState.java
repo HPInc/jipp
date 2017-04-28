@@ -8,21 +8,21 @@ import com.hp.jipp.encoding.NameCode;
 @AutoValue
 public abstract class PrinterState extends NameCode {
 
-    public static final PrinterState Idle = create("idle", 3);
-    public static final PrinterState Processing = create("processing", 4);
-    public static final PrinterState Stopped = create("stopped", 5);
+    public static final PrinterState Idle = of("idle", 3);
+    public static final PrinterState Processing = of("processing", 4);
+    public static final PrinterState Stopped = of("stopped", 5);
 
     public final static NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.encoder(
             "printer-state", ImmutableSet.of(
                     Idle, Processing, Stopped
             ), new NameCode.Factory<PrinterState>() {
                 @Override
-                public PrinterState create(String name, int code) {
-                    return PrinterState.create(name, code);
+                public PrinterState of(String name, int code) {
+                    return PrinterState.of(name, code);
                 }
             });
 
-    public static PrinterState create(String name, int code) {
+    public static PrinterState of(String name, int code) {
         return new AutoValue_PrinterState(name, code);
     }
 }
