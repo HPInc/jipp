@@ -42,6 +42,8 @@ public class IppClient {
 
     /** Fetch current printer attributes into a new copy of the printer, or throws if not possible */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
+        IppPrinter ippPrinter = null;
+
         for (URI uri : printer.getUris()) {
             Packet request = Packet.create(Operation.GetPrinterAttributes, 0x01,
                     AttributeGroup.create(Tag.OperationAttributes,
@@ -115,23 +117,26 @@ public class IppClient {
 //                                    "uri-authentication-supported",
 //                                    "uri-security-supported"
 //                                    )
-
                     ));
             Packet response = mTransport.send(uri, request);
             Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-            if (!response.getCode(Status.ENCODER).equals(Status.Ok) || !printerAttributes.isPresent()) {
-                continue;
+            if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
+                // Sort the first working URI to the top of the list.
+                ImmutableList.Builder<URI> newUris = new ImmutableList.Builder<>();
+                newUris.add(uri);
+                for (URI oldUri : printer.getUris()) {
+                    if (!oldUri.equals(uri)) newUris.add(oldUri);
+                }
+                ippPrinter = IppPrinter.of(newUris.build(), printerAttributes.get());
+                break;
             }
-
-            // Sort the first working URI to the top of the list.
-            ImmutableList.Builder<URI> newUris = new ImmutableList.Builder<>();
-            newUris.add(uri);
-            for (URI oldUri: printer.getUris()) {
-                if (!oldUri.equals(uri)) newUris.add(oldUri);
-            }
-            return IppPrinter.of(newUris.build(), printerAttributes.get());
         }
-        throw new IOException("No valid attributes returned for " + printer);
+
+        if (ippPrinter == null) {
+            throw new IOException("No valid attributes returned for " + printer);
+        } else {
+            return ippPrinter;
+        }
     }
 
     /** Return a validated job based on information in the job request */

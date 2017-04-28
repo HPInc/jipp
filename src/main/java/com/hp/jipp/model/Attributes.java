@@ -66,7 +66,7 @@ public final class Attributes {
     public final static StringType DocumentFormatSupported =
             new StringType(Tag.MimeMediaType, "document-format-supported");
 
-    public static UriType PrinterUriSupported =
+    public final static UriType PrinterUriSupported =
             new UriType(Tag.Uri, "printer-uri-supported");
 
     // 3.2.1.1 Print-Job Request
