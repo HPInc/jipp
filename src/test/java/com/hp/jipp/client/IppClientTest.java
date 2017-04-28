@@ -64,7 +64,7 @@ public class IppClientTest {
         printer = client.getPrinterAttributes(printer);
         assertEquals(Operation.GetPrinterAttributes, sendPacket.getCode(Operation.ENCODER));
         assertEquals(printer.getUris(), ImmutableList.of(sendUri));
-        assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
+        assertEquals("printername", printer.getAttributes().get().getValue(Attributes.PrinterInfo).get());
     }
 
     @Test
