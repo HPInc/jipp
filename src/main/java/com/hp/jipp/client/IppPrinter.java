@@ -37,4 +37,8 @@ public abstract class IppPrinter {
         return "IppPrinter{uris=" + getUris() +
                 (info.isPresent() ? ", name=" + info.get() : "") + "}";
     }
+
+    public IppPrinter withUris(List<URI> uris) {
+        return new AutoValue_IppPrinter(uris, getAttributes());
+    }
 }

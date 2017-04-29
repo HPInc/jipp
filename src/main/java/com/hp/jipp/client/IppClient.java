@@ -39,95 +39,110 @@ public class IppClient {
         mTransport = transport;
     }
 
-    /** Fetch current printer attributes into a new copy of the printer, or throws if not possible */
+    /**
+     * Fetch current printer attributes into a new copy of the printer, or throw.
+     */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
+        Optional<IOException> lastThrown = Optional.absent();
         for (URI uri : printer.getUris()) {
-            Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
-                    AttributeGroup.of(Tag.OperationAttributes,
-                            Attributes.AttributesCharset.of("utf-8"),
-                            Attributes.AttributesNaturalLanguage.of("en"),
-                            Attributes.PrinterUri.of(uri)
-//                            Attributes.RequestedAttributes.of(
-//                                    "charset-configured",
-//                                    "charset-supported",
-//                                    "color-supported",
-//                                    "compression-supported",
-//                                    "copies-supported",
-////                                    "document-format-details-supported",
-////                                    "epcl-version-supported",
-////                                    "finishings-supported",
-//
-////                                    "number-up-default",
-////                                    "number-up-supported",
-////                                    "output-bin-supported",
-////                                    "pclm-compression-method-preferred",
-////                                    "pclm-raster-back-side",
-////                                    "pclm-source-resolution-supported",
-////                                    "pclm-strip-height-preferred",
-////                                    "pclm-strip-height-supported",
-////                                    "pdf-fit-to-page-supported",
-////                                    "presentation-direction-number-up-default",
-////                                    "presentation-direction-number-up-supported",
-//
-//                                    "document-format-supported",
-////                                    "fit-to-page-default",
-//                                    "ipp-versions-supported",
-////                                    "job-account-id-supported",
-////                                    "job-accounting-user-id-supported",
-////                                    "job-creation-attributes-supported",
-////                                    "job-password-encryption-supported",
-////                                    "job-password-supported",
-//                                    "media-bottom-margin-supported",
-//                                    "media-col-default",
-//                                    "media-col-supported",
-//                                    "media-default",
-//                                    "media-left-margin-supported",
-//                                    "media-right-margin-supported",
-//                                    "media-size-supported",
-//                                    "media-source-supported",
-//                                    "media-supported",
-//                                    "media-top-margin-supported",
-//                                    "media-type-supported",
-//                                    "operations-supported",
-//                                    "page-bottom-default",
-//                                    "page-left-default",
-//                                    "page-right-default",
-//                                    "page-top-default",
-//                                    "print-color-mode-supported",
-//                                    "printer-device-id",
-////                                    "printer-dns-sd-name",
-//                                    "printer-icons",
-//                                    "printer-info",
-//                                    "printer-location",
-//                                    "printer-make-and-model",
-//                                    "printer-more-info",
-//                                    "printer-name",
-//                                    "printer-resolution-supported",
-//                                    "printer-settable-attributes-supported",
-//                                    "printer-supply-info-uri",
-//                                    "printer-type",
-//                                    "printer-uri-supported",
-//                                    "print-quality-default",
-//                                    "print-quality-supported",
-////                                    "reference-uri-schemes-supported",
-////                                    "sides-supported",
-//                                    "uri-authentication-supported",
-//                                    "uri-security-supported"
-//                                    )
-                    ));
-            Packet response = mTransport.send(uri, request);
-            Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-            if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
-                // Sort the first working URI to the top of the list.
-                ImmutableList.Builder<URI> newUris = new ImmutableList.Builder<>();
-                newUris.add(uri);
-                for (URI oldUri : printer.getUris()) {
-                    if (!oldUri.equals(uri)) newUris.add(oldUri);
-                }
-                return IppPrinter.of(newUris.build(), printerAttributes.get());
+            try {
+                return getPrinterAttributes(printer, uri);
+            } catch (IOException thrown) {
+                lastThrown = Optional.of(thrown);
             }
         }
-        throw new IOException("No valid attributes returned for " + printer);
+        if (lastThrown.isPresent()) {
+            throw new IOException("Fail after trying " + printer.getUris(), lastThrown.get());
+        } else {
+            throw new IllegalArgumentException("No printer URIs present");
+        }
+    }
+
+    private IppPrinter getPrinterAttributes(IppPrinter printer, URI printerUri) throws IOException {
+        Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
+                AttributeGroup.of(Tag.OperationAttributes,
+                        Attributes.AttributesCharset.of("utf-8"),
+                        Attributes.AttributesNaturalLanguage.of("en"),
+                        Attributes.PrinterUri.of(printerUri)
+//                        Attributes.RequestedAttributes.of(
+//                                "charset-configured",
+//                                "charset-supported",
+//                                "color-supported",
+//                                "compression-supported",
+//                                "copies-supported",
+//                                "document-format-details-supported",
+//                                "epcl-version-supported",
+//                                "finishings-supported",
+//                                "number-up-default",
+//                                "number-up-supported",
+//                                "output-bin-supported",
+//                                "pclm-compression-method-preferred",
+//                                "pclm-raster-back-side",
+//                                "pclm-source-resolution-supported",
+//                                "pclm-strip-height-preferred",
+//                                "pclm-strip-height-supported",
+//                                "pdf-fit-to-page-supported",
+//                                "presentation-direction-number-up-default",
+//                                "presentation-direction-number-up-supported",
+//                                "document-format-supported",
+//                                "fit-to-page-default",
+//                                "ipp-versions-supported",
+//                                "job-account-id-supported",
+//                                "job-accounting-user-id-supported",
+//                                "job-creation-attributes-supported",
+//                                "job-password-encryption-supported",
+//                                "job-password-supported",
+//                                "media-bottom-margin-supported",
+//                                "media-col-default",
+//                                "media-col-supported",
+//                                "media-default",
+//                                "media-left-margin-supported",
+//                                "media-right-margin-supported",
+//                                "media-size-supported",
+//                                "media-source-supported",
+//                                "media-supported",
+//                                "media-top-margin-supported",
+//                                "media-type-supported",
+//                                "operations-supported",
+//                                "page-bottom-default",
+//                                "page-left-default",
+//                                "page-right-default",
+//                                "page-top-default",
+//                                "print-color-mode-supported",
+//                                "printer-device-id",
+//                                "printer-dns-sd-name",
+//                                "printer-icons",
+//                                "printer-info",
+//                                "printer-location",
+//                                "printer-make-and-model",
+//                                "printer-more-info",
+//                                "printer-name",
+//                                "printer-resolution-supported",
+//                                "printer-settable-attributes-supported",
+//                                "printer-supply-info-uri",
+//                                "printer-type",
+//                                "printer-uri-supported",
+//                                "print-quality-default",
+//                                "print-quality-supported",
+//                                "reference-uri-schemes-supported",
+//                                "sides-supported",
+//                                "uri-authentication-supported",
+//                                "uri-security-supported"
+//                                )
+                ));
+        Packet response = mTransport.send(printerUri, request);
+        Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+        if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
+            // Sort the first working URI to the top of the list.
+            ImmutableList.Builder<URI> newUris = new ImmutableList.Builder<>();
+            newUris.add(printerUri);
+            for (URI oldUri : printer.getUris()) {
+                if (!oldUri.equals(printerUri)) newUris.add(oldUri);
+            }
+            return IppPrinter.of(newUris.build(), printerAttributes.get());
+        } else {
+            throw new IOException("No attributes");
+        }
     }
 
     /** Return a validated job based on information in the job request */
