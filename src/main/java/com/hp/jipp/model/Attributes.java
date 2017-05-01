@@ -59,6 +59,12 @@ public final class Attributes {
     public final static NameCodeType<PrinterState> PrinterState =
             NameCodeType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
+    public final static StringType PrinterStateReasons =
+            new StringType(Tag.Keyword, "printer-state-reasons");
+
+    public final static StringType PrinterStateMessage =
+            new StringType(Tag.TextWithoutLanguage, "printer-state-message");
+
     public final static RangeOfIntegerType CopiesSupported =
             new RangeOfIntegerType("copies-supported");
 
@@ -95,10 +101,10 @@ public final class Attributes {
     // Others
 
     public final static StringType JobName =
-            new StringType(Tag.TextWithoutLanguage, "job-name");
+            new StringType(Tag.NameWithoutLanguage, "job-name");
 
     public final static StringType DocumentName =
-            new StringType(Tag.TextWithoutLanguage, "document-name");
+            new StringType(Tag.NameWithoutLanguage, "document-name");
 
     public final static ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");

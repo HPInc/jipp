@@ -71,7 +71,7 @@ public class IppClientTest {
     public void createJob() throws IOException {
         responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111)));
-        JobRequest jobRequest = JobRequest.of(printer, document);
+        JobRequest jobRequest = JobRequest.of(printer, "job", document);
         PrintJob job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
         job.getJobRequest().get().getDocument();

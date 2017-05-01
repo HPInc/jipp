@@ -59,6 +59,29 @@ public class IppClient {
         }
     }
 
+    /**
+     * Fetch printer attributes
+     */
+    public AttributeGroup getPrinterAttributes(IppPrinter printer, Attribute<?>... extras) throws IOException {
+       ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
+        URI printerUri = printer.getUris().get(0);
+        operationAttributes.add(
+                Attributes.AttributesCharset.of("utf-8"),
+                Attributes.AttributesNaturalLanguage.of("en"),
+                Attributes.PrinterUri.of(printerUri));
+        operationAttributes.add(extras);
+        Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
+                AttributeGroup.of(Tag.OperationAttributes, operationAttributes.build()));
+
+        Packet response = mTransport.send(printerUri, request);
+        Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+        if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
+            return printerAttributes.get();
+        } else {
+            throw new IOException("No attributes");
+        }
+    }
+
     private IppPrinter getPrinterAttributes(IppPrinter printer, URI printerUri) throws IOException {
         Packet request = Packet.of(Operation.GetPrinterAttributes, 0x01,
                 AttributeGroup.of(Tag.OperationAttributes,
@@ -237,15 +260,11 @@ public class IppClient {
         attributes.add(Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
-                Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType()));
+                Attributes.JobName.of(jobRequest.getName()),
+                Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
+        );
 
-        // Add job and document names if request includes a document name
-        Optional<String> documentName = jobRequest.getDocument().getName();
-        if (documentName.isPresent()) {
-            attributes.add(Attributes.JobName.of(jobRequest.getName()),
-                    Attributes.DocumentName.of(documentName.get()));
-        }
-
+        // Note: sending document-name causes failure on Photosmart 6510
         Packet request = Packet.builder(Operation.PrintJob, 0x04)
                 .setAttributeGroups(AttributeGroup.of(Tag.OperationAttributes,
                         attributes.build()))
