@@ -85,6 +85,9 @@ public final class Attributes {
 
     public final static IntegerType JobId = new IntegerType(Tag.IntegerValue, "job-id");
 
+    // 3.2.6.1 Get-Jobs request
+    public final static BooleanType MyJobs = new BooleanType(Tag.BooleanValue, "my-jobs");
+
     // 3.3.1.1 Send-Document Request
     public final static BooleanType LastDocument =
             new BooleanType(Tag.BooleanValue, "last-document");

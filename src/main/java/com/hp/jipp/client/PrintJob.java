@@ -28,7 +28,7 @@ public abstract class PrintJob {
     public abstract AttributeGroup getAttributes();
 
     /** Returns a new PrintJob containing more current JobAttributes from the enclosed response packet */
-    PrintJob withAttributes(AttributeGroup newAttributes) throws IOException {
+    public PrintJob withAttributes(AttributeGroup newAttributes) throws IOException {
         return new AutoValue_PrintJob(getId(), getPrinter(), getJobRequest(), newAttributes);
     }
 }

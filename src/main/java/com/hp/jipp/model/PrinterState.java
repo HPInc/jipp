@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
+/** An enumeration of possible printer states */
 @AutoValue
 public abstract class PrinterState extends NameCode {
 

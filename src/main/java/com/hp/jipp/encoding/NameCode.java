@@ -18,11 +18,11 @@ public abstract class NameCode {
     }
 
     /** Convert a List of T into a Map of integers to T, where T is a NameCode subclass. */
-    public static <T extends NameCode> Map<Integer, T> toMap(Collection<T> enums) {
+    public static <T extends NameCode> Map<Integer, T> toMap(Collection<T> nameCodes) {
         ImmutableMap.Builder<Integer, T> builder = new ImmutableMap.Builder<>();
-        for (T e : enums) {
+        for (T nameCode : nameCodes) {
             //noinspection ResultOfMethodCallIgnored
-            builder.put(e.getCode(), e);
+            builder.put(nameCode.getCode(), nameCode);
         }
         return builder.build();
     }

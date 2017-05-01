@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -164,13 +165,28 @@ public class IppClient {
      * <p>
      * Job records returned here will not contain any PrintJobRequest.
      */
-    public List<PrintJob> getJobs(IppPrinter printer) throws IOException {
+    public List<PrintJob> getJobs(IppPrinter printer, Attribute<?>... extras) throws IOException {
+        return getJobs(printer, Arrays.asList(extras));
+    }
+
+    /**
+     * Fetch a list of all jobs known by the printer.
+     * <p>
+     * Job records returned here will not contain any PrintJobRequest.
+     *
+     * @param extras Additional Operation Attributes to send along with the request
+     * @see <a href="https://tools.ietf.org/html/rfc2911#section-3.2.6.1">RFC2911 Section 3.2.6.1</a>
+     */
+    public List<PrintJob> getJobs(IppPrinter printer, List<Attribute<?>> extras) throws IOException {
         URI printerUri = printer.getUris().get(0);
-        Packet request = Packet.of(Operation.GetJobs, 0x03,
-                AttributeGroup.of(Tag.OperationAttributes,
-                        Attributes.AttributesCharset.of("utf-8"),
+        ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<Attribute<?>>()
+                .add(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(printerUri)));
+                        Attributes.PrinterUri.of(printerUri))
+                .addAll(extras);
+
+        Packet request = Packet.of(Operation.GetJobs, 0x03,
+                AttributeGroup.of(Tag.OperationAttributes, attributesBuilder.build()));
 
         Packet response = mTransport.send(printerUri, request);
 
@@ -188,17 +204,6 @@ public class IppClient {
         return listBuilder.build();
     }
 
-
-    /** Replace the authority in a URI with a known-good authority */
-    private URI swapAuthority(URI uri, URI goodAuthority) {
-        try {
-            return new URI(goodAuthority.getScheme(), goodAuthority.getAuthority(),
-                    uri.getPath(), uri.getQuery(), uri.getFragment());
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Failed to convert URI " + uri, e);
-        }
-    }
-
     /** Fetch current attributes into a new copy of the job */
     public PrintJob getJobAttributes(PrintJob job) throws IOException {
         URI printerUri = job.getPrinter().getUris().get(0);
@@ -208,7 +213,6 @@ public class IppClient {
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUris()),
                         Attributes.JobId.of(job.getId())));
-
         return jobWithNewAttributes(job, mTransport.send(printerUri, request));
     }
 
@@ -238,7 +242,7 @@ public class IppClient {
         // Add job and document names if request includes a document name
         Optional<String> documentName = jobRequest.getDocument().getName();
         if (documentName.isPresent()) {
-            attributes.add(Attributes.JobName.of(documentName.get()),
+            attributes.add(Attributes.JobName.of(jobRequest.getName()),
                     Attributes.DocumentName.of(documentName.get()));
         }
 
