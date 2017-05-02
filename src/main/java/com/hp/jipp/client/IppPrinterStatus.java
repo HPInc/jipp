@@ -28,8 +28,10 @@ public abstract class IppPrinterStatus {
     abstract Optional<String> getMessage();
 
     public String toString() {
+        Optional<String> message = getMessage();
         return "Printer{state=" + getState().getName() +
                 (getReasons().isEmpty() ? "" : " r=" + getReasons()) +
-                (getMessage().isPresent() ? " m=" + getMessage().get() : "");
+                (message.isPresent() && !message.get().isEmpty() ? " m=" + message.get() : "") +
+                "}";
     }
 }

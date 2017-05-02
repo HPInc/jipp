@@ -47,10 +47,12 @@ public abstract class IppJobStatus {
 
     @Override
     public String toString() {
+        Optional<String> message = getMessage();
+
         return "Job{state=" + getState().getName() +
                 (getReasons().isEmpty() ? "" : " r=" + getReasons()) +
-                (getMessage().isPresent() ? " m=" + getMessage().get() : "") +
-                (getDetailedMessages().isEmpty() ? "" : " x=" + getDetailedMessages());
-
+                (message.isPresent() && !message.get().isEmpty() ? " m=" + message.get() : "") +
+                (getDetailedMessages().isEmpty() ? "" : " x=" + getDetailedMessages()) +
+                "}";
     }
 }

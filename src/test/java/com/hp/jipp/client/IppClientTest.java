@@ -21,7 +21,8 @@ import com.hp.jipp.model.Attributes;
 
 public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
-    IppPrinter printer = IppPrinter.of(ImmutableList.of(printerUri));
+    IppPrinter printer = IppPrinter.of(printerUri, AttributeGroup.of(Tag.PrinterAttributes,
+            Attributes.PrinterInfo.of("printername")));
     FakeTransport transport = new FakeTransport();
     IppDocument document = new IppDocument() {
         @Override
@@ -66,10 +67,10 @@ public class IppClientTest {
     public void getPrinterAttributes() throws IOException {
         responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
-        printer = client.getPrinterAttributes(printer);
+        printer = client.getPrinterAttributes(ImmutableList.of(printerUri));
         assertEquals(Operation.GetPrinterAttributes, sendPacket.getCode(Operation.ENCODER));
-        assertEquals(printer.getUris(), ImmutableList.of(sendUri));
-        assertEquals("printername", printer.getAttributes().get().getValue(Attributes.PrinterInfo).get());
+        assertEquals(printer.getUri(), sendUri);
+        assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
     }
 
     @Test
