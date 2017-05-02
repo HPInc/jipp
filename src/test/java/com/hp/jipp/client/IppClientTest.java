@@ -23,7 +23,7 @@ public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
     IppPrinter printer = IppPrinter.of(ImmutableList.of(printerUri));
     FakeTransport transport = new FakeTransport();
-    BaseDocument document = new BaseDocument() {
+    IppDocument document = new IppDocument() {
         @Override
         public String getDocumentType() {
             return "application/whatever";
@@ -35,6 +35,11 @@ public class IppClientTest {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
             };
             return new ByteArrayInputStream(bytes);
+        }
+
+        @Override
+        public String getName() {
+            return "Test";
         }
     };
 
@@ -71,8 +76,8 @@ public class IppClientTest {
     public void createJob() throws IOException {
         responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111)));
-        JobRequest jobRequest = JobRequest.of(printer, "job", document);
-        PrintJob job = client.createJob(jobRequest);
+        IppJobRequest jobRequest = IppJobRequest.of(printer, "job", document);
+        IppJob job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
         job.getJobRequest().get().getDocument();
     }

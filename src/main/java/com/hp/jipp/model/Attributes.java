@@ -91,6 +91,15 @@ public final class Attributes {
 
     public final static IntegerType JobId = new IntegerType(Tag.IntegerValue, "job-id");
 
+    public final static StringType JobStateMessage =
+            new StringType(Tag.TextWithoutLanguage, "job-state-message");
+
+    public final static StringType JobStateReasons =
+            new StringType(Tag.Keyword, "job-state-reasons");
+
+    public final static StringType JobDetailedStatusMessages =
+            new StringType(Tag.TextWithoutLanguage, "job-detailed-status-messages");
+
     // 3.2.6.1 Get-Jobs request
     public final static BooleanType MyJobs = new BooleanType(Tag.BooleanValue, "my-jobs");
 
