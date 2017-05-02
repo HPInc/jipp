@@ -21,7 +21,7 @@ public abstract class JobState extends NameCode {
     public static final JobState Aborted = of("aborted", 8);
     public static final JobState Completed = of("completed", 9);
 
-    public final static NameCodeType.Encoder<JobState> ENCODER = NameCodeType.encoder(
+    public static final NameCodeType.Encoder<JobState> ENCODER = NameCodeType.encoder(
             "job-state", ImmutableSet.of(
                     Pending, PendingHeld, Processing, ProcessingStopped, Canceled, Aborted, Completed
             ), new NameCode.Factory<JobState>() {

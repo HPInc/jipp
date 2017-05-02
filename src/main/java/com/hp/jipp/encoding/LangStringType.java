@@ -2,7 +2,6 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.common.io.BaseEncoding;
 import com.hp.jipp.util.Util;
 
 import java.io.ByteArrayInputStream;

@@ -6,20 +6,23 @@ import java.io.IOException;
 
 public class ResolutionType extends AttributeType<Resolution> {
 
+    private static final int INT_LENGTH = 4;
+    private static final int BYTE_LENGTH = 1;
+
     static final Attribute.Encoder<Resolution> ENCODER = new Attribute.Encoder<Resolution>() {
         @Override
         Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
-            expectLength(in, 9);
+            expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             return Resolution.of(in.readInt(), in.readInt(),
                     Resolution.Unit.ENCODER.get(in.readByte()));
         }
 
         @Override
         void writeValue(DataOutputStream out, Resolution value) throws IOException {
-            out.writeShort(9);
+            out.writeShort(INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             out.writeInt(value.getCrossFeedResolution());
             out.writeInt(value.getFeedResolution());
-            out.writeByte((byte)value.getUnit().getCode());
+            out.writeByte((byte) value.getUnit().getCode());
         }
 
         @Override

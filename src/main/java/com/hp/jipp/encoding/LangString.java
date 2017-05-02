@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding;
 
-
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -8,7 +7,7 @@ import com.google.common.base.Optional;
 /** A string, possibly encoded with language */
 @AutoValue
 public abstract class LangString {
-    static Function<LangString, String> ToStringFunc = new Function<LangString, String>() {
+    static final Function<LangString, String> ToStringFunc = new Function<LangString, String>() {
         @Override
         public String apply(LangString input) {
             Optional<LangString> langString = Optional.fromNullable(input);
@@ -16,7 +15,7 @@ public abstract class LangString {
         }
     };
 
-    static Function<String, LangString> FromStringFunc = new Function<String, LangString>() {
+    static final Function<String, LangString> FromStringFunc = new Function<String, LangString>() {
         @Override
         public LangString apply(String input) {
             Optional<String> string = Optional.fromNullable(input);
@@ -32,8 +31,9 @@ public abstract class LangString {
         return new AutoValue_LangString(string, Optional.<String>absent());
     }
 
-    abstract public String getString();
-    abstract public Optional<String> getLang();
+    public abstract String getString();
+
+    public abstract Optional<String> getLang();
 
     @Override
     public String toString() {

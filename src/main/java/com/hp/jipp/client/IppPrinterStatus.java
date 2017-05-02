@@ -22,7 +22,9 @@ public abstract class IppPrinterStatus {
     }
 
     abstract PrinterState getState();
+
     abstract List<String> getReasons();
+
     abstract Optional<String> getMessage();
 
     public String toString() {

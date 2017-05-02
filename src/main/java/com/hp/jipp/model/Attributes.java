@@ -11,7 +11,6 @@ import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
 
-import java.net.URI;
 import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
@@ -20,102 +19,102 @@ public final class Attributes {
     // RFC2911 3.1.4.1 Request Operation Attributes
     // RFC2911 3.1.4.2 Response Operation Attributes
 
-    public final static StringType AttributesCharset =
+    public static final StringType AttributesCharset =
             new StringType(Tag.Charset, "attributes-charset");
 
-    public final static StringType AttributesNaturalLanguage =
+    public static final StringType AttributesNaturalLanguage =
             new StringType(Tag.NaturalLanguage, "attributes-natural-language");
 
     // RFC2911 3.1.6 Operation Response Status Codes and Status Messages
-    public final static StringType StatusMessage =
+    public static final StringType StatusMessage =
             new StringType(Tag.TextWithoutLanguage, "status-message");
 
-    public final static StringType DetailedStatusMessage =
+    public static final StringType DetailedStatusMessage =
             new StringType(Tag.TextWithoutLanguage, "detailed-status-message");
 
-    public final static StringType DocumentAccessError =
+    public static final StringType DocumentAccessError =
             new StringType(Tag.TextWithoutLanguage, "document-access-error");
 
     // Get-Printer-Attributes request fields
 
-    public final static StringType RequestingUserName =
+    public static final StringType RequestingUserName =
             new StringType(Tag.TextWithoutLanguage, "requesting-user-name");
 
-    public final static UriType PrinterUri =
+    public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
 
-    public final static NameCodeType<Operation> OperationsSupported =
+    public static final NameCodeType<Operation> OperationsSupported =
             Operation.createType("operations-supported");
 
-    public final static StringType RequestedAttributes =
+    public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
 
 
     // Get-Printer-Attributes response fields
 
-    public final static StringType PrinterInfo =
+    public static final StringType PrinterInfo =
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
-    public final static NameCodeType<PrinterState> PrinterState =
+    public static final NameCodeType<PrinterState> PrinterState =
             NameCodeType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
-    public final static StringType PrinterStateReasons =
+    public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");
 
-    public final static StringType PrinterStateMessage =
+    public static final StringType PrinterStateMessage =
             new StringType(Tag.TextWithoutLanguage, "printer-state-message");
 
-    public final static RangeOfIntegerType CopiesSupported =
+    public static final RangeOfIntegerType CopiesSupported =
             new RangeOfIntegerType("copies-supported");
 
-    public final static UriType PrinterIcons =
+    public static final UriType PrinterIcons =
             new UriType(Tag.Uri, "printer-icons");
 
-    public final static StringType DocumentFormatSupported =
+    public static final StringType DocumentFormatSupported =
             new StringType(Tag.MimeMediaType, "document-format-supported");
 
-    public final static UriType PrinterUriSupported =
+    public static final UriType PrinterUriSupported =
             new UriType(Tag.Uri, "printer-uri-supported");
 
     // 3.2.1.1 Print-Job Request
 
-    public final static StringType DocumentFormat =
+    public static final StringType DocumentFormat =
             new StringType(Tag.MimeMediaType, "document-format");
 
     // 3.2.1.1 Print-Job Response
 
-    public final static NameCodeType<JobState> JobState =
+    public static final NameCodeType<JobState> JobState =
             NameCodeType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
-    public final static UriType JobUri = new UriType(Tag.Uri, "job-uri");
+    public static final UriType JobUri = new UriType(Tag.Uri, "job-uri");
 
-    public final static IntegerType JobId = new IntegerType(Tag.IntegerValue, "job-id");
+    public static final IntegerType JobId = new IntegerType(Tag.IntegerValue, "job-id");
 
-    public final static StringType JobStateMessage =
+    public static final StringType JobStateMessage =
             new StringType(Tag.TextWithoutLanguage, "job-state-message");
 
-    public final static StringType JobStateReasons =
+    public static final StringType JobStateReasons =
             new StringType(Tag.Keyword, "job-state-reasons");
 
-    public final static StringType JobDetailedStatusMessages =
+    public static final StringType JobDetailedStatusMessages =
             new StringType(Tag.TextWithoutLanguage, "job-detailed-status-messages");
 
     // 3.2.6.1 Get-Jobs request
-    public final static BooleanType MyJobs = new BooleanType(Tag.BooleanValue, "my-jobs");
+    public static final BooleanType MyJobs = new BooleanType(Tag.BooleanValue, "my-jobs");
 
     // 3.3.1.1 Send-Document Request
-    public final static BooleanType LastDocument =
+    public static final BooleanType LastDocument =
             new BooleanType(Tag.BooleanValue, "last-document");
 
     // Others
 
-    public final static StringType JobName =
+    public static final StringType JobName =
             new StringType(Tag.NameWithoutLanguage, "job-name");
 
-    public final static StringType DocumentName =
+    public static final StringType DocumentName =
             new StringType(Tag.NameWithoutLanguage, "document-name");
 
-    public final static ResolutionType PrinterResolutionDefault =
+    public static final ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
 
 
@@ -143,4 +142,9 @@ public final class Attributes {
             JobState,
             PrinterResolutionDefault
     );
+
+
+    /** Not constructable */
+    private Attributes() {
+    }
 }

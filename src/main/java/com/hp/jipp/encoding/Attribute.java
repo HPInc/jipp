@@ -126,7 +126,7 @@ public abstract class Attribute<T> {
         /** Read and return value bytes from a length-value pair */
         byte[] readValueBytes(DataInputStream in) throws IOException {
             int valueLength = in.readShort();
-            byte valueBytes[] = new byte[valueLength];
+            byte[] valueBytes = new byte[valueLength];
             int actual = in.read(valueBytes);
             if (valueLength != actual) {
                 throw new ParseError("Value too short: expected " + valueBytes.length +
@@ -146,20 +146,28 @@ public abstract class Attribute<T> {
     @AutoValue.Builder
     abstract static class Builder<T> {
         abstract Builder<T> setEncoder(Encoder<T> encoder);
+
         abstract Builder<T> setValueTag(Tag valueTag);
+
         abstract Builder<T> setName(String name);
+
         abstract Builder<T> setValues(List<T> values);
+
         @SuppressWarnings("unchecked")
         public Builder<T> setValues(T... values) {
             setValues(Arrays.asList(values));
             return this;
         }
-        abstract public Attribute<T> build();
+
+        public abstract Attribute<T> build();
     }
 
-    abstract public Tag getValueTag();
-    abstract public String getName();
-    abstract public List<T> getValues();
+    public abstract Tag getValueTag();
+
+    public abstract String getName();
+
+    public abstract List<T> getValues();
+
     abstract Encoder<T> getEncoder();
 
     /** Return the n'th value in this attribute, assuming it is present */
@@ -195,7 +203,7 @@ public abstract class Attribute<T> {
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         List<String> values = Lists.transform(getValues(), new Function<T, String>() {
             @Override
             public String apply(T input) {

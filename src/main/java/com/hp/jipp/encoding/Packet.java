@@ -51,12 +51,12 @@ public abstract class Packet {
         return builder(code, requestId).setAttributeGroups(Arrays.asList(groups)).build();
     }
 
-    abstract public int getVersionNumber();
+    public abstract int getVersionNumber();
 
     /**
      * Return this packet's code.
      */
-    abstract public int getCode();
+    public abstract int getCode();
 
     /**
      * Return a NameCode corresponding to this packet's code.
@@ -68,12 +68,12 @@ public abstract class Packet {
     /**
      * Return the request ID for this packet
      */
-    abstract public int getRequestId();
+    public abstract int getRequestId();
 
     /**
      * Return the attribute groups in this packet
      */
-    abstract public List<AttributeGroup> getAttributeGroups();
+    public abstract List<AttributeGroup> getAttributeGroups();
 
     /** Returns the first attribute with the specified delimiter */
     public Optional<AttributeGroup> getAttributeGroup(Tag delimiter) {
@@ -104,7 +104,7 @@ public abstract class Packet {
      * Return the packet's data field (bytes found after all attributes)
      */
     @SuppressWarnings("mutable")
-    abstract public byte[] getData();
+    public abstract byte[] getData();
 
     /** Write the contents of this object to the output stream as per RFC2910 */
     public void write(DataOutputStream out) throws IOException {
@@ -143,7 +143,7 @@ public abstract class Packet {
             Tag tag = Tag.read(in);
             if (tag == Tag.EndOfAttributes) {
                 if (in.available() > 0) {
-                    byte data[] = new byte[in.available()];
+                    byte[] data = new byte[in.available()];
                     int size = in.read(data);
                     if (size != data.length) throw new ParseError("Failed to read " + data.length + ": " + size);
                     builder.setData(data);
@@ -161,19 +161,26 @@ public abstract class Packet {
     }
 
     @AutoValue.Builder
-    abstract public static class Builder {
-        abstract public Builder setVersionNumber(int versionNumber);
-        abstract public Builder setCode(int code);
+    public abstract static class Builder {
+        public abstract Builder setVersionNumber(int versionNumber);
+
+        public abstract Builder setCode(int code);
+
         public Builder setCode(NameCode code) {
             return setCode(code.getCode());
         }
-        abstract public Builder setRequestId(int requestId);
-        abstract public Builder setAttributeGroups(List<AttributeGroup> groups);
+
+        public abstract Builder setRequestId(int requestId);
+
+        public abstract Builder setAttributeGroups(List<AttributeGroup> groups);
+
         public Builder setAttributeGroups(AttributeGroup... groups) {
             return setAttributeGroups(Arrays.asList(groups));
         }
-        abstract public Builder setData(byte[] data);
-        abstract public Packet build();
+
+        public abstract Builder setData(byte[] data);
+
+        public abstract Packet build();
     }
 
     /** Describes a packet including its proper code and attribute types */

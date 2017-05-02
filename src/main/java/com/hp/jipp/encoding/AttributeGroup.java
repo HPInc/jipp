@@ -22,14 +22,14 @@ import java.util.Set;
 
 /** A specific group of attributes found in a packet.  */
 @AutoValue
-abstract public class AttributeGroup {
+public abstract class AttributeGroup {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
     /** Encoders available to parse incoming data */
     static final List<Attribute.Encoder<?>> ENCODERS = ImmutableList.of(
             IntegerType.ENCODER, StringType.ENCODER, UriType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
-            CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER,  OctetStringType.ENCODER);
+            CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER, OctetStringType.ENCODER);
     // TODO: dateTime?
 
     /** Return a complete attribute group */
@@ -76,7 +76,7 @@ abstract public class AttributeGroup {
         boolean attributes = true;
         ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
 
-        while(attributes) {
+        while (attributes) {
             in.mark(1);
             Tag valueTag = Tag.toTag(in.readByte());
             if (valueTag.isDelimiter()) {
@@ -90,10 +90,10 @@ abstract public class AttributeGroup {
     }
 
     /** Return the tag that delimits this group */
-    abstract public Tag getTag();
+    public abstract Tag getTag();
 
     /** Return all attributes in this group */
-    abstract public List<Attribute<?>> getAttributes();
+    public abstract List<Attribute<?>> getAttributes();
 
     /** Lazy attribute map, generated only when needed */
     private Supplier<ImmutableMap<String, Attribute<?>>> mAttributeMap =
@@ -147,7 +147,7 @@ abstract public class AttributeGroup {
 
     void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
-        for(Attribute<?> attribute : getAttributes()) {
+        for (Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
         }
     }

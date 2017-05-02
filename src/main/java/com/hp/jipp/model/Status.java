@@ -54,7 +54,7 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             of("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-    private final static Collection<Status> All = ImmutableSet.of(
+    private static final Collection<Status> All = ImmutableSet.of(
             Ok, ClientErrorBadRequest, ClientErrorBadRequest, ClientErrorForbidden, ClientErrorNotAuthenticated,
             ClientErrorNotAuthorized, ClientErrorNotPossible, ClientErrorTimeout, ClientErrorNotFound, ClientErrorGone,
             ClientErrorRequestEntityTooLarge, ClientErrorRequestValueTooLong, ClientErrorDocumentFormatNotSupported,
@@ -67,7 +67,7 @@ public abstract class Status extends NameCode {
             ServerErrorMultipleDocumentJobsNotSupported
     );
 
-    public final static NameCodeType.Encoder<Status> ENCODER = NameCodeType.encoder(
+    public static final NameCodeType.Encoder<Status> ENCODER = NameCodeType.encoder(
             "status-code", All, new NameCode.Factory<Status>() {
                 @Override
                 public Status of(String name, int code) {

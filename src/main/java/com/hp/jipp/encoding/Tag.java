@@ -52,7 +52,7 @@ public abstract class Tag {
     public static final Tag MimeMediaType = of("mimeMediaType", 0x49);
     public static final Tag MemberAttributeName = of("memberAttrName", 0x4A);
 
-    private final static Set<Tag> All = ImmutableSet.of(
+    private static final Set<Tag> All = ImmutableSet.of(
             OperationAttributes, JobAttributes, EndOfAttributes, PrinterAttributes,
             UnsupportedAttributes, Unsupported, Unknown, NoValue, IntegerValue, BooleanValue,
             EnumValue, OctetString, DateTime, Resolution, RangeOfInteger, BeginCollection,
@@ -61,7 +61,8 @@ public abstract class Tag {
             MimeMediaType, MemberAttributeName
     );
 
-    private final static ImmutableMap<Integer, Tag> CodeToTag;
+    private static final ImmutableMap<Integer, Tag> CodeToTag;
+
     static {
         ImmutableMap.Builder<Integer, Tag> builder = new ImmutableMap.Builder<>();
         for (Tag op : All) {
@@ -87,11 +88,6 @@ public abstract class Tag {
         return toTag(in.readByte());
     }
 
-    /** Write this tag to the output stream */
-    void write(DataOutputStream out) throws IOException {
-        out.writeByte((byte)getValue());
-    }
-
     /**
      * Returns a new instance
      * @param name human-readable name
@@ -101,8 +97,14 @@ public abstract class Tag {
         return new AutoValue_Tag(name, value);
     }
 
-    abstract public String getName();
-    abstract public int getValue();
+    public abstract String getName();
+
+    public abstract int getValue();
+
+    /** Write this tag to the output stream */
+    void write(DataOutputStream out) throws IOException {
+        out.writeByte((byte) getValue());
+    }
 
     /** Return true if this tag is a delimiter tag */
     boolean isDelimiter() {

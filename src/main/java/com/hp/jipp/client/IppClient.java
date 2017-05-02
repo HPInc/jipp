@@ -23,8 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Basic IPP operations
  */
 public class IppClient {
+    private static final int FIRST_ID = 0x1001;
 
-    private AtomicInteger mId = new AtomicInteger(0x01001);
+    private AtomicInteger mId = new AtomicInteger(FIRST_ID);
 
     /** Transport used to send packets and collect responses */
     public interface Transport {
@@ -157,7 +158,7 @@ public class IppClient {
         ImmutableList.Builder<IppJob> listBuilder = new ImmutableList.Builder<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
-                Optional<Integer> id= group.getValue(Attributes.JobId);
+                Optional<Integer> id = group.getValue(Attributes.JobId);
                 if (!id.isPresent()) {
                     throw new IOException("Missing Job-ID in job response from " + printer);
                 }
@@ -195,7 +196,8 @@ public class IppClient {
                         Attributes.PrinterUri.of(job.getPrinter().getUris()),
                         Attributes.JobId.of(job.getId()),
                         Attributes.RequestedAttributes.of(IppJobStatus.getAttributeNames())));
-        Optional<AttributeGroup> jobAttributes = mTransport.send(printerUri, request).getAttributeGroup(Tag.JobAttributes);
+        Optional<AttributeGroup> jobAttributes = mTransport.send(printerUri, request)
+                .getAttributeGroup(Tag.JobAttributes);
         if (!jobAttributes.isPresent()) throw new IOException("Missing job attributes");
         return IppJobStatus.of(jobAttributes.get());
     }

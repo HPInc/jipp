@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Allow global customization of behavior
  */
-public class Hook {
+public final class Hook {
     private static Map<String, Boolean> sBooleans = Collections.synchronizedMap(new HashMap<String, Boolean>());
 
     /** Retrieve a global Boolean value by name, or false if not set */
@@ -25,5 +25,9 @@ public class Hook {
 
     public static void reset() {
         sBooleans.clear();
+    }
+
+    /** Not constructable */
+    private Hook() {
     }
 }

@@ -71,7 +71,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
     private final Function<Integer, T> toEnum = new Function<Integer, T>() {
         @Override
         public T apply(Integer input) {
-            return ((Encoder<T>)getEncoder()).get(input);
+            return ((Encoder<T>) getEncoder()).get(input);
         }
     };
 
@@ -85,6 +85,6 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
         if (attribute.getValueTag() != Tag.EnumValue) {
             return Optional.absent();
         }
-        return Optional.of(of(Lists.transform((List<Integer>)attribute.getValues(), toEnum)));
+        return Optional.of(of(Lists.transform((List<Integer>) attribute.getValues(), toEnum)));
     }
 }

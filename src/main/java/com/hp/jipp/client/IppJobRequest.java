@@ -9,6 +9,8 @@ public abstract class IppJobRequest {
     }
 
     public abstract IppPrinter getPrinter();
+
     public abstract String getName();
+
     public abstract IppDocument getDocument();
 }

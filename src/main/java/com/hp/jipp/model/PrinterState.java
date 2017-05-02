@@ -13,7 +13,7 @@ public abstract class PrinterState extends NameCode {
     public static final PrinterState Processing = of("processing", 4);
     public static final PrinterState Stopped = of("stopped", 5);
 
-    public final static NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.encoder(
+    public static final NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.encoder(
             "printer-state", ImmutableSet.of(
                     Idle, Processing, Stopped
             ), new NameCode.Factory<PrinterState>() {

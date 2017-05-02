@@ -1,6 +1,5 @@
 package com.hp.jipp.client;
 
-
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -39,8 +38,11 @@ public abstract class IppJobStatus {
     }
 
     public abstract JobState getState();
+
     public abstract List<String> getReasons();
+
     public abstract Optional<String> getMessage();
+
     public abstract List<String> getDetailedMessages();
 
     @Override

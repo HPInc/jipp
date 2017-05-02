@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 
 public class UriType extends AttributeType<URI> {
-    static Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>() {
+    static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>() {
 
         @Override
         public void writeValue(DataOutputStream out, URI value) throws IOException {

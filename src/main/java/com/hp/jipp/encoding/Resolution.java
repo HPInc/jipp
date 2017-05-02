@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableSet;
  * @see <a href="https://tools.ietf.org/html/rfc2911#section-4.1.15">RFC2911 Section 4.1.15</a>
  */
 @AutoValue
-abstract public class Resolution {
+public abstract class Resolution {
 
     public static Resolution of(int x, int y, Unit unit) {
         return new AutoValue_Resolution(x, y, unit);
@@ -34,15 +34,15 @@ abstract public class Resolution {
 
     @AutoValue
     public abstract static class Unit extends NameCode {
-        public final static Unit DotsPerInch = of("dpi", 3);
-        public final static Unit DotsPerCentimeter = of("dpcm", 4);
+        public static final Unit DotsPerInch = of("dpi", 3);
+        public static final Unit DotsPerCentimeter = of("dpcm", 4);
 
         public static Unit of(String name, int code) {
             return new AutoValue_Resolution_Unit(name, code);
         }
 
         /** The encoder for converting integers to Operation objects */
-        public final static NameCodeType.Encoder<Unit> ENCODER = NameCodeType.encoder(
+        public static final NameCodeType.Encoder<Unit> ENCODER = NameCodeType.encoder(
                 "operation-id", ImmutableSet.of(
                         DotsPerInch, DotsPerCentimeter
                 ), new NameCode.Factory<Resolution.Unit>() {

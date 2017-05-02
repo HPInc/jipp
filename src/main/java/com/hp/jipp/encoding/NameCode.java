@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public abstract class NameCode {
     public abstract String getName();
+
     public abstract int getCode();
 
     /** A factory for objects of a NameCode subclass */

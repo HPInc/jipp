@@ -46,7 +46,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
             ImmutableList.Builder<Attribute<?>> builder = new ImmutableList.Builder<>();
 
             // Read attribute pairs until EndCollection is reached.
-            while(true) {
+            while (true) {
                 Tag tag = Tag.read(in);
                 if (tag == Tag.EndCollection) {
                     // Skip the rest of this attr and return.
