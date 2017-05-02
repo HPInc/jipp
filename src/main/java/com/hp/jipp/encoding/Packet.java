@@ -6,11 +6,14 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
+import com.hp.jipp.util.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,19 @@ public abstract class Packet {
      */
     public abstract List<AttributeGroup> getAttributeGroups();
 
+    /**
+     * Return the packet's data field (bytes found after all attributes)
+     */
+    @SuppressWarnings("mutable")
+    public abstract byte[] getData();
+
+    /**
+     * Return a factory for creating input streams to extract additional data, if any
+     */
+    @Nullable
+    public abstract InputStreamFactory getInputStreamFactory();
+
+
     /** Returns the first attribute with the specified delimiter */
     public Optional<AttributeGroup> getAttributeGroup(Tag delimiter) {
         for (AttributeGroup group : getAttributeGroups()) {
@@ -100,12 +116,6 @@ public abstract class Packet {
         return ImmutableList.of();
     }
 
-    /**
-     * Return the packet's data field (bytes found after all attributes)
-     */
-    @SuppressWarnings("mutable")
-    public abstract byte[] getData();
-
     /** Write the contents of this object to the output stream as per RFC2910 */
     public void write(DataOutputStream out) throws IOException {
         out.writeShort(getVersionNumber());
@@ -116,6 +126,13 @@ public abstract class Packet {
         }
         out.writeByte(Tag.EndOfAttributes.getValue());
         out.write(getData());
+
+        InputStreamFactory factory = getInputStreamFactory();
+        if (factory != null) {
+            try (InputStream in = factory.createInputStream()) {
+                ByteStreams.copy(in, out);
+            }
+        }
     }
 
     /** Write the entire contents of this packet to a single byte array */
@@ -180,6 +197,8 @@ public abstract class Packet {
 
         public abstract Builder setData(byte[] data);
 
+        public abstract Builder setInputStreamFactory(InputStreamFactory factory);
+
         public abstract Packet build();
     }
 
@@ -206,6 +225,7 @@ public abstract class Packet {
                 ", rId=x" + Integer.toHexString(getRequestId()) +
                 ", ags=" + attributeGroups +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
+                (getInputStreamFactory() != null ? ", stream" : "") +
                 "}";
     }
 
@@ -216,6 +236,7 @@ public abstract class Packet {
                 ", rId=x" + Integer.toHexString(getRequestId()) +
                 ", ags=" + getAttributeGroups() +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
+                (getInputStreamFactory() != null ? ", stream" : "") +
                 "}";
     }
 }

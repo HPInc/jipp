@@ -6,6 +6,7 @@ import com.google.common.io.ByteStreams;
 
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;
@@ -44,7 +45,8 @@ public class IppClient {
     }
 
     /**
-     * Fetch current printer attributes into a new copy of the printer, or throw.
+     * Fetch current printer attributes into a new copy of the printer, or throw. Each available Printer URI is polled
+     * until one of them works; results are returned with that URL moved to the front.
      */
     public IppPrinter getPrinterAttributes(IppPrinter printer) throws IOException {
         Optional<IOException> lastThrown = Optional.absent();
@@ -63,7 +65,7 @@ public class IppClient {
     }
 
     /**
-     * Fetch printer attributes
+     * Fetch the printer's current status. Uses the primary URI only.
      */
     public IppPrinterStatus getPrinterStatus(IppPrinter printer) throws IOException {
        ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
@@ -110,10 +112,9 @@ public class IppClient {
         }
     }
 
-    /** Return a validated job based on information in the job request */
+    /** Validated a job based on the contents of a job request. */
     public IppValidatedJob validateJob(IppJobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUris().get(0);
-
         Packet request = Packet.of(Operation.ValidateJob, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -169,24 +170,13 @@ public class IppClient {
         return listBuilder.build();
     }
 
-    /** Fetch current attributes into a new copy of the job */
-    public IppJob getJobAttributes(IppJob job) throws IOException {
-        URI printerUri = job.getPrinter().getUris().get(0);
-        Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
-                        Attributes.AttributesCharset.of("utf-8"),
-                        Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(job.getPrinter().getUris()),
-                        Attributes.JobId.of(job.getId())));
-        return jobWithNewAttributes(job, mTransport.send(printerUri, request));
-    }
-
     private IppJob jobWithNewAttributes(IppJob job, Packet response) throws IOException {
         Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
         if (!group.isPresent()) throw new IOException("Missing job attributes");
         return job.withAttributes(group.get());
     }
 
+    /** Return the most current job status for a job */
     public IppJobStatus getJobStatus(IppJob job) throws IOException {
         URI printerUri = job.getPrinter().getUris().get(0);
         Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
@@ -203,14 +193,9 @@ public class IppClient {
     }
 
     /** Send a job request, including its document, returning a new print job. */
-    public IppJob printJob(IppJobRequest jobRequest) throws IOException {
+    public IppJob printJob(final IppJobRequest jobRequest) throws IOException {
         // See https://tools.ietf.org/html/rfc2911#section-3.2.1.1
-        // Get all document bytes (non-streaming)
-        byte[] bytes;
-        try (InputStream inStream = jobRequest.getDocument().openDocument()) {
-            // Copy from the source file
-            bytes = ByteStreams.toByteArray(inStream);
-        }
+
         URI printerUri = jobRequest.getPrinter().getUris().get(0);
 
         ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
@@ -222,11 +207,15 @@ public class IppClient {
                 Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
         );
 
-        // Note: sending document-name causes failure on Photosmart 6510
         Packet request = Packet.builder(Operation.PrintJob, mId.getAndIncrement())
                 .setAttributeGroups(AttributeGroup.of(Tag.OperationAttributes,
                         attributes.build()))
-                .setData(bytes).build();
+                .setInputStreamFactory(new InputStreamFactory() {
+                    @Override
+                    public InputStream createInputStream() throws IOException {
+                        return jobRequest.getDocument().openDocument();
+                    }
+                }).build();
 
         Packet response = mTransport.send(printerUri, request);
         return toPrintJob(jobRequest, response);
@@ -284,10 +273,10 @@ public class IppClient {
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),
                         Attributes.JobId.of(job.getId()),
+                        Attributes.DocumentName.of(jobRequest.get().getDocument().getName()),
                         Attributes.LastDocument.of(true)))
                 .setData(bytes).build();
 
-        // Not sending document-name, compression, document-format, etc.
         return jobWithNewAttributes(job, mTransport.send(printerUri, request));
     }
 

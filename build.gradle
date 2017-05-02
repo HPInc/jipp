@@ -18,6 +18,7 @@ apply plugin: "net.ltgt.apt"
 apply plugin: "pmd"
 apply plugin: "findbugs"
 apply plugin: "pl.squirrel.classycle"
+apply plugin: "checkstyle"
 
 repositories {
     jcenter()
@@ -54,6 +55,12 @@ check.dependsOn cleanTestResources
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+checkstyle {
+    toolVersion = '7.6'
+    configFile file("${projectDir}/src/test/resources/checkstyle.xml")
+    sourceSets -= sourceSets.test
 }
 
 javadoc {

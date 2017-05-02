@@ -47,7 +47,6 @@ public abstract class AttributeGroup {
 
     @AutoValue.Builder
     abstract static class Builder {
-
         abstract Builder setTag(Tag startTag);
 
         public abstract Builder setAttributes(List<Attribute<?>> attributes);
