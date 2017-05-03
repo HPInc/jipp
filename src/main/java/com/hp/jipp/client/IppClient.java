@@ -46,9 +46,9 @@ public class IppClient {
 
     /**
      * Fetch current printer attributes into a new copy of the printer, or throw. Each uri is attempted
-     * until one of them works, the resulting IppPrinter includes the first successful URI.
+     * until one of them works, the resulting Printer includes the first successful URI.
      */
-    public IppPrinter getPrinterAttributes(List<URI> uris) throws IOException {
+    public Printer getPrinterAttributes(List<URI> uris) throws IOException {
         Optional<IOException> lastThrown = Optional.absent();
         for (URI uri : uris) {
             try {
@@ -64,7 +64,7 @@ public class IppClient {
         }
     }
 
-    private IppPrinter getPrinterAttributes(URI printerUri) throws IOException {
+    private Printer getPrinterAttributes(URI printerUri) throws IOException {
         Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -73,7 +73,7 @@ public class IppClient {
         Packet response = mTransport.send(printerUri, request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
-            return IppPrinter.of(printerUri, printerAttributes.get());
+            return Printer.of(printerUri, printerAttributes.get());
         } else {
             throw new IOException("No printer attributes in response");
         }
@@ -82,7 +82,7 @@ public class IppClient {
     /**
      * Fetch the printer's current status. Uses the primary URI only.
      */
-    public IppPrinterStatus getPrinterStatus(IppPrinter printer) throws IOException {
+    public PrinterStatus getPrinterStatus(Printer printer) throws IOException {
        ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
         operationAttributes.add(
                 Attributes.AttributesCharset.of("utf-8"),
@@ -99,14 +99,14 @@ public class IppClient {
         Packet response = mTransport.send(printer.getUri(), request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
-            return IppPrinterStatus.of(printerAttributes.get());
+            return PrinterStatus.of(printerAttributes.get());
         } else {
             throw new IOException("No attributes");
         }
     }
 
     /** Validated a job based on the contents of a job request. */
-    public IppValidatedJob validateJob(IppJobRequest jobRequest) throws IOException {
+    public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUri();
         Packet request = Packet.of(Operation.ValidateJob, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
@@ -116,7 +116,7 @@ public class IppClient {
                         Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())));
 
         Packet response = mTransport.send(uri, request);
-        return IppValidatedJob.of(jobRequest, response);
+        return ValidatedJob.of(jobRequest, response);
     }
 
     /**
@@ -124,7 +124,7 @@ public class IppClient {
      * <p>
      * Job records returned here will not contain any PrintJobRequest.
      */
-    public List<IppJob> getJobs(IppPrinter printer, Attribute<?>... extras) throws IOException {
+    public List<Job> getJobs(Printer printer, Attribute<?>... extras) throws IOException {
         return getJobs(printer, Arrays.asList(extras));
     }
 
@@ -136,7 +136,7 @@ public class IppClient {
      * @param extras Additional Operation Attributes to send along with the request
      * @see <a href="https://tools.ietf.org/html/rfc2911#section-3.2.6.1">RFC2911 Section 3.2.6.1</a>
      */
-    public List<IppJob> getJobs(IppPrinter printer, List<Attribute<?>> extras) throws IOException {
+    public List<Job> getJobs(Printer printer, List<Attribute<?>> extras) throws IOException {
         ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<Attribute<?>>()
                 .add(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
@@ -148,43 +148,43 @@ public class IppClient {
 
         Packet response = mTransport.send(printer.getUri(), request);
 
-        ImmutableList.Builder<IppJob> listBuilder = new ImmutableList.Builder<>();
+        ImmutableList.Builder<Job> listBuilder = new ImmutableList.Builder<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
                 Optional<Integer> id = group.getValue(Attributes.JobId);
                 if (!id.isPresent()) {
                     throw new IOException("Missing Job-ID in job response from " + printer);
                 }
-                listBuilder.add(IppJob.of(id.get(), printer, group));
+                listBuilder.add(Job.of(id.get(), printer, group));
             }
         }
 
         return listBuilder.build();
     }
 
-    private IppJob jobWithNewAttributes(IppJob job, Packet response) throws IOException {
+    private Job jobWithNewAttributes(Job job, Packet response) throws IOException {
         Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
         if (!group.isPresent()) throw new IOException("Missing job attributes");
         return job.withAttributes(group.get());
     }
 
     /** Return the most current job status for a job */
-    public IppJobStatus getJobStatus(IppJob job) throws IOException {
+    public JobStatus getJobStatus(Job job) throws IOException {
         Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUri()),
                         Attributes.JobId.of(job.getId()),
-                        Attributes.RequestedAttributes.of(IppJobStatus.getAttributeNames())));
+                        Attributes.RequestedAttributes.of(JobStatus.getAttributeNames())));
         Optional<AttributeGroup> jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
                 .getAttributeGroup(Tag.JobAttributes);
         if (!jobAttributes.isPresent()) throw new IOException("Missing job attributes");
-        return IppJobStatus.of(jobAttributes.get());
+        return JobStatus.of(jobAttributes.get());
     }
 
     /** Send a job request, including its document, returning a new print job. */
-    public IppJob printJob(final IppJobRequest jobRequest) throws IOException {
+    public Job printJob(final JobRequest jobRequest) throws IOException {
         // See https://tools.ietf.org/html/rfc2911#section-3.2.1.1
 
         URI printerUri = jobRequest.getPrinter().getUri();
@@ -212,7 +212,7 @@ public class IppClient {
         return toPrintJob(jobRequest, response);
     }
 
-    private IppJob toPrintJob(IppJobRequest jobRequest, Packet response) throws IOException {
+    private Job toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
         Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
         if (!group.isPresent()) {
             throw new IOException("Missing JobAttributes in response from " + jobRequest.getPrinter());
@@ -221,14 +221,14 @@ public class IppClient {
         if (!jobId.isPresent()) {
             throw new IOException("Missing URI in job response from " + jobRequest.getPrinter());
         }
-        return IppJob.of(jobId.get(), jobRequest, group.get());
+        return Job.of(jobId.get(), jobRequest, group.get());
     }
 
     /**
      * Send a job request not including its document, returning a new print job. Should be followed by
      * sendDocument to deliver document data.
      */
-    public IppJob createJob(IppJobRequest jobRequest) throws IOException {
+    public Job createJob(JobRequest jobRequest) throws IOException {
         URI printerUri = jobRequest.getPrinter().getUri();
 
         ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
@@ -244,10 +244,10 @@ public class IppClient {
     }
 
     /** Deliver document data for a print job, returning the updated print job. */
-    public IppJob sendDocument(IppJob job) throws IOException {
+    public Job sendDocument(Job job) throws IOException {
         // Get all document bytes (non-streaming)
         byte[] bytes;
-        Optional<IppJobRequest> jobRequest = job.getJobRequest();
+        Optional<JobRequest> jobRequest = job.getJobRequest();
         if (!jobRequest.isPresent()) throw new IllegalArgumentException("No job request present");
 
         try (InputStream inStream = jobRequest.get().getDocument().openDocument()) {
@@ -272,7 +272,7 @@ public class IppClient {
     }
 
     /** Send a print job cancellation request */
-    public Packet cancelJob(IppJob job) throws IOException {
+    public Packet cancelJob(Job job) throws IOException {
         URI printerUri = job.getPrinter().getUri();
         Packet request = Packet.of(Operation.CancelJob, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,

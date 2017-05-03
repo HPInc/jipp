@@ -21,10 +21,10 @@ import com.hp.jipp.model.Attributes;
 
 public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
-    IppPrinter printer = IppPrinter.of(printerUri, AttributeGroup.of(Tag.PrinterAttributes,
+    Printer printer = Printer.of(printerUri, AttributeGroup.of(Tag.PrinterAttributes,
             Attributes.PrinterInfo.of("printername")));
     FakeTransport transport = new FakeTransport();
-    IppDocument document = new IppDocument() {
+    Document document = new Document() {
         @Override
         public String getDocumentType() {
             return "application/whatever";
@@ -77,8 +77,8 @@ public class IppClientTest {
     public void createJob() throws IOException {
         responsePacket = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111)));
-        IppJobRequest jobRequest = IppJobRequest.of(printer, "job", document);
-        IppJob job = client.createJob(jobRequest);
+        JobRequest jobRequest = JobRequest.of(printer, "job", document);
+        Job job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
         job.getJobRequest().get().getDocument();
     }

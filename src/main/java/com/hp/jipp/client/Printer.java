@@ -8,10 +8,10 @@ import com.hp.jipp.model.Attributes;
 import java.net.URI;
 
 @AutoValue
-public abstract class IppPrinter {
+public abstract class Printer {
 
-    public static IppPrinter of(URI uri, AttributeGroup group) {
-        return new AutoValue_IppPrinter(uri, group);
+    public static Printer of(URI uri, AttributeGroup group) {
+        return new AutoValue_Printer(uri, group);
     }
 
     /**
@@ -27,7 +27,7 @@ public abstract class IppPrinter {
     @Override
     public String toString() {
         Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
-        return "IppPrinter{uri=" + getUri() +
+        return "Printer{uri=" + getUri() +
                 (info.isPresent() ? ", name=" + info.get() : "") + "}";
     }
 }

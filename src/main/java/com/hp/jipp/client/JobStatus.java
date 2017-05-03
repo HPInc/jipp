@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 @AutoValue
-public abstract class IppJobStatus {
+public abstract class JobStatus {
 
     static List<String> getAttributeNames() {
         return ImmutableList.of(
@@ -21,7 +21,7 @@ public abstract class IppJobStatus {
                 Attributes.JobDetailedStatusMessages.getName());
     }
 
-    public static IppJobStatus of(IppJob job) {
+    public static JobStatus of(Job job) {
         try {
             return of(job.getAttributes());
         } catch (IOException e) {
@@ -29,10 +29,10 @@ public abstract class IppJobStatus {
         }
     }
 
-    static IppJobStatus of(AttributeGroup attributes) throws IOException {
+    static JobStatus of(AttributeGroup attributes) throws IOException {
         Optional<JobState> state = attributes.getValue(Attributes.JobState);
         if (!state.isPresent()) throw new IOException("Missing " + Attributes.JobState.getName());
-        return new AutoValue_IppJobStatus(state.get(), attributes.getValues(Attributes.JobStateReasons),
+        return new AutoValue_JobStatus(state.get(), attributes.getValues(Attributes.JobStateReasons),
                 attributes.getValue(Attributes.JobStateMessage),
                 attributes.getValues(Attributes.JobDetailedStatusMessages));
     }

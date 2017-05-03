@@ -4,14 +4,14 @@ import com.google.auto.value.AutoValue;
 import com.hp.jipp.encoding.Packet;
 
 @AutoValue
-public abstract class IppValidatedJob {
+public abstract class ValidatedJob {
 
-    static IppValidatedJob of(IppJobRequest request, Packet response) {
-        return new AutoValue_IppValidatedJob(request, response);
+    static ValidatedJob of(JobRequest request, Packet response) {
+        return new AutoValue_ValidatedJob(request, response);
     }
 
     /** The original job request leading to this validation */
-    public abstract IppJobRequest getJobRequest();
+    public abstract JobRequest getJobRequest();
 
     public abstract Packet getPacket();
 }
