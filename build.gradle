@@ -19,6 +19,7 @@ apply plugin: "pmd"
 apply plugin: "findbugs"
 apply plugin: "pl.squirrel.classycle"
 apply plugin: "checkstyle"
+apply plugin: "jacoco"
 
 repositories {
     jcenter()
@@ -67,6 +68,28 @@ javadoc {
     options.links "http://google.github.io/guava/releases/20.0/api/docs"
     options.links "http://docs.oracle.com/javase/7/docs/api/"
 }
+
+test.finalizedBy jacocoTestReport
+
+jacocoTestReport {
+    reports {
+        xml {
+            enabled true // coveralls plugin depends on xml format report
+        }
+
+        html {
+            enabled true
+        }
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['**/AutoValue_**'])
+        })
+    }
+}
+
 
 dependencies {
     compileOnly "com.google.auto.value:auto-value:1.2"
