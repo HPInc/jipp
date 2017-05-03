@@ -7,3 +7,6 @@ test:
   post:
     - cp -r ./build/docs $CIRCLE_ARTIFACTS/javadoc
     - cp -r ./build/reports $CIRCLE_ARTIFACTS/reports
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+
