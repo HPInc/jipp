@@ -31,6 +31,12 @@ public abstract class JobState extends NameCode {
                 }
             });
 
+
+    /** Return true if this state is the terminating state for a job */
+    public boolean isFinal() {
+        return this == Canceled || this == Aborted || this == Completed;
+    }
+
     public static JobState of(String name, int code) {
         return new AutoValue_JobState(name, code);
     }
