@@ -5,9 +5,7 @@ import org.junit.Test;
 import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
-import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
-import com.hp.jipp.encoding.Packet;
 import com.hp.jipp.encoding.Tag;
 
 import static org.junit.Assert.*;
@@ -15,7 +13,6 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 public class BinaryTest {
     @Test

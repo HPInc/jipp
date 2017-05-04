@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.InputStreamFactory;
-import com.hp.jipp.encoding.Packet;
+import com.hp.jipp.model.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
@@ -74,7 +74,7 @@ public class IppClient {
                         Attributes.PrinterUri.of(printerUri)));
         Packet response = mTransport.send(printerUri, request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
+        if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
             return Printer.of(printerUri, printerAttributes.get());
         } else {
             throw new IOException("No printer attributes in response");
@@ -100,7 +100,7 @@ public class IppClient {
 
         Packet response = mTransport.send(printer.getUri(), request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getCode(Status.ENCODER).equals(Status.Ok) && printerAttributes.isPresent()) {
+        if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
             return PrinterStatus.of(printerAttributes.get());
         } else {
             throw new IOException("No attributes");
@@ -255,9 +255,8 @@ public class IppClient {
         return listBuilder.build();
     }
 
-    /** Return the most current job status for a job */
-    public JobStatus getJobStatus(Job job) throws IOException {
-        // TODO: Return an updated job here instead of JobStatus directly
+    /** Fetch new status for a job and return the updated job. */
+    public Job getJobStatus(Job job) throws IOException {
         Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -268,7 +267,7 @@ public class IppClient {
         Optional<AttributeGroup> jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
                 .getAttributeGroup(Tag.JobAttributes);
         if (!jobAttributes.isPresent()) throw new IOException("Missing job attributes");
-        return JobStatus.of(jobAttributes.get());
+        return job.withStatus(JobStatus.of(jobAttributes.get()));
     }
 
     /** Send a print job cancellation request */

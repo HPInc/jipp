@@ -1,5 +1,7 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.model.Packet;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

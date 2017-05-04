@@ -84,7 +84,7 @@ public abstract class Tag {
     }
 
     /** Read and return a tag from the input stream */
-    static Tag read(DataInputStream in) throws IOException {
+    public static Tag read(DataInputStream in) throws IOException {
         return toTag(in.readByte());
     }
 
@@ -107,7 +107,7 @@ public abstract class Tag {
     }
 
     /** Return true if this tag is a delimiter tag */
-    boolean isDelimiter() {
+    public boolean isDelimiter() {
         return getValue() >= 0x01 && getValue() < 0x10;
     }
 

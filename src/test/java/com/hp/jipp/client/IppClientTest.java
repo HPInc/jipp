@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -18,7 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.Packet;
+import com.hp.jipp.model.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.JobState;
 import com.hp.jipp.model.Operation;
@@ -56,6 +58,7 @@ public class IppClientTest {
         }
     };
     JobRequest jobRequest = JobRequest.of(printer, "job", document);
+    Job job;
 
     IppClient client = new IppClient(transport);
 
@@ -68,6 +71,10 @@ public class IppClientTest {
         public Packet send(URI uri, Packet packet) throws IOException {
             sendUri = uri;
             request = packet;
+
+            // Deliver the data to nowhere
+            DataOutputStream out = new DataOutputStream(new ByteArrayOutputStream());
+            packet.write(out);
 
             List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
 
@@ -179,7 +186,7 @@ public class IppClientTest {
                         Attributes.JobState.of(JobState.Processing),
                         Attributes.JobStateReasons.of("none")));
 
-        Job job = client.printJob(jobRequest);
+        job = client.printJob(jobRequest);
         assertEquals(101, job.getId());
         assertEquals(JobState.Processing, job.getStatus().getState());
         assertEquals(ImmutableList.of("none"), job.getStatus().getReasons());
@@ -190,9 +197,47 @@ public class IppClientTest {
     public void createJob() throws IOException {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
-        JobRequest jobRequest = JobRequest.of(printer, "job", document);
-        Job job = client.createJob(jobRequest);
+        job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
         job.getJobRequest().get().getDocument();
+    }
+
+    @Test
+    public void sendDocument() throws IOException {
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
+        job = client.createJob(jobRequest);
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
+        job = client.sendDocument(job);
+        assertEquals("document",
+                request.getAttributeGroup(Tag.OperationAttributes).get().getValues(Attributes.DocumentName).get(0));
+        assertEquals(JobState.Processing, job.getStatus().getState());
+    }
+
+    @Test
+    public void getJobStatus() throws IOException {
+        // Set up a job
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
+        job = client.createJob(jobRequest);
+
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
+        job = client.getJobStatus(job);
+        assertEquals(JobState.Processing, job.getStatus().getState());
+    }
+
+    @Test
+    public void cancelJob() throws IOException {
+        // Set up a job
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+                Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
+        job = client.createJob(jobRequest);
+
+        // Cancel it
+        response = Packet.of(Status.Ok, 0x01);
+        Packet canceled = client.cancelJob(job);
+        assertEquals(Status.Ok, canceled.getCode(Status.ENCODER));
     }
 }

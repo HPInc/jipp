@@ -29,11 +29,17 @@ public abstract class Job {
     /** Printer-supplied attributes for the job */
     public abstract AttributeGroup getAttributes();
 
+    /** Get current job status. Note: contents may differ from results in getAttributes() */
     public abstract JobStatus getStatus();
 
     /** Returns a new Job containing more current JobAttributes from the enclosed response packet */
     public Job withAttributes(AttributeGroup newAttributes) throws IOException {
         return new AutoValue_Job(getId(), getPrinter(), getJobRequest(), newAttributes,
                 JobStatus.of(newAttributes));
+    }
+
+    /** Returns a new Job containing the same attributes but a new JobStatus */
+    public Job withStatus(JobStatus jobStatus) {
+        return new AutoValue_Job(getId(), getPrinter(), getJobRequest(), getAttributes(), jobStatus);
     }
 }

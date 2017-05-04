@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+import com.hp.jipp.model.Packet;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;

@@ -71,7 +71,7 @@ public abstract class AttributeGroup {
         }
     }
 
-    static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
+    public static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
         boolean attributes = true;
         ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
 
@@ -144,7 +144,7 @@ public abstract class AttributeGroup {
         return Optional.of(values.get(0));
     }
 
-    void write(DataOutputStream out) throws IOException {
+    public void write(DataOutputStream out) throws IOException {
         out.writeByte(getTag().getValue());
         for (Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
@@ -166,7 +166,7 @@ public abstract class AttributeGroup {
     }
 
     /** Similar to toString but applies additional knowledge of enclosed attribute types */
-    String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
+    public String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
         String attributes = Lists.transform(getAttributes(), new Function<Attribute<?>, Attribute<?>>() {
             @Override
             public Attribute<?> apply(Attribute<?> input) {

@@ -1,4 +1,4 @@
-package com.hp.jipp.encoding;
+package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
@@ -7,6 +7,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
+import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.InputStreamFactory;
+import com.hp.jipp.encoding.NameCode;
+import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.ParseError;
+import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -62,9 +69,23 @@ public abstract class Packet {
     public abstract int getCode();
 
     /**
+     * Return this response packet's Status code
+     */
+    public Status getStatus() {
+        return getCode(Status.ENCODER);
+    }
+
+    /**
+     * Return this request packet's Operation code
+     */
+    public Operation getOperation() {
+        return getCode(Operation.ENCODER);
+    }
+
+    /**
      * Return a NameCode corresponding to this packet's code.
      */
-    public <T extends NameCode> T getCode(NameCodeType.Encoder<T> encoder) {
+    private <T extends NameCode> T getCode(NameCodeType.Encoder<T> encoder) {
         return encoder.get(getCode());
     }
 

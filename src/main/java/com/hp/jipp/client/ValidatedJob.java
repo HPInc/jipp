@@ -1,7 +1,7 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.hp.jipp.encoding.Packet;
+import com.hp.jipp.model.Packet;
 
 @AutoValue
 public abstract class ValidatedJob {
