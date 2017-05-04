@@ -109,7 +109,7 @@ public class IppClientTest {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(ImmutableList.of(printerUri));
-        assertEquals(Operation.GetPrinterAttributes, request.getCode(Operation.ENCODER));
+        assertEquals(Operation.GetPrinterAttributes, request.getOperation());
         assertEquals(printer.getUri(), sendUri);
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
     }
@@ -149,7 +149,7 @@ public class IppClientTest {
     public void validateJob() throws IOException {
         response = Packet.of(Status.Ok, 0x01);
         ValidatedJob validatedJob = client.validateJob(jobRequest);
-        assertEquals(Status.Ok, validatedJob.getPacket().getCode(Status.ENCODER));
+        assertEquals(Status.Ok, validatedJob.getPacket().getStatus());
     }
 
     @Test
@@ -238,6 +238,6 @@ public class IppClientTest {
         // Cancel it
         response = Packet.of(Status.Ok, 0x01);
         Packet canceled = client.cancelJob(job);
-        assertEquals(Status.Ok, canceled.getCode(Status.ENCODER));
+        assertEquals(Status.Ok, canceled.getStatus());
     }
 }

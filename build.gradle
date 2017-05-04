@@ -52,7 +52,7 @@ task cleanTestResources(type: Delete) {
     }
 }
 test.finalizedBy cleanTestResources
-check.dependsOn cleanTestResources
+classycleTest.dependsOn cleanTestResources
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"

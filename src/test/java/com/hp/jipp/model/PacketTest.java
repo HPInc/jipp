@@ -1,4 +1,4 @@
-package com.hp.jipp.encoding;
+package com.hp.jipp.model;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +13,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+import com.hp.jipp.encoding.Attribute;
+import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.OctetStringType;
+import com.hp.jipp.encoding.StringType;
+import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
@@ -228,9 +233,9 @@ public class PacketTest {
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8")));
         packet = cycle(packet);
         System.out.println(packet); // Exercise debug output
-        assertEquals(packet.getCode(Operation.ENCODER), Operation.GetJobAttributes);
-        assertEquals(packet.getRequestId(), 0x1010);
-        assertEquals(packet.getAttributeGroups().get(0).getTag(), Tag.OperationAttributes);
+        assertEquals(Operation.GetJobAttributes, packet.getOperation());
+        assertEquals(0x1010, packet.getRequestId());
+        assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();
         assertEquals("US-ASCII", attribute.getValues().get(0));
         assertEquals("UTF-8", attribute.getValues().get(1));

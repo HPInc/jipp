@@ -77,7 +77,7 @@ public abstract class Tag {
      *
      * Known tags can be tested for equality with ==.
      */
-    static Tag toTag(int value) {
+    public static Tag toTag(int value) {
         Optional<Tag> tag = Optional.fromNullable(CodeToTag.get(value));
         if (tag.isPresent()) return tag.get();
         return of("UNKNOWN(x" + Integer.toHexString(value) + ")", value);

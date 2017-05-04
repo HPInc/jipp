@@ -21,14 +21,6 @@ public abstract class JobStatus {
                 Attributes.JobDetailedStatusMessages.getName());
     }
 
-    public static JobStatus of(Job job) {
-        try {
-            return of(job.getAttributes());
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Bad attributes");
-        }
-    }
-
     static JobStatus of(AttributeGroup attributes) throws IOException {
         Optional<JobState> state = attributes.getValue(Attributes.JobState);
         if (!state.isPresent()) throw new IOException("Missing " + Attributes.JobState.getName());
