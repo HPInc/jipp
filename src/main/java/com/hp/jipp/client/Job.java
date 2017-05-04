@@ -9,12 +9,13 @@ import java.io.IOException;
 @AutoValue
 public abstract class Job {
 
-    static Job of(int id, Printer printer, AttributeGroup jobAttributes) {
-        return new AutoValue_Job(id, printer, Optional.<JobRequest>absent(), jobAttributes);
+    static Job of(int id, Printer printer, AttributeGroup jobAttributes) throws IOException {
+        return new AutoValue_Job(id, printer, Optional.<JobRequest>absent(), jobAttributes, JobStatus.of(jobAttributes));
     }
 
-    static Job of(int id, JobRequest jobRequest, AttributeGroup jobAttributes) {
-        return new AutoValue_Job(id, jobRequest.getPrinter(), Optional.of(jobRequest), jobAttributes);
+    static Job of(int id, JobRequest jobRequest, AttributeGroup jobAttributes) throws IOException {
+        return new AutoValue_Job(id, jobRequest.getPrinter(), Optional.of(jobRequest), jobAttributes,
+                JobStatus.of(jobAttributes));
     }
 
     public abstract int getId();
@@ -27,8 +28,11 @@ public abstract class Job {
     /** Printer-supplied attributes for the job */
     public abstract AttributeGroup getAttributes();
 
+    public abstract JobStatus getStatus();
+
     /** Returns a new Job containing more current JobAttributes from the enclosed response packet */
     public Job withAttributes(AttributeGroup newAttributes) throws IOException {
-        return new AutoValue_Job(getId(), getPrinter(), getJobRequest(), newAttributes);
+        return new AutoValue_Job(getId(), getPrinter(), getJobRequest(), newAttributes,
+                JobStatus.of(newAttributes));
     }
 }
