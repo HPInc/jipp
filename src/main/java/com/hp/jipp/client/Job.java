@@ -10,7 +10,8 @@ import java.io.IOException;
 public abstract class Job {
 
     static Job of(int id, Printer printer, AttributeGroup jobAttributes) throws IOException {
-        return new AutoValue_Job(id, printer, Optional.<JobRequest>absent(), jobAttributes, JobStatus.of(jobAttributes));
+        return new AutoValue_Job(id, printer, Optional.<JobRequest>absent(), jobAttributes,
+                JobStatus.of(jobAttributes));
     }
 
     static Job of(int id, JobRequest jobRequest, AttributeGroup jobAttributes) throws IOException {

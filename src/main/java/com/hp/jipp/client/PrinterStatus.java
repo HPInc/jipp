@@ -21,11 +21,11 @@ public abstract class PrinterStatus {
         return new AutoValue_PrinterStatus(state.get(), reasons, message);
     }
 
-    abstract PrinterState getState();
+    public abstract PrinterState getState();
 
-    abstract List<String> getReasons();
+    public abstract List<String> getReasons();
 
-    abstract Optional<String> getMessage();
+    public abstract Optional<String> getMessage();
 
     public String toString() {
         Optional<String> message = getMessage();
