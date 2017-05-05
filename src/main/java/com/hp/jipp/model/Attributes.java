@@ -117,7 +117,6 @@ public final class Attributes {
     public static final ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
 
-
     /** All attributes, useful when printing contents */
     public static final List<AttributeType<?>> All = ImmutableList.of(
             AttributesCharset,

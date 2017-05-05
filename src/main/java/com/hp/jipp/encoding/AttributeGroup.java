@@ -77,7 +77,7 @@ public abstract class AttributeGroup {
 
         while (attributes) {
             in.mark(1);
-            Tag valueTag = Tag.toTag(in.readByte());
+            Tag valueTag = Tag.read(in);
             if (valueTag.isDelimiter()) {
                 in.reset();
                 attributes = false;
@@ -145,7 +145,7 @@ public abstract class AttributeGroup {
     }
 
     public void write(DataOutputStream out) throws IOException {
-        out.writeByte(getTag().getValue());
+        out.writeByte(getTag().getCode());
         for (Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
         }

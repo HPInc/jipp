@@ -39,14 +39,14 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
         public abstract String getName();
 
         /** Return the map all known enums */
-        public abstract Map<Integer, T> getEnumsMap();
+        public abstract Map<Integer, T> getMap();
 
         /** Return a factory for constructing new enum instances */
         abstract NameCode.Factory<T> getFactory();
 
         /** Returns a known enum, or creates a new instance if not found */
         public T get(int code) {
-            Optional<T> e = Optional.fromNullable(getEnumsMap().get(code));
+            Optional<T> e = Optional.fromNullable(getMap().get(code));
             if (e.isPresent()) return e.get();
             return getFactory().of(getName() + "(x" + Integer.toHexString(code) + ")", code);
         }

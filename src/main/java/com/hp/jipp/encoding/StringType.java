@@ -30,7 +30,7 @@ public class StringType extends AttributeType<String> {
 
         @Override
         boolean valid(Tag valueTag) {
-            return (valueTag.getValue() & 0x40) == 0x40 && valueTag != Tag.Uri;
+            return (valueTag.getCode() & 0x40) == 0x40 && valueTag != Tag.Uri;
         }
     };
 

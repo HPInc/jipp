@@ -145,7 +145,7 @@ public abstract class Packet {
         for (AttributeGroup group : getAttributeGroups()) {
             group.write(out);
         }
-        out.writeByte(Tag.EndOfAttributes.getValue());
+        Tag.EndOfAttributes.write(out);
         out.write(getData());
 
         InputStreamFactory factory = getInputStreamFactory();

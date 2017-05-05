@@ -1,20 +1,20 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
  */
 @AutoValue
-public abstract class Tag {
+public abstract class Tag extends NameCode {
+
     // Delimiter tags
     public static final Tag OperationAttributes = of("operation-attributes", 0x01);
     public static final Tag JobAttributes = of("job-attributes", 0x02);
@@ -52,40 +52,24 @@ public abstract class Tag {
     public static final Tag MimeMediaType = of("mimeMediaType", 0x49);
     public static final Tag MemberAttributeName = of("memberAttrName", 0x4A);
 
-    private static final Set<Tag> All = ImmutableSet.of(
-            OperationAttributes, JobAttributes, EndOfAttributes, PrinterAttributes,
-            UnsupportedAttributes, Unsupported, Unknown, NoValue, IntegerValue, BooleanValue,
+    private static final ImmutableSet<Tag> All = ImmutableSet.of(OperationAttributes, JobAttributes, EndOfAttributes,
+            PrinterAttributes, UnsupportedAttributes, Unsupported, Unknown, NoValue, IntegerValue, BooleanValue,
             EnumValue, OctetString, DateTime, Resolution, RangeOfInteger, BeginCollection,
             TextWithLanguage, NameWithLanguage, EndCollection, TextWithoutLanguage,
             NameWithoutLanguage, Keyword, Uri, UriScheme, Charset, NaturalLanguage,
-            MimeMediaType, MemberAttributeName
-    );
+            MimeMediaType, MemberAttributeName);
 
-    private static final ImmutableMap<Integer, Tag> CodeToTag;
+    private static final Map<Integer, Tag> sMap = NameCode.toMap(All);
 
-    static {
-        ImmutableMap.Builder<Integer, Tag> builder = new ImmutableMap.Builder<>();
-        for (Tag op : All) {
-            builder.put(op.getValue(), op);
-        }
-        CodeToTag = builder.build();
-    }
-
-    /**
-     * Return or toAttribute a tag corresponding to the value. This is not particularly
-     * efficient for unrecognized tags.
-     *
-     * Known tags can be tested for equality with ==.
-     */
-    public static Tag toTag(int value) {
-        Optional<Tag> tag = Optional.fromNullable(CodeToTag.get(value));
-        if (tag.isPresent()) return tag.get();
-        return of("UNKNOWN(x" + Integer.toHexString(value) + ")", value);
+    public static Tag of(int code) {
+        Tag tag = sMap.get(code);
+        if (tag == null) return Tag.of(String.format(Locale.US, "tag(x%x)", code), code);
+        return tag;
     }
 
     /** Read and return a tag from the input stream */
     public static Tag read(DataInputStream in) throws IOException {
-        return toTag(in.readByte());
+        return of(in.readByte());
     }
 
     /**
@@ -97,18 +81,14 @@ public abstract class Tag {
         return new AutoValue_Tag(name, value);
     }
 
-    public abstract String getName();
-
-    public abstract int getValue();
-
     /** Write this tag to the output stream */
-    void write(DataOutputStream out) throws IOException {
-        out.writeByte((byte) getValue());
+    public void write(DataOutputStream out) throws IOException {
+        out.writeByte((byte) getCode());
     }
 
     /** Return true if this tag is a delimiter tag */
     public boolean isDelimiter() {
-        return getValue() >= 0x01 && getValue() < 0x10;
+        return getCode() >= 0x01 && getCode() < 0x10;
     }
 
     @Override
