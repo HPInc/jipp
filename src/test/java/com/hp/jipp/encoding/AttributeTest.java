@@ -4,11 +4,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.model.Status;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
@@ -146,5 +149,75 @@ public class AttributeTest {
         System.out.println("name: " + name);
         assertEquals("my job", name.getValue(0).getString());
         assertEquals("fr", name.getValue(0).getLang().get());
+    }
+
+    @Test
+    public void missingEncoder() throws Exception {
+        exception.expect(ParseError.class);
+        exception.expectMessage("Unreadable attribute in octetString");
+        byte[] bytes = new byte[] {
+                1,
+                0
+        };
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
+                ImmutableList.<Attribute.Encoder<?>>of(IntegerType.ENCODER), Tag.OctetString);
+    }
+
+    @Test
+    public void insufficientLength() throws Exception {
+        exception.expect(ParseError.class);
+        exception.expectMessage("Bad attribute length: expected 4, got 1");
+        byte[] bytes = new byte[] {
+                0,
+                0,
+                0,
+                1,
+                0
+        };
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
+                ImmutableList.<Attribute.Encoder<?>>of(IntegerType.ENCODER), Tag.IntegerValue);
+    }
+
+    @Test
+    public void badTag() throws Exception {
+        exception.expect(BuildError.class);
+        exception.expectMessage("Invalid tag(x77) for IntegerType");
+        IntegerType.ENCODER.builder(Tag.of(0x77));
+    }
+
+    @Test
+    public void tagNames() throws Exception {
+        assertEquals("IntegerType", IntegerType.ENCODER.getType());
+        assertEquals("OctetStringType", OctetStringType.ENCODER.getType());
+        assertEquals("RangeOfIntegerType", RangeOfIntegerType.ENCODER.getType());
+        assertEquals("ResolutionType", ResolutionType.ENCODER.getType());
+        assertEquals("LangStringType", LangStringType.ENCODER.getType());
+        assertEquals("IntegerType", IntegerType.ENCODER.getType());
+        assertEquals("UriType", UriType.ENCODER.getType());
+        assertEquals("CollectionType", CollectionType.ENCODER.getType());
+        assertEquals("BooleanType", BooleanType.ENCODER.getType());
+        assertEquals("StringType", StringType.ENCODER.getType());
+        assertEquals("status-code", Status.ENCODER.getType());
+    }
+
+    @Test
+    public void resolutionUnits() throws Exception {
+        byte[] bytes = new byte[] {
+                0,
+                9,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                2,
+                0,
+                5,
+        };
+
+        Resolution resolution = ResolutionType.ENCODER.readValue(
+                new DataInputStream(new ByteArrayInputStream(bytes)), Tag.Resolution);
+        assertEquals("256x512 unit(x5)", resolution.toString());
     }
 }

@@ -9,6 +9,11 @@ public class IntegerType extends AttributeType<Integer> {
     static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
 
         @Override
+        public String getType() {
+            return IntegerType.class.getSimpleName();
+        }
+
+        @Override
         public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
             expectLength(in, 4);
             return in.readInt();

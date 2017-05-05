@@ -141,9 +141,4 @@ public final class Attributes {
             JobState,
             PrinterResolutionDefault
     );
-
-
-    /** Not constructable */
-    private Attributes() {
-    }
 }

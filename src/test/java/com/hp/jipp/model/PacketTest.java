@@ -5,9 +5,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
@@ -179,6 +183,36 @@ public class PacketTest {
     }
 
     @Test
+    public void parseErrorBadDelimiter() throws IOException {
+        exception.expect(IOException.class);
+        exception.expectMessage("Illegal delimiter tag(x77)");
+
+        byte[] bytes = new byte[] {
+                (byte) 0x01,
+                (byte) 0x02,
+                (byte) 0x00,
+                (byte) 0x0C,
+                (byte) 0x00,
+                (byte) 0x05,
+                (byte) 0x06,
+                (byte) 0x07,
+                (byte) 0x77, // NOT a Delimiter
+                (byte) 0x47,
+                (byte) 0x00,
+                (byte) 0x12,
+                'a', 't', 't', 'r', 'i', 'b', 'u', 't', 'e', 's', '-',
+                'c', 'h', 'a', 'r', 's', 'e', 't',
+                (byte) 0x00,
+                (byte) 0x08,
+                'U', 'S', '-', 'A', 'S', 'C', 'I', 'I',
+                (byte) 0x03,
+        };
+
+        Packet.read(new DataInputStream(new ByteArrayInputStream(bytes)));
+    }
+
+
+    @Test
     public void readSingleAttributePacket() throws IOException {
         Attribute<String> stringAttribute = new StringType(Tag.Charset, "attributes-charset")
                 .of("US-ASCII");
@@ -247,8 +281,15 @@ public class PacketTest {
         packet = cycle(Packet.of(Operation.GetJobAttributes, 0x1010,
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
+        // Wrong group
+        assertEquals(Optional.absent(),
+                packet.getValue(Tag.JobAttributes, Attributes.AttributesNaturalLanguage));
+
+        // Wrong attr
         assertEquals(Optional.absent(),
                 packet.getValue(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
+
+        // All good!
         assertEquals(Optional.of("US-ASCII"),
                 packet.getValue(Tag.OperationAttributes, Attributes.AttributesCharset));
     }
@@ -258,9 +299,55 @@ public class PacketTest {
         packet = cycle(Packet.of(Operation.GetJobAttributes, 0x1010,
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
+
+        // Wrong group
+        assertEquals(ImmutableList.of(),
+                packet.getValues(Tag.JobAttributes, Attributes.AttributesCharset));
+
+        // Wrong attr
         assertEquals(ImmutableList.of("US-ASCII", "UTF-8"),
                 packet.getValues(Tag.OperationAttributes, Attributes.AttributesCharset));
+
+        // All good!
         assertEquals(ImmutableList.of(),
                 packet.getValues(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
+    }
+
+    @Test
+    public void badStreamThrows() throws IOException {
+        exception.expect(IOException.class);
+        packet = Packet.builder(Operation.SendDocument, 0x01010).setInputStreamFactory(new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() throws IOException {
+                throw new IOException("oops!");
+            }
+        }).build();
+
+        packet.write(new DataOutputStream(new ByteArrayOutputStream()));
+    }
+
+    @Test
+    public void badStreamThrowsBytes() throws IOException {
+        exception.expect(IllegalArgumentException.class);
+        packet = Packet.builder(Operation.SendDocument, 0x01010).setInputStreamFactory(new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() throws IOException {
+                throw new IOException("oops!");
+            }
+        }).build();
+
+        // Try to get all bytes for the packet
+        getBytes(packet);
+    }
+
+
+    /** Write the entire contents of this packet to a single byte array */
+    public static byte[] getBytes(Packet packet) {
+        try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()) {
+            packet.write(new DataOutputStream(outBytes));
+            return outBytes.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Packet could not be written", e);
+        }
     }
 }

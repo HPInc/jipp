@@ -7,6 +7,10 @@ import java.io.IOException;
 public class OctetStringType extends AttributeType<byte[]> {
 
     static final Attribute.Encoder<byte[]> ENCODER = new Attribute.Encoder<byte[]>() {
+        @Override
+        public String getType() {
+            return OctetStringType.class.getSimpleName();
+        }
 
         @Override
         public void writeValue(DataOutputStream out, byte[] value) throws IOException {

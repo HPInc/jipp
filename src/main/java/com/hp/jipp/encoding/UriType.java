@@ -7,6 +7,10 @@ import java.net.URI;
 
 public class UriType extends AttributeType<URI> {
     static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>() {
+        @Override
+        public String getType() {
+            return UriType.class.getSimpleName();
+        }
 
         @Override
         public void writeValue(DataOutputStream out, URI value) throws IOException {

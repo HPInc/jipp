@@ -16,6 +16,11 @@ public class LangStringType extends AttributeType<LangString> {
 
     static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>() {
         @Override
+        public String getType() {
+            return LangStringType.class.getSimpleName();
+        }
+
+        @Override
         LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
             byte[] bytes = OctetStringType.ENCODER.readValue(in, valueTag);
             DataInputStream inBytes = new DataInputStream(new ByteArrayInputStream(bytes));

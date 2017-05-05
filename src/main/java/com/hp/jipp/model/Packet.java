@@ -16,7 +16,6 @@ import com.hp.jipp.encoding.ParseError;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -156,16 +155,6 @@ public abstract class Packet {
         }
     }
 
-    /** Write the entire contents of this packet to a single byte array */
-    public byte[] getBytes() {
-        try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()) {
-            write(new DataOutputStream(outBytes));
-            return outBytes.toByteArray();
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Packet could not be written", e);
-        }
-    }
-
     /**
      * Read the contents of the input stream, returning a parsed Packet or throwing an exception.
      * Note: the input stream is not closed.
@@ -182,8 +171,7 @@ public abstract class Packet {
             if (tag == Tag.EndOfAttributes) {
                 if (in.available() > 0) {
                     byte[] data = new byte[in.available()];
-                    int size = in.read(data);
-                    if (size != data.length) throw new ParseError("Failed to read " + data.length + ": " + size);
+                    in.read(data);
                     builder.setData(data);
                 }
                 moreAttributes = false;
@@ -191,7 +179,7 @@ public abstract class Packet {
                 AttributeGroup attributeGroup = AttributeGroup.read(tag, in);
                 attributeGroupsBuilder.add(attributeGroup);
             } else {
-                throw new ParseError("Illegal delimiter tag " + tag);
+                throw new ParseError("Illegal delimiter " + tag);
             }
         }
         builder.setAttributeGroups(attributeGroupsBuilder.build());

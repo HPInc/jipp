@@ -17,6 +17,10 @@ import java.util.List;
 public class StringType extends AttributeType<String> {
 
     static final Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>() {
+        @Override
+        public String getType() {
+            return StringType.class.getSimpleName();
+        }
 
         @Override
         public void writeValue(DataOutputStream out, String value) throws IOException {

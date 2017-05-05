@@ -9,6 +9,10 @@ import java.io.IOException;
 public class RangeOfIntegerType extends AttributeType<Range<Integer>> {
 
     static final Attribute.Encoder<Range<Integer>> ENCODER = new Attribute.Encoder<Range<Integer>>() {
+        @Override
+        public String getType() {
+            return RangeOfIntegerType.class.getSimpleName();
+        }
 
         @Override
         Range<Integer> readValue(DataInputStream in, Tag valueTag) throws IOException {

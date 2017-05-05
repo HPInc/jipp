@@ -35,19 +35,43 @@ public abstract class Attribute<T> {
     /**
      * Read an attribute from an input stream, based on its tag
      */
-    static Attribute<?> read(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
-        for (Attribute.Encoder<?> classEncoder: encoders) {
+    static Attribute<?> read(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
+        for (Encoder<?> classEncoder: encoders) {
             if (classEncoder.valid(valueTag)) {
                 return classEncoder.read(in, encoders, valueTag);
             }
         }
-        throw new ParseError("Unreadable attribute " + valueTag);
+        throw new ParseError("Unreadable attribute in " + valueTag);
+    }
+
+    /** A generic attribute builder to be subclassed for specific types of T. */
+    @AutoValue.Builder
+    abstract static class Builder<T> {
+        abstract Builder<T> setEncoder(Encoder<T> encoder);
+
+        abstract Builder<T> setValueTag(Tag valueTag);
+
+        abstract Builder<T> setName(String name);
+
+        abstract Builder<T> setValues(List<T> values);
+
+        @SuppressWarnings("unchecked")
+        public Builder<T> setValues(T... values) {
+            setValues(Arrays.asList(values));
+            return this;
+        }
+
+        public abstract Attribute<T> build();
     }
 
     /**
      * Reads/writes attributes to the attribute's type.
      */
     abstract static class Encoder<T> {
+
+        /** Return a human-readable name describing this type */
+        abstract String getType();
+
         /** Read a single value from the input stream */
         abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
 
@@ -55,7 +79,7 @@ public abstract class Attribute<T> {
         abstract void writeValue(DataOutputStream out, T value) throws IOException;
 
         /** Read a single value from the input stream, making use of the set of encoders */
-        T readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+        T readValue(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
             // This method and writeValue are only present so that CollectionType can make use of the
             // encoder set. Other subclasses only need the two-argument style so we default to it.
             return readValue(in, valueTag);
@@ -68,7 +92,7 @@ public abstract class Attribute<T> {
         void expectLength(DataInputStream in, int length) throws IOException {
             int readLength = in.readShort();
             if (readLength != length) {
-                throw new ParseError("expected " + length + " but got " + readLength);
+                throw new ParseError("Bad attribute length: expected " + length + ", got " + readLength);
             }
         }
 
@@ -79,13 +103,13 @@ public abstract class Attribute<T> {
          */
         Builder<T> builder(Tag valueTag) {
             if (!(valid(valueTag) || Hook.is(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
-                throw new BuildError(valueTag.toString() + " is not a valid tag for " + this);
+                throw new BuildError("Invalid " + valueTag.toString() + " for " + getType());
             }
             return Attribute.builder(this, valueTag);
         }
 
         /** Read an attribute and its values from the data stream */
-        Attribute<T> read(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag) throws IOException {
+        Attribute<T> read(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
             Builder<T> builder = builder(valueTag)
                     .setName(new String(readValueBytes(in), Util.UTF8));
 
@@ -102,7 +126,7 @@ public abstract class Attribute<T> {
         }
 
         /** Read a single additional value if possible */
-        private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, List<Attribute.Encoder<?>> encoders)
+        private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, List<Encoder<?>> encoders)
                 throws IOException {
             if (in.available() < 3) return Optional.absent();
             in.mark(3);
@@ -140,26 +164,6 @@ public abstract class Attribute<T> {
             int valueLength = in.readShort();
             if (valueLength != in.skip(valueLength)) throw new ParseError("Value too short");
         }
-    }
-
-    /** A generic attribute builder to be subclassed for specific types of T. */
-    @AutoValue.Builder
-    abstract static class Builder<T> {
-        abstract Builder<T> setEncoder(Encoder<T> encoder);
-
-        abstract Builder<T> setValueTag(Tag valueTag);
-
-        abstract Builder<T> setName(String name);
-
-        abstract Builder<T> setValues(List<T> values);
-
-        @SuppressWarnings("unchecked")
-        public Builder<T> setValues(T... values) {
-            setValues(Arrays.asList(values));
-            return this;
-        }
-
-        public abstract Attribute<T> build();
     }
 
     public abstract Tag getValueTag();

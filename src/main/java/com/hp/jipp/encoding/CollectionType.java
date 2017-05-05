@@ -18,7 +18,13 @@ public class CollectionType extends AttributeType<AttributeCollection> {
     /** Used to terminate a collection */
     private static final Attribute<byte[]> EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
 
-    static final Attribute.Encoder<AttributeCollection> ENCODER = new Attribute.Encoder<AttributeCollection>() {
+    static final Attribute.Encoder<AttributeCollection>
+            ENCODER = new Attribute.Encoder<AttributeCollection>() {
+
+        @Override
+        public String getType() {
+            return CollectionType.class.getSimpleName();
+        }
 
         @Override
         void writeValue(DataOutputStream out, AttributeCollection value)

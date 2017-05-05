@@ -11,8 +11,11 @@ import com.hp.jipp.encoding.Tag;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 public class BinaryTest {
     @Test
@@ -35,7 +38,7 @@ public class BinaryTest {
             System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = Packet.read(new DataInputStream(new ByteArrayInputStream(bytes)));
             System.out.println(packet.describe(Status.ENCODER, Attributes.All));
-            assertArrayEquals(packet.getBytes(), bytes);
+            assertArrayEquals(PacketTest.getBytes(packet), bytes);
         }
     }
 

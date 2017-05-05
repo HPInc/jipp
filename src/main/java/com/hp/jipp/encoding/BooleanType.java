@@ -7,6 +7,12 @@ import java.io.IOException;
 /** A boolean attribute type */
 public class BooleanType extends AttributeType<Boolean> {
     static final Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>() {
+
+        @Override
+        public String getType() {
+            return BooleanType.class.getSimpleName();
+        }
+
         @Override
         public void writeValue(DataOutputStream out, Boolean value) throws IOException {
             out.writeShort(1);

@@ -43,7 +43,7 @@ public abstract class Resolution {
 
         /** The encoder for converting integers to Operation objects */
         public static final NameCodeType.Encoder<Unit> ENCODER = NameCodeType.encoder(
-                "operation-id", ImmutableSet.of(
+                "unit", ImmutableSet.of(
                         DotsPerInch, DotsPerCentimeter
                 ), new NameCode.Factory<Resolution.Unit>() {
                     @Override
@@ -55,6 +55,6 @@ public abstract class Resolution {
 
     @Override
     public String toString() {
-        return getX() + "x" + getY() + getUnit().getName();
+        return getX() + "x" + getY() + " " + getUnit().getName();
     }
 }

@@ -11,6 +11,11 @@ public class ResolutionType extends AttributeType<Resolution> {
 
     static final Attribute.Encoder<Resolution> ENCODER = new Attribute.Encoder<Resolution>() {
         @Override
+        public String getType() {
+            return ResolutionType.class.getSimpleName();
+        }
+
+        @Override
         Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
             expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             return Resolution.of(in.readInt(), in.readInt(),

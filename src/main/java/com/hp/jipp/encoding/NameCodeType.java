@@ -52,7 +52,15 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
         }
 
         @Override
+        String getType() {
+            return getName();
+        }
+
+        @Override
         T readValue(DataInputStream in, Tag valueTag) throws IOException {
+            // TODO: We need this code but we never use it because we actually read an IntegerType
+            // and convert it, sometimes much later. With Packet in model can we do this a lot earlier and
+            // not waste time on the conversion? And actually call this code?
             return get(IntegerType.ENCODER.readValue(in, valueTag));
         }
 
