@@ -1,14 +1,11 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.hp.jipp.util.Hook;
 
 import java.io.DataInputStream;
@@ -26,11 +23,12 @@ public abstract class AttributeGroup {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
-    /** Encoders available to parse incoming data */
-    static final List<Attribute.Encoder<?>> ENCODERS = ImmutableList.of(
-            IntegerType.ENCODER, StringType.ENCODER, UriType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
+    /** Default encoders available to parse incoming data */
+    public static final List<Attribute.BaseEncoder<?>> ENCODERS = ImmutableList.of(
+            IntegerType.ENCODER, UriType.ENCODER, StringType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
             CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER, OctetStringType.ENCODER);
     // TODO: dateTime?
+    // TODO: Move to Packet
 
     /** Return a complete attribute group */
     public static AttributeGroup of(Tag startTag, Attribute<?>... attributes) {
@@ -72,8 +70,39 @@ public abstract class AttributeGroup {
     }
 
     public static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
+        return read(startTag, ImmutableMap.<String, AttributeType<?>>of(), in);
+    }
+
+    static Attribute.EncoderFinder finderOf(final Map<String, AttributeType<?>> attributeTypes,
+            final List<Attribute.BaseEncoder<?>> encoders) {
+        return new Attribute.EncoderFinder() {
+            @Override
+            public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
+                // Check for a matching attribute type
+                if (attributeTypes.containsKey(name)) {
+                    AttributeType<?> attributeType = attributeTypes.get(name);
+                    if (attributeType.getEncoder().valid(valueTag)) {
+                        return attributeType.getEncoder();
+                    }
+                }
+
+                // If no valid match above then try with each default encoder
+                for (Attribute.BaseEncoder<?> encoder : encoders) {
+                    if (encoder.valid(valueTag)) {
+                        return encoder;
+                    }
+                }
+                throw new ParseError("No encoder found for " + name + "(" + valueTag + ")");
+            }
+        };
+    }
+
+    public static AttributeGroup read(Tag startTag, Map<String, AttributeType<?>> attributeTypes, DataInputStream in)
+            throws IOException {
         boolean attributes = true;
         ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<>();
+
+        Attribute.EncoderFinder finder = finderOf(attributeTypes, AttributeGroup.ENCODERS);
 
         while (attributes) {
             in.mark(1);
@@ -82,7 +111,7 @@ public abstract class AttributeGroup {
                 in.reset();
                 attributes = false;
             } else {
-                attributesBuilder.add(Attribute.read(in, ENCODERS, valueTag));
+                attributesBuilder.add(Attribute.read(in, finder, valueTag));
             }
         }
         return of(startTag, attributesBuilder.build());
@@ -107,7 +136,7 @@ public abstract class AttributeGroup {
                 }
             });
 
-    /** Return a lazily-created, read-only map of attribute name to a list of matching attributes */
+    /** Return a lazily-created, parse-only map of attribute name to a list of matching attributes */
     Map<String, Attribute<?>> getMap() {
         return mAttributeMap.get();
     }
@@ -153,34 +182,5 @@ public abstract class AttributeGroup {
 
     public static AttributeGroup read(DataInputStream in) throws IOException {
         return read(Tag.read(in), in);
-    }
-
-    /** Similar to toString but applies additional knowledge of enclosed attribute types */
-    public String describe(List<AttributeType<?>> attributeTypes) {
-        return describe(Maps.uniqueIndex(attributeTypes, new Function<AttributeType<?>, String>() {
-                    @Override
-                    public String apply(AttributeType<?> type) {
-                        return type.getName();
-                    }
-                }));
-    }
-
-    /** Similar to toString but applies additional knowledge of enclosed attribute types */
-    public String describe(final Map<String, AttributeType<?>> attributeTypeMap) {
-        String attributes = Lists.transform(getAttributes(), new Function<Attribute<?>, Attribute<?>>() {
-            @Override
-            public Attribute<?> apply(Attribute<?> input) {
-                if (input.getValueTag() == Tag.TextWithLanguage || input.getValueTag() == Tag.NameWithLanguage) {
-                    // Don't convert these because the supplied attributeType might strip the language field
-                    return input;
-                }
-                if (attributeTypeMap.containsKey(input.getName())) {
-                    Optional<? extends Attribute<?>> optAttribute = attributeTypeMap.get(input.getName()).from(input);
-                    if (optAttribute.isPresent()) return optAttribute.get();
-                }
-                return input;
-            }
-        }).toString();
-        return "AttributeGroup{tag=" + getTag() + ", attributes=" + attributes;
     }
 }

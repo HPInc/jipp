@@ -1,11 +1,8 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCode;
-
-import java.util.Collection;
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
@@ -54,21 +51,8 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             of("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-    private static final Collection<Status> All = ImmutableSet.of(
-            Ok, ClientErrorBadRequest, ClientErrorBadRequest, ClientErrorForbidden, ClientErrorNotAuthenticated,
-            ClientErrorNotAuthorized, ClientErrorNotPossible, ClientErrorTimeout, ClientErrorNotFound, ClientErrorGone,
-            ClientErrorRequestEntityTooLarge, ClientErrorRequestValueTooLong, ClientErrorDocumentFormatNotSupported,
-            ClientErrorAttributesOrValuesNotSupported, ClientErrorUriSchemeNotSupported,
-            ClientErrorCharsetNotSupported, ClientErrorConflictingAttributes, ClientErrorCompressionNotSupported,
-            ClientErrorCompressionError, ClientErrorDocumentFormatError, ClientErrorDocumentAccessError,
-            ServerErrorInternalError, ServerErrorOperationNotSupported, ServerErrorServiceUnavailable,
-            ServerErrorVersionNotSupported, ServerErrorDeviceError, ServerErrorTemporaryError,
-            ServerErrorNotAcceptingJobs, ServerErrorBusy, ServerErrorJobCanceled,
-            ServerErrorMultipleDocumentJobsNotSupported
-    );
-
-    public static final NameCodeType.Encoder<Status> ENCODER = NameCodeType.encoder(
-            "status-code", All, new NameCode.Factory<Status>() {
+    public static final NameCodeEncoder<Status> ENCODER = NameCodeEncoder.of(
+            Status.class, new NameCode.Factory<Status>() {
                 @Override
                 public Status of(String name, int code) {
                     return Status.of(name, code);

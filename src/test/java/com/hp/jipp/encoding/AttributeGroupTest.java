@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.model.Attributes;
 
 import static com.hp.jipp.encoding.Cycler.*;
@@ -77,5 +78,14 @@ public class AttributeGroupTest {
         LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
         assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
         assertEquals(Optional.absent(),group.getValues(jobNameLang).get(0).getLang());
+    }
+
+    @Test
+    public void missingEncoder() throws Exception {
+        // This cannot happen but if it did it would throw nicely.
+        exception.expect(ParseError.class);
+        AttributeGroup.finderOf(ImmutableMap.<String, AttributeType<?>>of(),
+                ImmutableList.<Attribute.BaseEncoder<?>>of())
+                .find(Tag.NameWithLanguage, "haha");
     }
 }

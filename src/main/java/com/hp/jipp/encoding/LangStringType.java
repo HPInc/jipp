@@ -25,8 +25,8 @@ public class LangStringType extends AttributeType<LangString> {
             byte[] bytes = OctetStringType.ENCODER.readValue(in, valueTag);
             DataInputStream inBytes = new DataInputStream(new ByteArrayInputStream(bytes));
 
-            String lang = new String(readValueBytes(inBytes), Util.UTF8);
-            String string = new String(readValueBytes(inBytes), Util.UTF8);
+            String lang = new String(Attribute.readValueBytes(inBytes), Util.UTF8);
+            String string = new String(Attribute.readValueBytes(inBytes), Util.UTF8);
             return LangString.of(string, lang);
         }
 

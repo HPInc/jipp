@@ -5,12 +5,15 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.BaseEncoding;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
@@ -80,8 +83,29 @@ public class AttributeTest {
                         Operation.of("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
-        assertEquals(ImmutableList.of(Operation.of("operation-id(x4040)", 0x4040)),
+        assertEquals(ImmutableList.of(Operation.of("Operation(x4040)", 0x4040)),
                 group.getValues(Attributes.OperationsSupported));
+    }
+
+    @Test
+    public void badCollection() throws IOException {
+        exception.expect(ParseError.class);
+        exception.expectMessage("Bad tag in collection: printer-attributes");
+
+        byte[] bytes = new byte[] {
+//                (byte)Tag.BeginCollection.getCode(), // Read already
+                (byte)0x00,
+                (byte)0x09,
+                'm', 'e', 'd' , 'i', 'a', '-', 'c', 'o', 'l',
+                (byte)0x00,
+                (byte)0x00,
+                (byte)Tag.PrinterAttributes.getCode(), // NOT a good delimiter
+                (byte)0x00,
+                (byte)0x00,
+                (byte)0x00,
+                (byte)0x00
+        };
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
     }
 
     @Test
@@ -154,13 +178,18 @@ public class AttributeTest {
     @Test
     public void missingEncoder() throws Exception {
         exception.expect(ParseError.class);
-        exception.expectMessage("Unreadable attribute in octetString");
         byte[] bytes = new byte[] {
+                0, 2, 'x', 0,
                 1,
                 0
         };
         Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
-                ImmutableList.<Attribute.Encoder<?>>of(IntegerType.ENCODER), Tag.OctetString);
+                new Attribute.EncoderFinder() {
+                    @Override
+                    public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
+                        throw new ParseError("");
+                    }
+                }, Tag.OctetString);
     }
 
     @Test
@@ -174,8 +203,7 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
-                ImmutableList.<Attribute.Encoder<?>>of(IntegerType.ENCODER), Tag.IntegerValue);
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
     }
 
     @Test
@@ -197,7 +225,7 @@ public class AttributeTest {
         assertEquals("CollectionType", CollectionType.ENCODER.getType());
         assertEquals("BooleanType", BooleanType.ENCODER.getType());
         assertEquals("StringType", StringType.ENCODER.getType());
-        assertEquals("status-code", Status.ENCODER.getType());
+        assertEquals("Status", Status.ENCODER.getType());
     }
 
     @Test
@@ -218,6 +246,27 @@ public class AttributeTest {
 
         Resolution resolution = ResolutionType.ENCODER.readValue(
                 new DataInputStream(new ByteArrayInputStream(bytes)), Tag.Resolution);
-        assertEquals("256x512 unit(x5)", resolution.toString());
+        assertEquals("256x512 Unit(x5)", resolution.toString());
+    }
+
+    @Test
+    public void shortRead() throws IOException {
+        exception.expect(ParseError.class);
+        exception.expectMessage("Value too short: expected 2, got only 1");
+        byte[] bytes = new byte[] {
+                0,
+                2,
+                0,
+        };
+        Attribute.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
+    }
+
+    @Test
+    public void nonStringFrom() throws IOException {
+        // from() fails when you try to jam an integer into a string
+        assertEquals(false, new StringType(Tag.TextWithoutLanguage, "test")
+                .from(new IntegerType(Tag.IntegerValue, "integer").of(5)).isPresent());
+        assertEquals(false, new LangStringType(Tag.TextWithLanguage, "test")
+                .from(new IntegerType(Tag.IntegerValue, "integer").of(5)).isPresent());
     }
 }

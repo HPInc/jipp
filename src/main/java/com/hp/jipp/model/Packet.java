@@ -4,17 +4,15 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.NameCode;
-import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.ParseError;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.util.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,6 +21,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A request packet as specified in RFC2910.
@@ -60,6 +61,83 @@ public abstract class Packet {
         return builder(code, requestId).setAttributeGroups(Arrays.asList(groups)).build();
     }
 
+    private static Function<? super AttributeType<?>, String> sAttributeNameProjector =
+            new Function<AttributeType<?>, String>() {
+                @Override
+                public String apply(@Nonnull AttributeType<?> input) {
+                    return input.getName();
+                }
+            };
+
+    /** Return a parser with knowledge of specified attribute types */
+    public static Parser parserOf(List<AttributeType<?>> attributeTypes) {
+        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(attributeTypes,
+                sAttributeNameProjector);
+        return new Parser() {
+            @Override
+            public Packet parse(DataInputStream in) throws IOException {
+                return Packet.read(in, attributeTypeMap);
+            }
+        };
+    }
+
+    /**
+     * Read the contents of the input stream, returning a parsed Packet or throwing an exception.*
+     * Note: the input stream is not closed.
+     */
+    private static Packet read(DataInputStream in, Map<String, AttributeType<?>> attributeTypes) throws IOException {
+
+        Packet.Builder builder = builder().setVersionNumber(in.readShort())
+                .setCode(in.readShort()).setRequestId(in.readInt());
+        ImmutableList.Builder<AttributeGroup> attributeGroupsBuilder =
+                new ImmutableList.Builder<>();
+
+        boolean moreAttributes = true;
+        while (moreAttributes) {
+            Tag tag = Tag.read(in);
+            if (tag == Tag.EndOfAttributes) {
+                if (in.available() > 0) {
+                    byte[] data = new byte[in.available()];
+                    in.read(data);
+                    builder.setData(data);
+                }
+                moreAttributes = false;
+            } else if (tag.isDelimiter()) {
+                AttributeGroup attributeGroup = AttributeGroup.read(tag, attributeTypes, in);
+                attributeGroupsBuilder.add(attributeGroup);
+            } else {
+                throw new ParseError("Illegal delimiter " + tag);
+            }
+        }
+        builder.setAttributeGroups(attributeGroupsBuilder.build());
+        return builder.build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder setVersionNumber(int versionNumber);
+
+        public abstract Builder setCode(int code);
+
+        public Builder setCode(NameCode code) {
+            return setCode(code.getCode());
+        }
+
+        public abstract Builder setRequestId(int requestId);
+
+        public abstract Builder setAttributeGroups(List<AttributeGroup> groups);
+
+        public Builder setAttributeGroups(AttributeGroup... groups) {
+            return setAttributeGroups(Arrays.asList(groups));
+        }
+
+        public abstract Builder setData(byte[] data);
+
+        public abstract Builder setInputStreamFactory(InputStreamFactory factory);
+
+        public abstract Packet build();
+    }
+
     public abstract int getVersionNumber();
 
     /**
@@ -84,7 +162,7 @@ public abstract class Packet {
     /**
      * Return a NameCode corresponding to this packet's code.
      */
-    private <T extends NameCode> T getCode(NameCodeType.Encoder<T> encoder) {
+    private <T extends NameCode> T getCode(NameCodeEncoder<T> encoder) {
         return encoder.get(getCode());
     }
 
@@ -155,87 +233,9 @@ public abstract class Packet {
         }
     }
 
-    /**
-     * Read the contents of the input stream, returning a parsed Packet or throwing an exception.
-     * Note: the input stream is not closed.
-     */
-    public static Packet read(DataInputStream in) throws IOException {
-        Packet.Builder builder = builder().setVersionNumber(in.readShort())
-                .setCode(in.readShort()).setRequestId(in.readInt());
-        ImmutableList.Builder<AttributeGroup> attributeGroupsBuilder =
-                new ImmutableList.Builder<>();
-
-        boolean moreAttributes = true;
-        while (moreAttributes) {
-            Tag tag = Tag.read(in);
-            if (tag == Tag.EndOfAttributes) {
-                if (in.available() > 0) {
-                    byte[] data = new byte[in.available()];
-                    in.read(data);
-                    builder.setData(data);
-                }
-                moreAttributes = false;
-            } else if (tag.isDelimiter()) {
-                AttributeGroup attributeGroup = AttributeGroup.read(tag, in);
-                attributeGroupsBuilder.add(attributeGroup);
-            } else {
-                throw new ParseError("Illegal delimiter " + tag);
-            }
-        }
-        builder.setAttributeGroups(attributeGroupsBuilder.build());
-        return builder.build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder setVersionNumber(int versionNumber);
-
-        public abstract Builder setCode(int code);
-
-        public Builder setCode(NameCode code) {
-            return setCode(code.getCode());
-        }
-
-        public abstract Builder setRequestId(int requestId);
-
-        public abstract Builder setAttributeGroups(List<AttributeGroup> groups);
-
-        public Builder setAttributeGroups(AttributeGroup... groups) {
-            return setAttributeGroups(Arrays.asList(groups));
-        }
-
-        public abstract Builder setData(byte[] data);
-
-        public abstract Builder setInputStreamFactory(InputStreamFactory factory);
-
-        public abstract Packet build();
-    }
-
-    /** Describes a packet including its proper code and attribute types */
-    public final String describe(NameCodeType.Encoder<?> codeEncoder, List<AttributeType<?>> attributeTypes) {
-        // Construct a map of attribute names to attributeTypes for speed
-        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(attributeTypes,
-                new Function<AttributeType<?>, String>() {
-                    @Override
-                    public String apply(AttributeType<?> type) {
-                        return type.getName();
-                    }
-                });
-
-        String attributeGroups = Lists.transform(getAttributeGroups(), new Function<AttributeGroup, String>() {
-            @Override
-            public String apply(AttributeGroup input) {
-                return input.describe(attributeTypeMap);
-            }
-        }).toString();
-
-        return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", code=" + codeEncoder.get(getCode()) +
-                ", rId=x" + Integer.toHexString(getRequestId()) +
-                ", ags=" + attributeGroups +
-                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
-                (getInputStreamFactory() != null ? ", stream" : "") +
-                "}";
+    /** Parses packets */
+    public interface Parser {
+        Packet parse(DataInputStream in) throws IOException;
     }
 
     @Override

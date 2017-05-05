@@ -28,26 +28,28 @@ public abstract class Attribute<T> {
             ".HOOK_ALLOW_BUILD_INVALID_TAGS";
 
     /** Create and return a new Attribute builder */
-    static <T> Builder<T> builder(Encoder<T> encoder, Tag valueTag) {
+    static <T> Builder<T> builder(BaseEncoder<T> encoder, Tag valueTag) {
         return new AutoValue_Attribute.Builder<T>().setEncoder(encoder).setValueTag(valueTag);
+    }
+
+    interface EncoderFinder {
+        BaseEncoder<?> find(Tag valueTag, String name) throws IOException;
     }
 
     /**
      * Read an attribute from an input stream, based on its tag
      */
-    static Attribute<?> read(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
-        for (Encoder<?> classEncoder: encoders) {
-            if (classEncoder.valid(valueTag)) {
-                return classEncoder.read(in, encoders, valueTag);
-            }
-        }
-        throw new ParseError("Unreadable attribute in " + valueTag);
+    static Attribute<?> read(DataInputStream in, EncoderFinder finder, Tag valueTag) throws IOException {
+
+        String name = new String(readValueBytes(in), Util.UTF8);
+
+        return finder.find(valueTag, name).read(in, finder, valueTag, name);
     }
 
     /** A generic attribute builder to be subclassed for specific types of T. */
     @AutoValue.Builder
     abstract static class Builder<T> {
-        abstract Builder<T> setEncoder(Encoder<T> encoder);
+        abstract Builder<T> setEncoder(BaseEncoder<T> encoder);
 
         abstract Builder<T> setValueTag(Tag valueTag);
 
@@ -64,26 +66,29 @@ public abstract class Attribute<T> {
         public abstract Attribute<T> build();
     }
 
+    abstract static class Encoder<T> extends BaseEncoder<T> {
+        /** Read a single value from the input stream, making use of the set of encoders */
+        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+
+        T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException {
+            return readValue(in, valueTag);
+        }
+    }
+
     /**
      * Reads/writes attributes to the attribute's type.
      */
-    abstract static class Encoder<T> {
+    public abstract static class BaseEncoder<T> {
 
         /** Return a human-readable name describing this type */
         abstract String getType();
 
-        /** Read a single value from the input stream */
-        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+        /** Read a single value from the input stream, making use of the set of encoders */
+        abstract T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException;
 
         /** Write a single value to the output stream */
         abstract void writeValue(DataOutputStream out, T value) throws IOException;
 
-        /** Read a single value from the input stream, making use of the set of encoders */
-        T readValue(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
-            // This method and writeValue are only present so that CollectionType can make use of the
-            // encoder set. Other subclasses only need the two-argument style so we default to it.
-            return readValue(in, valueTag);
-        }
 
         /** Return true if this tag can be handled by this encoder */
         abstract boolean valid(Tag valueTag);
@@ -109,16 +114,16 @@ public abstract class Attribute<T> {
         }
 
         /** Read an attribute and its values from the data stream */
-        Attribute<T> read(DataInputStream in, List<Encoder<?>> encoders, Tag valueTag) throws IOException {
-            Builder<T> builder = builder(valueTag)
-                    .setName(new String(readValueBytes(in), Util.UTF8));
+        Attribute<T> read(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag, String name)
+                throws IOException {
+            Builder<T> builder = builder(valueTag).setName(name); // TODO: one-shot?
 
             // Read first value...there always has to be one, right?
             ImmutableList.Builder<T> valueBuilder = new ImmutableList.Builder<>();
-            valueBuilder.add(readValue(in, encoders, valueTag));
+            valueBuilder.add(readValue(in, finder, valueTag));
 
             Optional<T> value;
-            while ((value = readAdditionalValue(in, valueTag, encoders)).isPresent()) {
+            while ((value = readAdditionalValue(in, valueTag, finder)).isPresent()) {
                 valueBuilder.add(value.get());
             }
             builder.setValues(valueBuilder.build());
@@ -126,17 +131,17 @@ public abstract class Attribute<T> {
         }
 
         /** Read a single additional value if possible */
-        private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, List<Encoder<?>> encoders)
+        private Optional<T> readAdditionalValue(DataInputStream in, Tag valueTag, Attribute.EncoderFinder finder)
                 throws IOException {
             if (in.available() < 3) return Optional.absent();
             in.mark(3);
             if (Tag.read(in) == valueTag) {
                 int nameLength = in.readShort();
                 if (nameLength == 0) {
-                    return Optional.of(readValue(in, encoders, valueTag));
+                    return Optional.of(readValue(in, finder, valueTag));
                 }
             }
-            // Failed to read an additional value so back up and quit.
+            // Failed to parse an additional value so back up and quit.
             in.reset();
             return Optional.absent();
         }
@@ -145,18 +150,6 @@ public abstract class Attribute<T> {
         void writeValueBytes(DataOutputStream out, byte[] bytes) throws IOException {
             out.writeShort(bytes.length);
             out.write(bytes);
-        }
-
-        /** Read and return value bytes from a length-value pair */
-        byte[] readValueBytes(DataInputStream in) throws IOException {
-            int valueLength = in.readShort();
-            byte[] valueBytes = new byte[valueLength];
-            int actual = in.read(valueBytes);
-            if (valueLength != actual) {
-                throw new ParseError("Value too short: expected " + valueBytes.length +
-                        ", received only " + actual);
-            }
-            return valueBytes;
         }
 
         /** Skip (discard) a length-value pair */
@@ -172,7 +165,9 @@ public abstract class Attribute<T> {
 
     public abstract List<T> getValues();
 
-    abstract Encoder<T> getEncoder();
+    abstract BaseEncoder<T> getEncoder();
+
+    abstract Attribute.Builder<T> toBuilder();
 
     /** Return the n'th value in this attribute, assuming it is present */
     public T getValue(int n) {
@@ -181,7 +176,7 @@ public abstract class Attribute<T> {
 
     /** Return a copy of this attribute with a different name */
     Attribute<T> withName(String newName) {
-        return Attribute.builder(getEncoder(), getValueTag()).setName(newName).setValues(getValues()).build();
+        return toBuilder().setName(newName).setValues(getValues()).build();
     }
 
     /** Write this attribute (including all of its values) to the output stream */
@@ -219,6 +214,7 @@ public abstract class Attribute<T> {
                 return input.toString();
             }
         });
+
         String valueString;
         if (values.size() == 1) {
             valueString = values.get(0);
@@ -228,5 +224,16 @@ public abstract class Attribute<T> {
         return (getName().equals("") ? "" : getName()) +
                 "(" + getValueTag() + ")" +
                 ": " + valueString;
+    }
+
+    /** Read and return value bytes from a length-value pair */
+    static byte[] readValueBytes(DataInputStream in) throws IOException {
+        int valueLength = in.readShort();
+        byte[] valueBytes = new byte[valueLength];
+        int actual = in.read(valueBytes);
+        if (valueLength > actual) {
+            throw new ParseError("Value too short: expected " + valueBytes.length + ", got only " + actual);
+        }
+        return valueBytes;
     }
 }

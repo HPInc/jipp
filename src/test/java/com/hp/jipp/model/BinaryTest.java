@@ -11,17 +11,16 @@ import com.hp.jipp.encoding.Tag;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.IOException;
 
 public class BinaryTest {
+    private Packet.Parser parser = Packet.parserOf(Attributes.All);
+
     @Test
     public void scanUris() throws Exception {
         for (File binFile : getBinFiles()) {
-            Packet packet = Packet.read(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
+            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
             if (packet.getAttributeGroup(Tag.PrinterAttributes).isPresent()) {
                 System.out.println("Printer: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
                         " has URIs: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
@@ -36,8 +35,8 @@ public class BinaryTest {
             byte[] bytes = Files.toByteArray(binFile);
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
-            Packet packet = Packet.read(new DataInputStream(new ByteArrayInputStream(bytes)));
-            System.out.println(packet.describe(Status.ENCODER, Attributes.All));
+            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
+            System.out.println(packet);
             assertArrayEquals(PacketTest.getBytes(packet), bytes);
         }
     }
@@ -62,7 +61,7 @@ public class BinaryTest {
             int reps = 100;
             for (int i = 0; i < reps; i++) {
                 try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
-                    Packet.read(in);
+                    parser.parse(in);
                 }
             }
             timer.stop();

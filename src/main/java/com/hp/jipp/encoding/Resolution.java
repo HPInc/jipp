@@ -1,7 +1,6 @@
 package com.hp.jipp.encoding;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Describes a printing resolution
@@ -42,10 +41,8 @@ public abstract class Resolution {
         }
 
         /** The encoder for converting integers to Operation objects */
-        public static final NameCodeType.Encoder<Unit> ENCODER = NameCodeType.encoder(
-                "unit", ImmutableSet.of(
-                        DotsPerInch, DotsPerCentimeter
-                ), new NameCode.Factory<Resolution.Unit>() {
+        public static final NameCodeEncoder<Unit> ENCODER = NameCodeEncoder.of(
+                Unit.class, new NameCode.Factory<Resolution.Unit>() {
                     @Override
                     public Resolution.Unit of(String name, int code) {
                         return Resolution.Unit.of(name, code);

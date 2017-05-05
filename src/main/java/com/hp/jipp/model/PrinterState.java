@@ -1,8 +1,7 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCode;
 
 /** An enumeration of possible printer states */
@@ -13,10 +12,8 @@ public abstract class PrinterState extends NameCode {
     public static final PrinterState Processing = of("processing", 4);
     public static final PrinterState Stopped = of("stopped", 5);
 
-    public static final NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.encoder(
-            "printer-state", ImmutableSet.of(
-                    Idle, Processing, Stopped
-            ), new NameCode.Factory<PrinterState>() {
+    public static final NameCodeEncoder<PrinterState> ENCODER = NameCodeEncoder.of(
+            PrinterState.class, new NameCode.Factory<PrinterState>() {
                 @Override
                 public PrinterState of(String name, int code) {
                     return PrinterState.of(name, code);

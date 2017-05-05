@@ -1,6 +1,5 @@
 package com.hp.jipp.model;
 
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
@@ -44,7 +43,7 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri");
 
     public static final NameCodeType<Operation> OperationsSupported =
-            Operation.createType("operations-supported");
+            Operation.typeOf("operations-supported");
 
     public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
@@ -56,7 +55,7 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
     public static final NameCodeType<PrinterState> PrinterState =
-            NameCodeType.type(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+            NameCodeType.typeOf(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
     public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");
@@ -84,7 +83,7 @@ public final class Attributes {
     // 3.2.1.1 Print-Job Response
 
     public static final NameCodeType<JobState> JobState =
-            NameCodeType.type(com.hp.jipp.model.JobState.ENCODER, "job-state");
+            NameCodeType.typeOf(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
     public static final UriType JobUri = new UriType(Tag.Uri, "job-uri");
 
@@ -117,28 +116,6 @@ public final class Attributes {
     public static final ResolutionType PrinterResolutionDefault =
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
 
-    /** All attributes, useful when printing contents */
-    public static final List<AttributeType<?>> All = ImmutableList.of(
-            AttributesCharset,
-            AttributesNaturalLanguage,
-            DetailedStatusMessage,
-            DocumentAccessError,
-            DocumentName,
-            JobName,
-            OperationsSupported,
-            PrinterInfo,
-            PrinterUriSupported,
-            PrinterState,
-            CopiesSupported,
-            PrinterUri,
-            PrinterIcons,
-            DocumentFormatSupported,
-            RequestedAttributes,
-            RequestingUserName,
-            StatusMessage,
-            LastDocument,
-            DocumentFormat,
-            JobState,
-            PrinterResolutionDefault
-    );
+    /** All known attributes */
+    public static final List<AttributeType<?>> All = AttributeType.staticMembers(Attributes.class);
 }

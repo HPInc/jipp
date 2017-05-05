@@ -1,8 +1,7 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
-import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCode;
 
 /**
@@ -21,16 +20,13 @@ public abstract class JobState extends NameCode {
     public static final JobState Aborted = of("aborted", 8);
     public static final JobState Completed = of("completed", 9);
 
-    public static final NameCodeType.Encoder<JobState> ENCODER = NameCodeType.encoder(
-            "job-state", ImmutableSet.of(
-                    Pending, PendingHeld, Processing, ProcessingStopped, Canceled, Aborted, Completed
-            ), new NameCode.Factory<JobState>() {
+    public static final NameCodeEncoder<JobState> ENCODER = NameCodeEncoder.of(
+            JobState.class, new NameCode.Factory<JobState>() {
                 @Override
                 public JobState of(String name, int code) {
                     return JobState.of(name, code);
                 }
             });
-
 
     /** Return true if this state is the terminating state for a job */
     public boolean isFinal() {

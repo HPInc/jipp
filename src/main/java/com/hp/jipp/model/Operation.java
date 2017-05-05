@@ -1,7 +1,7 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableSet;
+import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
@@ -32,12 +32,8 @@ public abstract class Operation extends NameCode {
     public static final Operation PurgeJobs = of("Purge-Jobs", 0x0012);
 
     /** The encoder for converting integers to Operation objects */
-    public static final NameCodeType.Encoder<Operation> ENCODER = NameCodeType.encoder(
-            "operation-id", ImmutableSet.of(
-                    PrintJob, PrintUri, ValidateJob, CreateJob, SendDocument, SendUri, CancelJob, GetJobAttributes,
-                    GetJobs, GetPrinterAttributes, HoldJob, ReleaseJob, RestartJob, PausePrinter, ResumePrinter,
-                    PurgeJobs
-            ), new NameCode.Factory<Operation>() {
+    public static final NameCodeEncoder<Operation> ENCODER = NameCodeEncoder.of(
+            Operation.class, new NameCode.Factory<Operation>() {
                 @Override
                 public Operation of(String name, int code) {
                     return Operation.of(name, code);
@@ -45,7 +41,7 @@ public abstract class Operation extends NameCode {
             });
 
     /** Create and return a {@link NameCodeType} based on this NameCode */
-    public static NameCodeType<Operation> createType(String attributeName) {
+    public static NameCodeType<Operation> typeOf(String attributeName) {
         return new NameCodeType<>(ENCODER, attributeName);
     }
 

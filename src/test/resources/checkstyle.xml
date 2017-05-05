@@ -70,8 +70,9 @@
         <module name="MemberName">
             <!-- Public final variables should appear different -->
             <property name="applyToPublic" value="false" />
-            <property name="format" value="^[a-z]+([A-Z][a-z0-9]+)*$" />
+            <property name="format" value="^[a-z]+([A-Z][a-z0-9]+)*[A-Z]?$" />
         </module>
+
         <module name="MethodName" />
         <module name="PackageName" />
         <module name="ParameterName" />

@@ -24,16 +24,15 @@ import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.model.Packet;
 import com.hp.jipp.util.Util;
-import com.hp.jipp.model.Attributes;
-import com.hp.jipp.model.Operation;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
 public class PacketTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
+    private Packet.Parser parser = Packet.parserOf(Attributes.All);
 
     private Packet packet;
     private Packet defaultPacket = Packet.builder().setVersionNumber(0x102)
@@ -78,7 +77,7 @@ public class PacketTest {
                 (byte) 0x09,
         };
         exception.expect(EOFException.class);
-        Packet.read(new DataInputStream(new ByteArrayInputStream(in)));
+        parser.parse(new DataInputStream(new ByteArrayInputStream(in)));
     }
 
     @Test
@@ -208,7 +207,7 @@ public class PacketTest {
                 (byte) 0x03,
         };
 
-        Packet.read(new DataInputStream(new ByteArrayInputStream(bytes)));
+        parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
     }
 
 
@@ -340,6 +339,13 @@ public class PacketTest {
         getBytes(packet);
     }
 
+    @Test
+    public void printCorrectly() throws IOException {
+        Packet packet = cycle(Packet.of(Status.Ok, 0x101, AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(Operation.CreateJob))));
+        System.out.println(packet);
+        assertTrue(packet.toString().contains(Operation.CreateJob.getName()));
+    }
 
     /** Write the entire contents of this packet to a single byte array */
     public static byte[] getBytes(Packet packet) {

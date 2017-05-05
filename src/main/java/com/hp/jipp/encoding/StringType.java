@@ -29,7 +29,7 @@ public class StringType extends AttributeType<String> {
 
         @Override
         public String readValue(DataInputStream in, Tag valueTag) throws IOException {
-            return new String(readValueBytes(in), Util.UTF8);
+            return new String(Attribute.readValueBytes(in), Util.UTF8);
         }
 
         @Override
@@ -50,7 +50,6 @@ public class StringType extends AttributeType<String> {
             return Optional.absent();
         }
         // Apply conversion from StringType to a LangStringType attribute
-        return Optional.of(of(Lists.transform((List<LangString>) attribute.getValues(),
-                LangString.ToStringFunc)));
+        return Optional.of(of(Lists.transform((List<LangString>) attribute.getValues(), LangString.ToStringFunc)));
     }
 }

@@ -1,14 +1,53 @@
 package com.hp.jipp.encoding;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Packet;
+import com.hp.jipp.util.Util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 public class Cycler {
+
+    public static final Packet.Parser sParser = Packet.parserOf(Attributes.All);
+    public static final Function<? super AttributeType<?>, String> sAttributeNameProjector = new Function<AttributeType<?>, String>() {
+        @Override
+        public String apply(@Nonnull AttributeType<?> input) {
+            return input.getName();
+        }
+    };
+    public static final Map<String, AttributeType<?>> sAttributeTypeMap = Maps.uniqueIndex(Attributes.All,
+            sAttributeNameProjector);
+
+    public static final Attribute.EncoderFinder sFinder = new Attribute.EncoderFinder() {
+        @Override
+        public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
+            // Check for a matching attribute type
+            if (sAttributeTypeMap.containsKey(name)) {
+                AttributeType<?> attributeType = sAttributeTypeMap.get(name);
+                if (attributeType.getEncoder().valid(valueTag)) {
+                    return attributeType.getEncoder();
+                }
+            }
+
+            // If no valid match above then try with each default encoder
+            for (Attribute.BaseEncoder<?> encoder: AttributeGroup.ENCODERS) {
+                if (encoder.valid(valueTag)) {
+                    return encoder;
+                }
+            }
+            throw new ParseError("No encoder found for " + name + "(" + valueTag + ")");
+        }
+    };
+
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
         return AttributeGroup.read(new DataInputStream(new ByteArrayInputStream(toBytes(group))));
     }
@@ -25,13 +64,15 @@ public class Cycler {
     public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return attributeType.getEncoder().read(in, AttributeGroup.ENCODERS, Tag.read(in));
+        Tag tag = Tag.read(in);
+        String name = new String(Attribute.readValueBytes(in), Util.UTF8);
+        return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.read(in, AttributeGroup.ENCODERS, Tag.read(in));
+        return (Attribute<T>) Attribute.read(in, sFinder, Tag.read(in));
     }
 
     public static byte[] toBytes(Attribute<?> attribute) throws IOException {
@@ -41,7 +82,7 @@ public class Cycler {
     }
 
     public static Packet cycle(Packet in) throws IOException {
-        return Packet.read(new DataInputStream(new ByteArrayInputStream(toBytes(in))));
+        return sParser.parse(new DataInputStream(new ByteArrayInputStream(toBytes(in))));
     }
 
     public static Packet cycle(Packet.Builder in) throws IOException {

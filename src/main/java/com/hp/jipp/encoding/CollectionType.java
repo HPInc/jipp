@@ -6,7 +6,6 @@ import com.hp.jipp.util.Util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * A collection attribute type.
@@ -18,8 +17,8 @@ public class CollectionType extends AttributeType<AttributeCollection> {
     /** Used to terminate a collection */
     private static final Attribute<byte[]> EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
 
-    static final Attribute.Encoder<AttributeCollection>
-            ENCODER = new Attribute.Encoder<AttributeCollection>() {
+    static final Attribute.BaseEncoder<AttributeCollection>
+            ENCODER = new Attribute.BaseEncoder<AttributeCollection>() {
 
         @Override
         public String getType() {
@@ -46,7 +45,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
         }
 
         @Override
-        AttributeCollection readValue(DataInputStream in, List<Attribute.Encoder<?>> encoders, Tag valueTag)
+        AttributeCollection readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag)
                 throws IOException {
             skipValueBytes(in);
             ImmutableList.Builder<Attribute<?>> builder = new ImmutableList.Builder<>();
@@ -61,20 +60,14 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                     break;
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
-                    String memberName = new String(readValueBytes(in), Util.UTF8);
-                    Attribute memberValue = Attribute.read(in, encoders, Tag.read(in));
+                    String memberName = new String(Attribute.readValueBytes(in), Util.UTF8);
+                    Attribute memberValue = Attribute.read(in, finder, Tag.read(in));
                     builder.add(memberValue.withName(memberName));
                 } else {
-                    throw new ParseError("Bad tag: " + tag);
+                    throw new ParseError("Bad tag in collection: " + tag);
                 }
             }
             return new AttributeCollection(builder.build());
-        }
-
-        @Override
-        AttributeCollection readValue(DataInputStream in, Tag valueTag)
-                throws IOException {
-            throw new IllegalArgumentException("Encoders required");
         }
 
         @Override

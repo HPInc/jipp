@@ -8,9 +8,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
+import com.google.common.io.BaseEncoding;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.Resolution;
 import com.hp.jipp.encoding.StringType;
@@ -73,11 +76,11 @@ public class AttributeTypeTest {
 
     @Test
     public void verifyWeirdEnums() throws Exception {
-        assertEquals("job-state(xff)", JobState.ENCODER.get(0xFF).getName());
+        assertEquals("JobState(xff)", JobState.ENCODER.get(0xFF).getName());
         assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
 
-        assertEquals("printer-state(x7)", PrinterState.ENCODER.get(7).getName());
-        assertEquals("status-code(x777)", Status.ENCODER.get(0x777).getName());
+        assertEquals("PrinterState(x7)", PrinterState.ENCODER.get(7).getName());
+        assertEquals("Status(x777)", Status.ENCODER.get(0x777).getName());
     }
 
     @Test
@@ -95,4 +98,5 @@ public class AttributeTypeTest {
         assertEquals(600, resolution.getFeedResolution());
         assertEquals(Resolution.Unit.DotsPerInch, resolution.getUnit());
     }
+
 }

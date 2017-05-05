@@ -4,22 +4,22 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
+import javax.annotation.Nonnull;
+
 /** A string, possibly encoded with language */
 @AutoValue
 public abstract class LangString {
     static final Function<LangString, String> ToStringFunc = new Function<LangString, String>() {
         @Override
-        public String apply(LangString input) {
-            Optional<LangString> langString = Optional.fromNullable(input);
-            return langString.isPresent() ? langString.get().getString() : "";
+        public String apply(@Nonnull LangString input) {
+            return input.getString();
         }
     };
 
     static final Function<String, LangString> FromStringFunc = new Function<String, LangString>() {
         @Override
-        public LangString apply(String input) {
-            Optional<String> string = Optional.fromNullable(input);
-            return string.isPresent() ? of(string.get()) : of("");
+        public LangString apply(@Nonnull String input) {
+            return of(input);
         }
     };
 
