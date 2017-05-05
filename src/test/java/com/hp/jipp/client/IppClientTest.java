@@ -225,6 +225,7 @@ public class IppClientTest {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.getJobStatus(job);
+        System.out.println(job);
         assertEquals(JobState.Processing, job.getStatus().getState());
     }
 
