@@ -53,8 +53,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
 
         @Override
         T readValue(DataInputStream in, Tag valueTag) throws IOException {
-            expectLength(in, 4);
-            return get(in.readInt());
+            return get(IntegerType.ENCODER.readValue(in, valueTag));
         }
 
         @Override
@@ -82,9 +81,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
     @Override
     @SuppressWarnings({"unchecked"})
     public Optional<Attribute<T>> from(Attribute<?> attribute) {
-        if (attribute.getValueTag() != Tag.EnumValue) {
-            return Optional.absent();
-        }
+        if (attribute.getValueTag() != Tag.EnumValue) return Optional.absent();
         return Optional.of(of(Lists.transform((List<Integer>) attribute.getValues(), toEnum)));
     }
 }

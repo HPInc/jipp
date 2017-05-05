@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class IntegerType extends AttributeType<Integer> {
+
     static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
 
         @Override
