@@ -13,6 +13,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.OctetStringType;
@@ -237,7 +239,28 @@ public class PacketTest {
         assertEquals(0x1010, packet.getRequestId());
         assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();
-        assertEquals("US-ASCII", attribute.getValues().get(0));
-        assertEquals("UTF-8", attribute.getValues().get(1));
+        assertEquals(ImmutableList.of("US-ASCII", "UTF-8"), attribute.getValues());
+    }
+
+    @Test
+    public void getValue() throws IOException {
+        packet = cycle(Packet.of(Operation.GetJobAttributes, 0x1010,
+                AttributeGroup.of(Tag.OperationAttributes,
+                        Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
+        assertEquals(Optional.absent(),
+                packet.getValue(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
+        assertEquals(Optional.of("US-ASCII"),
+                packet.getValue(Tag.OperationAttributes, Attributes.AttributesCharset));
+    }
+
+    @Test
+    public void getValues() throws IOException {
+        packet = cycle(Packet.of(Operation.GetJobAttributes, 0x1010,
+                AttributeGroup.of(Tag.OperationAttributes,
+                        Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
+        assertEquals(ImmutableList.of("US-ASCII", "UTF-8"),
+                packet.getValues(Tag.OperationAttributes, Attributes.AttributesCharset));
+        assertEquals(ImmutableList.of(),
+                packet.getValues(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
     }
 }

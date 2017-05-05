@@ -161,8 +161,8 @@ public abstract class Packet {
         try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()) {
             write(new DataOutputStream(outBytes));
             return outBytes.toByteArray();
-        } catch (IOException ignored) {
-            throw new IllegalArgumentException("Packet could not be written");
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Packet could not be written", e);
         }
     }
 
