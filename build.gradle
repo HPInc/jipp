@@ -39,6 +39,7 @@ tasks.withType(FindBugs) {
         xml.enabled = false
     }
 }
+findbugsTest.enabled = false
 
 // This hack puts testing resource files where we can get to them
 task copyTestResources(type: Copy) {

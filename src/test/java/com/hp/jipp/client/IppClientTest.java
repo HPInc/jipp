@@ -155,6 +155,9 @@ public class IppClientTest {
     @Test
     public void getJobs() throws IOException {
         response = Packet.of(Status.Ok, 0x01,
+                AttributeGroup.of(Tag.OperationAttributes,
+                        Attributes.AttributesCharset.of("UTF-8"),
+                        Attributes.AttributesNaturalLanguage.of("en")),
                 AttributeGroup.of(Tag.JobAttributes,
                         Attributes.JobId.of(2), Attributes.JobState.of(JobState.Processing)),
                 AttributeGroup.of(Tag.JobAttributes,
