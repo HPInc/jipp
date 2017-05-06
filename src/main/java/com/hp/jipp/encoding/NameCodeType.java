@@ -28,7 +28,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
 
     @Override
     @SuppressWarnings({"unchecked"})
-    public Optional<Attribute<T>> from(Attribute<?> attribute) {
+    public Optional<Attribute<T>> of(Attribute<?> attribute) {
         if (attribute.getValueTag() != Tag.EnumValue) return Optional.absent();
         return Optional.of(of(Lists.transform((List<Integer>) attribute.getValues(), toNameCode)));
     }

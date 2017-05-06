@@ -1,5 +1,6 @@
 package com.hp.jipp.model;
 
+import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
@@ -9,6 +10,7 @@ import com.hp.jipp.encoding.ResolutionType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
+import com.hp.jipp.util.Util;
 
 import java.util.List;
 
@@ -117,5 +119,16 @@ public final class Attributes {
             new ResolutionType(Tag.Resolution, "printer-resolution-default");
 
     /** All known attributes */
-    public static final List<AttributeType<?>> All = AttributeType.staticMembers(Attributes.class);
+    public static final List<AttributeType<?>> All = staticMembers(Attributes.class);
+
+    /** Return all accessible static members of the specified class which are AttributeType objects */
+    public static List<AttributeType<?>> staticMembers(Class<?> cls) {
+        ImmutableList.Builder<AttributeType<?>> members = new ImmutableList.Builder<>();
+        for (Object object : Util.getStaticObjects(cls)) {
+            if (object instanceof AttributeType<?>) {
+                members.add((AttributeType<?>) object);
+            }
+        }
+        return members.build();
+    }
 }

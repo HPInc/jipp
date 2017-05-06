@@ -1,11 +1,8 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.util.Hook;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 /**
@@ -55,27 +52,12 @@ public class AttributeType<T> {
     }
 
     /** If possible, convert the supplied attribute into an attribute of this type. */
-    public Optional<Attribute<T>> from(Attribute<?> attribute) {
-        return Optional.absent();
-    }
-
-    /** Return all accessible static members of the specified class which are AttributeType objects */
-    public static List<AttributeType<?>> staticMembers(Class<?> cls) {
-        ImmutableList.Builder<AttributeType<?>> members = new ImmutableList.Builder<>();
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (!Modifier.isStatic(field.getModifiers())) continue;
-
-            Object object;
-            try {
-                object = field.get(null);
-            } catch (IllegalAccessException ignored) {
-                object = null;
-            }
-            if (object instanceof AttributeType<?>) {
-                members.add((AttributeType<?>) object);
-            }
+    @SuppressWarnings("unchecked")
+    public Optional<Attribute<T>> of(Attribute<?> attribute) {
+        if (attribute.getEncoder() == encoder) {
+            return Optional.of(of((List<T>) attribute.getValues()));
+        } else {
+            return Optional.absent();
         }
-        return members.build();
     }
 }

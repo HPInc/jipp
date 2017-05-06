@@ -4,12 +4,11 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,17 +23,8 @@ public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.Enco
     public static <T extends NameCode> NameCodeEncoder<T> of(Class<T> cls,
             NameCode.Factory<T> factory) {
         ImmutableList.Builder<T> nameCodes = new ImmutableList.Builder<>();
-        for (Field field : cls.getDeclaredFields()) {
-            if (!Modifier.isStatic(field.getModifiers())) continue;
-
-            Object object;
-            try {
-                object = field.get(null);
-            } catch (IllegalAccessException ignored) {
-                object = null;
-            }
-
-            if (object != null && cls.isAssignableFrom(object.getClass())) {
+        for (Object object : Util.getStaticObjects(cls)) {
+            if (cls.isAssignableFrom(object.getClass())) {
                 nameCodes.add((T) object);
             }
         }

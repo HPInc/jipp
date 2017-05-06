@@ -151,7 +151,7 @@ public abstract class AttributeGroup {
         if (attributeType.isValid(attribute)) {
             return Optional.of((Attribute<T>) attribute);
         } else {
-            return attributeType.from(attribute);
+            return attributeType.of(attribute);
         }
     }
 

@@ -44,7 +44,7 @@ public class StringType extends AttributeType<String> {
 
     @Override
     @SuppressWarnings({"PMD.UselessParentheses", "unchecked"})
-    public Optional<Attribute<String>> from(Attribute<?> attribute) {
+    public Optional<Attribute<String>> of(Attribute<?> attribute) {
         if (!(attribute.getValueTag().equals(Tag.NameWithLanguage) && getTag().equals(Tag.NameWithoutLanguage)) ||
                 (attribute.getValueTag().equals(Tag.TextWithLanguage) && getTag().equals(Tag.TextWithoutLanguage))) {
             return Optional.absent();

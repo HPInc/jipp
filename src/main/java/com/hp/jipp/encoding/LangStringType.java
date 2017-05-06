@@ -55,12 +55,13 @@ public class LangStringType extends AttributeType<LangString> {
 
     @Override
     @SuppressWarnings({"PMD.UselessParentheses", "unchecked"})
-    public Optional<Attribute<LangString>> from(Attribute<?> attribute) {
+    public Optional<Attribute<LangString>> of(Attribute<?> attribute) {
         if (!(attribute.getValueTag().equals(Tag.NameWithoutLanguage) && getTag().equals(Tag.NameWithLanguage)) ||
                 (attribute.getValueTag().equals(Tag.TextWithoutLanguage) && getTag().equals(Tag.TextWithLanguage))) {
             return Optional.absent();
         }
-        // Apply conversion from LangStringType to a StringType on demand
+        // TODO: If we don't know the language this is actually a dangerous thing to do
+        // Apply conversion from StringType to a LangStringType on demand
         return Optional.of(of(Lists.transform((List<String>) attribute.getValues(), LangString.FromStringFunc)));
     }
 }

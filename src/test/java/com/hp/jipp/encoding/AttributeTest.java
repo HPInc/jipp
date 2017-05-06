@@ -5,15 +5,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.BaseEncoding;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
@@ -167,15 +165,6 @@ public class AttributeTest {
     }
 
     @Test
-    public void languageStrings() throws Exception {
-        LangStringType nameType = new LangStringType(Tag.NameWithLanguage, "job-name");
-        Attribute<LangString> name = cycle(nameType.of(LangString.of("my job", "fr")));
-        System.out.println("name: " + name);
-        assertEquals("my job", name.getValue(0).getString());
-        assertEquals("fr", name.getValue(0).getLang().get());
-    }
-
-    @Test
     public void missingEncoder() throws Exception {
         exception.expect(ParseError.class);
         byte[] bytes = new byte[] {
@@ -262,11 +251,14 @@ public class AttributeTest {
     }
 
     @Test
-    public void nonStringFrom() throws IOException {
-        // from() fails when you try to jam an integer into a string
-        assertEquals(false, new StringType(Tag.TextWithoutLanguage, "test")
-                .from(new IntegerType(Tag.IntegerValue, "integer").of(5)).isPresent());
-        assertEquals(false, new LangStringType(Tag.TextWithLanguage, "test")
-                .from(new IntegerType(Tag.IntegerValue, "integer").of(5)).isPresent());
+    public void badConversion() throws IOException {
+        assertEquals(Optional.absent(), Attributes.JobId.of(Attributes.JobName.of("string")));
     }
+
+    @Test
+    public void goodConversion() throws IOException {
+        assertEquals(Optional.of(Attributes.JobId.of(1)),
+                Attributes.JobId.of(new IntegerType(Tag.IntegerValue, "job-id").of(1)));
+    }
+
 }
