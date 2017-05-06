@@ -179,6 +179,23 @@ public class IppClientTest {
     }
 
     @Test
+    public void badPrinterStatus() throws Exception {
+        exception.expect(IOException.class);
+        response = Packet.of(Status.ServerErrorInternalError, 0x01);
+        client.getPrinterStatus(printer);
+    }
+
+
+    @Test
+    public void badPrinterStatusNoState() throws Exception {
+        exception.expect(IOException.class);
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.PrinterStateReasons.of("bored", "tired"),
+                Attributes.PrinterStateMessage.of("it's complicated")));
+        client.getPrinterStatus(printer);
+    }
+
+    @Test
     public void printJob() throws IOException {
         response = Packet.of(Status.Ok, 0x01,
                 AttributeGroup.of(Tag.JobAttributes,
@@ -200,6 +217,20 @@ public class IppClientTest {
         job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
         job.getJobRequest().get().getDocument();
+    }
+
+    @Test
+    public void badCreateJobResponse() throws Exception {
+        exception.expect(IOException.class);
+        response = Packet.of(Status.ServerErrorBusy, 0x01);
+        job = client.createJob(jobRequest);
+    }
+
+    @Test
+    public void badCreateJobResponseAttributes() throws Exception {
+        exception.expect(IOException.class);
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes));
+        job = client.createJob(jobRequest);
     }
 
     @Test

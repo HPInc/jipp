@@ -103,7 +103,7 @@ public class IppClient {
         if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
             return PrinterStatus.of(printerAttributes.get());
         } else {
-            throw new IOException("No attributes");
+            throw new IOException("No printer-attributes from " + printer);
         }
     }
 
@@ -153,13 +153,17 @@ public class IppClient {
     private Job toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
         Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
         if (!group.isPresent()) {
-            throw new IOException("Missing JobAttributes in response from " + jobRequest.getPrinter());
+            throw new IOException("Missing job-attributes in response from " + jobRequest.getPrinter());
         }
-        Optional<Integer> jobId = group.get().getValue(Attributes.JobId);
+        return Job.of(getJobId(group.get(), jobRequest.getPrinter()), jobRequest, group.get());
+    }
+
+    private int getJobId(AttributeGroup group, Printer printer) throws IOException {
+        Optional<Integer> jobId = group.getValue(Attributes.JobId);
         if (!jobId.isPresent()) {
-            throw new IOException("Missing URI in job response from " + jobRequest.getPrinter());
+            throw new IOException("Missing job-id job response from " + printer);
         }
-        return Job.of(jobId.get(), jobRequest, group.get());
+        return jobId.get();
     }
 
     /**
@@ -244,11 +248,7 @@ public class IppClient {
         ImmutableList.Builder<Job> listBuilder = new ImmutableList.Builder<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
-                Optional<Integer> id = group.getValue(Attributes.JobId);
-                if (!id.isPresent()) {
-                    throw new IOException("Missing Job-ID in job response from " + printer);
-                }
-                listBuilder.add(Job.of(id.get(), printer, group));
+                listBuilder.add(Job.of(getJobId(group, printer), printer, group));
             }
         }
 

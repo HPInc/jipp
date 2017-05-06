@@ -17,7 +17,9 @@ public abstract class PrinterStatus {
         Optional<PrinterState> state = attributes.getValue(Attributes.PrinterState);
         List<String> reasons = attributes.getValues(Attributes.PrinterStateReasons);
         Optional<String> message = attributes.getValue(Attributes.PrinterStateMessage);
-        if (!state.isPresent()) throw new IOException("Missing " + Attributes.PrinterState.getName());
+        if (!state.isPresent()) {
+            throw new IOException("Missing " + Attributes.PrinterState.getName());
+        }
         return new AutoValue_PrinterStatus(state.get(), reasons, message);
     }
 

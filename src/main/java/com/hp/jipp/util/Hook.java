@@ -26,8 +26,4 @@ public final class Hook {
     public static void reset() {
         sBooleans.clear();
     }
-
-    /** Not constructable */
-    private Hook() {
-    }
 }
