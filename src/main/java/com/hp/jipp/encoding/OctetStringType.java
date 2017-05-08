@@ -5,12 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class OctetStringType extends AttributeType<byte[]> {
+    private final static String TYPE_NAME = "OctetString";
 
-    static final Attribute.Encoder<byte[]> ENCODER = new Attribute.Encoder<byte[]>() {
-        @Override
-        public String getType() {
-            return OctetStringType.class.getSimpleName();
-        }
+    static final Attribute.Encoder<byte[]> ENCODER = new Attribute.Encoder<byte[]>(TYPE_NAME) {
 
         @Override
         public void writeValue(DataOutputStream out, byte[] value) throws IOException {
@@ -23,7 +20,7 @@ public class OctetStringType extends AttributeType<byte[]> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             // OctetString is a fallback for all types we don't otherwise understand
             return true;
         }

@@ -15,13 +15,9 @@ import java.util.List;
  * Some string types have a length-limit.
  */
 public class StringType extends AttributeType<String> {
+    private final static String TYPE_NAME = "String";
 
-    static final Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>() {
-        @Override
-        public String getType() {
-            return StringType.class.getSimpleName();
-        }
-
+    public static final Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, String value) throws IOException {
             writeValueBytes(out, value.getBytes(Util.UTF8));
@@ -33,8 +29,8 @@ public class StringType extends AttributeType<String> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
-            return (valueTag.getCode() & 0x40) == 0x40 && valueTag != Tag.Uri;
+        public boolean valid(Tag valueTag) {
+            return (valueTag.getCode() & 0x40) == 0x40;
         }
     };
 

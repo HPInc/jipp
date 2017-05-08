@@ -4,8 +4,10 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
+import com.hp.jipp.model.MediaSize;
 
 import java.net.URI;
+import java.util.List;
 
 @AutoValue
 public abstract class Printer {
@@ -23,6 +25,10 @@ public abstract class Printer {
      * The most recently retrieved attribute group ({@link com.hp.jipp.encoding.Tag#PrinterAttributes}) if any
      */
     public abstract AttributeGroup getAttributes();
+
+    // List<MediaSize> getMediaSizesSupported();
+
+    // List<MediaSize> getMediaSizeReady();
 
     @Override
     public String toString() {

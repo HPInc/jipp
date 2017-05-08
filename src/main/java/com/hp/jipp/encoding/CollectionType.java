@@ -13,6 +13,7 @@ import java.io.IOException;
  * @see <a href="https://tools.ietf.org/html/rfc3382">RFC3382</a>
  */
 public class CollectionType extends AttributeType<AttributeCollection> {
+    private final static String TYPE_NAME = "Collection";
 
     /** Used to terminate a collection */
     private static final Attribute<byte[]> EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
@@ -22,11 +23,11 @@ public class CollectionType extends AttributeType<AttributeCollection> {
 
         @Override
         public String getType() {
-            return CollectionType.class.getSimpleName();
+            return TYPE_NAME;
         }
 
         @Override
-        void writeValue(DataOutputStream out, AttributeCollection value)
+        public void writeValue(DataOutputStream out, AttributeCollection value)
                 throws IOException {
             out.writeShort(0); // Empty value
 
@@ -45,7 +46,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
         }
 
         @Override
-        AttributeCollection readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag)
+        public AttributeCollection readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag)
                 throws IOException {
             skipValueBytes(in);
             ImmutableList.Builder<Attribute<?>> builder = new ImmutableList.Builder<>();
@@ -71,7 +72,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return valueTag == Tag.BeginCollection;
         }
     };

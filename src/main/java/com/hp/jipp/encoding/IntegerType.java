@@ -5,17 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class IntegerType extends AttributeType<Integer> {
+    private final static String TYPE_NAME = "Integer";
 
-    static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>() {
-
-        @Override
-        public String getType() {
-            return IntegerType.class.getSimpleName();
-        }
-
+    static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>(TYPE_NAME) {
         @Override
         public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
-            expectLength(in, 4);
+            Attribute.expectLength(in, 4);
             return in.readInt();
         }
 
@@ -26,7 +21,7 @@ public class IntegerType extends AttributeType<Integer> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return Tag.IntegerValue.equals(valueTag) || Tag.EnumValue.equals(valueTag);
         }
     };

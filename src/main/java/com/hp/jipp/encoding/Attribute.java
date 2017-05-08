@@ -66,11 +66,21 @@ public abstract class Attribute<T> {
         public abstract Attribute<T> build();
     }
 
-    abstract static class Encoder<T> extends BaseEncoder<T> {
-        /** Read a single value from the input stream, making use of the set of encoders */
-        abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+    public abstract static class Encoder<T> extends BaseEncoder<T> {
+        private final String mTypeName;
 
-        T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException {
+        public Encoder(String typeName) {
+            mTypeName = typeName;
+        }
+
+        public String getType() {
+            return mTypeName;
+        }
+
+        /** Read a single value from the input stream, making use of the set of encoders */
+        public abstract T readValue(DataInputStream in, Tag valueTag) throws IOException;
+
+        public final T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException {
             return readValue(in, valueTag);
         }
     }
@@ -81,25 +91,17 @@ public abstract class Attribute<T> {
     public abstract static class BaseEncoder<T> {
 
         /** Return a human-readable name describing this type */
-        abstract String getType();
+        public abstract String getType();
 
         /** Read a single value from the input stream, making use of the set of encoders */
-        abstract T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException;
+        public abstract T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException;
 
         /** Write a single value to the output stream */
-        abstract void writeValue(DataOutputStream out, T value) throws IOException;
+        public abstract void writeValue(DataOutputStream out, T value) throws IOException;
 
 
         /** Return true if this tag can be handled by this encoder */
-        abstract boolean valid(Tag valueTag);
-
-        /** Reads a two-byte length field, asserting that it is of a specific length */
-        void expectLength(DataInputStream in, int length) throws IOException {
-            int readLength = in.readShort();
-            if (readLength != length) {
-                throw new ParseError("Bad attribute length: expected " + length + ", got " + readLength);
-            }
-        }
+        public abstract boolean valid(Tag valueTag);
 
         /**
          * Return a new Attribute builder for the specified valueTag (assumes a valid valueTag).
@@ -235,5 +237,13 @@ public abstract class Attribute<T> {
             throw new ParseError("Value too short: expected " + valueBytes.length + ", got only " + actual);
         }
         return valueBytes;
+    }
+
+    /** Reads a two-byte length field, asserting that it is of a specific length */
+    static void expectLength(DataInputStream in, int length) throws IOException {
+        int readLength = in.readShort();
+        if (readLength != length) {
+            throw new ParseError("Bad attribute length: expected " + length + ", got " + readLength);
+        }
     }
 }

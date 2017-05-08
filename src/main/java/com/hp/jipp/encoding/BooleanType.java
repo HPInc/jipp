@@ -6,13 +6,9 @@ import java.io.IOException;
 
 /** A boolean attribute type */
 public class BooleanType extends AttributeType<Boolean> {
-    static final Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>() {
+    private final static String TYPE_NAME = "Boolean";
 
-        @Override
-        public String getType() {
-            return BooleanType.class.getSimpleName();
-        }
-
+    static final Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, Boolean value) throws IOException {
             out.writeShort(1);
@@ -21,12 +17,12 @@ public class BooleanType extends AttributeType<Boolean> {
 
         @Override
         public Boolean readValue(DataInputStream in, Tag valueTag) throws IOException {
-            expectLength(in, 1);
+            Attribute.expectLength(in, 1);
             return in.readByte() != 0;
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return valueTag == Tag.BooleanValue;
         }
     };

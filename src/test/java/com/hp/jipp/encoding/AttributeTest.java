@@ -198,22 +198,22 @@ public class AttributeTest {
     @Test
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
-        exception.expectMessage("Invalid tag(x77) for IntegerType");
+        exception.expectMessage("Invalid tag(x77) for Integer");
         IntegerType.ENCODER.builder(Tag.of(0x77));
     }
 
     @Test
     public void tagNames() throws Exception {
-        assertEquals("IntegerType", IntegerType.ENCODER.getType());
-        assertEquals("OctetStringType", OctetStringType.ENCODER.getType());
-        assertEquals("RangeOfIntegerType", RangeOfIntegerType.ENCODER.getType());
-        assertEquals("ResolutionType", ResolutionType.ENCODER.getType());
-        assertEquals("LangStringType", LangStringType.ENCODER.getType());
-        assertEquals("IntegerType", IntegerType.ENCODER.getType());
-        assertEquals("UriType", UriType.ENCODER.getType());
-        assertEquals("CollectionType", CollectionType.ENCODER.getType());
-        assertEquals("BooleanType", BooleanType.ENCODER.getType());
-        assertEquals("StringType", StringType.ENCODER.getType());
+        assertEquals("Integer", IntegerType.ENCODER.getType());
+        assertEquals("OctetString", OctetStringType.ENCODER.getType());
+        assertEquals("RangeOfInteger", RangeOfIntegerType.ENCODER.getType());
+        assertEquals("Resolution", ResolutionType.ENCODER.getType());
+        assertEquals("LangString", LangStringType.ENCODER.getType());
+        assertEquals("Integer", IntegerType.ENCODER.getType());
+        assertEquals("URI", UriType.ENCODER.getType());
+        assertEquals("Collection", CollectionType.ENCODER.getType());
+        assertEquals("Boolean", BooleanType.ENCODER.getType());
+        assertEquals("String", StringType.ENCODER.getType());
         assertEquals("Status", Status.ENCODER.getType());
     }
 

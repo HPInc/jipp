@@ -13,15 +13,11 @@ import java.util.List;
 
 /** An language-encoded string attribute type */
 public class LangStringType extends AttributeType<LangString> {
+    private final static String TYPE_NAME = "LangString";
 
-    static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>() {
+    static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>(TYPE_NAME) {
         @Override
-        public String getType() {
-            return LangStringType.class.getSimpleName();
-        }
-
-        @Override
-        LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
+        public LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
             byte[] bytes = OctetStringType.ENCODER.readValue(in, valueTag);
             DataInputStream inBytes = new DataInputStream(new ByteArrayInputStream(bytes));
 
@@ -31,7 +27,7 @@ public class LangStringType extends AttributeType<LangString> {
         }
 
         @Override
-        void writeValue(DataOutputStream out, LangString value) throws IOException {
+        public void writeValue(DataOutputStream out, LangString value) throws IOException {
             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
             DataOutputStream dataOut = new DataOutputStream(bytesOut);
             Optional<String> lang = value.getLang();
@@ -44,7 +40,7 @@ public class LangStringType extends AttributeType<LangString> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return valueTag == Tag.NameWithLanguage || valueTag == Tag.TextWithLanguage;
         }
     };

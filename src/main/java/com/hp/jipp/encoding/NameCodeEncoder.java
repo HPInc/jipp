@@ -14,7 +14,7 @@ import java.util.Map;
 
 /** An encoder for NameCode enumerations. */
 @AutoValue
-public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.Encoder<T> {
+public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.BaseEncoder<T> {
 
     /**
      * Return a new NameCode.Encoder including values from all static members defined in the class (from reflection)
@@ -39,9 +39,6 @@ public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.Enco
                 factory);
     }
 
-    /** Return the user-visible name of the enum (for debugging purposes) */
-    public abstract String getName();
-
     /** Return the map all known enums */
     public abstract Map<Integer, T> getMap();
 
@@ -52,29 +49,21 @@ public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.Enco
     public T get(int code) {
         Optional<T> e = Optional.fromNullable(getMap().get(code));
         if (e.isPresent()) return e.get();
-        return getFactory().of(getName() + "(x" + Integer.toHexString(code) + ")", code);
+        return getFactory().of(getType() + "(x" + Integer.toHexString(code) + ")", code);
     }
 
     @Override
-    String getType() {
-        return getName();
-    }
-
-    @Override
-    T readValue(DataInputStream in, Tag valueTag) throws IOException {
-        // TODO: We need this code but we never use it because we actually parse an IntegerType
-        // and convert it, sometimes much later. With Packet in model can we do this a lot earlier and
-        // not waste time on the conversion? And actually call this code?
+    public final T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException {
         return get(IntegerType.ENCODER.readValue(in, valueTag));
     }
 
     @Override
-    void writeValue(DataOutputStream out, T value) throws IOException {
+    public void writeValue(DataOutputStream out, T value) throws IOException {
         IntegerType.ENCODER.writeValue(out, value.getCode());
     }
 
     @Override
-    boolean valid(Tag valueTag) {
+    public boolean valid(Tag valueTag) {
         return valueTag == Tag.EnumValue;
     }
 }

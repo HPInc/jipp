@@ -5,25 +5,21 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ResolutionType extends AttributeType<Resolution> {
+    private final static String TYPE_NAME = "Resolution";
 
     private static final int INT_LENGTH = 4;
     private static final int BYTE_LENGTH = 1;
 
-    static final Attribute.Encoder<Resolution> ENCODER = new Attribute.Encoder<Resolution>() {
+    static final Attribute.Encoder<Resolution> ENCODER = new Attribute.Encoder<Resolution>(TYPE_NAME) {
         @Override
-        public String getType() {
-            return ResolutionType.class.getSimpleName();
-        }
-
-        @Override
-        Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
-            expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
+        public Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
+            Attribute.expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             return Resolution.of(in.readInt(), in.readInt(),
                     Resolution.Unit.ENCODER.get(in.readByte()));
         }
 
         @Override
-        void writeValue(DataOutputStream out, Resolution value) throws IOException {
+        public void writeValue(DataOutputStream out, Resolution value) throws IOException {
             out.writeShort(INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             out.writeInt(value.getCrossFeedResolution());
             out.writeInt(value.getFeedResolution());
@@ -31,7 +27,7 @@ public class ResolutionType extends AttributeType<Resolution> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return Tag.Resolution.equals(valueTag);
         }
     };

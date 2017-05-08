@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.net.URI;
 
 public class UriType extends AttributeType<URI> {
-    static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>() {
-        @Override
-        public String getType() {
-            return UriType.class.getSimpleName();
-        }
+    private final static String TYPE_NAME = "URI";
 
+    static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, URI value) throws IOException {
             StringType.ENCODER.writeValue(out, value.toString());
@@ -23,7 +20,7 @@ public class UriType extends AttributeType<URI> {
         }
 
         @Override
-        boolean valid(Tag valueTag) {
+        public boolean valid(Tag valueTag) {
             return valueTag == Tag.Uri;
         }
     };
