@@ -49,7 +49,17 @@ public class Cycler {
     };
 
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
-        return AttributeGroup.read(new DataInputStream(new ByteArrayInputStream(toBytes(group))));
+        Function<? super AttributeType<?>, String> projector =
+                new Function<AttributeType<?>, String>() {
+                    @Override
+                    public String apply(@Nonnull AttributeType<?> input) {
+                        return input.getName();
+                    }
+                };
+        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(Attributes.All, projector);
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
+        return AttributeGroup.read(Tag.read(in), attributeTypeMap, in);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {
@@ -74,6 +84,7 @@ public class Cycler {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
         return (Attribute<T>) Attribute.read(in, sFinder, Tag.read(in));
     }
+
 
     public static byte[] toBytes(Attribute<?> attribute) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();

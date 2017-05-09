@@ -15,7 +15,7 @@ import java.util.List;
  * Some string types have a length-limit.
  */
 public class StringType extends AttributeType<String> {
-    private final static String TYPE_NAME = "String";
+    private static final String TYPE_NAME = "String";
 
     public static final Attribute.Encoder<String> ENCODER = new Attribute.Encoder<String>(TYPE_NAME) {
         @Override

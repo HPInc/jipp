@@ -50,6 +50,14 @@ public final class Attributes {
     public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
 
+    public static final MediaSize.Type MediaSupported =
+            new MediaSize.Type("media-supported");
+
+    public static final MediaSize.Type MediaReady =
+            new MediaSize.Type("media-ready");
+
+    public static final MediaSize.Type MediaDefault =
+            new MediaSize.Type("media-default");
 
     // Get-Printer-Attributes response fields
 
@@ -81,6 +89,9 @@ public final class Attributes {
 
     public static final StringType DocumentFormat =
             new StringType(Tag.MimeMediaType, "document-format");
+
+    public static final MediaSize.Type Media =
+            new MediaSize.Type("media");
 
     // 3.2.1.1 Print-Job Response
 

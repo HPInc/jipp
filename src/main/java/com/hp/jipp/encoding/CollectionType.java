@@ -8,12 +8,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * A collection attribute type.
+ * A type for attribute collections.
  *
  * @see <a href="https://tools.ietf.org/html/rfc3382">RFC3382</a>
  */
 public class CollectionType extends AttributeType<AttributeCollection> {
-    private final static String TYPE_NAME = "Collection";
+    private static final String TYPE_NAME = "Collection";
 
     /** Used to terminate a collection */
     private static final Attribute<byte[]> EndCollectionAttribute = new OctetStringType(Tag.EndCollection, "").of();
@@ -62,8 +62,12 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
                     String memberName = new String(Attribute.readValueBytes(in), Util.UTF8);
-                    Attribute memberValue = Attribute.read(in, finder, Tag.read(in));
-                    builder.add(memberValue.withName(memberName));
+                    Tag memberTag = Tag.read(in);
+
+                    // Read and throw away the blank attribute name
+                    Attribute.readValueBytes(in);
+                    builder.add(finder.find(memberTag, memberName).read(in, finder, memberTag, memberName));
+
                 } else {
                     throw new ParseError("Bad tag in collection: " + tag);
                 }

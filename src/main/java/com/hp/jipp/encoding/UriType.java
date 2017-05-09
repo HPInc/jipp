@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 
 public class UriType extends AttributeType<URI> {
-    private final static String TYPE_NAME = "URI";
+    private static final String TYPE_NAME = "URI";
 
     static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>(TYPE_NAME) {
         @Override

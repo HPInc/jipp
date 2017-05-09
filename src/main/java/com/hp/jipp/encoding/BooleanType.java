@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /** A boolean attribute type */
 public class BooleanType extends AttributeType<Boolean> {
-    private final static String TYPE_NAME = "Boolean";
+    private static final String TYPE_NAME = "Boolean";
 
     static final Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>(TYPE_NAME) {
         @Override

@@ -7,7 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class RangeOfIntegerType extends AttributeType<Range<Integer>> {
-    private final static String TYPE_NAME = "RangeOfInteger";
+    private static final String TYPE_NAME = "RangeOfInteger";
 
     static final Attribute.Encoder<Range<Integer>> ENCODER = new Attribute.Encoder<Range<Integer>>(TYPE_NAME) {
         @Override

@@ -8,12 +8,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
-import com.google.common.io.BaseEncoding;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.Resolution;
 import com.hp.jipp.encoding.StringType;

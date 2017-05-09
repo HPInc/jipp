@@ -69,10 +69,6 @@ public abstract class AttributeGroup {
         }
     }
 
-    public static AttributeGroup read(Tag startTag, DataInputStream in) throws IOException {
-        return read(startTag, ImmutableMap.<String, AttributeType<?>>of(), in);
-    }
-
     static Attribute.EncoderFinder finderOf(final Map<String, AttributeType<?>> attributeTypes,
             final List<Attribute.BaseEncoder<?>> encoders) {
         return new Attribute.EncoderFinder() {
@@ -178,9 +174,5 @@ public abstract class AttributeGroup {
         for (Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
         }
-    }
-
-    public static AttributeGroup read(DataInputStream in) throws IOException {
-        return read(Tag.read(in), in);
     }
 }

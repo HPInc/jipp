@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ResolutionType extends AttributeType<Resolution> {
-    private final static String TYPE_NAME = "Resolution";
+    private static final String TYPE_NAME = "Resolution";
 
     private static final int INT_LENGTH = 4;
     private static final int BYTE_LENGTH = 1;

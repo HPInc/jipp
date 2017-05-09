@@ -40,9 +40,7 @@ public abstract class Attribute<T> {
      * Read an attribute from an input stream, based on its tag
      */
     static Attribute<?> read(DataInputStream in, EncoderFinder finder, Tag valueTag) throws IOException {
-
         String name = new String(readValueBytes(in), Util.UTF8);
-
         return finder.find(valueTag, name).read(in, finder, valueTag, name);
     }
 
@@ -94,7 +92,8 @@ public abstract class Attribute<T> {
         public abstract String getType();
 
         /** Read a single value from the input stream, making use of the set of encoders */
-        public abstract T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag) throws IOException;
+        public abstract T readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag)
+                throws IOException;
 
         /** Write a single value to the output stream */
         public abstract void writeValue(DataOutputStream out, T value) throws IOException;
@@ -118,7 +117,7 @@ public abstract class Attribute<T> {
         /** Read an attribute and its values from the data stream */
         Attribute<T> read(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag, String name)
                 throws IOException {
-            Builder<T> builder = builder(valueTag).setName(name); // TODO: one-shot?
+            Builder<T> builder = builder(valueTag).setName(name);
 
             // Read first value...there always has to be one, right?
             ImmutableList.Builder<T> valueBuilder = new ImmutableList.Builder<>();

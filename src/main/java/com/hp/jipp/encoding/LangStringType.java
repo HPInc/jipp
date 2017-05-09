@@ -13,7 +13,7 @@ import java.util.List;
 
 /** An language-encoded string attribute type */
 public class LangStringType extends AttributeType<LangString> {
-    private final static String TYPE_NAME = "LangString";
+    private static final String TYPE_NAME = "LangString";
 
     static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>(TYPE_NAME) {
         @Override

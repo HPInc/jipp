@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.model.Attributes;
+import com.hp.jipp.model.MediaSize;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
@@ -87,5 +88,21 @@ public class AttributeGroupTest {
         AttributeGroup.finderOf(ImmutableMap.<String, AttributeType<?>>of(),
                 ImmutableList.<Attribute.BaseEncoder<?>>of())
                 .find(Tag.NameWithLanguage, "haha");
+    }
+
+    @Test
+    public void findMediaInCollection() throws Exception {
+        CollectionType jobConstraintsSupported = new CollectionType("job-constraints-supported");
+        StringType resolverName = new StringType(Tag.NameWithoutLanguage, "resolver-name");
+
+        Attribute<AttributeCollection> jobConstraints = jobConstraintsSupported.of(
+                AttributeCollection.of(
+                        resolverName.of("fullbleed-sizes"),
+                        Attributes.Media.of(MediaSize.NaLetter, MediaSize.IsoA4)));
+
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.PrinterAttributes, jobConstraints));
+        System.out.println(group);
+        assertEquals(MediaSize.NaLetter, group.getValue(jobConstraintsSupported).get().values(Attributes.Media).get(0));
+        assertEquals(MediaSize.IsoA4, group.getValue(jobConstraintsSupported).get().values(Attributes.Media).get(1));
     }
 }
