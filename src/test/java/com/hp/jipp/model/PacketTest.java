@@ -357,6 +357,7 @@ public class PacketTest {
                     }
                 }).build();
         assertTrue(packet.toString().contains("stream"));
+        assertTrue(packet.toString(Status.ENCODER).contains("stream"));
         assertTrue(packet.prettyPrint(Status.ENCODER, 120, "  ").contains("stream"));
     }
 
@@ -366,6 +367,7 @@ public class PacketTest {
                 Attributes.OperationsSupported.of(Operation.CreateJob)))
                 .setData(new byte[] { 0 })
                 .build();
+        assertTrue(packet.toString().contains("dLen=1"));
         assertTrue(packet.toString(Status.ENCODER).contains("dLen=1"));
         assertTrue(packet.prettyPrint(Status.ENCODER, 120, "  ").contains("dLen=1"));
     }
