@@ -25,4 +25,5 @@ public class IdentifyTest {
                 cycle(IdentifyActions, IdentifyActions.of(IdentifyAction.of("flare-gun"))).getValue(0).getName());
     }
 
+
 }

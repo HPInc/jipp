@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
+import com.hp.jipp.encoding.Keyword;
+import com.hp.jipp.encoding.KeywordType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
@@ -122,8 +124,8 @@ public final class Attributes {
     public static final StringType Message =
             new StringType(Tag.TextWithoutLanguage, "message");
 
-    public static final StringType IdentifyActions =
-            new StringType(Tag.Keyword, "identify-actions");
+    public static final KeywordType<IdentifyAction> IdentifyActions =
+            IdentifyAction.typeOf("identify-actions");
 
     // Others
 

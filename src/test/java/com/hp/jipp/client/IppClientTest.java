@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.model.IdentifyAction;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.JobState;
@@ -179,6 +180,14 @@ public class IppClientTest {
         assertEquals("it's complicated", status.getMessage().get());
         assertEquals(ImmutableList.of("bored", "tired"), status.getReasons());
         assertEquals(PrinterState.Stopped, status.getState());
+    }
+
+    @Test
+    public void identifyPrinter() throws Exception {
+        response = Packet.of(Status.Ok, 0x01);
+        client.identifyPrinter(printer, IdentifyAction.Sound, "happy-tune");
+        assertEquals(IdentifyAction.Sound, request.getValue(Tag.OperationAttributes, Attributes.IdentifyActions).get());
+        assertEquals("happy-tune", request.getValue(Tag.OperationAttributes, Attributes.Message).get());
     }
 
     @Test
