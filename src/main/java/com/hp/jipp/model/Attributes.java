@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
+import com.hp.jipp.encoding.KeywordType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
@@ -16,6 +17,10 @@ import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
 public final class Attributes {
+
+    // Note: it's easier to work with simple objects for each type of attribute. But then we can't type-constrain
+    // attributes to appear only in the correct request/response/attribute group (although they could be runtime
+    // constrained).
 
     // RFC2911 3.1.4.1 Request Operation Attributes
     // RFC2911 3.1.4.2 Response Operation Attributes
@@ -85,6 +90,12 @@ public final class Attributes {
     public static final UriType PrinterUriSupported =
             new UriType(Tag.Uri, "printer-uri-supported");
 
+    public static final KeywordType<IdentifyAction> IdentifyActionsSupported =
+            IdentifyAction.typeOf("identify-actions-supported");
+
+    public static final KeywordType<IdentifyAction> IdentifyActionsDefault =
+            IdentifyAction.typeOf("identify-actions-default");
+
     // 3.2.1.1 Print-Job Request
 
     public static final StringType DocumentFormat =
@@ -117,6 +128,13 @@ public final class Attributes {
     // 3.3.1.1 Send-Document Request
     public static final BooleanType LastDocument =
             new BooleanType(Tag.BooleanValue, "last-document");
+
+    // PWG5100.13: 4.1 Identify-Printer Request
+    public static final StringType Message =
+            new StringType(Tag.TextWithoutLanguage, "message");
+
+    public static final KeywordType<IdentifyAction> IdentifyActions =
+            IdentifyAction.typeOf("identify-actions");
 
     // Others
 

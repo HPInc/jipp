@@ -41,7 +41,7 @@ public abstract class Resolution {
         }
 
         /** The encoder for converting integers to Operation objects */
-        public static final NameCodeEncoder<Unit> ENCODER = NameCodeEncoder.of(
+        public static final NameCodeType.Encoder<Unit> ENCODER = NameCodeType.Encoder.of(
                 Unit.class, new NameCode.Factory<Resolution.Unit>() {
                     @Override
                     public Resolution.Unit of(String name, int code) {

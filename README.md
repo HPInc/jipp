@@ -5,7 +5,24 @@
 
 A full client/server IPP library in Java.
 
-# Documentation
+Features:
+* Support for implementing IPP servers and clients
+* IPP operations and attributes for basic operations are present
+* Can be extended to support new operations and attributes.
+* No limitations on supported transports
+
+What can I do with this?
+* Implement of an Android Print Service
+* Scan and show available printers on your network to your user
+* Test IPP clients or IPP printers in interesting ways
+* Experiment with different transports (other than HTTP)
+* Implement a cloud-based print server or client
+
+# Build requirements
+
+A full build of this project requires `python` (2.x) and `dot` which are readily accessible in most distributions.
+
+# Other documentation
 
 [Architecture](doc/architecture.md)
 

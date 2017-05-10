@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.model.IdentifyAction;
 import com.hp.jipp.model.InputStreamFactory;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.encoding.Tag;
@@ -85,7 +86,7 @@ public class IppClient {
      * Fetch the printer's current status. Uses the primary URI only.
      */
     public PrinterStatus getPrinterStatus(Printer printer) throws IOException {
-       ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
+        ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
         operationAttributes.add(
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
@@ -105,6 +106,20 @@ public class IppClient {
         } else {
             throw new IOException("No printer-attributes from " + printer);
         }
+    }
+
+    /**
+     * Request the printer identify itself to the user somehow
+     */
+    public Packet identifyPrinter(Printer printer, IdentifyAction action, String message) throws IOException {
+        Packet request = Packet.of(Operation.IdentifyPrinter, mId.getAndIncrement(),
+                AttributeGroup.of(Tag.OperationAttributes,
+                        Attributes.AttributesCharset.of("utf-8"),
+                        Attributes.AttributesNaturalLanguage.of("en"),
+                        Attributes.PrinterUri.of(printer.getUri()),
+                        Attributes.Message.of(message),
+                        Attributes.IdentifyActions.of(action)));
+        return mTransport.send(printer.getUri(), request);
     }
 
     /** Validated a job based on the contents of a job request. */

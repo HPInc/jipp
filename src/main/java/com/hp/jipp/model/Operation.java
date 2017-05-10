@@ -1,7 +1,6 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
@@ -12,8 +11,6 @@ import com.hp.jipp.encoding.NameCode;
  */
 @AutoValue
 public abstract class Operation extends NameCode {
-    // Note: this is really an OperationCode. If there are ever real Operation objects, rename.
-
     public static final Operation PrintJob = of("Print-Job", 0x0002);
     public static final Operation PrintUri = of("Print-URI", 0x0003);
     public static final Operation ValidateJob = of("Validate-Job", 0x0004);
@@ -30,9 +27,11 @@ public abstract class Operation extends NameCode {
     public static final Operation PausePrinter = of("Pause-Printer", 0x0010);
     public static final Operation ResumePrinter = of("Resume-Printer", 0x0011);
     public static final Operation PurgeJobs = of("Purge-Jobs", 0x0012);
+    public static final Operation CloseJob = of("Close-Job", 0x003B);
+    public static final Operation IdentifyPrinter = of("Identify-Printer", 0x003C);
 
     /** The encoder for converting integers to Operation objects */
-    public static final NameCodeEncoder<Operation> ENCODER = NameCodeEncoder.of(
+    public static final NameCodeType.Encoder<Operation> ENCODER = NameCodeType.Encoder.of(
             Operation.class, new NameCode.Factory<Operation>() {
                 @Override
                 public Operation of(String name, int code) {
