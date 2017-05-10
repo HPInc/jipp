@@ -35,8 +35,18 @@ public abstract class NameCodeEncoder<T extends NameCode> extends Attribute.Base
     public static <T extends NameCode> NameCodeEncoder<T> of(String name, Collection<T> enums,
             NameCode.Factory<T> factory) {
         return new AutoValue_NameCodeEncoder<>(name,
-                new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toMap(enums)).build(),
+                new ImmutableMap.Builder<Integer, T>().putAll(toMap(enums)).build(),
                 factory);
+    }
+
+    /** Convert a List of T into a Map of integers to T, where T is a NameCode subclass. */
+    public static <T extends NameCode> Map<Integer, T> toMap(Collection<T> nameCodes) {
+        ImmutableMap.Builder<Integer, T> builder = new ImmutableMap.Builder<>();
+        for (T nameCode : nameCodes) {
+            //noinspection ResultOfMethodCallIgnored
+            builder.put(nameCode.getCode(), nameCode);
+        }
+        return builder.build();
     }
 
     /** Return the map all known enums */

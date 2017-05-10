@@ -18,16 +18,6 @@ public abstract class NameCode {
         T of(String name, int code);
     }
 
-    /** Convert a List of T into a Map of integers to T, where T is a NameCode subclass. */
-    public static <T extends NameCode> Map<Integer, T> toMap(Collection<T> nameCodes) {
-        ImmutableMap.Builder<Integer, T> builder = new ImmutableMap.Builder<>();
-        for (T nameCode : nameCodes) {
-            //noinspection ResultOfMethodCallIgnored
-            builder.put(nameCode.getCode(), nameCode);
-        }
-        return builder.build();
-    }
-
     @Override
     public String toString() {
         return getName();

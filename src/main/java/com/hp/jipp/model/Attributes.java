@@ -118,6 +118,13 @@ public final class Attributes {
     public static final BooleanType LastDocument =
             new BooleanType(Tag.BooleanValue, "last-document");
 
+    // PWG5100.13: 4.1 Identify-Printer Request
+    public static final StringType Message =
+            new StringType(Tag.TextWithoutLanguage, "message");
+
+    public static final StringType IdentifyActions =
+            new StringType(Tag.Keyword, "identify-actions");
+
     // Others
 
     public static final StringType JobName =

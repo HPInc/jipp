@@ -30,6 +30,7 @@ public abstract class Operation extends NameCode {
     public static final Operation PausePrinter = of("Pause-Printer", 0x0010);
     public static final Operation ResumePrinter = of("Resume-Printer", 0x0011);
     public static final Operation PurgeJobs = of("Purge-Jobs", 0x0012);
+    public static final Operation IdentifyPrinter = of("Identify-Printer", 0x003C);
 
     /** The encoder for converting integers to Operation objects */
     public static final NameCodeEncoder<Operation> ENCODER = NameCodeEncoder.of(
