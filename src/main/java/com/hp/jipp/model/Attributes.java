@@ -87,6 +87,12 @@ public final class Attributes {
     public static final UriType PrinterUriSupported =
             new UriType(Tag.Uri, "printer-uri-supported");
 
+    public static final KeywordType<IdentifyAction> IdentifyActionsSupported =
+            IdentifyAction.typeOf("identify-actions-supported");
+
+    public static final KeywordType<IdentifyAction> IdentifyActionsDefault =
+            IdentifyAction.typeOf("identify-actions-default");
+
     // 3.2.1.1 Print-Job Request
 
     public static final StringType DocumentFormat =

@@ -238,6 +238,26 @@ public abstract class Packet {
         Packet parse(DataInputStream in) throws IOException;
     }
 
+    private <T extends NameCode> String prefix(NameCodeEncoder<T> codeEncoder) {
+        return "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
+                " code=" + getCode(codeEncoder) +
+                " rId=x" + Integer.toHexString(getRequestId()) +
+                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
+                (getInputStreamFactory() != null ? " stream" : "") +
+                ")";
+    }
+
+    public <T extends NameCode> String prettyPrint(NameCodeEncoder<T> codeEncoder, int maxWidth, String indent) {
+        String prefix = prefix(codeEncoder);
+        Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);
+        printer.addAll(getAttributeGroups());
+        return printer.print();
+    }
+
+    public final <T extends NameCode> String toString(NameCodeEncoder<T> codeEncoder) {
+        return prefix(codeEncoder) + " " + getAttributeGroups();
+    }
+
     @Override
     public final String toString() {
         return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
@@ -247,17 +267,5 @@ public abstract class Packet {
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 (getInputStreamFactory() != null ? ", stream" : "") +
                 "}";
-    }
-
-    public String prettyPrint(int maxWidth, String indent) {
-        String prefix = "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
-                " code=x" + Integer.toHexString(getCode()) +
-                " rId=x" + Integer.toHexString(getRequestId()) +
-                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
-                (getInputStreamFactory() != null ? " stream" : "") +
-                ")";
-        Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);
-        printer.addAll(getAttributeGroups());
-        return printer.print();
     }
 }

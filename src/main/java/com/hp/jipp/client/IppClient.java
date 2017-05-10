@@ -116,6 +116,7 @@ public class IppClient {
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
+                        Attributes.PrinterUri.of(printer.getUri()),
                         Attributes.Message.of(message),
                         Attributes.IdentifyActions.of(action)));
         return mTransport.send(printer.getUri(), request);

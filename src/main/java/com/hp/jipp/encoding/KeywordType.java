@@ -41,10 +41,6 @@ public class KeywordType<T extends Keyword> extends AttributeType<T> {
             this.factory = factory;
         }
 
-        public Keyword.Factory<T> getFactory() {
-            return factory;
-        }
-
         @Override
         public T readValue(DataInputStream in, Tag valueTag) throws IOException {
             String value = StringType.ENCODER.readValue(in, valueTag);
