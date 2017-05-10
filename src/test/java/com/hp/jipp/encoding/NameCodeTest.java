@@ -1,15 +1,12 @@
 package com.hp.jipp.encoding;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
 import com.google.common.collect.ImmutableList;
-import com.hp.jipp.model.JobState;
 
 public class NameCodeTest {
     /** An enumeration of possible printer states */
@@ -21,7 +18,7 @@ public class NameCodeTest {
         // Cannot be reached
         private static final Sample Secret = new Sample("secret", 4);
 
-        public static final NameCodeEncoder<Sample> ENCODER = NameCodeEncoder.of(
+        public static final NameCodeType.Encoder<Sample> ENCODER = NameCodeType.Encoder.of(
                 Sample.class, new NameCode.Factory<Sample>() {
                     @Override
                     public Sample of(String name, int code) {

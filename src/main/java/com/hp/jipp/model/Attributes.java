@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
-import com.hp.jipp.encoding.Keyword;
 import com.hp.jipp.encoding.KeywordType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
@@ -18,6 +17,10 @@ import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
 public final class Attributes {
+
+    // Note: it's easier to work with simple objects for each type of attribute. But then we can't type-constrain
+    // attributes to appear only in the correct request/response/attribute group (although they could be runtime
+    // constrained).
 
     // RFC2911 3.1.4.1 Request Operation Attributes
     // RFC2911 3.1.4.2 Response Operation Attributes

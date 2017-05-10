@@ -1,7 +1,6 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.NameCode;
 
@@ -32,7 +31,7 @@ public abstract class Operation extends NameCode {
     public static final Operation IdentifyPrinter = of("Identify-Printer", 0x003C);
 
     /** The encoder for converting integers to Operation objects */
-    public static final NameCodeEncoder<Operation> ENCODER = NameCodeEncoder.of(
+    public static final NameCodeType.Encoder<Operation> ENCODER = NameCodeType.Encoder.of(
             Operation.class, new NameCode.Factory<Operation>() {
                 @Override
                 public Operation of(String name, int code) {

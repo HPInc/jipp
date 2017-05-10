@@ -1,8 +1,8 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCode;
+import com.hp.jipp.encoding.NameCodeType;
 
 /**
  * Job State values.
@@ -20,7 +20,7 @@ public abstract class JobState extends NameCode {
     public static final JobState Aborted = of("aborted", 8);
     public static final JobState Completed = of("completed", 9);
 
-    public static final NameCodeEncoder<JobState> ENCODER = NameCodeEncoder.of(
+    public static final NameCodeType.Encoder<JobState> ENCODER = NameCodeType.Encoder.of(
             JobState.class, new NameCode.Factory<JobState>() {
                 @Override
                 public JobState of(String name, int code) {

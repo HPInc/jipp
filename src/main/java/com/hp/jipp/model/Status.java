@@ -1,8 +1,8 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.NameCode;
+import com.hp.jipp.encoding.NameCodeType;
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
@@ -51,7 +51,7 @@ public abstract class Status extends NameCode {
     public static final Status ServerErrorMultipleDocumentJobsNotSupported =
             of("server-error-multiple-document-jobs-not-supported", 0x0509);
 
-    public static final NameCodeEncoder<Status> ENCODER = NameCodeEncoder.of(
+    public static final NameCodeType.Encoder<Status> ENCODER = NameCodeType.Encoder.of(
             Status.class, new NameCode.Factory<Status>() {
                 @Override
                 public Status of(String name, int code) {

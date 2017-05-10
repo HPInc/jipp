@@ -59,7 +59,7 @@ public abstract class Tag extends NameCode {
             NameWithoutLanguage, Keyword, Uri, UriScheme, Charset, NaturalLanguage,
             MimeMediaType, MemberAttributeName);
 
-    private static final Map<Integer, Tag> sMap = NameCodeEncoder.toMap(All);
+    private static final Map<Integer, Tag> sMap = NameCode.toMap(All);
 
     public static Tag of(int code) {
         Tag tag = sMap.get(code);

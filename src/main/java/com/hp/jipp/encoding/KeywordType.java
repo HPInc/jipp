@@ -12,20 +12,20 @@ import java.util.Map;
 
 public class KeywordType<T extends Keyword> extends AttributeType<T> {
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Keyword> Encoder<T> encoderOf(Class<T> cls, Keyword.Factory<T> factory) {
-        ImmutableList.Builder<T> all = new ImmutableList.Builder<>();
-        for (Object object : Util.getStaticObjects(cls)) {
-            if (cls.isAssignableFrom(object.getClass())) {
-                //noinspection ResultOfMethodCallIgnored
-                all.add((T) object);
-            }
-        }
-        return new Encoder(factory, all.build(), cls.getSimpleName());
-    }
-
     /** An encoder for Keyword types */
     public static class Encoder<T extends Keyword> extends Attribute.Encoder<T> {
+
+        @SuppressWarnings("unchecked")
+        public static <T extends Keyword> Encoder<T> of(Class<T> cls, Keyword.Factory<T> factory) {
+            ImmutableList.Builder<T> all = new ImmutableList.Builder<>();
+            for (Object object : Util.getStaticObjects(cls)) {
+                if (cls.isAssignableFrom(object.getClass())) {
+                    //noinspection ResultOfMethodCallIgnored
+                    all.add((T) object);
+                }
+            }
+            return new Encoder(factory, all.build(), cls.getSimpleName());
+        }
 
         private final Map<String, T> map;
         private final Keyword.Factory<T> factory;

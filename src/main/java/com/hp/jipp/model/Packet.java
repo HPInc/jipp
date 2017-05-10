@@ -9,7 +9,7 @@ import com.google.common.io.ByteStreams;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.NameCode;
-import com.hp.jipp.encoding.NameCodeEncoder;
+import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.util.ParseError;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Pretty;
@@ -162,7 +162,7 @@ public abstract class Packet {
     /**
      * Return a NameCode corresponding to this packet's code.
      */
-    private <T extends NameCode> T getCode(NameCodeEncoder<T> encoder) {
+    private <T extends NameCode> T getCode(NameCodeType.Encoder<T> encoder) {
         return encoder.get(getCode());
     }
 
@@ -238,7 +238,7 @@ public abstract class Packet {
         Packet parse(DataInputStream in) throws IOException;
     }
 
-    private <T extends NameCode> String prefix(NameCodeEncoder<T> codeEncoder) {
+    private <T extends NameCode> String prefix(NameCodeType.Encoder<T> codeEncoder) {
         return "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
                 " code=" + getCode(codeEncoder) +
                 " rId=x" + Integer.toHexString(getRequestId()) +
@@ -247,14 +247,14 @@ public abstract class Packet {
                 ")";
     }
 
-    public <T extends NameCode> String prettyPrint(NameCodeEncoder<T> codeEncoder, int maxWidth, String indent) {
+    public <T extends NameCode> String prettyPrint(NameCodeType.Encoder<T> codeEncoder, int maxWidth, String indent) {
         String prefix = prefix(codeEncoder);
         Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);
         printer.addAll(getAttributeGroups());
         return printer.print();
     }
 
-    public final <T extends NameCode> String toString(NameCodeEncoder<T> codeEncoder) {
+    public final <T extends NameCode> String toString(NameCodeType.Encoder<T> codeEncoder) {
         return prefix(codeEncoder) + " " + getAttributeGroups();
     }
 
