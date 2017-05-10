@@ -8,7 +8,7 @@ import java.net.URI;
 public class UriType extends AttributeType<URI> {
     private static final String TYPE_NAME = "URI";
 
-    static final Attribute.Encoder<URI> ENCODER = new Attribute.Encoder<URI>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<URI> ENCODER = new Attribute.SimpleEncoder<URI>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, URI value) throws IOException {
             StringType.ENCODER.writeValue(out, value.toString());

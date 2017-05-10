@@ -27,7 +27,7 @@ import java.util.List;
 public abstract class Attribute<T> implements Pretty.Printable {
 
     /** Set to false in {@link Hook} to disable builders that accept invalid tags. */
-    public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = Encoder.class.getName() +
+    public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = SimpleEncoder.class.getName() +
             ".HOOK_ALLOW_BUILD_INVALID_TAGS";
 
     /** Create and return a new Attribute builder */
@@ -67,10 +67,10 @@ public abstract class Attribute<T> implements Pretty.Printable {
         public abstract Attribute<T> build();
     }
 
-    public abstract static class Encoder<T> extends BaseEncoder<T> {
+    public abstract static class SimpleEncoder<T> extends BaseEncoder<T> {
         private final String mTypeName;
 
-        public Encoder(String typeName) {
+        public SimpleEncoder(String typeName) {
             mTypeName = typeName;
         }
 

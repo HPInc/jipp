@@ -7,7 +7,7 @@ import java.io.IOException;
 public class IntegerType extends AttributeType<Integer> {
     private static final String TYPE_NAME = "Integer";
 
-    static final Attribute.Encoder<Integer> ENCODER = new Attribute.Encoder<Integer>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<Integer> ENCODER = new Attribute.SimpleEncoder<Integer>(TYPE_NAME) {
         @Override
         public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
             Attribute.expectLength(in, 4);

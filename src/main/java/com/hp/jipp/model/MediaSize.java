@@ -248,7 +248,7 @@ public abstract class MediaSize {
     /** Height of media in 1/100 of a millimeter or 1/2540 of an inch */
     public abstract int getHeight();
 
-    static final Attribute.Encoder<MediaSize> ENCODER = new Attribute.Encoder<MediaSize>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<MediaSize> ENCODER = new Attribute.SimpleEncoder<MediaSize>(TYPE_NAME) {
         @Override
         public MediaSize readValue(DataInputStream in, Tag valueTag) throws IOException {
             String name = StringType.ENCODER.readValue(in, valueTag);

@@ -27,11 +27,9 @@ public abstract class AttributeGroup implements Pretty.Printable {
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
     /** Default encoders available to parse incoming data */
-    public static final List<Attribute.BaseEncoder<?>> ENCODERS = ImmutableList.of(
+    static final List<Attribute.BaseEncoder<?>> ENCODERS = ImmutableList.of(
             IntegerType.ENCODER, UriType.ENCODER, StringType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
             CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER, OctetStringType.ENCODER);
-    // TODO: dateTime?
-    // TODO: Move to Packet
 
     /** Return a complete attribute group */
     public static AttributeGroup of(Tag startTag, Attribute<?>... attributes) {

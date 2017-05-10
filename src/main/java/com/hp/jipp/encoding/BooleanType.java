@@ -8,7 +8,7 @@ import java.io.IOException;
 public class BooleanType extends AttributeType<Boolean> {
     private static final String TYPE_NAME = "Boolean";
 
-    static final Attribute.Encoder<Boolean> ENCODER = new Attribute.Encoder<Boolean>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<Boolean> ENCODER = new Attribute.SimpleEncoder<Boolean>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, Boolean value) throws IOException {
             out.writeShort(1);
