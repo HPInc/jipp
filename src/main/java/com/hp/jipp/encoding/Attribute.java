@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.BaseEncoding;
 import com.hp.jipp.util.Hook;
+import com.hp.jipp.util.Pretty;
 import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;
@@ -21,7 +22,7 @@ import java.util.List;
  * more values according to its type.
  */
 @AutoValue
-public abstract class Attribute<T> {
+public abstract class Attribute<T> implements Pretty.Printable {
 
     /** Set to false in {@link Hook} to disable builders that accept invalid tags. */
     public static final String HOOK_ALLOW_BUILD_INVALID_TAGS = Encoder.class.getName() +
@@ -160,6 +161,25 @@ public abstract class Attribute<T> {
         }
     }
 
+    /** Read and return value bytes from a length-value pair */
+    static byte[] readValueBytes(DataInputStream in) throws IOException {
+        int valueLength = in.readShort();
+        byte[] valueBytes = new byte[valueLength];
+        int actual = in.read(valueBytes);
+        if (valueLength > actual) {
+            throw new ParseError("Value too short: expected " + valueBytes.length + ", got only " + actual);
+        }
+        return valueBytes;
+    }
+
+    /** Reads a two-byte length field, asserting that it is of a specific length */
+    static void expectLength(DataInputStream in, int length) throws IOException {
+        int readLength = in.readShort();
+        if (readLength != length) {
+            throw new ParseError("Bad attribute length: expected " + length + ", got " + readLength);
+        }
+    }
+
     public abstract Tag getValueTag();
 
     public abstract String getName();
@@ -203,6 +223,29 @@ public abstract class Attribute<T> {
     }
 
     @Override
+    public void print(Pretty.Printer printer) {
+        String prefix = (getName().equals("") ? "" : getName()) + "(" + getValueTag() + "):";
+        if (getValues().size() == 1) {
+            printer.open(Pretty.KEY_VALUE, prefix);
+        } else {
+            printer.open(Pretty.ARRAY, prefix);
+        }
+
+        for (Object value: getValues()) {
+            if (value instanceof String) {
+                printer.add("\"" + value + "\"");
+            } else if (value instanceof byte[]) {
+                printer.add("x" + BaseEncoding.base16().encode((byte[]) value));
+            } else if (value instanceof Pretty.Printable) {
+                ((Pretty.Printable) value).print(printer);
+            } else {
+                printer.add(value.toString());
+            }
+        }
+        printer.close();
+    }
+
+    @Override
     public String toString() {
         List<String> values = Lists.transform(getValues(), new Function<T, String>() {
             @Override
@@ -225,24 +268,5 @@ public abstract class Attribute<T> {
         return (getName().equals("") ? "" : getName()) +
                 "(" + getValueTag() + ")" +
                 ": " + valueString;
-    }
-
-    /** Read and return value bytes from a length-value pair */
-    static byte[] readValueBytes(DataInputStream in) throws IOException {
-        int valueLength = in.readShort();
-        byte[] valueBytes = new byte[valueLength];
-        int actual = in.read(valueBytes);
-        if (valueLength > actual) {
-            throw new ParseError("Value too short: expected " + valueBytes.length + ", got only " + actual);
-        }
-        return valueBytes;
-    }
-
-    /** Reads a two-byte length field, asserting that it is of a specific length */
-    static void expectLength(DataInputStream in, int length) throws IOException {
-        int readLength = in.readShort();
-        if (readLength != length) {
-            throw new ParseError("Bad attribute length: expected " + length + ", got " + readLength);
-        }
     }
 }

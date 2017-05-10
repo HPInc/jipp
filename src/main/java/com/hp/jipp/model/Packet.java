@@ -13,6 +13,7 @@ import com.hp.jipp.encoding.NameCode;
 import com.hp.jipp.encoding.NameCodeEncoder;
 import com.hp.jipp.encoding.ParseError;
 import com.hp.jipp.encoding.Tag;
+import com.hp.jipp.util.Pretty;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -247,5 +248,16 @@ public abstract class Packet {
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 (getInputStreamFactory() != null ? ", stream" : "") +
                 "}";
+    }
+
+    public String prettyPrint(int maxWidth, String indent) {
+        String prefix = "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
+                " code=x" + Integer.toHexString(getCode()) +
+                " rId=x" + Integer.toHexString(getRequestId()) +
+                (getInputStreamFactory() != null ? " stream" : "") +
+                ")";
+        Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);
+        printer.addAll(getAttributeGroups());
+        return printer.print();
     }
 }

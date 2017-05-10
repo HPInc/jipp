@@ -2,11 +2,12 @@ package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.util.Pretty;
 
 import java.util.List;
 
 /** The collection of attributes found within a {@link CollectionType} attribute. */
-public class AttributeCollection {
+public class AttributeCollection implements Pretty.Printable {
 
     public static AttributeCollection of(Attribute<?>... attr) {
         return new AttributeCollection(ImmutableList.copyOf(attr));
@@ -40,6 +41,13 @@ public class AttributeCollection {
 
     public List<Attribute<?>> getAttributes() {
         return attributes;
+    }
+
+    @Override
+    public void print(Pretty.Printer printer) {
+        printer.open(Pretty.OBJECT);
+        printer.addAll(attributes);
+        printer.close();
     }
 
     @Override

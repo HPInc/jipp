@@ -7,6 +7,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.util.Hook;
+import com.hp.jipp.util.Pretty;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,7 +20,7 @@ import java.util.Set;
 
 /** A specific group of attributes found in a packet.  */
 @AutoValue
-public abstract class AttributeGroup {
+public abstract class AttributeGroup implements Pretty.Printable {
     public static final String HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP =
             AttributeGroup.class.getName() + ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP";
 
@@ -174,5 +175,12 @@ public abstract class AttributeGroup {
         for (Attribute<?> attribute : getAttributes()) {
             attribute.write(out);
         }
+    }
+
+    @Override
+    public void print(Pretty.Printer printer) {
+        printer.open(Pretty.OBJECT, getTag().toString());
+        printer.addAll(getAttributes());
+        printer.close();
     }
 }

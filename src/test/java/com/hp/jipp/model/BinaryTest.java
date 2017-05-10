@@ -36,7 +36,7 @@ public class BinaryTest {
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
-            System.out.println(packet);
+            System.out.println(packet.prettyPrint(120, "  "));
             assertArrayEquals(PacketTest.getBytes(packet), bytes);
         }
     }
