@@ -60,6 +60,10 @@ public class KeywordType<T extends Keyword> extends AttributeType<T> {
         public boolean valid(Tag valueTag) {
             return valueTag == Tag.Keyword;
         }
+
+        public Collection<T> getAll() {
+            return map.values();
+        }
     }
 
     public KeywordType(Encoder<T> encoder, String name) {

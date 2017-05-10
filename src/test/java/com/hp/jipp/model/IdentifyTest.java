@@ -24,6 +24,4 @@ public class IdentifyTest {
         assertEquals("flare-gun",
                 cycle(IdentifyActions, IdentifyActions.of(IdentifyAction.of("flare-gun"))).getValue(0).getName());
     }
-
-
 }
