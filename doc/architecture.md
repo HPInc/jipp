@@ -9,6 +9,8 @@ catch a misspelling.
 
 **Prefer immutable data structures.** They work well for multithreaded use. `@AutoValue` makes them easy.
 
+**Avoid cyclic dependencies**. This code smell leads to highly-coupled, untestable, confusing objects.
+
 **Maintain 95%+ code coverage.** If it's not being tested on each build, you don't know if it works.
 
 **Apply static analysis tools aggressively.** Surgeons don't permit germs to enter their sterile field for the same
@@ -23,10 +25,3 @@ encounters a `NullPointerException`.
 
 **Optimize your algorithm, not your code**. Trust the toolchain to apply any necessary optimizations.
 
-## Dependencies
-
-JIPP is designed to avoid cyclic dependencies to limit complexity and enable testing.
-
-Here is the most recently-generated dependency graph (use `script/analyzeDeps` to regenerate it).
-
-![Dependency graph](dependency.png)

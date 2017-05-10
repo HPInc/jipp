@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Status;
+import com.hp.jipp.util.BuildError;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
@@ -261,4 +263,8 @@ public class AttributeTest {
                 Attributes.JobId.of(new IntegerType(Tag.IntegerValue, "job-id").of(1)));
     }
 
+    @Test
+    public void printBinary() throws Exception {
+        assertTrue(new OctetStringType(Tag.OctetString, "data").of(new byte[] { 1, 2, 3 }).toString().contains("x010203"));
+    }
 }

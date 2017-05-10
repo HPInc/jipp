@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.base.Optional;
+import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.Hook;
 
 import java.util.List;

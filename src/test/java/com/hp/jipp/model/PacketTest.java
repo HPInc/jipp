@@ -20,7 +20,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
@@ -345,6 +344,30 @@ public class PacketTest {
                 Attributes.OperationsSupported.of(Operation.CreateJob))));
         System.out.println(packet);
         assertTrue(packet.toString().contains(Operation.CreateJob.getName()));
+    }
+
+    @Test
+    public void showStream() throws Exception {
+        Packet packet = Packet.builder(Status.Ok, 0x101).setAttributeGroups(AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(Operation.CreateJob)))
+                .setInputStreamFactory(new InputStreamFactory() {
+                    @Override
+                    public InputStream createInputStream() throws IOException {
+                        return null;
+                    }
+                }).build();
+        assertTrue(packet.toString().contains("stream"));
+        assertTrue(packet.prettyPrint(120, "  ").contains("stream"));
+    }
+
+    @Test
+    public void showData() throws Exception {
+        Packet packet = Packet.builder(Status.Ok, 0x101).setAttributeGroups(AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(Operation.CreateJob)))
+                .setData(new byte[] { 0 })
+                .build();
+        assertTrue(packet.toString().contains("dLen=1"));
+        assertTrue(packet.prettyPrint(120, "  ").contains("dLen=1"));
     }
 
     /** Write the entire contents of this packet to a single byte array */

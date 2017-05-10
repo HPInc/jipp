@@ -13,6 +13,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.MediaSize;
+import com.hp.jipp.util.BuildError;
+import com.hp.jipp.util.ParseError;
 
 import static com.hp.jipp.encoding.Cycler.*;
 

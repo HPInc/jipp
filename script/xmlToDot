@@ -14,6 +14,7 @@ def trim(name):
     else:
         return name
 
+# Show all package-level dependencies
 print 'subgraph clusterPackages {'
 print '  label="Packages"'
 for package in doc.findall("./packages/package"):
@@ -41,6 +42,7 @@ for c1 in doc.findall("./classes/class"):
     for c2 in c1.getchildren():
         n2 = c2.get("name")
         if c2.get("type") == "usesInternal" and n1 != n2:
-            print '  "%s" -> "%s";' % (n1, n2)
+            if n1[:n1.rfind(".")] == n2[:n2.rfind(".")]:
+                print '  "%s" -> "%s";' % (n1, n2)
 
 print '}'

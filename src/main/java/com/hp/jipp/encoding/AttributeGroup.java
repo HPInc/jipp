@@ -6,7 +6,9 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.Hook;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Pretty;
 
 import java.io.DataInputStream;

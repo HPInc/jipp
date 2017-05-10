@@ -5,7 +5,7 @@
 
 REPORT_DIR=build/reports/classycle
 CLASSPATH=build/classes/main/com/hp/jipp
-CLASSYCLE_JAR=classycle.jar
+CLASSYCLE_JAR=script/classycle.jar
 PACKAGE=com.hp.jipp
 
 mkdir -p $REPORT_DIR
@@ -16,13 +16,10 @@ if [ ! -f $CLASSYCLE_JAR ]; then
 fi
 
 # http://classycle.sourceforge.net/usageAnalyser.html
-java -jar $CLASSYCLE_JAR -xmlFile=$REPORT_DIR/report.xml -excludingClasses="*AutoValue*" -mergeInnerClasses $CLASSPATH
+java -jar $CLASSYCLE_JAR -xmlFile=$REPORT_DIR/report.xml -excludingClasses="*AutoValue*" -mergeInnerClasses $CLASSPATH >/dev/null
 
 # Use this cute python script to convert xml to dot. It will probably break if the package hierarchy >1
 script/xmlToDot $PACKAGE <$REPORT_DIR/report.xml >$REPORT_DIR/report.dot
 
 dot -T png -o $REPORT_DIR/report.png $REPORT_DIR/report.dot
-cp build/reports/classycle/report.png doc/dependency.png
-
-echo
-echo "Output in doc/dependency.png"
+# Result will be in build/reports/classycle/report.png

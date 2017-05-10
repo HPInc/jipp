@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Packet;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Util;
 
 import java.io.ByteArrayInputStream;

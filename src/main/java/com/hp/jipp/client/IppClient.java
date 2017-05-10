@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.InputStreamFactory;
+import com.hp.jipp.model.InputStreamFactory;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;

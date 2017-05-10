@@ -8,10 +8,9 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.AttributeType;
-import com.hp.jipp.encoding.InputStreamFactory;
 import com.hp.jipp.encoding.NameCode;
 import com.hp.jipp.encoding.NameCodeEncoder;
-import com.hp.jipp.encoding.ParseError;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Pretty;
 
@@ -254,6 +253,7 @@ public abstract class Packet {
         String prefix = "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
                 " code=x" + Integer.toHexString(getCode()) +
                 " rId=x" + Integer.toHexString(getRequestId()) +
+                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 (getInputStreamFactory() != null ? " stream" : "") +
                 ")";
         Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);

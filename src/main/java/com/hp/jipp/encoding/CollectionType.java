@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.google.common.collect.ImmutableList;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Util;
 
 import java.io.DataInputStream;

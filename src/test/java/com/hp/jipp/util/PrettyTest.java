@@ -15,6 +15,12 @@ public class PrettyTest {
     private Pretty.Printer printer;
 
     @Test
+    public void converage() {
+        // Create a useless object for coverage purposes
+        new Pretty();
+    }
+
+    @Test
     public void oneLine() {
         printer = Pretty.printer("Test", Pretty.OBJECT, "  ", 60);
         printer.add("XXX", "YYY", "ZZZ");

@@ -1,5 +1,7 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.util.BuildError;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

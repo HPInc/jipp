@@ -6,7 +6,9 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.BaseEncoding;
+import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.Hook;
+import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Pretty;
 import com.hp.jipp.util.Util;
 

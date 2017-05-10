@@ -1,6 +1,9 @@
 machine:
   java:
     version: openjdk8
+dependencies:
+  pre:
+    - sudo apt-get update; sudo apt-get install python graphviz
 test:
   override:
     - ./gradlew check javadoc jar

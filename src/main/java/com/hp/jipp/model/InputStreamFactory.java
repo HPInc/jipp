@@ -1,4 +1,4 @@
-package com.hp.jipp.encoding;
+package com.hp.jipp.model;
 
 import java.io.IOException;
 import java.io.InputStream;
