@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 doc = ET.parse(sys.stdin)
 toTrim = "%s." % sys.argv[1]
 
-print 'digraph G {'
+print 'digraph g {'
 
 def trim(name):
     global toTrim

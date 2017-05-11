@@ -13,7 +13,7 @@ import java.util.Map;
 public class KeywordType<T extends Keyword> extends AttributeType<T> {
 
     /** An encoder for Keyword types */
-    public static class Encoder<T extends Keyword> extends Attribute.Encoder<T> {
+    public static class Encoder<T extends Keyword> extends Attribute.SimpleEncoder<T> {
 
         @SuppressWarnings("unchecked")
         public static <T extends Keyword> Encoder<T> of(Class<T> cls, Keyword.Factory<T> factory) {

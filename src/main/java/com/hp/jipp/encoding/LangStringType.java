@@ -16,7 +16,7 @@ import java.util.List;
 public class LangStringType extends AttributeType<LangString> {
     private static final String TYPE_NAME = "LangString";
 
-    static final Attribute.Encoder<LangString> ENCODER = new Attribute.Encoder<LangString>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<LangString> ENCODER = new Attribute.SimpleEncoder<LangString>(TYPE_NAME) {
         @Override
         public LangString readValue(DataInputStream in, Tag valueTag) throws IOException {
             byte[] bytes = OctetStringType.ENCODER.readValue(in, valueTag);

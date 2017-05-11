@@ -10,7 +10,7 @@ public class ResolutionType extends AttributeType<Resolution> {
     private static final int INT_LENGTH = 4;
     private static final int BYTE_LENGTH = 1;
 
-    static final Attribute.Encoder<Resolution> ENCODER = new Attribute.Encoder<Resolution>(TYPE_NAME) {
+    static final Attribute.SimpleEncoder<Resolution> ENCODER = new Attribute.SimpleEncoder<Resolution>(TYPE_NAME) {
         @Override
         public Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
             Attribute.expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
