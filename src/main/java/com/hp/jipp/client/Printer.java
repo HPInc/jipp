@@ -6,13 +6,19 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
 
 import java.net.URI;
+import java.util.UUID;
 
 @AutoValue
 public abstract class Printer {
 
-    public static Printer of(URI uri, AttributeGroup group) {
-        return new AutoValue_Printer(uri, group);
+    public static Printer of(UUID uuid, URI uri, AttributeGroup group) {
+        return new AutoValue_Printer(uuid, uri, group);
     }
+
+    /**
+     * The UUID by which this printer is known
+     */
+    public abstract UUID getUuid();
 
     /**
      * The URI at which this printer is available
