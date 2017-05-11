@@ -243,7 +243,7 @@ public class AttributeTest {
     @Test
     public void shortRead() throws IOException {
         exception.expect(ParseError.class);
-        exception.expectMessage("Value too short: expected 2, got only 1");
+        exception.expectMessage("Value too short: expected 2 but got 1");
         byte[] bytes = new byte[] {
                 0,
                 2,

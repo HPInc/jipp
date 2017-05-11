@@ -238,34 +238,23 @@ public abstract class Packet {
         Packet parse(DataInputStream in) throws IOException;
     }
 
-    private <T extends NameCode> String prefix(NameCodeType.Encoder<T> codeEncoder) {
+    private String prefix() {
         return "Packet(v=x" + Integer.toHexString(getVersionNumber()) +
-                " code=" + getCode(codeEncoder) +
+                " code=" + getCode(Code.ENCODER) +
                 " rId=x" + Integer.toHexString(getRequestId()) +
                 (getData().length == 0 ? "" : ", dLen=" + getData().length) +
                 (getInputStreamFactory() != null ? " stream" : "") +
                 ")";
     }
 
-    public <T extends NameCode> String prettyPrint(NameCodeType.Encoder<T> codeEncoder, int maxWidth, String indent) {
-        String prefix = prefix(codeEncoder);
-        Pretty.Printer printer = Pretty.printer(prefix, Pretty.OBJECT, indent, maxWidth);
+    public String prettyPrint(int maxWidth, String indent) {
+        Pretty.Printer printer = Pretty.printer(prefix(), Pretty.OBJECT, indent, maxWidth);
         printer.addAll(getAttributeGroups());
         return printer.print();
     }
 
-    public final <T extends NameCode> String toString(NameCodeType.Encoder<T> codeEncoder) {
-        return prefix(codeEncoder) + " " + getAttributeGroups();
-    }
-
     @Override
     public final String toString() {
-        return "Packet{v=x" + Integer.toHexString(getVersionNumber()) +
-                ", code=x" + Integer.toHexString(getCode()) +
-                ", rId=x" + Integer.toHexString(getRequestId()) +
-                ", ags=" + getAttributeGroups() +
-                (getData().length == 0 ? "" : ", dLen=" + getData().length) +
-                (getInputStreamFactory() != null ? ", stream" : "") +
-                "}";
+        return prefix() + " " + getAttributeGroups();
     }
 }

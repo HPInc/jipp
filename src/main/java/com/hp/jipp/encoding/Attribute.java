@@ -167,9 +167,11 @@ public abstract class Attribute<T> implements Pretty.Printable {
     static byte[] readValueBytes(DataInputStream in) throws IOException {
         int valueLength = in.readShort();
         byte[] valueBytes = new byte[valueLength];
-        int actual = in.read(valueBytes);
-        if (valueLength > actual) {
-            throw new ParseError("Value too short: expected " + valueBytes.length + ", got only " + actual);
+        if (valueLength > 0) {
+            int actual = in.read(valueBytes);
+            if (valueLength > actual) {
+                throw new ParseError("Value too short: expected " + valueBytes.length + " but got " + actual);
+            }
         }
         return valueBytes;
     }

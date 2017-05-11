@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
+import com.hp.jipp.encoding.KeyValueType;
 import com.hp.jipp.encoding.KeywordType;
 import com.hp.jipp.encoding.NameCodeType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
@@ -95,6 +96,20 @@ public final class Attributes {
 
     public static final KeywordType<IdentifyAction> IdentifyActionsDefault =
             IdentifyAction.typeOf("identify-actions-default");
+
+    // Printer Attributes in PWG 5100.9
+    public static final KeyValueType PrinterAlert =
+            new KeyValueType("printer-alert");
+
+    // Printer Attributes in PWG 5100.13
+    public static final KeyValueType PrinterInputTray =
+            new KeyValueType("printer-input-tray");
+
+    public static final KeyValueType PrinterOutputTray =
+            new KeyValueType("printer-output-tray");
+
+    public static final KeyValueType PrinterSupply =
+            new KeyValueType("printer-supply");
 
     // 3.2.1.1 Print-Job Request
 
