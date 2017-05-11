@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -48,11 +49,11 @@ public class IppClient {
      * Fetch current printer attributes into a new copy of the printer, or throw. Each uri is attempted
      * until one of them works, the resulting Printer includes the first successful URI.
      */
-    public Printer getPrinterAttributes(List<URI> uris) throws IOException {
+    public Printer getPrinterAttributes(UUID printerUuid, List<URI> uris) throws IOException {
         Optional<IOException> lastThrown = Optional.absent();
         for (URI uri : uris) {
             try {
-                return getPrinterAttributes(uri);
+                return getPrinterAttributes(printerUuid, uri);
             } catch (IOException thrown) {
                 lastThrown = Optional.of(thrown);
             }
@@ -67,7 +68,7 @@ public class IppClient {
     /**
      * Fetch printer attributes from a specific URI.
      */
-    public Printer getPrinterAttributes(URI printerUri) throws IOException {
+    public Printer getPrinterAttributes(UUID printerUuid, URI printerUri) throws IOException {
         Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -76,7 +77,7 @@ public class IppClient {
         Packet response = mTransport.send(printerUri, request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
-            return Printer.of(printerUri, printerAttributes.get());
+            return Printer.of(printerUuid, printerUri, printerAttributes.get());
         } else {
             throw new IOException("No printer attributes in response");
         }
