@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -33,10 +34,11 @@ public class IppClientTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
+    UUID uuid = UUID.randomUUID();
     URI printerUri = new URI("ipp://sample.com");
     URI printerUri2 = new URI("ipps://sample.com:443");
 
-    Printer printer = Printer.of(printerUri, AttributeGroup.of(Tag.PrinterAttributes,
+    Printer printer = Printer.of(uuid, printerUri, AttributeGroup.of(Tag.PrinterAttributes,
             Attributes.PrinterInfo.of("printername")));
     FakeTransport transport = new FakeTransport();
     Document document = new Document() {
@@ -94,7 +96,7 @@ public class IppClientTest {
     public void getPrinterAttributesRequest() throws IOException {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
-        printer = client.getPrinterAttributes(printerUri);
+        printer = client.getPrinterAttributes(uuid, printerUri);
         System.out.println(printer);
 
         List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
@@ -109,7 +111,7 @@ public class IppClientTest {
     public void getPrinterAttributesResult() throws IOException {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
-        printer = client.getPrinterAttributes(ImmutableList.of(printerUri));
+        printer = client.getPrinterAttributes(uuid, ImmutableList.of(printerUri));
         assertEquals(Operation.GetPrinterAttributes, request.getOperation());
         assertEquals(printer.getUri(), sendUri);
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
@@ -123,7 +125,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IOException.class);
         exception.expectMessage("No printer attributes in response");
-        printer = client.getPrinterAttributes(printerUri);
+        printer = client.getPrinterAttributes(uuid, printerUri);
     }
 
     @Test
@@ -135,7 +137,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IOException.class);
         exception.expectMessage("Fail after trying uris " + uris);
-        printer = client.getPrinterAttributes(uris);
+        printer = client.getPrinterAttributes(uuid, uris);
     }
 
     @Test
@@ -143,7 +145,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("No printer URIs present");
-        printer = client.getPrinterAttributes(ImmutableList.<URI>of());
+        printer = client.getPrinterAttributes(uuid, ImmutableList.<URI>of());
     }
 
     @Test
