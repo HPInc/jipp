@@ -12,10 +12,10 @@ Features:
 * No limitations on supported transports
 
 What can I do with this?
-* Implement of an Android Print Service
+* Implement an Android Print Service
 * Scan and show available printers on your network to your user
 * Test IPP clients or IPP printers in interesting ways
-* Experiment with different transports (other than HTTP)
+* Experiment with non-HTTP transports
 * Implement a cloud-based print server or client
 
 # Build requirements

@@ -286,4 +286,30 @@ public class IppClientTest {
         Packet canceled = client.cancelJob(job);
         assertEquals(Status.Ok, canceled.getStatus());
     }
+
+    @Test
+    public void checkUserName() throws IOException {
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.PrinterInfo.of("printername")));
+        printer = client.getPrinterAttributes(uuid, printerUri);
+
+        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+
+        // 4th attribute is username
+        assertEquals(Attributes.RequestingUserName.of("anonymous"), attributes.get(3));
+    }
+
+    @Test
+    public void changeUserName() throws IOException {
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.PrinterInfo.of("printername")));
+        client.setUserName("donald_duck");
+        printer = client.getPrinterAttributes(uuid, printerUri);
+
+        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+
+        // 4th attribute is username
+        assertEquals(Attributes.RequestingUserName.of("donald_duck"), attributes.get(3));
+    }
+
 }

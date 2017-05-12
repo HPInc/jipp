@@ -26,8 +26,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IppClient {
     private static final int FIRST_ID = 0x1001;
+    private static final String DEFAULT_USERNAME = "anonymous";
 
     private AtomicInteger mId = new AtomicInteger(FIRST_ID);
+    private String mUserName = DEFAULT_USERNAME;
 
     /** Transport used to send packets and collect responses */
     public interface Transport {
@@ -43,6 +45,11 @@ public class IppClient {
     /** Creates new client instance based on the supplied transport */
     public IppClient(Transport transport) {
         mTransport = transport;
+    }
+
+    /** Update the username provided in all requests */
+    public void setUserName(String userName) {
+        mUserName = userName;
     }
 
     /**
@@ -73,7 +80,8 @@ public class IppClient {
                 AttributeGroup.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(printerUri)));
+                        Attributes.PrinterUri.of(printerUri),
+                        Attributes.RequestingUserName.of(mUserName)));
         Packet response = mTransport.send(printerUri, request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
@@ -92,6 +100,7 @@ public class IppClient {
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printer.getUri()),
+                Attributes.RequestingUserName.of(mUserName),
                 Attributes.RequestedAttributes.of(
                     Attributes.PrinterState.getName(),
                     Attributes.PrinterStateReasons.getName(),
@@ -118,6 +127,7 @@ public class IppClient {
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printer.getUri()),
+                        Attributes.RequestingUserName.of(mUserName),
                         Attributes.Message.of(message),
                         Attributes.IdentifyActions.of(action)));
         return mTransport.send(printer.getUri(), request);
@@ -131,6 +141,7 @@ public class IppClient {
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(uri),
+                        Attributes.RequestingUserName.of(mUserName),
                         Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())));
 
         Packet response = mTransport.send(uri, request);
@@ -147,6 +158,7 @@ public class IppClient {
         attributes.add(Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
+                Attributes.RequestingUserName.of(mUserName),
                 Attributes.JobName.of(jobRequest.getName()),
                 Attributes.DocumentName.of(jobRequest.getDocument().getName()),
                 Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
@@ -192,7 +204,8 @@ public class IppClient {
         ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
         attributes.add(Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
-                Attributes.PrinterUri.of(printerUri));
+                Attributes.PrinterUri.of(printerUri),
+                Attributes.RequestingUserName.of(mUserName));
 
         Packet request = Packet.of(Operation.CreateJob, mId.getAndIncrement(),
                 AttributeGroup.of(Tag.OperationAttributes, attributes.build()));
@@ -214,6 +227,7 @@ public class IppClient {
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
                 Attributes.JobId.of(job.getId()),
+                Attributes.RequestingUserName.of(mUserName),
                 Attributes.DocumentName.of(jobRequest.getDocument().getName()),
                 Attributes.LastDocument.of(true));
 
@@ -253,7 +267,8 @@ public class IppClient {
         ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<Attribute<?>>()
                 .add(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
-                        Attributes.PrinterUri.of(printer.getUri()))
+                        Attributes.PrinterUri.of(printer.getUri()),
+                        Attributes.RequestingUserName.of(mUserName))
                 .addAll(extras);
 
         Packet request = Packet.of(Operation.GetJobs, mId.getAndIncrement(),
@@ -279,6 +294,7 @@ public class IppClient {
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUri()),
                         Attributes.JobId.of(job.getId()),
+                        Attributes.RequestingUserName.of(mUserName),
                         Attributes.RequestedAttributes.of(JobStatus.getAttributeNames())));
         Optional<AttributeGroup> jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
                 .getAttributeGroup(Tag.JobAttributes);
@@ -294,7 +310,8 @@ public class IppClient {
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),
-                        Attributes.JobId.of(job.getId())));
+                        Attributes.JobId.of(job.getId()),
+                        Attributes.RequestingUserName.of(mUserName)));
         // The cancel response contains no JobAttributes
         return mTransport.send(printerUri, request);
     }
