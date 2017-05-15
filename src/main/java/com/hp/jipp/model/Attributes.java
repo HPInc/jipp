@@ -45,7 +45,7 @@ public final class Attributes {
     // Get-Printer-Attributes request fields
 
     public static final StringType RequestingUserName =
-            new StringType(Tag.TextWithoutLanguage, "requesting-user-name");
+            new StringType(Tag.NameWithoutLanguage, "requesting-user-name");
 
     public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");

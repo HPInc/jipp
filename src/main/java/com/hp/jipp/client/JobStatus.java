@@ -41,7 +41,7 @@ public abstract class JobStatus {
     public String toString() {
         Optional<String> message = getMessage();
 
-        return "Job{state=" + getState().getName() +
+        return "JobStatus{state=" + getState().getName() +
                 (getReasons().isEmpty() ? "" : " r=" + getReasons()) +
                 (message.isPresent() && !message.get().isEmpty() ? " m=" + message.get() : "") +
                 (getDetailedMessages().isEmpty() ? "" : " x=" + getDetailedMessages()) +

@@ -34,10 +34,15 @@ public abstract class Printer {
 
     // List<MediaSize> getMediaSizeReady();
 
+    /** Return the printer's "info" field or a blank string */
+    public String getInfo() {
+        Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
+        return info.isPresent() ? info.get() : "";
+    }
+
     @Override
     public String toString() {
-        Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
-        return "Printer{uri=" + getUri() +
-                (info.isPresent() ? ", name=" + info.get() : "") + "}";
+        String info = getInfo();
+        return "Printer{uri=" + getUri() + (info.isEmpty() ? "" : " info=" + info) + "}";
     }
 }
