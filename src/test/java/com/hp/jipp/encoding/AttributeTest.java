@@ -99,7 +99,7 @@ public class AttributeTest {
                 'm', 'e', 'd' , 'i', 'a', '-', 'c', 'o', 'l',
                 (byte)0x00,
                 (byte)0x00,
-                (byte)Tag.PrinterAttributes.getCode(), // NOT a good delimiter
+                (byte) Tag.PrinterAttributes.getCode(), // NOT a good delimiter
                 (byte)0x00,
                 (byte)0x00,
                 (byte)0x00,
@@ -201,7 +201,7 @@ public class AttributeTest {
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
         exception.expectMessage("Invalid tag(x77) for Integer");
-        IntegerType.ENCODER.builder(Tag.of(0x77));
+        IntegerType.ENCODER.builder(Tag.get(0x77));
     }
 
     @Test

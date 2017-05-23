@@ -47,7 +47,7 @@ public class NameCodeType<T extends NameCode> extends AttributeType<T> {
         public static <T extends NameCode> Encoder<T> of(String name, Collection<T> enums,
                                                          NameCode.Factory<T> factory) {
             return new AutoValue_NameCodeType_Encoder<>(name,
-                    new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toMap(enums)).build(),
+                    new ImmutableMap.Builder<Integer, T>().putAll(NameCode.toCodeMap(enums)).build(),
                     factory);
         }
 

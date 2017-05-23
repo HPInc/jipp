@@ -139,7 +139,7 @@ public abstract class Attribute<T> implements Pretty.Printable {
                 throws IOException {
             if (in.available() < 3) return Optional.absent();
             in.mark(3);
-            if (Tag.read(in) == valueTag) {
+            if (Tag.Companion.read(in) == valueTag) {
                 int nameLength = in.readShort();
                 if (nameLength == 0) {
                     return Optional.of(readValue(in, finder, valueTag));

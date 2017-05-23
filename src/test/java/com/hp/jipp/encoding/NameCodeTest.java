@@ -47,6 +47,7 @@ public class NameCodeTest {
 
     @Test
     public void sample() throws Exception {
+
         assertEquals(ImmutableList.of(Sample.One), cycle(MySample, MySample.of(Sample.One)).getValues());
     }
 

@@ -60,7 +60,7 @@ public class Cycler {
         final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(Attributes.All, projector);
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
-        return AttributeGroup.read(Tag.read(in), attributeTypeMap, in);
+        return AttributeGroup.read(Tag.Companion.read(in), attributeTypeMap, in);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {
@@ -75,7 +75,7 @@ public class Cycler {
     public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        Tag tag = Tag.read(in);
+        Tag tag = Tag.Companion.read(in);
         String name = new String(Attribute.readValueBytes(in), Util.UTF8);
         return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
@@ -83,7 +83,7 @@ public class Cycler {
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.read(in, sFinder, Tag.read(in));
+        return (Attribute<T>) Attribute.read(in, sFinder, Tag.Companion.read(in));
     }
 
 

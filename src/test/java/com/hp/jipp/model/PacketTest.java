@@ -141,14 +141,14 @@ public class PacketTest {
         List<AttributeGroup> groups = new ArrayList<>();
         groups.add(AttributeGroup.of(Tag.OperationAttributes));
         groups.add(AttributeGroup.of(Tag.JobAttributes));
-        groups.add(AttributeGroup.of(Tag.of((byte)0x08))); // reserved but legal
+        groups.add(AttributeGroup.of(Tag.get((byte)0x08))); // reserved but legal
         Packet.Builder builder = defaultBuilder.setAttributeGroups(groups);
 
         packet = cycle(builder.build());
         assertEquals(3, packet.getAttributeGroups().size());
         assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getTag());
         assertEquals(Tag.JobAttributes, packet.getAttributeGroups().get(1).getTag());
-        assertEquals(Tag.of(0x08), packet.getAttributeGroups().get(2).getTag());
+        assertEquals(Tag.get(0x08), packet.getAttributeGroups().get(2).getTag());
     }
 
     @Test

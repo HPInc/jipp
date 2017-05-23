@@ -54,7 +54,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
 
             // Read attribute pairs until EndCollection is reached.
             while (true) {
-                Tag tag = Tag.read(in);
+                Tag tag = Tag.Companion.read(in);
                 if (tag == Tag.EndCollection) {
                     // Skip the rest of this attr and return.
                     skipValueBytes(in);
@@ -63,7 +63,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
                     String memberName = new String(Attribute.readValueBytes(in), Util.UTF8);
-                    Tag memberTag = Tag.read(in);
+                    Tag memberTag = Tag.Companion.read(in);
 
                     // Read and throw away the blank attribute name
                     Attribute.readValueBytes(in);

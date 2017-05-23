@@ -103,7 +103,7 @@ public abstract class AttributeGroup implements Pretty.Printable {
 
         while (attributes) {
             in.mark(1);
-            Tag valueTag = Tag.read(in);
+            Tag valueTag = Tag.Companion.read(in);
             if (valueTag.isDelimiter()) {
                 in.reset();
                 attributes = false;
