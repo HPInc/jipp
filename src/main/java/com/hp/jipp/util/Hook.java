@@ -15,7 +15,7 @@ public final class Hook {
     /** Retrieve a global Boolean value by name, or false if not set */
     public static boolean is(String name) {
         Optional<Boolean> result = Optional.fromNullable(sBooleans.get(name));
-        return result.isPresent() ? result.get() : false;
+        return result.isPresent() && result.get();
     }
 
     /** Set a global Boolean value by name */
