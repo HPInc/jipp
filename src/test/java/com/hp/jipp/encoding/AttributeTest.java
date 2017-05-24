@@ -249,7 +249,7 @@ public class AttributeTest {
                 2,
                 0,
         };
-        Attribute.Companion.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
+        Attribute.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
     }
 
     @Test

@@ -82,7 +82,8 @@ public class AttributeTypeTest {
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        Range range = cycle(Attributes.CopiesSupported.of(Range.closed(0, 99))).getValue(0);
+        Range range = cycle(Attributes.CopiesSupported.of(ImmutableList.of(Range.closed(0, 99))))
+                .getValue(0);
         assertEquals(0, range.lowerEndpoint());
         assertEquals(99, range.upperEndpoint());
     }

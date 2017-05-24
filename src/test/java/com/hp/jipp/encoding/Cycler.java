@@ -76,7 +76,7 @@ public class Cycler {
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
         Tag tag = Tag.Companion.read(in);
-        String name = new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
+        String name = new String(new IppEncodings.readValueBytes(in), Util.UTF8);
         return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
 
