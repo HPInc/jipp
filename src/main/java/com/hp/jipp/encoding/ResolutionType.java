@@ -13,7 +13,7 @@ public class ResolutionType extends AttributeType<Resolution> {
     static final Attribute.SimpleEncoder<Resolution> ENCODER = new Attribute.SimpleEncoder<Resolution>(TYPE_NAME) {
         @Override
         public Resolution readValue(DataInputStream in, Tag valueTag) throws IOException {
-            Attribute.expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
+            Attribute.Companion.expectLength(in, INT_LENGTH + INT_LENGTH + BYTE_LENGTH);
             return Resolution.of(in.readInt(), in.readInt(),
                     Resolution.Unit.ENCODER.get(in.readByte()));
         }

@@ -16,7 +16,7 @@ public class OctetStringType extends AttributeType<byte[]> {
 
         @Override
         public byte[] readValue(DataInputStream in, Tag valueTag) throws IOException {
-            return Attribute.readValueBytes(in);
+            return Attribute.Companion.readValueBytes(in);
         }
 
         @Override

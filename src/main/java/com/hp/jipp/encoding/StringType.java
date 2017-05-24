@@ -25,7 +25,7 @@ public class StringType extends AttributeType<String> {
 
         @Override
         public String readValue(DataInputStream in, Tag valueTag) throws IOException {
-            return new String(Attribute.readValueBytes(in), Util.UTF8);
+            return new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
         }
 
         @Override

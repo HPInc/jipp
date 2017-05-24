@@ -76,14 +76,14 @@ public class Cycler {
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
         Tag tag = Tag.Companion.read(in);
-        String name = new String(Attribute.readValueBytes(in), Util.UTF8);
+        String name = new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
         return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.read(in, sFinder, Tag.Companion.read(in));
+        return (Attribute<T>) Attribute.Companion.read(in, sFinder, Tag.Companion.read(in));
     }
 
 

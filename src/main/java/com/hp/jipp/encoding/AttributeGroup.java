@@ -108,7 +108,7 @@ public abstract class AttributeGroup implements Pretty.Printable {
                 in.reset();
                 attributes = false;
             } else {
-                attributesBuilder.add(Attribute.read(in, finder, valueTag));
+                attributesBuilder.add(Attribute.Companion.read(in, finder, valueTag));
             }
         }
         return of(startTag, attributesBuilder.build());

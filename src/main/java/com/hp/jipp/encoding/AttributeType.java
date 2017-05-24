@@ -16,7 +16,7 @@ public class AttributeType<T> {
     private final String name;
 
     public AttributeType(Attribute.BaseEncoder<T> encoder, Tag tag, String name) {
-        if (!(encoder.valid(tag) || Hook.is(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
+        if (!(encoder.valid(tag) || Hook.is(Attribute.Companion.getHOOK_ALLOW_BUILD_INVALID_TAGS()))) {
             throw new BuildError("Invalid tag " + tag + " for encoder " + encoder);
         }
         this.encoder = encoder;
@@ -27,7 +27,7 @@ public class AttributeType<T> {
     /** Create an attribute of this attribute type with supplied values */
     @SafeVarargs
     public final Attribute<T> of(T... values) {
-        return getEncoder().builder(getTag()).setValues(values).setName(getName()).build();
+        return getEncoder().from(getTag(), name, values);
     }
 
     /** Create an attribute of this attribute type with supplied values */

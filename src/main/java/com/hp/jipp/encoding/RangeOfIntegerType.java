@@ -13,7 +13,7 @@ public class RangeOfIntegerType extends AttributeType<Range<Integer>> {
             new Attribute.SimpleEncoder<Range<Integer>>(TYPE_NAME) {
                 @Override
                 public Range<Integer> readValue(DataInputStream in, Tag valueTag) throws IOException {
-                    Attribute.expectLength(in, 8);
+                    Attribute.Companion.expectLength(in, 8);
                     int low = in.readInt();
                     int high = in.readInt();
                     return Range.closed(low, high);

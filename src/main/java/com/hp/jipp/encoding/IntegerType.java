@@ -10,7 +10,7 @@ public class IntegerType extends AttributeType<Integer> {
     static final Attribute.SimpleEncoder<Integer> ENCODER = new Attribute.SimpleEncoder<Integer>(TYPE_NAME) {
         @Override
         public Integer readValue(DataInputStream in, Tag valueTag) throws IOException {
-            Attribute.expectLength(in, 4);
+            Attribute.Companion.expectLength(in, 4);
             return in.readInt();
         }
 

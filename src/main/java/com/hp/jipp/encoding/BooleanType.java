@@ -17,7 +17,7 @@ public class BooleanType extends AttributeType<Boolean> {
 
         @Override
         public Boolean readValue(DataInputStream in, Tag valueTag) throws IOException {
-            Attribute.expectLength(in, 1);
+            Attribute.Companion.expectLength(in, 1);
             return in.readByte() != 0;
         }
 

@@ -62,11 +62,11 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                     break;
                 } else if (tag == Tag.MemberAttributeName) {
                     skipValueBytes(in);
-                    String memberName = new String(Attribute.readValueBytes(in), Util.UTF8);
+                    String memberName = new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
                     Tag memberTag = Tag.Companion.read(in);
 
                     // Read and throw away the blank attribute name
-                    Attribute.readValueBytes(in);
+                    Attribute.Companion.readValueBytes(in);
                     builder.add(finder.find(memberTag, memberName).read(in, finder, memberTag, memberName));
 
                 } else {

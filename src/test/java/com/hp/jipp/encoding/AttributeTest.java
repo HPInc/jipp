@@ -105,7 +105,7 @@ public class AttributeTest {
                 (byte)0x00,
                 (byte)0x00
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
+        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
     }
 
     @Test
@@ -174,7 +174,7 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
+        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)),
                 new Attribute.EncoderFinder() {
                     @Override
                     public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
@@ -194,7 +194,7 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
+        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class AttributeTest {
                 2,
                 0,
         };
-        Attribute.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
+        Attribute.Companion.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
     }
 
     @Test
