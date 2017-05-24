@@ -20,12 +20,12 @@ public class StringType extends AttributeType<String> {
     public static final Attribute.SimpleEncoder<String> ENCODER = new Attribute.SimpleEncoder<String>(TYPE_NAME) {
         @Override
         public void writeValue(DataOutputStream out, String value) throws IOException {
-            writeValueBytes(out, value.getBytes(Util.UTF8));
+            Attribute.writeValueBytes(out, value.getBytes(Util.UTF8));
         }
 
         @Override
         public String readValue(DataInputStream in, Tag valueTag) throws IOException {
-            return new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
+            return new String(Attribute.readValueBytes(in), Util.UTF8);
         }
 
         @Override

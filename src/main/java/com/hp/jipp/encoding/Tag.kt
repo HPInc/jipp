@@ -69,6 +69,7 @@ data class Tag(override val name: String, override val code: Int) : NameCode() {
 
         /** Read and return a tag from the input stream  */
         @Throws(IOException::class)
+        @JvmStatic
         fun read(input: DataInputStream): Tag = get(input.readByte().toInt())
     }
 }

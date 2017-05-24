@@ -15,7 +15,6 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.net.URI
-import java.util.Arrays
 
 /**
  * An IPP attribute, composed of a one-byte "value tag" suggesting its type, a human-readable string name, and one or
@@ -24,7 +23,7 @@ import java.util.Arrays
  * @param valueTag must be valid for the attribute type, according to the encoder.
  */
 data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>,
-        internal val encoder: BaseEncoder<T>) : Pretty.Printable {
+        val encoder: BaseEncoder<T>) : Pretty.Printable {
 
     init {
         if (!(encoder.valid(valueTag) || Hook.`is`(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
@@ -70,7 +69,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
         /** Read an attribute and its values from the data stream  */
         @Throws(IOException::class)
-        internal fun read(`in`: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag, name: String): Attribute<T> {
+        fun read(`in`: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag, name: String): Attribute<T> {
             val all = mutableListOf(readValue(`in`, finder, valueTag))
             var next = readAdditionalValue(`in`, valueTag, finder)
             while (next != null) {
@@ -95,22 +94,6 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
             input.reset()
             return null
         }
-
-        /** Write a length-value tuple  */
-        @Throws(IOException::class)
-        internal fun writeValueBytes(out: DataOutputStream, bytes: ByteArray) {
-            out.writeShort(bytes.size)
-            out.write(bytes)
-        }
-
-        /** Skip (discard) a length-value pair  */
-        @Throws(IOException::class)
-        internal fun skipValueBytes(`in`: DataInputStream) {
-            val valueLength = `in`.readShort().toInt()
-            if (valueLength.toLong() != `in`.skip(valueLength.toLong())) throw ParseError("Value too short")
-        }
-
-        fun from(valueTag: Tag, name: String, vararg values: T): Attribute<T> = Attribute(valueTag, name, values, this)
     }
 
     /** Return the n'th value in this attribute, assuming it is present  */
@@ -119,7 +102,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
     }
 
     /** Return a copy of this attribute with a different name  */
-    internal fun withName(newName: String): Attribute<T> = copy(name = newName)
+    fun withName(newName: String): Attribute<T> = copy(name = newName)
 
     /** Write this attribute (including all of its values) to the output stream  */
     @Throws(IOException::class)
@@ -197,14 +180,33 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
          * Read an attribute from an input stream, based on its tag
          */
         @Throws(IOException::class)
+        @JvmStatic
         fun read(`in`: DataInputStream, finder: EncoderFinder, valueTag: Tag): Attribute<*> {
             val name = String(readValueBytes(`in`))
             return finder.find(valueTag, name).read(`in`, finder, valueTag, name)
         }
 
+        /** Write a length-value tuple  */
+        // TODO: Consider moving these to AttributeType
+        @Throws(IOException::class)
+        @JvmStatic
+        fun writeValueBytes(out: DataOutputStream, bytes: ByteArray) {
+            out.writeShort(bytes.size)
+            out.write(bytes)
+        }
+
+        /** Skip (discard) a length-value pair  */
+        @Throws(IOException::class)
+        @JvmStatic
+        fun skipValueBytes(`in`: DataInputStream) {
+            val valueLength = `in`.readShort().toInt()
+            if (valueLength.toLong() != `in`.skip(valueLength.toLong())) throw ParseError("Value too short")
+        }
+
         /** Read and return value bytes from a length-value pair  */
         @Throws(IOException::class)
-        internal fun readValueBytes(`in`: DataInputStream): ByteArray {
+        @JvmStatic
+        fun readValueBytes(`in`: DataInputStream): ByteArray {
             val valueLength = `in`.readShort().toInt()
             val valueBytes = ByteArray(valueLength)
             if (valueLength > 0) {
@@ -218,6 +220,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
         /** Reads a two-byte length field, asserting that it is of a specific length  */
         @Throws(IOException::class)
+        @JvmStatic
         fun expectLength(`in`: DataInputStream, length: Int) {
             val readLength = `in`.readShort().toInt()
             if (readLength != length) {

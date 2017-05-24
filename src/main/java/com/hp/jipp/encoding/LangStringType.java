@@ -35,8 +35,8 @@ public class LangStringType extends AttributeType<LangString> {
             if (!lang.isPresent()) {
                 throw new BuildError("Cannot write a LangString without a language");
             }
-            writeValueBytes(dataOut, lang.get().getBytes(Util.UTF8));
-            writeValueBytes(dataOut, value.getString().getBytes(Util.UTF8));
+            Attribute.writeValueBytes(dataOut, lang.get().getBytes(Util.UTF8));
+            Attribute.writeValueBytes(dataOut, value.getString().getBytes(Util.UTF8));
             OctetStringType.ENCODER.writeValue(out, bytesOut.toByteArray());
         }
 

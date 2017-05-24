@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.Hook;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,12 +28,12 @@ public class AttributeType<T> {
     /** Create an attribute of this attribute type with supplied values */
     @SafeVarargs
     public final Attribute<T> of(T... values) {
-        return getEncoder().from(getTag(), name, values);
+        return new Attribute<>(getTag(), name, Arrays.asList(values), getEncoder());
     }
 
     /** Create an attribute of this attribute type with supplied values */
     public final Attribute<T> of(List<T> values) {
-        return getEncoder().builder(getTag()).setValues(values).setName(getName()).build();
+        return new Attribute<>(getTag(), name, values, getEncoder());
     }
 
     public Attribute.BaseEncoder<T> getEncoder() {

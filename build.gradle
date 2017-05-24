@@ -22,7 +22,6 @@ apply plugin: 'kotlin'
 apply plugin: "idea"
 apply plugin: "net.ltgt.apt"
 apply plugin: "pmd"
-apply plugin: "findbugs"
 apply plugin: "pl.squirrel.classycle"
 apply plugin: "checkstyle"
 apply plugin: "jacoco"
@@ -38,15 +37,6 @@ allprojects {
     targetCompatibility = 1.7
     sourceCompatibility = 1.7
 }
-
-tasks.withType(FindBugs) {
-    reports {
-        html.enabled = true
-        xml.enabled = false
-    }
-    excludeFilter = file("$projectDir/src/test/resources/findbugsFilter.xml")
-}
-findbugsTest.enabled = false
 
 // This hack puts testing resource files where we can get to them
 task copyTestResources(type: Copy) {

@@ -36,7 +36,7 @@ public class CollectionType extends AttributeType<AttributeCollection> {
                 // Write a MemberAttributeName attribute
                 Tag.MemberAttributeName.write(out);
                 out.writeShort(0);
-                writeValueBytes(out, attribute.getName().getBytes(Util.UTF8));
+                Attribute.writeValueBytes(out, attribute.getName().getBytes(Util.UTF8));
 
                 // Write the attribute, but without its name
                 attribute.withName("").write(out);
@@ -49,24 +49,24 @@ public class CollectionType extends AttributeType<AttributeCollection> {
         @Override
         public AttributeCollection readValue(DataInputStream in, Attribute.EncoderFinder finder, Tag valueTag)
                 throws IOException {
-            skipValueBytes(in);
+            Attribute.skipValueBytes(in);
             ImmutableList.Builder<Attribute<?>> builder = new ImmutableList.Builder<>();
 
             // Read attribute pairs until EndCollection is reached.
             while (true) {
-                Tag tag = Tag.Companion.read(in);
+                Tag tag = Tag.read(in);
                 if (tag == Tag.EndCollection) {
                     // Skip the rest of this attr and return.
-                    skipValueBytes(in);
-                    skipValueBytes(in);
+                    Attribute.skipValueBytes(in);
+                    Attribute.skipValueBytes(in);
                     break;
                 } else if (tag == Tag.MemberAttributeName) {
-                    skipValueBytes(in);
+                    Attribute.skipValueBytes(in);
                     String memberName = new String(Attribute.Companion.readValueBytes(in), Util.UTF8);
-                    Tag memberTag = Tag.Companion.read(in);
+                    Tag memberTag = Tag.read(in);
 
                     // Read and throw away the blank attribute name
-                    Attribute.Companion.readValueBytes(in);
+                    Attribute.readValueBytes(in);
                     builder.add(finder.find(memberTag, memberName).read(in, finder, memberTag, memberName));
 
                 } else {

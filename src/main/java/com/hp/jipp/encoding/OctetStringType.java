@@ -11,7 +11,7 @@ public class OctetStringType extends AttributeType<byte[]> {
 
         @Override
         public void writeValue(DataOutputStream out, byte[] value) throws IOException {
-            writeValueBytes(out, value);
+            Attribute.writeValueBytes(out, value);
         }
 
         @Override
