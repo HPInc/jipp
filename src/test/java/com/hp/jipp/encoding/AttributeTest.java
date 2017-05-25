@@ -267,4 +267,10 @@ public class AttributeTest {
     public void printBinary() throws Exception {
         assertTrue(new OctetStringType(Tag.OctetString, "data").of(new byte[] { 1, 2, 3 }).toString().contains("x010203"));
     }
+
+    @Test
+    public void equals() throws IOException {
+        Attribute<String> jobName = Attributes.JobName.of("hello");
+        assertEquals(jobName.hashCode(), cycle(jobName).hashCode());
+    }
 }
