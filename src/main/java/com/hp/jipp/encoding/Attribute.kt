@@ -174,6 +174,9 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
             val name = String(input.readValueBytes())
             return finder.find(valueTag, name).read(input, finder, valueTag, name)
         }
+
+        // TODO: remove when no longer needed from Java code
+        @JvmStatic fun readValueBytes2(input: DataInputStream) = input.readValueBytes()
     }
 }
 
