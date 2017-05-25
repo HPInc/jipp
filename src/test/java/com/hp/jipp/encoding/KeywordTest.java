@@ -1,10 +1,10 @@
 package com.hp.jipp.encoding;
 
-import com.google.common.collect.ImmutableList;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class KeywordTest {
 
@@ -15,7 +15,7 @@ public class KeywordTest {
         public static final Sample Two = of("two");
         public static final Sample Three = of("three");
 
-        public static final KeywordType.Encoder<Sample> ENCODER = KeywordType.Encoder.of(
+        public static final KeywordType.Encoder<Sample> ENCODER = KeywordType.Encoder.Companion.of(
                 Sample.class, new Keyword.Factory<Sample>() {
                     @Override
                     public Sample of(String name) {
@@ -43,7 +43,7 @@ public class KeywordTest {
 
     @Test
     public void testAll() {
-        assertEquals(ImmutableList.of(Sample.One, Sample.Two, Sample.Three), Sample.ENCODER.getAll());
+        assertThat(Sample.ENCODER.getAll(), hasItems(Sample.One, Sample.Two, Sample.Three));
     }
 
     @Test

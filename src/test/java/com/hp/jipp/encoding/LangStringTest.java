@@ -18,7 +18,7 @@ public class LangStringTest {
     @Test
     public void languageStrings() throws Exception {
         LangStringType nameType = new LangStringType(Tag.NameWithLanguage, "job-name");
-        Attribute<LangString> name = cycle(nameType.of(LangString.of("my job", "fr")));
+        Attribute<LangString> name = cycle(nameType.of(new LangString("my job", "fr")));
         System.out.println("name: " + name);
         assertEquals("my job", name.getValue(0).getString());
         assertEquals("fr", name.getValue(0).getLang().get());
@@ -36,6 +36,6 @@ public class LangStringTest {
     @Test
     public void badMissingLang() throws Exception {
         exception.expect(BuildError.class);
-        cycle(new LangStringType(Tag.TextWithLanguage, "something").of(LangString.of("oops")));
+        cycle(new LangStringType(Tag.TextWithLanguage, "something").of(new LangString("oops")));
     }
 }

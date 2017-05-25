@@ -24,7 +24,7 @@ abstract class NameCode {
                 nameCodes.map { it.code to it }.toMap()
 
         /** Using Java reflection, look up all statically-declared instances of T */
-        inline fun <reified T : NameCode> allFrom(origin: Class<*>): Collection<T> {
+        @JvmStatic inline fun <reified T : NameCode> allFrom(origin: Class<*>): Collection<T> {
             return Util.getStaticObjects(origin).filter { it is T }.map { it as T }
         }
     }

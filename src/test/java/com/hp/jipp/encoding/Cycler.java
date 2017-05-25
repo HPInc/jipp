@@ -60,7 +60,7 @@ public class Cycler {
         final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(Attributes.All, projector);
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
-        return AttributeGroup.read(Tag.Companion.read(in), attributeTypeMap, in);
+        return AttributeGroup.Companion.read(Tag.Companion.read(in), attributeTypeMap, in);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {

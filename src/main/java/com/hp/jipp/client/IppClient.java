@@ -77,7 +77,7 @@ public class IppClient {
      */
     public Printer getPrinterAttributes(UUID printerUuid, URI printerUri) throws IOException {
         Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),
@@ -107,7 +107,7 @@ public class IppClient {
                     Attributes.PrinterStateMessage.getName()
                 ));
         Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes, operationAttributes.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes.build()));
 
         Packet response = mTransport.send(printer.getUri(), request);
         Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
@@ -123,7 +123,7 @@ public class IppClient {
      */
     public Packet identifyPrinter(Printer printer, IdentifyAction action, String message) throws IOException {
         Packet request = Packet.of(Operation.IdentifyPrinter, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printer.getUri()),
@@ -137,7 +137,7 @@ public class IppClient {
     public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUri();
         Packet request = Packet.of(Operation.ValidateJob, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(uri),
@@ -165,7 +165,7 @@ public class IppClient {
         );
 
         Packet request = Packet.builder(Operation.PrintJob, mId.getAndIncrement())
-                .setAttributeGroups(AttributeGroup.of(Tag.OperationAttributes,
+                .setAttributeGroups(AttributeGroup.Companion.of(Tag.OperationAttributes,
                         attributes.build()))
                 .setInputStreamFactory(new InputStreamFactory() {
                     @Override
@@ -208,7 +208,7 @@ public class IppClient {
                 Attributes.RequestingUserName.of(mUserName));
 
         Packet request = Packet.of(Operation.CreateJob, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes, attributes.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, attributes.build()));
 
         Packet response = mTransport.send(printerUri, request);
         return toPrintJob(jobRequest, response);
@@ -222,7 +222,7 @@ public class IppClient {
         URI printerUri = job.getPrinter().getUri();
 
         // Send only document for this job.
-        AttributeGroup operationAttributes = AttributeGroup.of(Tag.OperationAttributes,
+        AttributeGroup operationAttributes = AttributeGroup.Companion.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
@@ -272,7 +272,7 @@ public class IppClient {
                 .addAll(extras);
 
         Packet request = Packet.of(Operation.GetJobs, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes, attributesBuilder.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, attributesBuilder.build()));
 
         Packet response = mTransport.send(printer.getUri(), request);
 
@@ -289,7 +289,7 @@ public class IppClient {
     /** Fetch new status for a job and return the updated job. */
     public Job getJobStatus(Job job) throws IOException {
         Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUri()),
@@ -306,7 +306,7 @@ public class IppClient {
     public Packet cancelJob(Job job) throws IOException {
         URI printerUri = job.getPrinter().getUri();
         Packet request = Packet.of(Operation.CancelJob, mId.getAndIncrement(),
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),

@@ -71,7 +71,7 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
     public static final NameCodeType<PrinterState> PrinterState =
-            NameCodeType.typeOf(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+            new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
     public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");
@@ -122,7 +122,7 @@ public final class Attributes {
     // 3.2.1.1 Print-Job Response
 
     public static final NameCodeType<JobState> JobState =
-            NameCodeType.typeOf(com.hp.jipp.model.JobState.ENCODER, "job-state");
+            new NameCodeType<>(com.hp.jipp.model.JobState.ENCODER, "job-state");
 
     public static final UriType JobUri = new UriType(Tag.Uri, "job-uri");
 

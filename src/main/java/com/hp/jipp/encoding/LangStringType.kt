@@ -20,7 +20,7 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
         }
         // TODO: If we don't know the language this is actually a dangerous thing to do
         // Apply conversion from StringType to a LangStringType on demand
-        return Optional.of(of(Lists.transform(attribute.values as List<String>, LangString.FromStringFunc)))
+        return Optional.of(of(attribute.values.map { LangString(it as String) }))
     }
 
     companion object : IppEncodings {
@@ -35,7 +35,7 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
 
                 val lang = inBytes.readString()
                 val string = inBytes.readString()
-                return LangString.of(string, lang)
+                return LangString(string, lang)
             }
 
             @Throws(IOException::class)

@@ -20,7 +20,7 @@ public abstract class JobState extends NameCode {
     public static final JobState Aborted = of("aborted", 8);
     public static final JobState Completed = of("completed", 9);
 
-    public static final NameCodeType.Encoder<JobState> ENCODER = NameCodeType.Encoder.of(
+    public static final NameCodeType.Encoder<JobState> ENCODER = NameCodeType.Encoder.Companion.of(
             JobState.class, new NameCode.Factory<JobState>() {
                 @Override
                 public JobState of(String name, int code) {

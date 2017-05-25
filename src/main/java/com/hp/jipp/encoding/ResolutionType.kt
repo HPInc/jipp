@@ -4,7 +4,8 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ResolutionType.ENCODER, tag, name) {
+class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER, tag, name) {
+
     companion object : IppEncodings {
         private val TYPE_NAME = "Resolution"
 
@@ -16,8 +17,8 @@ class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(Resolut
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
                 input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
-                return Resolution.of(input.readInt(), input.readInt(),
-                        Resolution.Unit.ENCODER.get(input.readByte().toInt()))
+                return Resolution(input.readInt(), input.readInt(),
+                        ResolutionUnit.ENCODER.get(input.readByte().toInt()))
             }
 
             @Throws(IOException::class)
@@ -28,9 +29,7 @@ class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(Resolut
                 out.writeByte(value.unit.code.toByte().toInt())
             }
 
-            override fun valid(valueTag: Tag): Boolean {
-                return Tag.Resolution == valueTag
-            }
+            override fun valid(valueTag: Tag) = Tag.Resolution == valueTag
         }
     }
 }

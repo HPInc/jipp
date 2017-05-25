@@ -37,7 +37,7 @@ public class IppClientTest {
     URI printerUri = new URI("ipp://sample.com");
     URI printerUri2 = new URI("ipps://sample.com:443");
 
-    Printer printer = Printer.of(uuid, printerUri, AttributeGroup.of(Tag.PrinterAttributes,
+    Printer printer = Printer.of(uuid, printerUri, AttributeGroup.Companion.of(Tag.PrinterAttributes,
             Attributes.PrinterInfo.of("printername")));
     FakeTransport transport = new FakeTransport();
     Document document = new Document() {
@@ -93,7 +93,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterAttributesRequest() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(uuid, printerUri);
         System.out.println(printer);
@@ -108,7 +108,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterAttributesResult() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(uuid, ImmutableList.of(printerUri));
         assertEquals(Operation.GetPrinterAttributes, request.getOperation());
@@ -118,7 +118,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterAttributesBadResult() throws IOException {
-        response = Packet.of(Status.ServerErrorBusy, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.ServerErrorBusy, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
 
         // Throw because what else
@@ -129,7 +129,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterAttributesNoneGood() throws IOException {
-        response = Packet.of(Status.ServerErrorBusy, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.ServerErrorBusy, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
 
         List<URI> uris = ImmutableList.of(printerUri, printerUri2);
@@ -157,12 +157,12 @@ public class IppClientTest {
     @Test
     public void getJobs() throws IOException {
         response = Packet.of(Status.Ok, 0x01,
-                AttributeGroup.of(Tag.OperationAttributes,
+                AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("UTF-8"),
                         Attributes.AttributesNaturalLanguage.of("en")),
-                AttributeGroup.of(Tag.JobAttributes,
+                AttributeGroup.Companion.of(Tag.JobAttributes,
                         Attributes.JobId.of(2), Attributes.JobState.of(JobState.Processing)),
-                AttributeGroup.of(Tag.JobAttributes,
+                AttributeGroup.Companion.of(Tag.JobAttributes,
                         Attributes.JobId.of(3), Attributes.JobState.of(JobState.PendingHeld)));
         List<Job> jobs = client.getJobs(printer);
         assertEquals(Integer.valueOf(2), jobs.get(0).getAttributes().getValue(Attributes.JobId).get());
@@ -172,7 +172,7 @@ public class IppClientTest {
 
     @Test
     public void getPrinterStatus() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterState.of(PrinterState.Stopped),
                         Attributes.PrinterStateReasons.of("bored", "tired"),
                         Attributes.PrinterStateMessage.of("it's complicated")));
@@ -202,7 +202,7 @@ public class IppClientTest {
     @Test
     public void badPrinterStatusNoState() throws Exception {
         exception.expect(IOException.class);
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterStateReasons.of("bored", "tired"),
                 Attributes.PrinterStateMessage.of("it's complicated")));
         client.getPrinterStatus(printer);
@@ -211,7 +211,7 @@ public class IppClientTest {
     @Test
     public void printJob() throws IOException {
         response = Packet.of(Status.Ok, 0x01,
-                AttributeGroup.of(Tag.JobAttributes,
+                AttributeGroup.Companion.of(Tag.JobAttributes,
                         Attributes.JobId.of(101),
                         Attributes.JobState.of(JobState.Processing),
                         Attributes.JobStateReasons.of("none")));
@@ -225,7 +225,7 @@ public class IppClientTest {
 
     @Test
     public void createJob() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
@@ -242,16 +242,16 @@ public class IppClientTest {
     @Test
     public void badCreateJobResponseAttributes() throws Exception {
         exception.expect(IOException.class);
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes));
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes));
         job = client.createJob(jobRequest);
     }
 
     @Test
     public void sendDocument() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
         job = client.createJob(jobRequest);
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.sendDocument(job);
         assertEquals("document",
@@ -262,11 +262,11 @@ public class IppClientTest {
     @Test
     public void getJobStatus() throws IOException {
         // Set up a job
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
         job = client.createJob(jobRequest);
 
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.getJobStatus(job);
         System.out.println(job);
@@ -276,7 +276,7 @@ public class IppClientTest {
     @Test
     public void cancelJob() throws IOException {
         // Set up a job
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending)));
         job = client.createJob(jobRequest);
 
@@ -288,7 +288,7 @@ public class IppClientTest {
 
     @Test
     public void checkUserName() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(uuid, printerUri);
 
@@ -300,7 +300,7 @@ public class IppClientTest {
 
     @Test
     public void changeUserName() throws IOException {
-        response = Packet.of(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
+        response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
         client.setUserName("donald_duck");
         printer = client.getPrinterAttributes(uuid, printerUri);

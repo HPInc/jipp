@@ -18,7 +18,7 @@ public class NameCodeTest {
         // Cannot be reached
         private static final Sample Secret = new Sample("secret", 4);
 
-        public static final NameCodeType.Encoder<Sample> ENCODER = NameCodeType.Encoder.of(
+        public static final NameCodeType.Encoder<Sample> ENCODER = NameCodeType.Encoder.Companion.of(
                 Sample.class, new NameCode.Factory<Sample>() {
                     @Override
                     public Sample of(String name, int code) {
@@ -43,7 +43,7 @@ public class NameCodeTest {
             this.code = code;
         }
     }
-    NameCodeType<Sample> MySample = NameCodeType.typeOf(Sample.ENCODER, "my-sample");
+    NameCodeType<Sample> MySample = new NameCodeType<>(Sample.ENCODER, "my-sample");
 
     @Test
     public void sample() throws Exception {
@@ -54,6 +54,6 @@ public class NameCodeTest {
     @Test
     public void fetchFromGroup() throws Exception {
         assertEquals(ImmutableList.of(Sample.Two, Sample.Three),
-                cycle(AttributeGroup.of(Tag.JobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample));
+                cycle(AttributeGroup.Companion.of(Tag.JobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample));
     }
 }

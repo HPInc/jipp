@@ -103,7 +103,7 @@ public abstract class Packet {
                 }
                 moreAttributes = false;
             } else if (tag.isDelimiter()) {
-                AttributeGroup attributeGroup = AttributeGroup.read(tag, attributeTypes, in);
+                AttributeGroup attributeGroup = AttributeGroup.Companion.read(tag, attributeTypes, in);
                 attributeGroupsBuilder.add(attributeGroup);
             } else {
                 throw new ParseError("Illegal delimiter " + tag);

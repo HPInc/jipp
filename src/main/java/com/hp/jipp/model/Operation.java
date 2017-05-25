@@ -31,7 +31,7 @@ public abstract class Operation extends NameCode {
     public static final Operation IdentifyPrinter = of("Identify-Printer", 0x003C);
 
     /** The encoder for converting integers to Operation objects */
-    public static final NameCodeType.Encoder<Operation> ENCODER = NameCodeType.Encoder.of(
+    public static final NameCodeType.Encoder<Operation> ENCODER = NameCodeType.Encoder.Companion.of(
             Operation.class, new NameCode.Factory<Operation>() {
                 @Override
                 public Operation of(String name, int code) {

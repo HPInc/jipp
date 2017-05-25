@@ -13,6 +13,7 @@ import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.Resolution;
+import com.hp.jipp.encoding.ResolutionUnit;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
@@ -38,7 +39,7 @@ public class AttributeTypeTest {
 
     @Test
     public void naturalLanguageFromGroup() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.OperationAttributes,
                 Attributes.AttributesNaturalLanguage.of("en")));
 
         Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage).get();
@@ -54,14 +55,14 @@ public class AttributeTypeTest {
 
     @Test
     public void ignoreBadNameNaturalLanguage() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
+        AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.OperationAttributes,
                 new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").of("en")));
         assertFalse(group.get(Attributes.AttributesNaturalLanguage).isPresent());
     }
 
     @Test
     public void enumAttributeType() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.PrinterAttributes,
+        AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(Operation.CancelJob, Operation.CreateJob)));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).get().getValues());
@@ -91,10 +92,10 @@ public class AttributeTypeTest {
     @Test
     public void resolution() throws Exception {
         Resolution resolution = cycle(Attributes.PrinterResolutionDefault.of(
-                Resolution.of(300, 600, Resolution.Unit.DotsPerInch))).getValue(0);
+                new Resolution(300, 600, ResolutionUnit.DotsPerInch))).getValue(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
-        assertEquals(Resolution.Unit.DotsPerInch, resolution.getUnit());
+        assertEquals(ResolutionUnit.DotsPerInch, resolution.getUnit());
     }
 
 }

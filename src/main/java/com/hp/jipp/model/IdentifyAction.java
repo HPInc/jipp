@@ -11,7 +11,7 @@ public abstract class IdentifyAction extends Keyword {
     public static final IdentifyAction Sound = of("sound");
     public static final IdentifyAction Speak = of("speak");
 
-    public static final KeywordType.Encoder<IdentifyAction> ENCODER = KeywordType.Encoder.of(
+    public static final KeywordType.Encoder<IdentifyAction> ENCODER = KeywordType.Encoder.Companion.of(
             IdentifyAction.class, new Keyword.Factory<IdentifyAction>() {
                 @Override
                 public IdentifyAction of(String name) {

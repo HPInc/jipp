@@ -6,7 +6,8 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-class RangeOfIntegerType(name: String) : AttributeType<Range<Int>>(RangeOfIntegerType.ENCODER, Tag.RangeOfInteger, name) {
+class RangeOfIntegerType(name: String) :
+        AttributeType<Range<Int>>(ENCODER, Tag.RangeOfInteger, name) {
     companion object : IppEncodings {
         private val TYPE_NAME = "RangeOfInteger"
 
@@ -26,9 +27,7 @@ class RangeOfIntegerType(name: String) : AttributeType<Range<Int>>(RangeOfIntege
                 out.writeInt(value.upperEndpoint())
             }
 
-            override fun valid(valueTag: Tag): Boolean {
-                return valueTag === Tag.RangeOfInteger
-            }
+            override fun valid(valueTag: Tag) = valueTag === Tag.RangeOfInteger
         }
     }
 }

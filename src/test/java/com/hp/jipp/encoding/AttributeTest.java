@@ -69,7 +69,7 @@ public class AttributeTest {
 
     @Test
     public void enumAttribute() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
+        AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
                         Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob)));
         assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
@@ -78,7 +78,7 @@ public class AttributeTest {
 
     @Test
     public void surpriseEnum() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
+        AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
                         Operation.of("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
@@ -129,13 +129,13 @@ public class AttributeTest {
         IntegerType yDimensionType = new IntegerType(Tag.IntegerValue, "y-dimension");
 
         Attribute<AttributeCollection> mediaCol = mediaColType.of(
-                AttributeCollection.of(
+                new AttributeCollection(
                         colorType.of("blue"),
                         mediaSizeType.of(
-                                AttributeCollection.of(
+                                new AttributeCollection(
                                         xDimensionType.of(6),
                                         yDimensionType.of(4)),
-                                AttributeCollection.of(
+                                new AttributeCollection(
                                         xDimensionType.of(12),
                                         yDimensionType.of(5))
 
@@ -237,7 +237,7 @@ public class AttributeTest {
 
         Resolution resolution = ResolutionType.ENCODER.readValue(
                 new DataInputStream(new ByteArrayInputStream(bytes)), Tag.Resolution);
-        assertEquals("256x512 Unit(x5)", resolution.toString());
+        assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
     }
 
     @Test

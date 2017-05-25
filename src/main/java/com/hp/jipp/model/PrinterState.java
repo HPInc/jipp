@@ -12,7 +12,7 @@ public abstract class PrinterState extends NameCode {
     public static final PrinterState Processing = of("processing", 4);
     public static final PrinterState Stopped = of("stopped", 5);
 
-    public static final NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.Encoder.of(
+    public static final NameCodeType.Encoder<PrinterState> ENCODER = NameCodeType.Encoder.Companion.of(
             PrinterState.class, new NameCode.Factory<PrinterState>() {
                 @Override
                 public PrinterState of(String name, int code) {

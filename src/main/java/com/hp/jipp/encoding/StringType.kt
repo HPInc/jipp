@@ -1,7 +1,6 @@
 package com.hp.jipp.encoding
 
 import com.google.common.base.Optional
-import com.google.common.collect.Lists
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -20,8 +19,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
                 attribute.valueTag == Tag.TextWithLanguage && tag == Tag.TextWithoutLanguage) {
             return Optional.absent<Attribute<String>>()
         }
-        // Apply conversion from StringType to a LangStringType attribute
-        return Optional.of(of(Lists.transform(attribute.values as List<LangString>, LangString.ToStringFunc)))
+        return Optional.of(of(attribute.values.map { (it as LangString).string }))
     }
 
     companion object : IppEncodings {
