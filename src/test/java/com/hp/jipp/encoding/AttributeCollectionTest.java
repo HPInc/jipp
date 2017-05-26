@@ -69,7 +69,7 @@ public class AttributeCollectionTest {
                                         xDimensionType.of(6),
                                         yDimensionType.of(4)),
                                 new AttributeCollection(
-                                       5tw xDimensionType.of(12),
+                                        xDimensionType.of(12),
                                         yDimensionType.of(5))
 
                         )));
