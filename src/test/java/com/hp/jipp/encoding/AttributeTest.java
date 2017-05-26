@@ -14,6 +14,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.BuildError;
+import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
 import com.hp.jipp.util.Util;
 import com.hp.jipp.model.Attributes;
@@ -166,6 +167,14 @@ public class AttributeTest {
         Resolution resolution = ResolutionType.ENCODER.readValue(
                 new DataInputStream(new ByteArrayInputStream(bytes)), Tag.Resolution);
         assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
+
+        KotlinTest.cover(resolution,
+                resolution.copy(resolution.component1(), resolution.component2(), resolution.component3()),
+                resolution.copy(777, resolution.component2(), resolution.component3()));
+
+        ResolutionUnit unit = resolution.getUnit();
+        KotlinTest.cover(unit, unit.copy(unit.component1(), unit.component2()),
+                unit.copy("other", unit.component2()));
     }
 
     @Test

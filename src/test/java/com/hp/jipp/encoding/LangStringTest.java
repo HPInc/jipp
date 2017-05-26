@@ -1,6 +1,8 @@
 package com.hp.jipp.encoding;
 
+import com.google.common.base.Optional;
 import com.hp.jipp.util.BuildError;
+import com.hp.jipp.util.KotlinTest;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,5 +39,13 @@ public class LangStringTest {
     public void badMissingLang() throws Exception {
         exception.expect(BuildError.class);
         cycle(new LangStringType(Tag.TextWithLanguage, "something").of(new LangString("oops")));
+    }
+
+    @Test
+    public void cover() throws Exception {
+        LangString ls = new LangString("hi", Optional.of("en"));
+        KotlinTest.cover(ls,
+                ls.copy(ls.component1(), ls.component2()),
+                ls.copy("hello", ls.component2()));
     }
 }
