@@ -19,12 +19,14 @@ public class BinaryTest {
     private Packet.Parser parser = Packet.parserOf(Attributes.All);
 
     @Test
-    public void scanUris() throws Exception {
+    public void scanNames() throws Exception {
         for (File binFile : getBinFiles()) {
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
             if (packet.getAttributeGroup(Tag.PrinterAttributes).isPresent()) {
-                System.out.println("Printer: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
-                        " has URIs: " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
+                System.out.println("For " + binFile);
+                System.out.println("Printer info=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
+                        " name=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
+                        " uris= " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
             }
         }
     }

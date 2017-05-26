@@ -70,6 +70,9 @@ public final class Attributes {
     public static final StringType PrinterInfo =
             new StringType(Tag.TextWithoutLanguage, "printer-info");
 
+    public static final StringType PrinterName =
+            new StringType(Tag.NameWithoutLanguage, "printer-name");
+
     public static final NameCodeType<PrinterState> PrinterState =
             new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
