@@ -27,8 +27,8 @@ class NameCodeType<T : NameCode>(val nameCodeEncoder: NameCodeType.Encoder<T>, n
         }
 
         @Throws(IOException::class)
-        override fun readValue(`in`: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T {
-            return get(IntegerType.ENCODER.readValue(`in`, valueTag))
+        override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T {
+            return get(IntegerType.ENCODER.readValue(input, valueTag))
         }
 
         @Throws(IOException::class)

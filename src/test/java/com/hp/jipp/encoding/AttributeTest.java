@@ -206,8 +206,11 @@ public class AttributeTest {
     }
 
     @Test
-    public void equals() throws IOException {
+    public void cover() throws IOException {
         Attribute<String> jobName = Attributes.JobName.of("hello");
-        assertEquals(jobName.hashCode(), cycle(jobName).hashCode());
+        KotlinTest.cover(jobName,
+                jobName.copy(jobName.component1(), jobName.component2(), jobName.component3(), jobName.component4()),
+                jobName.copy(jobName.component1(), "goodbye", jobName.component3(), jobName.component4()));
+
     }
 }

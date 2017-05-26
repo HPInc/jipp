@@ -97,12 +97,12 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER, OctetStringType.ENCODER)
 
         /** Return a complete attribute group  */
-        fun of(startTag: Tag, vararg attributes: Attribute<*>): AttributeGroup {
+        @JvmStatic fun of(startTag: Tag, vararg attributes: Attribute<*>): AttributeGroup {
             return of(startTag, Arrays.asList(*attributes))
         }
 
         /** Return a complete attribute group  */
-        fun of(startTag: Tag, attributes: List<Attribute<*>>): AttributeGroup {
+        @JvmStatic fun of(startTag: Tag, attributes: List<Attribute<*>>): AttributeGroup {
             if (!startTag.isDelimiter) throw BuildError("Not a delimiter: " + startTag)
             return AttributeGroup(startTag, attributes)
         }
