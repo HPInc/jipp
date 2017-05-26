@@ -22,7 +22,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
         return Optional.of(of(attribute.values.map { (it as LangString).string }))
     }
 
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "String"
 
         @JvmField

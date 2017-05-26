@@ -2,9 +2,8 @@
 show allResults
 
 {package} = com.hp.jipp
-
-[working] = ${package}.* excluding *AutoValue*
-#[class-file] = ${package}.classfile.* excluding *.kotlin_module
+[class-file] = ${package}.classfile.*
+[working] = ${package}.* excluding *AutoValue* *.kotlin_module
 
 check absenceOfPackageCycles > 1 in ${package}.*
 check absenceOfClassCycles > 1 in [working]

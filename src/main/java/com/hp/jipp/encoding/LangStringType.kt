@@ -23,7 +23,7 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
         return Optional.of(of(attribute.values.map { LangString(it as String) }))
     }
 
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "LangString"
 
         @JvmField

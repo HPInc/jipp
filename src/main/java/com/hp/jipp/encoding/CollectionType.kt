@@ -13,7 +13,7 @@ import java.io.IOException
  * @see [RFC3382](https://tools.ietf.org/html/rfc3382)
  */
 class CollectionType(name: String) : AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.BeginCollection, name) {
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "Collection"
 
         /** Used to terminate a collection  */

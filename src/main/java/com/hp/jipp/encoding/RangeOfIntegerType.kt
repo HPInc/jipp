@@ -8,7 +8,7 @@ import java.io.IOException
 
 class RangeOfIntegerType(name: String) :
         AttributeType<Range<Int>>(ENCODER, Tag.RangeOfInteger, name) {
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "RangeOfInteger"
 
         @JvmField val ENCODER: Attribute.SimpleEncoder<Range<Int>> = object : Attribute.SimpleEncoder<Range<Int>>(TYPE_NAME) {

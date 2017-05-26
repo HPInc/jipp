@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 class OctetStringType(tag: Tag, name: String) : AttributeType<ByteArray>(OctetStringType.ENCODER, tag, name) {
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "OctetString"
 
         @JvmField

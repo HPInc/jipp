@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 class IntegerType(tag: Tag, name: String) : AttributeType<Int>(IntegerType.ENCODER, tag, name) {
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "Integer"
 
         @JvmField val ENCODER: Attribute.SimpleEncoder<Int> = object : Attribute.SimpleEncoder<Int>(TYPE_NAME) {

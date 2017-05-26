@@ -6,7 +6,7 @@ import java.io.IOException
 
 class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER, tag, name) {
 
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "Resolution"
 
         private val INT_LENGTH = 4

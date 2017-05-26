@@ -6,7 +6,7 @@ import java.io.IOException
 
 /** A boolean attribute type */
 class BooleanType(tag: Tag, name: String) : AttributeType<Boolean>(BooleanType.ENCODER, tag, name) {
-    companion object : IppEncodings {
+    companion object {
         private val TYPE_NAME = "Boolean"
 
         @JvmField

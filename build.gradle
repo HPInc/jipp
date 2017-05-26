@@ -22,7 +22,6 @@ apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'net.ltgt.apt'
 apply plugin: 'pmd'
-apply plugin: 'pl.squirrel.classycle'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 
@@ -50,7 +49,6 @@ task cleanTestResources(type: Delete) {
     }
 }
 test.finalizedBy cleanTestResources
-classycleTest.dependsOn cleanTestResources
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"

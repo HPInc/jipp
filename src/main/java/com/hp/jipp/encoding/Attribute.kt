@@ -148,7 +148,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         return "$name($valueTag): $valueString"
     }
 
-    companion object : IppEncodings {
+    companion object {
         /** Return a list from all returns from a generator until null */
         fun <T> generateList(generator: () -> T?): List<T> {
             val items = ArrayList<T>()

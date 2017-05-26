@@ -5,6 +5,8 @@ import static com.hp.jipp.encoding.Cycler.*;
 import static org.junit.Assert.*;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
 
 import org.junit.Rule;
@@ -114,5 +116,13 @@ public class AttributeCollectionTest {
     public void emptyCollection() {
         AttributeCollection collection = new AttributeCollection();
         assertEquals(Optional.absent(), collection.get(colorType));
+    }
+
+    @Test
+    public void cover() {
+        AttributeCollection collection = new AttributeCollection();
+        KotlinTest.cover(collection,
+                collection.copy(collection.component1()),
+                collection.copy(ImmutableList.of(colorType.of("blue"))));
     }
 }
