@@ -8,7 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Bytes {
-    private final static int BUFFER_SIZE = 12 * 1024;
+    private static final int BUFFER_SIZE = 12 * 1024;
+
     public static long copy(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
         long size = 0;
