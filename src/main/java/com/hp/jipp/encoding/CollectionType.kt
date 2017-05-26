@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.google.common.collect.ImmutableList
 import com.hp.jipp.util.ParseError
 
 import java.io.DataInputStream
@@ -45,7 +44,7 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): AttributeCollection {
                 input.skipValueBytes()
-                val builder = ImmutableList.Builder<Attribute<*>>()
+                val builder = ArrayList<Attribute<*>>()
 
                 // Read attribute pairs until EndCollection is reached.
                 while (true) {
@@ -68,7 +67,7 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
                         throw ParseError("Bad tag in collection: " + tag)
                     }
                 }
-                return AttributeCollection(builder.build())
+                return AttributeCollection(builder)
             }
 
             override fun valid(valueTag: Tag): Boolean {

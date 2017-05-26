@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
@@ -78,7 +77,7 @@ public class IppClientTest {
             DataOutputStream out = new DataOutputStream(new ByteArrayOutputStream());
             packet.write(out);
 
-            List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+            List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 
             // First 2 Operation Attributes must ALWAYS be charset/natlang
             assertEquals(Attributes.AttributesCharset.of("utf-8"), attributes.get(0));
@@ -98,7 +97,7 @@ public class IppClientTest {
         printer = client.getPrinterAttributes(uuid, printerUri);
         System.out.println(printer);
 
-        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 
         // First 3 attributes must be charset/natlang/printeruri
         assertEquals(Attributes.AttributesCharset.of("utf-8"), attributes.get(0));
@@ -113,7 +112,7 @@ public class IppClientTest {
         printer = client.getPrinterAttributes(uuid, ImmutableList.of(printerUri));
         assertEquals(Operation.GetPrinterAttributes, request.getOperation());
         assertEquals(printer.getUri(), sendUri);
-        assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo).get());
+        assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo));
     }
 
     @Test
@@ -165,8 +164,8 @@ public class IppClientTest {
                 AttributeGroup.Companion.of(Tag.JobAttributes,
                         Attributes.JobId.of(3), Attributes.JobState.of(JobState.PendingHeld)));
         List<Job> jobs = client.getJobs(printer);
-        assertEquals(Integer.valueOf(2), jobs.get(0).getAttributes().getValue(Attributes.JobId).get());
-        assertEquals(Integer.valueOf(3), jobs.get(1).getAttributes().getValue(Attributes.JobId).get());
+        assertEquals(Integer.valueOf(2), jobs.get(0).getAttributes().getValue(Attributes.JobId));
+        assertEquals(Integer.valueOf(3), jobs.get(1).getAttributes().getValue(Attributes.JobId));
     }
 
 
@@ -178,7 +177,7 @@ public class IppClientTest {
                         Attributes.PrinterStateMessage.of("it's complicated")));
         PrinterStatus status = client.getPrinterStatus(printer);
         System.out.println(status);
-        assertEquals("it's complicated", status.getMessage().get());
+        assertEquals("it's complicated", status.getMessage());
         assertEquals(ImmutableList.of("bored", "tired"), status.getReasons());
         assertEquals(PrinterState.Stopped, status.getState());
     }
@@ -187,8 +186,8 @@ public class IppClientTest {
     public void identifyPrinter() throws Exception {
         response = Packet.of(Status.Ok, 0x01);
         client.identifyPrinter(printer, IdentifyAction.Sound, "happy-tune");
-        assertEquals(IdentifyAction.Sound, request.getValue(Tag.OperationAttributes, Attributes.IdentifyActions).get());
-        assertEquals("happy-tune", request.getValue(Tag.OperationAttributes, Attributes.Message).get());
+        assertEquals(IdentifyAction.Sound, request.getValue(Tag.OperationAttributes, Attributes.IdentifyActions));
+        assertEquals("happy-tune", request.getValue(Tag.OperationAttributes, Attributes.Message));
     }
 
     @Test
@@ -220,7 +219,7 @@ public class IppClientTest {
         assertEquals(101, job.getId());
         assertEquals(JobState.Processing, job.getStatus().getState());
         assertEquals(ImmutableList.of("none"), job.getStatus().getReasons());
-        assertEquals(Optional.absent(), job.getStatus().getMessage());
+        assertNull(job.getStatus().getMessage());
     }
 
     @Test
@@ -255,7 +254,7 @@ public class IppClientTest {
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.sendDocument(job);
         assertEquals("document",
-                request.getAttributeGroup(Tag.OperationAttributes).get().getValues(Attributes.DocumentName).get(0));
+                request.getAttributeGroup(Tag.OperationAttributes).getValues(Attributes.DocumentName).get(0));
         assertEquals(JobState.Processing, job.getStatus().getState());
     }
 
@@ -292,7 +291,7 @@ public class IppClientTest {
                 Attributes.PrinterInfo.of("printername")));
         printer = client.getPrinterAttributes(uuid, printerUri);
 
-        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 
         // 4th attribute is username
         assertEquals(Attributes.RequestingUserName.of("anonymous"), attributes.get(3));
@@ -305,7 +304,7 @@ public class IppClientTest {
         client.setUserName("donald_duck");
         printer = client.getPrinterAttributes(uuid, printerUri);
 
-        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).get().getAttributes();
+        List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 
         // 4th attribute is username
         assertEquals(Attributes.RequestingUserName.of("donald_duck"), attributes.get(3));

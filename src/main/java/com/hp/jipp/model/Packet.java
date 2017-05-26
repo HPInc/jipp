@@ -2,7 +2,6 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
@@ -14,6 +13,8 @@ import com.hp.jipp.util.ParseError;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Pretty;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 
 /**
  * A request packet as specified in RFC2910.
@@ -190,28 +191,24 @@ public abstract class Packet {
 
 
     /** Returns the first attribute with the specified delimiter */
-    public Optional<AttributeGroup> getAttributeGroup(Tag delimiter) {
+    @Nullable public AttributeGroup getAttributeGroup(Tag delimiter) {
         for (AttributeGroup group : getAttributeGroups()) {
-            if (group.getTag() == delimiter) return Optional.of(group);
+            if (group.getTag() == delimiter) return group;
         }
-        return Optional.absent();
+        return null;
     }
 
     /** Return a value from the specified group if present */
-    public <T> Optional<T> getValue(Tag groupDelimiter, AttributeType<T> attributeType) {
-        Optional<AttributeGroup> group = getAttributeGroup(groupDelimiter);
-        if (group.isPresent()) {
-            return group.get().getValue(attributeType);
-        }
-        return Optional.absent();
+    @Nullable public <T> T getValue(Tag groupDelimiter, AttributeType<T> attributeType) {
+        AttributeGroup group = getAttributeGroup(groupDelimiter);
+        if (group == null) return null;
+        else return group.getValue(attributeType);
     }
 
     public <T> List<T> getValues(Tag groupDelimiter, AttributeType<T> attributeType) {
-        Optional<AttributeGroup> group = getAttributeGroup(groupDelimiter);
-        if (group.isPresent()) {
-            return group.get().getValues(attributeType);
-        }
-        return ImmutableList.of();
+        AttributeGroup group = getAttributeGroup(groupDelimiter);
+        if (group == null) return ImmutableList.of();
+        return group.getValues(attributeType);
     }
 
     /** Write the contents of this object to the output stream as per RFC2910 */
@@ -247,7 +244,7 @@ public abstract class Packet {
                 ")";
     }
 
-    public String prettyPrint(int maxWidth, String indent) {
+    String prettyPrint(int maxWidth, String indent) {
         Pretty.Printer printer = Pretty.printer(prefix(), Pretty.OBJECT, indent, maxWidth);
         printer.addAll(getAttributeGroups());
         return printer.print();

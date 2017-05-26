@@ -22,12 +22,12 @@ public class BinaryTest {
     public void scanNames() throws Exception {
         for (File binFile : getBinFiles()) {
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
-            if (packet.getAttributeGroup(Tag.PrinterAttributes).isPresent()) {
-                System.out.println("For " + binFile);
-                System.out.println("Printer info=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
-                        " name=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
-                        " uris= " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
-            }
+            if (packet.getAttributeGroup(Tag.PrinterAttributes) == null) continue;
+
+            System.out.println("For " + binFile);
+            System.out.println("Printer info=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
+                    " name=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
+                    " uris= " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
         }
     }
 
@@ -41,9 +41,9 @@ public class BinaryTest {
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
             System.out.println(packet.prettyPrint(200, "  "));
 
-            Optional<?> inputTray = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterInputTray);
-            Optional<?> printerAlert = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterAlert);
-            if (!inputTray.isPresent() && !printerAlert.isPresent()) {
+            Object inputTray = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterInputTray);
+            Object printerAlert = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterAlert);
+            if (inputTray == null && printerAlert == null) {
                 // TODO: Deal with the fact that device encoding differs slightly for some of these items,
                 // (terminating ; anyone?) causing binary mismatch.
                 assertArrayEquals(bytes, PacketTest.getBytes(packet));

@@ -1,7 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.google.common.base.Optional
-
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -13,14 +11,10 @@ import java.io.IOException
  */
 class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCODER, tag, name) {
 
-    // TODO: Return ? type
-    override fun of(attribute: Attribute<*>): Optional<Attribute<String>> {
+    override fun of(attribute: Attribute<*>): Attribute<String>? =
         if (!(attribute.valueTag == Tag.NameWithLanguage && tag == Tag.NameWithoutLanguage) ||
-                attribute.valueTag == Tag.TextWithLanguage && tag == Tag.TextWithoutLanguage) {
-            return Optional.absent<Attribute<String>>()
-        }
-        return Optional.of(of(attribute.values.map { (it as LangString).string }))
-    }
+                attribute.valueTag == Tag.TextWithLanguage && tag == Tag.TextWithoutLanguage) null
+        else of(attribute.values.map { (it as LangString).string })
 
     companion object {
         private val TYPE_NAME = "String"

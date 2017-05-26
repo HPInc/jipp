@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.google.common.base.Optional
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.Hook
 
@@ -29,15 +28,13 @@ open class AttributeType<T>(val encoder: Attribute.BaseEncoder<T>, val tag: Tag,
     }
 
     /** If possible, convert the supplied attribute into an attribute of this type. */
-    // TODO: Optional -> Attribute<T>? type
-    open fun of(attribute: Attribute<*>): Optional<Attribute<T>> {
+    open fun of(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.encoder === encoder) {
-            return Optional.of(of(attribute.values.map {
+            of(attribute.values.map {
                 @Suppress("UNCHECKED_CAST")
                 it as T
-            }))
+            })
         } else {
-            return Optional.absent<Attribute<T>>()
+            null
         }
-    }
 }

@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.BuildError;
@@ -186,17 +185,17 @@ public class AttributeTest {
                 2,
                 0,
         };
-        Attribute.readValueBytes2(new DataInputStream(new ByteArrayInputStream(bytes)));
+        IppEncodingsKt.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
     }
 
     @Test
     public void badConversion() throws IOException {
-        assertEquals(Optional.absent(), Attributes.JobId.of(Attributes.JobName.of("string")));
+        assertNull(Attributes.JobId.of(Attributes.JobName.of("string")));
     }
 
     @Test
     public void goodConversion() throws IOException {
-        assertEquals(Optional.of(Attributes.JobId.of(1)),
+        assertEquals(Attributes.JobId.of(1),
                 Attributes.JobId.of(new IntegerType(Tag.IntegerValue, "job-id").of(1)));
     }
 

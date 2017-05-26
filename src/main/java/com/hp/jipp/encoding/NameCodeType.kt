@@ -1,11 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.google.auto.value.AutoValue
-import com.google.common.base.Function
-import com.google.common.base.Optional
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableMap
-import com.google.common.collect.Lists
 import com.hp.jipp.util.Util
 
 import java.io.DataInputStream
@@ -20,11 +14,8 @@ class NameCodeType<T : NameCode>(val nameCodeEncoder: NameCodeType.Encoder<T>, n
                                      val factory: NameCode.Factory<T>) : Attribute.BaseEncoder<T>() {
 
         /** Returns a known enum, or creates a new instance if not found  */
-        operator fun get(code: Int): T {
-            val e = Optional.fromNullable(map[code])
-            if (e.isPresent) return e.get()
-            return factory.of(type + "(x" + Integer.toHexString(code) + ")", code)
-        }
+        operator fun get(code: Int): T =
+            map[code] ?: factory.of("$type(x${Integer.toHexString(code)})", code)
 
         @Throws(IOException::class)
         override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T {
@@ -58,8 +49,8 @@ class NameCodeType<T : NameCode>(val nameCodeEncoder: NameCodeType.Encoder<T>, n
         }
     }
 
-    override fun of(attribute: Attribute<*>): Optional<Attribute<T>> {
-        if (attribute.valueTag !== Tag.EnumValue) return Optional.absent<Attribute<T>>()
-        return Optional.of(of(attribute.values.filter { it is Int }.map { nameCodeEncoder[it as Int] } ))
-    }
+    override fun of(attribute: Attribute<*>): Attribute<T>? =
+        if (attribute.valueTag !== Tag.EnumValue) null
+        else of(attribute.values.filter { it is Int }
+                .map { nameCodeEncoder[it as Int] } )
 }

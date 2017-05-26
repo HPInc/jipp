@@ -4,7 +4,6 @@ import static com.hp.jipp.encoding.Cycler.*;
 
 import static org.junit.Assert.*;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
@@ -87,7 +86,7 @@ public class AttributeCollectionTest {
                         .values(xDimensionType).get(0));
 
         // Make sure we're covering some empty cases
-        assertFalse(mediaCol.getValues().get(0).get(xDimensionType).isPresent());
+        assertNull(mediaCol.getValues().get(0).get(xDimensionType));
         assertEquals(0, mediaCol.getValues().get(0).values(xDimensionType).size());
 
         // Output is helpful for inspection
@@ -108,14 +107,14 @@ public class AttributeCollectionTest {
 
                         ));
 
-        assertEquals(colorType.of("blue"), collection.get(colorType).get());
-        assertEquals(Optional.absent(), collection.get(new StringType(Tag.Keyword, "media-not-color")));
+        assertEquals(colorType.of("blue"), collection.get(colorType));
+        assertNull(collection.get(new StringType(Tag.Keyword, "media-not-color")));
     }
 
     @Test
     public void emptyCollection() {
         AttributeCollection collection = new AttributeCollection();
-        assertEquals(Optional.absent(), collection.get(colorType));
+        assertNull(collection.get(colorType));
     }
 
     @Test

@@ -6,6 +6,8 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+// Encodings to assist in reading/writing IPP to streams
+
 @Throws(IOException::class)
 fun DataOutputStream.writeValueBytes(bytes: ByteArray) {
     this.writeShort(bytes.size)

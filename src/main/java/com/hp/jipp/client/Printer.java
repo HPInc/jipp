@@ -1,7 +1,6 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
 
@@ -36,8 +35,8 @@ public abstract class Printer {
 
     /** Return the printer's "info" field or a blank string */
     public String getInfo() {
-        Optional<String> info = getAttributes().getValue(Attributes.PrinterInfo);
-        return info.isPresent() ? info.get() : "";
+        String info = getAttributes().getValue(Attributes.PrinterInfo);
+        return info == null ? "" : info;
     }
 
     @Override

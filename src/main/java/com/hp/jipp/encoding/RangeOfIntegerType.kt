@@ -1,32 +1,29 @@
 package com.hp.jipp.encoding
 
-import com.google.common.collect.Range
-
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
 class RangeOfIntegerType(name: String) :
-        AttributeType<Range<Int>>(ENCODER, Tag.RangeOfInteger, name) {
+        AttributeType<IntRange>(ENCODER, Tag.RangeOfInteger, name) {
     companion object {
         private val TYPE_NAME = "RangeOfInteger"
 
-        @JvmField val ENCODER: Attribute.SimpleEncoder<Range<Int>> = object : Attribute.SimpleEncoder<Range<Int>>(TYPE_NAME) {
+        @JvmField val ENCODER: Attribute.SimpleEncoder<IntRange> = object : Attribute.SimpleEncoder<IntRange>(TYPE_NAME) {
             @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, valueTag: Tag): Range<Int> {
+            override fun readValue(input: DataInputStream, valueTag: Tag): IntRange {
                 input.takeLength(8)
                 val low = input.readInt()
                 val high = input.readInt()
-                return Range.closed(low, high)
+                return IntRange(low, high) // vs Closed range
             }
 
             @Throws(IOException::class)
-            override fun writeValue(out: DataOutputStream, value: Range<Int>) {
+            override fun writeValue(out: DataOutputStream, value: IntRange) {
                 out.writeShort(8)
-                out.writeInt(value.lowerEndpoint())
-                out.writeInt(value.upperEndpoint())
+                out.writeInt(value.first)
+                out.writeInt(value.last)
             }
-
             override fun valid(valueTag: Tag) = valueTag === Tag.RangeOfInteger
         }
     }

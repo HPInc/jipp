@@ -270,7 +270,7 @@ public class PacketTest {
         assertEquals(Operation.GetJobAttributes, packet.getOperation());
         assertEquals(0x1010, packet.getRequestId());
         assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getTag());
-        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset).get();
+        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset);
         assertEquals(ImmutableList.of("US-ASCII", "UTF-8"), attribute.getValues());
     }
 
@@ -280,16 +280,13 @@ public class PacketTest {
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
         // Wrong group
-        assertEquals(Optional.absent(),
-                packet.getValue(Tag.JobAttributes, Attributes.AttributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.JobAttributes, Attributes.AttributesNaturalLanguage));
 
         // Wrong attr
-        assertEquals(Optional.absent(),
-                packet.getValue(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
 
         // All good!
-        assertEquals(Optional.of("US-ASCII"),
-                packet.getValue(Tag.OperationAttributes, Attributes.AttributesCharset));
+        assertEquals("US-ASCII", packet.getValue(Tag.OperationAttributes, Attributes.AttributesCharset));
     }
 
     @Test

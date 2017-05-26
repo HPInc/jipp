@@ -1,7 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.google.common.base.Optional
-import com.google.common.collect.Lists
 import com.hp.jipp.util.BuildError
 
 import java.io.ByteArrayInputStream
@@ -13,14 +11,14 @@ import java.io.IOException
 /** An language-encoded string attribute type  */
 class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStringType.ENCODER, tag, name) {
 
-    override fun of(attribute: Attribute<*>): Optional<Attribute<LangString>> {
+    override fun of(attribute: Attribute<*>): Attribute<LangString>? {
         if (!(attribute.valueTag == Tag.NameWithoutLanguage && tag == Tag.NameWithLanguage) ||
                 attribute.valueTag == Tag.TextWithoutLanguage && tag == Tag.TextWithLanguage) {
-            return Optional.absent<Attribute<LangString>>()
+            return null
         }
         // TODO: If we don't know the language this is actually a dangerous thing to do
         // Apply conversion from StringType to a LangStringType on demand
-        return Optional.of(of(attribute.values.map { LangString(it as String) }))
+        return of(attribute.values.map { LangString(it as String) })
     }
 
     companion object {
@@ -42,11 +40,8 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
             override fun writeValue(out: DataOutputStream, value: LangString) {
                 val bytesOut = ByteArrayOutputStream()
                 val dataOut = DataOutputStream(bytesOut)
-                val lang = value.lang
-                if (!lang.isPresent) {
-                    throw BuildError("Cannot write a LangString without a language")
-                }
-                dataOut.writeString(lang.get())
+                value.lang ?: throw BuildError("Cannot write a LangString without a language")
+                dataOut.writeString(value.lang)
                 dataOut.writeString(value.string)
                 OctetStringType.ENCODER.writeValue(out, bytesOut.toByteArray())
             }

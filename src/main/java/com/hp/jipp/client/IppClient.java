@@ -83,9 +83,9 @@ public class IppClient {
                         Attributes.PrinterUri.of(printerUri),
                         Attributes.RequestingUserName.of(mUserName)));
         Packet response = mTransport.send(printerUri, request);
-        Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
-            return Printer.of(printerUuid, printerUri, printerAttributes.get());
+        AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+        if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
+            return Printer.of(printerUuid, printerUri, printerAttributes);
         } else {
             throw new IOException("No printer attributes in response");
         }
@@ -110,9 +110,9 @@ public class IppClient {
                 AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes.build()));
 
         Packet response = mTransport.send(printer.getUri(), request);
-        Optional<AttributeGroup> printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getStatus().equals(Status.Ok) && printerAttributes.isPresent()) {
-            return PrinterStatus.of(printerAttributes.get());
+        AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+        if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
+            return PrinterStatus.of(printerAttributes);
         } else {
             throw new IOException("No printer-attributes from " + printer);
         }
@@ -179,19 +179,19 @@ public class IppClient {
     }
 
     private Job toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
-        Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
-        if (!group.isPresent()) {
+        AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
+        if (group == null) {
             throw new IOException("Missing job-attributes in response from " + jobRequest.getPrinter());
         }
-        return Job.of(getJobId(group.get(), jobRequest.getPrinter()), jobRequest, group.get());
+        return Job.of(getJobId(group, jobRequest.getPrinter()), jobRequest, group);
     }
 
     private int getJobId(AttributeGroup group, Printer printer) throws IOException {
-        Optional<Integer> jobId = group.getValue(Attributes.JobId);
-        if (!jobId.isPresent()) {
+        Integer jobId = group.getValue(Attributes.JobId);
+        if (jobId == null) {
             throw new IOException("Missing job-id job response from " + printer);
         }
-        return jobId.get();
+        return jobId;
     }
 
     /**
@@ -241,9 +241,9 @@ public class IppClient {
                 }).build();
 
         Packet response = mTransport.send(printerUri, request);
-        Optional<AttributeGroup> group = response.getAttributeGroup(Tag.JobAttributes);
-        if (!group.isPresent()) throw new IOException("Missing job attributes");
-        return job.withAttributes(group.get());
+        AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
+        if (group == null) throw new IOException("Missing job attributes");
+        return job.withAttributes(group);
     }
 
     /**
@@ -296,10 +296,10 @@ public class IppClient {
                         Attributes.JobId.of(job.getId()),
                         Attributes.RequestingUserName.of(mUserName),
                         Attributes.RequestedAttributes.of(JobStatus.getAttributeNames())));
-        Optional<AttributeGroup> jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
+        AttributeGroup jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
                 .getAttributeGroup(Tag.JobAttributes);
-        if (!jobAttributes.isPresent()) throw new IOException("Missing job attributes");
-        return job.withStatus(JobStatus.of(jobAttributes.get()));
+        if (jobAttributes == null) throw new IOException("Missing job attributes");
+        return job.withStatus(JobStatus.of(jobAttributes));
     }
 
     /** Send a print job cancellation request */

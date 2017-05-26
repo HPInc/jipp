@@ -1,7 +1,6 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
@@ -9,6 +8,8 @@ import com.hp.jipp.model.JobState;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class JobStatus {
@@ -22,9 +23,10 @@ public abstract class JobStatus {
     }
 
     static JobStatus of(AttributeGroup attributes) throws IOException {
-        Optional<JobState> state = attributes.getValue(Attributes.JobState);
-        if (!state.isPresent()) throw new IOException("Missing " + Attributes.JobState.getName());
-        return new AutoValue_JobStatus(state.get(), attributes.getValues(Attributes.JobStateReasons),
+        JobState state = attributes.getValue(Attributes.JobState);
+        if (state == null) throw new IOException("Missing " + Attributes.JobState.getName());
+        return new AutoValue_JobStatus(state,
+                attributes.getValues(Attributes.JobStateReasons),
                 attributes.getValue(Attributes.JobStateMessage),
                 attributes.getValues(Attributes.JobDetailedStatusMessages));
     }
@@ -33,17 +35,15 @@ public abstract class JobStatus {
 
     public abstract List<String> getReasons();
 
-    public abstract Optional<String> getMessage();
+    @Nullable public abstract String getMessage();
 
     public abstract List<String> getDetailedMessages();
 
     @Override
     public String toString() {
-        Optional<String> message = getMessage();
-
         return "JobStatus{state=" + getState().getName() +
                 (getReasons().isEmpty() ? "" : " r=" + getReasons()) +
-                (message.isPresent() && !message.get().isEmpty() ? " m=" + message.get() : "") +
+                (getMessage() == null ? "" : "m+" + getMessage()) +
                 (getDetailedMessages().isEmpty() ? "" : " x=" + getDetailedMessages()) +
                 "}";
     }

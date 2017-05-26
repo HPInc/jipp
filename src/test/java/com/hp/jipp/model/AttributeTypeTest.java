@@ -1,14 +1,11 @@
 package com.hp.jipp.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Range;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IntegerType;
@@ -18,6 +15,11 @@ import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
 import static com.hp.jipp.encoding.Cycler.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import kotlin.ranges.IntRange;
 
 public class AttributeTypeTest {
 
@@ -34,7 +36,7 @@ public class AttributeTypeTest {
     public void naturalLanguage() throws Exception {
         Attribute<String> attribute = cycle(Attributes.AttributesNaturalLanguage,
                 Attributes.AttributesNaturalLanguage.of("en"));
-        assertEquals(ImmutableList.of("en"), attribute.getValues());
+        assertEquals(Collections.singletonList("en"), attribute.getValues());
     }
 
     @Test
@@ -42,8 +44,8 @@ public class AttributeTypeTest {
         AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.OperationAttributes,
                 Attributes.AttributesNaturalLanguage.of("en")));
 
-        Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage).get();
-        assertEquals(ImmutableList.of("en"), attribute.getValues());
+        Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage);
+        assertEquals(Collections.singletonList("en"), attribute.getValues());
     }
 
     @Test
@@ -57,15 +59,15 @@ public class AttributeTypeTest {
     public void ignoreBadNameNaturalLanguage() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.OperationAttributes,
                 new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").of("en")));
-        assertFalse(group.get(Attributes.AttributesNaturalLanguage).isPresent());
+        assertNull(group.get(Attributes.AttributesNaturalLanguage));
     }
 
     @Test
     public void enumAttributeType() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(Operation.CancelJob, Operation.CreateJob)));
-        assertEquals(ImmutableList.of(Operation.CancelJob, Operation.CreateJob),
-                group.get(Attributes.OperationsSupported).get().getValues());
+        assertEquals(Arrays.asList(Operation.CancelJob, Operation.CreateJob),
+                group.get(Attributes.OperationsSupported).getValues());
     }
 
     @Test
@@ -83,10 +85,9 @@ public class AttributeTypeTest {
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        Range range = cycle(Attributes.CopiesSupported.of(ImmutableList.of(Range.closed(0, 99))))
-                .getValue(0);
-        assertEquals(0, range.lowerEndpoint());
-        assertEquals(99, range.upperEndpoint());
+        IntRange range = cycle(Attributes.CopiesSupported.of(new IntRange(0, 99))).getValue(0);
+        assertEquals(0, range.getFirst());
+        assertEquals(99, range.getLast());
     }
 
     @Test
@@ -97,5 +98,4 @@ public class AttributeTypeTest {
         assertEquals(600, resolution.getFeedResolution());
         assertEquals(ResolutionUnit.DotsPerInch, resolution.getUnit());
     }
-
 }

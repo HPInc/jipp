@@ -34,9 +34,9 @@ public class AttributeGroupTest {
         group = cycle(group);
 
         assertEquals(group.getTag(), Tag.OperationAttributes);
-        assertTrue(group.get(Attributes.AttributesCharset).isPresent());
-        assertTrue(group.get(Attributes.AttributesNaturalLanguage).isPresent());
-        assertTrue(group.get(Attributes.PrinterUri).isPresent());
+        assertNotNull(group.get(Attributes.AttributesCharset));
+        assertNotNull(group.get(Attributes.AttributesNaturalLanguage));
+        assertNotNull(group.get(Attributes.PrinterUri));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AttributeGroupTest {
         // If I don't care about the language encoding:
         LangStringType jobNameLang = new LangStringType(Tag.NameWithLanguage, "job-name");
         assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
-        assertEquals(Optional.absent(),group.getValues(jobNameLang).get(0).getLang());
+        assertNull(group.getValues(jobNameLang).get(0).getLang());
     }
 
     @Test
@@ -105,8 +105,8 @@ public class AttributeGroupTest {
 
         AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes, jobConstraints));
         System.out.println(group);
-        assertEquals(MediaSize.NaLetter, group.getValue(jobConstraintsSupported).get().values(Attributes.Media).get(0));
-        assertEquals(MediaSize.IsoA4, group.getValue(jobConstraintsSupported).get().values(Attributes.Media).get(1));
+        assertEquals(MediaSize.NaLetter, group.getValue(jobConstraintsSupported).values(Attributes.Media).get(0));
+        assertEquals(MediaSize.IsoA4, group.getValue(jobConstraintsSupported).values(Attributes.Media).get(1));
     }
 
     @Test
@@ -115,6 +115,5 @@ public class AttributeGroupTest {
         KotlinTest.cover(group,
                 group.copy(group.component1(), group.component2()),
                 group.copy(group.component1(), ImmutableList.of(Attributes.JobName.of("name"))));
-
     }
 }

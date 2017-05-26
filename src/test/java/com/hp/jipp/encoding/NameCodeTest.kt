@@ -6,7 +6,6 @@ import org.junit.Assert.*
 
 import com.hp.jipp.encoding.Cycler.*
 
-import com.google.common.collect.ImmutableList
 import com.hp.jipp.util.KotlinTest
 import org.hamcrest.CoreMatchers.*
 
@@ -37,14 +36,14 @@ class NameCodeTest {
     @Test
     @Throws(Exception::class)
     fun sample() {
-        assertEquals(ImmutableList.of(Sample.One), cycle(MySample, MySample.of(Sample.One)).values)
+        assertEquals(listOf(Sample.One), cycle(MySample, MySample.of(Sample.One)).values)
         assertThat(NameCode.allFrom<Sample>(Sample::class.java), hasItems(Sample.One, Sample.Two, Sample.Three))
     }
 
     @Test
     @Throws(Exception::class)
     fun fetchFromGroup() {
-        assertEquals(ImmutableList.of(Sample.Two, Sample.Three),
+        assertEquals(listOf(Sample.Two, Sample.Three),
                 cycle(AttributeGroup.of(Tag.JobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample))
     }
 
