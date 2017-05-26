@@ -1,8 +1,9 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.hp.jipp.encoding.AttributeGroup;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -10,12 +11,12 @@ import java.io.IOException;
 public abstract class Job {
 
     static Job of(int id, Printer printer, AttributeGroup jobAttributes) throws IOException {
-        return new AutoValue_Job(id, printer, Optional.<JobRequest>absent(), jobAttributes,
+        return new AutoValue_Job(id, printer, null, jobAttributes,
                 JobStatus.of(jobAttributes));
     }
 
     static Job of(int id, JobRequest jobRequest, AttributeGroup jobAttributes) throws IOException {
-        return new AutoValue_Job(id, jobRequest.getPrinter(), Optional.of(jobRequest), jobAttributes,
+        return new AutoValue_Job(id, jobRequest.getPrinter(), jobRequest, jobAttributes,
                 JobStatus.of(jobAttributes));
     }
 
@@ -24,7 +25,7 @@ public abstract class Job {
     public abstract Printer getPrinter();
 
     /** Original job request, if accessible */
-    public abstract Optional<JobRequest> getJobRequest();
+    @Nullable public abstract JobRequest getJobRequest();
 
     /** Printer-supplied attributes for the job */
     public abstract AttributeGroup getAttributes();

@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.IdentifyAction;
@@ -109,7 +110,7 @@ public class IppClientTest {
     public void getPrinterAttributesResult() throws IOException {
         response = Packet.of(Status.Ok, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
-        printer = client.getPrinterAttributes(uuid, ImmutableList.of(printerUri));
+        printer = client.getPrinterAttributes(uuid, Arrays.asList(printerUri));
         assertEquals(Operation.GetPrinterAttributes, request.getOperation());
         assertEquals(printer.getUri(), sendUri);
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo));
@@ -131,7 +132,7 @@ public class IppClientTest {
         response = Packet.of(Status.ServerErrorBusy, 0x01, AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername")));
 
-        List<URI> uris = ImmutableList.of(printerUri, printerUri2);
+        List<URI> uris = Arrays.asList(printerUri, printerUri2);
         // Throw because what else
         exception.expect(IOException.class);
         exception.expectMessage("Fail after trying uris " + uris);
@@ -143,7 +144,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("No printer URIs present");
-        printer = client.getPrinterAttributes(uuid, ImmutableList.<URI>of());
+        printer = client.getPrinterAttributes(uuid, Collections.<URI>emptyList());
     }
 
     @Test
@@ -178,7 +179,7 @@ public class IppClientTest {
         PrinterStatus status = client.getPrinterStatus(printer);
         System.out.println(status);
         assertEquals("it's complicated", status.getMessage());
-        assertEquals(ImmutableList.of("bored", "tired"), status.getReasons());
+        assertEquals(Arrays.asList("bored", "tired"), status.getReasons());
         assertEquals(PrinterState.Stopped, status.getState());
     }
 
@@ -218,7 +219,7 @@ public class IppClientTest {
         job = client.printJob(jobRequest);
         assertEquals(101, job.getId());
         assertEquals(JobState.Processing, job.getStatus().getState());
-        assertEquals(ImmutableList.of("none"), job.getStatus().getReasons());
+        assertEquals(Arrays.asList("none"), job.getStatus().getReasons());
         assertNull(job.getStatus().getMessage());
     }
 
@@ -228,7 +229,7 @@ public class IppClientTest {
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing)));
         job = client.createJob(jobRequest);
         assertEquals(111, job.getId());
-        job.getJobRequest().get().getDocument();
+        job.getJobRequest().getDocument();
     }
 
     @Test

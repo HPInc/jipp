@@ -1,7 +1,5 @@
 package com.hp.jipp.util;
 
-import com.google.common.base.Joiner;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +80,7 @@ public final class Pretty {
             }
             out.append(style.opener);
             out.append(style.spacer);
-            out.append(Joiner.on(style.separator + style.spacer).join(items));
+            out.append(Strings.join(style.separator + style.spacer, items));
             out.append(style.spacer);
             out.append(style.closer);
             return out.toString();
@@ -134,7 +132,7 @@ public final class Pretty {
             } else {
                 out.append(NEWLINE);
                 out.append(indent);
-                out.append(Joiner.on(style.separator + NEWLINE + indent).join(items));
+                out.append(Strings.join(style.separator + NEWLINE + indent, items));
             }
             out.append(style.spacer);
             out.append(style.closer);

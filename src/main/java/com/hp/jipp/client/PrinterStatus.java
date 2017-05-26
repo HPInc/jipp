@@ -5,10 +5,10 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.PrinterState;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 // All interesting status fields of a printer
 @AutoValue

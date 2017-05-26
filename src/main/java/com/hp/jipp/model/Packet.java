@@ -1,14 +1,11 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.io.ByteStreams;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.NameCode;
 import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.util.Bytes;
 import com.hp.jipp.util.ParseError;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Pretty;
@@ -19,12 +16,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 
 /**
  * A request packet as specified in RFC2910.
@@ -39,7 +36,7 @@ public abstract class Packet {
     /** Construct and return a builder for creating packets */
     public static Builder builder() {
         return new AutoValue_Packet.Builder().setVersionNumber(DEFAULT_VERSION_NUMBER)
-                .setAttributeGroups(ImmutableList.<AttributeGroup>of()).setData(EMPTY_DATA);
+                .setAttributeGroups(Collections.<AttributeGroup>emptyList()).setData(EMPTY_DATA);
     }
 
     /** Construct and return a builder based on an existing packet */
@@ -62,18 +59,13 @@ public abstract class Packet {
         return builder(code, requestId).setAttributeGroups(Arrays.asList(groups)).build();
     }
 
-    private static Function<? super AttributeType<?>, String> sAttributeNameProjector =
-            new Function<AttributeType<?>, String>() {
-                @Override
-                public String apply(@Nonnull AttributeType<?> input) {
-                    return input.getName();
-                }
-            };
-
     /** Return a parser with knowledge of specified attribute types */
     public static Parser parserOf(List<AttributeType<?>> attributeTypes) {
-        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(attributeTypes,
-                sAttributeNameProjector);
+
+        final Map<String, AttributeType<?>> attributeTypeMap = new HashMap<>();
+        for (AttributeType<?> attributeType : attributeTypes) {
+            attributeTypeMap.put(attributeType.getName(), attributeType);
+        }
         return new Parser() {
             @Override
             public Packet parse(DataInputStream in) throws IOException {
@@ -90,8 +82,7 @@ public abstract class Packet {
 
         Packet.Builder builder = builder().setVersionNumber(in.readShort())
                 .setCode(in.readShort()).setRequestId(in.readInt());
-        ImmutableList.Builder<AttributeGroup> attributeGroupsBuilder =
-                new ImmutableList.Builder<>();
+        List<AttributeGroup> attributeGroups = new ArrayList<>();
 
         boolean moreAttributes = true;
         while (moreAttributes) {
@@ -105,12 +96,12 @@ public abstract class Packet {
                 moreAttributes = false;
             } else if (tag.isDelimiter()) {
                 AttributeGroup attributeGroup = AttributeGroup.Companion.read(tag, attributeTypes, in);
-                attributeGroupsBuilder.add(attributeGroup);
+                attributeGroups.add(attributeGroup);
             } else {
                 throw new ParseError("Illegal delimiter " + tag);
             }
         }
-        builder.setAttributeGroups(attributeGroupsBuilder.build());
+        builder.setAttributeGroups(attributeGroups);
         return builder.build();
     }
 
@@ -207,7 +198,7 @@ public abstract class Packet {
 
     public <T> List<T> getValues(Tag groupDelimiter, AttributeType<T> attributeType) {
         AttributeGroup group = getAttributeGroup(groupDelimiter);
-        if (group == null) return ImmutableList.of();
+        if (group == null) return Collections.emptyList();
         return group.getValues(attributeType);
     }
 
@@ -225,7 +216,7 @@ public abstract class Packet {
         InputStreamFactory factory = getInputStreamFactory();
         if (factory != null) {
             try (InputStream in = factory.createInputStream()) {
-                ByteStreams.copy(in, out);
+                Bytes.copy(in, out);
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.hp.jipp.model;
 
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
@@ -14,6 +13,7 @@ import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
 import com.hp.jipp.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** A library of attribute types as defined by RFC2911 */
@@ -170,12 +170,12 @@ public final class Attributes {
 
     /** Return all accessible static members of the specified class which are AttributeType objects */
     public static List<AttributeType<?>> staticMembers(Class<?> cls) {
-        ImmutableList.Builder<AttributeType<?>> members = new ImmutableList.Builder<>();
+        List<AttributeType<?>> members = new ArrayList<>();
         for (Object object : Util.getStaticObjects(cls)) {
             if (object instanceof AttributeType<?>) {
                 members.add((AttributeType<?>) object);
             }
         }
-        return members.build();
+        return members;
     }
 }

@@ -2,18 +2,16 @@ package com.hp.jipp.model;
 
 import org.junit.Test;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Iterables;
-import com.google.common.io.Files;
 import com.hp.jipp.encoding.Tag;
+import com.hp.jipp.util.Bytes;
 
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BinaryTest {
     private Packet.Parser parser = Packet.parserOf(Attributes.All);
@@ -21,7 +19,7 @@ public class BinaryTest {
     @Test
     public void scanNames() throws Exception {
         for (File binFile : getBinFiles()) {
-            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Files.toByteArray(binFile))));
+            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Bytes.read(binFile))));
             if (packet.getAttributeGroup(Tag.PrinterAttributes) == null) continue;
 
             System.out.println("For " + binFile);
@@ -35,7 +33,8 @@ public class BinaryTest {
     public void cycleBinaries() throws Exception {
         // For each bin file cycle and print
         for (File binFile : getBinFiles()) {
-            byte[] bytes = Files.toByteArray(binFile);
+            byte[] bytes = Bytes.read(binFile);
+
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
@@ -51,31 +50,39 @@ public class BinaryTest {
         }
     }
 
-    private Iterable<File> getBinFiles() {
+    private List<File> getBinFiles() {
         File printerDir = new File(getClass().getResource("/printer").getPath());
         assertTrue(printerDir.isDirectory());
-        return Iterables.filter(Files.fileTreeTraverser().breadthFirstTraversal(printerDir),
-                new Predicate<File>() {
-                    @Override
-                    public boolean apply(File file) {
-                        return file.getName().endsWith(".bin");
-                    }
-                });
+
+        List<File> files = new ArrayList<>();
+        getBinFiles(files, printerDir);
+        return files;
+    }
+
+    private void getBinFiles(List<File> files, File dir) {
+        File[] foundFiles = dir.listFiles();
+        if (foundFiles == null) return;
+        for (File file : foundFiles) {
+            if (file.isDirectory()) getBinFiles(files, file);
+            else if (file.getName().endsWith(".bin")) {
+                files.add(file);
+            }
+        }
     }
 
     @Test
     public void speedTest() throws Exception {
         for (File binFile : getBinFiles()) {
-            byte[] bytes = Files.toByteArray(binFile);
-            Stopwatch timer = Stopwatch.createStarted();
+            byte[] bytes = Bytes.read(binFile);
+            long nanos = System.nanoTime();
             int reps = 100;
             for (int i = 0; i < reps; i++) {
                 try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
                     parser.parse(in);
                 }
             }
-            timer.stop();
-            System.out.println("Rx " + reps + " of " + binFile.getName() + " (" + bytes.length + " bytes): " + timer);
+            System.out.println("Rx " + reps + " of " + binFile.getName() + " (" + bytes.length + " bytes): " +
+                    ((System.nanoTime() - nanos)/1000) + "us");
         }
     }
 }

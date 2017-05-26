@@ -1,28 +1,29 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.NameCode;
 import com.hp.jipp.encoding.NameCodeType;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /** A superset of Status and Operation */
 @AutoValue
 public abstract class Code extends NameCode {
 
-    public static final List<Code> ALL;
+    private static final List<Code> ALL;
 
     static {
-        ImmutableList.Builder<Code> builder = ImmutableList.builder();
+        List<Code> codes = new ArrayList<>();
 
         for (NameCode status : Status.ENCODER.getMap().values()) {
-            builder.add(new AutoValue_Code(status.getName(), status.getCode()));
+            codes.add(new AutoValue_Code(status.getName(), status.getCode()));
         }
         for (NameCode operation : Operation.ENCODER.getMap().values()) {
-            builder.add(new AutoValue_Code(operation.getName(), operation.getCode()));
+            codes.add(new AutoValue_Code(operation.getName(), operation.getCode()));
         }
-        ALL = builder.build();
+        ALL = Collections.unmodifiableList(codes);
     }
 
     public static final NameCodeType.Encoder<Code> ENCODER = NameCodeType.Encoder.of(

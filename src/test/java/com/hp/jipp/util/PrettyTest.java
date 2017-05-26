@@ -1,12 +1,12 @@
 package com.hp.jipp.util;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
+
+import java.util.Arrays;
 
 public class PrettyTest {
     @Rule
@@ -37,7 +37,7 @@ public class PrettyTest {
     @Test
     public void inner() {
         printer = Pretty.printer("Test", Pretty.OBJECT, "  ", 60);
-        printer.addAll(ImmutableList.of("XXX", "YYY", "ZZZ"));
+        printer.addAll(Arrays.asList("XXX", "YYY", "ZZZ"));
         printer.open(Pretty.ARRAY, "");
         printer.add(4, 5, 6);
         printer.close();

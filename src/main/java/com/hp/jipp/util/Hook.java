@@ -1,7 +1,5 @@
 package com.hp.jipp.util;
 
-import com.google.common.base.Optional;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +12,8 @@ public final class Hook {
 
     /** Retrieve a global Boolean value by name, or false if not set */
     public static boolean is(String name) {
-        Optional<Boolean> result = Optional.fromNullable(sBooleans.get(name));
-        return result.isPresent() && result.get();
+        Boolean result = sBooleans.get(name);
+        return result != null && result;
     }
 
     /** Set a global Boolean value by name */

@@ -1,7 +1,6 @@
 package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.encoding.AttributeType;
 import com.hp.jipp.encoding.SimpleEncoder;
 import com.hp.jipp.encoding.StringType;
@@ -11,6 +10,8 @@ import com.hp.jipp.util.Util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -203,14 +204,14 @@ public abstract class MediaSize {
     private static final Map<String, MediaSize> All;
 
     static {
+        Map<String, MediaSize> all = new HashMap<>();
         // Look up all MediaSizes defined here
-        ImmutableMap.Builder<String, MediaSize> all = new ImmutableMap.Builder<>();
         for (Object object : Util.getStaticObjects(MediaSize.class)) {
             if (MediaSize.class.isAssignableFrom(object.getClass())) {
                 all.put(((MediaSize) object).getName(), (MediaSize) object);
             }
         }
-        All = all.build();
+        All = Collections.unmodifiableMap(all);
     }
 
     public static MediaSize of(String name, int x, int y) {

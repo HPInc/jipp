@@ -12,12 +12,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.OctetStringType;
@@ -271,7 +271,7 @@ public class PacketTest {
         assertEquals(0x1010, packet.getRequestId());
         assertEquals(Tag.OperationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Attributes.AttributesCharset);
-        assertEquals(ImmutableList.of("US-ASCII", "UTF-8"), attribute.getValues());
+        assertEquals(Arrays.asList("US-ASCII", "UTF-8"), attribute.getValues());
     }
 
     @Test
@@ -296,15 +296,15 @@ public class PacketTest {
                         Attributes.AttributesCharset.of("US-ASCII", "UTF-8"))));
 
         // Wrong group
-        assertEquals(ImmutableList.of(),
+        assertEquals(Collections.emptyList(),
                 packet.getValues(Tag.JobAttributes, Attributes.AttributesCharset));
 
         // Wrong attr
-        assertEquals(ImmutableList.of("US-ASCII", "UTF-8"),
+        assertEquals(Arrays.asList("US-ASCII", "UTF-8"),
                 packet.getValues(Tag.OperationAttributes, Attributes.AttributesCharset));
 
         // All good!
-        assertEquals(ImmutableList.of(),
+        assertEquals(Collections.emptyList(),
                 packet.getValues(Tag.OperationAttributes, Attributes.AttributesNaturalLanguage));
     }
 

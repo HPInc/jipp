@@ -1,21 +1,21 @@
 package com.hp.jipp.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.JobState;
 
-import java.io.IOException;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @AutoValue
 public abstract class JobStatus {
 
     static List<String> getAttributeNames() {
-        return ImmutableList.of(
+        return Arrays.asList(
                 Attributes.JobState.getName(),
                 Attributes.JobStateReasons.getName(),
                 Attributes.JobStateMessage.getName(),
@@ -35,7 +35,8 @@ public abstract class JobStatus {
 
     public abstract List<String> getReasons();
 
-    @Nullable public abstract String getMessage();
+    @Nullable
+    public abstract String getMessage();
 
     public abstract List<String> getDetailedMessages();
 

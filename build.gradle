@@ -97,10 +97,6 @@ dependencies {
     compileOnly "com.google.auto.value:auto-value:1.2"
     apt "com.google.auto.value:auto-value:1.2"
 
-    // Note: must use 20 because 21 requires JDK 1.8. 22 will support 1.7.
-    compile 'com.google.guava:guava:20.0' // Apache 2.0
-    compile "com.google.code.findbugs:jsr305:2.0.1"
-
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }

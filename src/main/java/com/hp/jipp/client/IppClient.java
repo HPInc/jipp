@@ -1,8 +1,5 @@
 package com.hp.jipp.client;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.model.IdentifyAction;
@@ -13,9 +10,12 @@ import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -57,16 +57,16 @@ public class IppClient {
      * until one of them works, the resulting Printer includes the first successful URI.
      */
     public Printer getPrinterAttributes(UUID printerUuid, List<URI> uris) throws IOException {
-        Optional<IOException> lastThrown = Optional.absent();
+        @Nullable IOException lastThrown = null;
         for (URI uri : uris) {
             try {
                 return getPrinterAttributes(printerUuid, uri);
             } catch (IOException thrown) {
-                lastThrown = Optional.of(thrown);
+                lastThrown = thrown;
             }
         }
-        if (lastThrown.isPresent()) {
-            throw new IOException("Fail after trying uris " + uris, lastThrown.get());
+        if (lastThrown != null) {
+            throw new IOException("Fail after trying uris " + uris, lastThrown);
         } else {
             throw new IllegalArgumentException("No printer URIs present");
         }
@@ -95,8 +95,7 @@ public class IppClient {
      * Fetch the printer's current status. Uses the primary URI only.
      */
     public PrinterStatus getPrinterStatus(Printer printer) throws IOException {
-        ImmutableList.Builder<Attribute<?>> operationAttributes = new ImmutableList.Builder<>();
-        operationAttributes.add(
+        List<Attribute<?>> operationAttributes = Arrays.<Attribute<?>>asList(
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printer.getUri()),
@@ -106,8 +105,9 @@ public class IppClient {
                     Attributes.PrinterStateReasons.getName(),
                     Attributes.PrinterStateMessage.getName()
                 ));
+
         Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
-                AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes));
 
         Packet response = mTransport.send(printer.getUri(), request);
         AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
@@ -154,8 +154,8 @@ public class IppClient {
 
         URI printerUri = jobRequest.getPrinter().getUri();
 
-        ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
-        attributes.add(Attributes.AttributesCharset.of("utf-8"),
+        List<Attribute<?>> attributes = Arrays.<Attribute<?>>asList(
+                Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
                 Attributes.RequestingUserName.of(mUserName),
@@ -165,8 +165,7 @@ public class IppClient {
         );
 
         Packet request = Packet.builder(Operation.PrintJob, mId.getAndIncrement())
-                .setAttributeGroups(AttributeGroup.Companion.of(Tag.OperationAttributes,
-                        attributes.build()))
+                .setAttributeGroups(AttributeGroup.Companion.of(Tag.OperationAttributes, attributes))
                 .setInputStreamFactory(new InputStreamFactory() {
                     @Override
                     public InputStream createInputStream() throws IOException {
@@ -201,14 +200,14 @@ public class IppClient {
     public Job createJob(JobRequest jobRequest) throws IOException {
         URI printerUri = jobRequest.getPrinter().getUri();
 
-        ImmutableList.Builder<Attribute<?>> attributes = new ImmutableList.Builder<>();
-        attributes.add(Attributes.AttributesCharset.of("utf-8"),
+        List<Attribute<?>> attributes = Arrays.<Attribute<?>>asList(
+                Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
                 Attributes.PrinterUri.of(printerUri),
                 Attributes.RequestingUserName.of(mUserName));
 
         Packet request = Packet.of(Operation.CreateJob, mId.getAndIncrement(),
-                AttributeGroup.Companion.of(Tag.OperationAttributes, attributes.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
         Packet response = mTransport.send(printerUri, request);
         return toPrintJob(jobRequest, response);
@@ -216,8 +215,8 @@ public class IppClient {
 
     /** Deliver document data for a print job, returning the updated print job. */
     public Job sendDocument(Job job) throws IOException {
-        if (!job.getJobRequest().isPresent()) throw new IllegalArgumentException("No job request present");
-        final JobRequest jobRequest = job.getJobRequest().get();
+        final JobRequest jobRequest = job.getJobRequest();
+        if (jobRequest == null) throw new IllegalArgumentException("No job request present");
 
         URI printerUri = job.getPrinter().getUri();
 
@@ -264,26 +263,26 @@ public class IppClient {
      * @see <a href="https://tools.ietf.org/html/rfc2911#section-3.2.6.1">RFC2911 Section 3.2.6.1</a>
      */
     public List<Job> getJobs(Printer printer, List<Attribute<?>> extras) throws IOException {
-        ImmutableList.Builder<Attribute<?>> attributesBuilder = new ImmutableList.Builder<Attribute<?>>()
-                .add(Attributes.AttributesCharset.of("utf-8"),
+        List<Attribute<?>> attributes = new ArrayList<>();
+        attributes.addAll(Arrays.asList(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printer.getUri()),
-                        Attributes.RequestingUserName.of(mUserName))
-                .addAll(extras);
+                        Attributes.RequestingUserName.of(mUserName)));
+        attributes.addAll(extras);
 
         Packet request = Packet.of(Operation.GetJobs, mId.getAndIncrement(),
-                AttributeGroup.Companion.of(Tag.OperationAttributes, attributesBuilder.build()));
+                AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
         Packet response = mTransport.send(printer.getUri(), request);
 
-        ImmutableList.Builder<Job> listBuilder = new ImmutableList.Builder<>();
+        List<Job> jobs = new ArrayList<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
-                listBuilder.add(Job.of(getJobId(group, printer), printer, group));
+                jobs.add(Job.of(getJobId(group, printer), printer, group));
             }
         }
 
-        return listBuilder.build();
+        return jobs;
     }
 
     /** Fetch new status for a job and return the updated job. */
