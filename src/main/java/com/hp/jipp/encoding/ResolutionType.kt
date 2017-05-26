@@ -13,7 +13,7 @@ class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER
         private val BYTE_LENGTH = 1
 
         @JvmField
-        val ENCODER: Attribute.SimpleEncoder<Resolution> = object : Attribute.SimpleEncoder<Resolution>(TYPE_NAME) {
+        val ENCODER: SimpleEncoder<Resolution> = object : SimpleEncoder<Resolution>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
                 input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)

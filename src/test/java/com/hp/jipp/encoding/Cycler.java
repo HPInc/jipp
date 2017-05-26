@@ -1,7 +1,5 @@
 package com.hp.jipp.encoding;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.util.ParseError;
@@ -12,25 +10,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 public class Cycler {
 
     public static final Packet.Parser sParser = Packet.parserOf(Attributes.All);
-    public static final Function<? super AttributeType<?>, String> sAttributeNameProjector = new Function<AttributeType<?>, String>() {
-        @Override
-        public String apply(@Nonnull AttributeType<?> input) {
-            return input.getName();
+    public static final Map<String, AttributeType<?>> sAttributeTypeMap = new HashMap<>();
+    static {
+        for (AttributeType<?> entry: Attributes.All) {
+            sAttributeTypeMap.put(entry.getName(), entry);
         }
-    };
-    public static final Map<String, AttributeType<?>> sAttributeTypeMap = Maps.uniqueIndex(Attributes.All,
-            sAttributeNameProjector);
+    }
 
-    public static final Attribute.EncoderFinder sFinder = new Attribute.EncoderFinder() {
+    public static final Encoder.Finder sFinder = new Encoder.Finder() {
         @Override
-        public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
+        public Encoder<?> find(Tag valueTag, String name) throws IOException {
             // Check for a matching attribute type
             if (sAttributeTypeMap.containsKey(name)) {
                 AttributeType<?> attributeType = sAttributeTypeMap.get(name);
@@ -40,7 +35,7 @@ public class Cycler {
             }
 
             // If no valid match above then try with each default encoder
-            for (Attribute.BaseEncoder<?> encoder: AttributeGroup.ENCODERS) {
+            for (Encoder<?> encoder: AttributeGroup.ENCODERS) {
                 if (encoder.valid(valueTag)) {
                     return encoder;
                 }
@@ -50,17 +45,8 @@ public class Cycler {
     };
 
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
-        Function<? super AttributeType<?>, String> projector =
-                new Function<AttributeType<?>, String>() {
-                    @Override
-                    public String apply(@Nonnull AttributeType<?> input) {
-                        return input.getName();
-                    }
-                };
-        final Map<String, AttributeType<?>> attributeTypeMap = Maps.uniqueIndex(Attributes.All, projector);
-
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
-        return AttributeGroup.Companion.read(Tag.Companion.read(in), attributeTypeMap, in);
+        return AttributeGroup.Companion.read(Tag.Companion.read(in), sAttributeTypeMap, in);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {

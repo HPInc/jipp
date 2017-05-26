@@ -4,7 +4,6 @@ import static com.hp.jipp.encoding.Cycler.*;
 
 import static org.junit.Assert.*;
 
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
 
@@ -15,6 +14,7 @@ import org.junit.rules.ExpectedException;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class AttributeCollectionTest {
     @Rule
@@ -122,6 +122,6 @@ public class AttributeCollectionTest {
         AttributeCollection collection = new AttributeCollection();
         KotlinTest.cover(collection,
                 collection.copy(collection.component1()),
-                collection.copy(ImmutableList.of(colorType.of("blue"))));
+                collection.copy(Arrays.asList(colorType.of("blue"))));
     }
 }

@@ -8,7 +8,7 @@ class IntegerType(tag: Tag, name: String) : AttributeType<Int>(IntegerType.ENCOD
     companion object {
         private val TYPE_NAME = "Integer"
 
-        @JvmField val ENCODER: Attribute.SimpleEncoder<Int> = object : Attribute.SimpleEncoder<Int>(TYPE_NAME) {
+        @JvmField val ENCODER: SimpleEncoder<Int> = object : SimpleEncoder<Int>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): Int {
                 input.takeLength(4)

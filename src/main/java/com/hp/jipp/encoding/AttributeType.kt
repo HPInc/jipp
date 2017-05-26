@@ -8,7 +8,7 @@ import java.util.Arrays
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
  */
-open class AttributeType<T>(val encoder: Attribute.BaseEncoder<T>, val tag: Tag, val name: String) {
+open class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag, val name: String) {
 
     init {
         if (!(encoder.valid(tag) || Hook.`is`(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {

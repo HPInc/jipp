@@ -2,8 +2,8 @@ package com.hp.jipp.model;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeType;
+import com.hp.jipp.encoding.SimpleEncoder;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Util;
@@ -248,7 +248,7 @@ public abstract class MediaSize {
     /** Height of media in 1/100 of a millimeter or 1/2540 of an inch */
     public abstract int getHeight();
 
-    static final Attribute.SimpleEncoder<MediaSize> ENCODER = new Attribute.SimpleEncoder<MediaSize>(TYPE_NAME) {
+    static final SimpleEncoder<MediaSize> ENCODER = new SimpleEncoder<MediaSize>(TYPE_NAME) {
         @Override
         public MediaSize readValue(DataInputStream in, Tag valueTag) throws IOException {
             String name = StringType.ENCODER.readValue(in, valueTag);

@@ -10,7 +10,7 @@ class BooleanType(tag: Tag, name: String) : AttributeType<Boolean>(BooleanType.E
         private val TYPE_NAME = "Boolean"
 
         @JvmField
-        val ENCODER: Attribute.SimpleEncoder<Boolean> = object : Attribute.SimpleEncoder<Boolean>(TYPE_NAME) {
+        val ENCODER: SimpleEncoder<Boolean> = object : SimpleEncoder<Boolean>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: Boolean) {
                 out.writeShort(1)

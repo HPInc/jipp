@@ -20,7 +20,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
         private val TYPE_NAME = "String"
 
         @JvmField
-        val ENCODER: Attribute.SimpleEncoder<String> = object : Attribute.SimpleEncoder<String>(TYPE_NAME) {
+        val ENCODER: SimpleEncoder<String> = object : SimpleEncoder<String>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: String) = out.writeString(value)
 

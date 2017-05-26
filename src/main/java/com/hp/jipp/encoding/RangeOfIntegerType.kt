@@ -9,7 +9,7 @@ class RangeOfIntegerType(name: String) :
     companion object {
         private val TYPE_NAME = "RangeOfInteger"
 
-        @JvmField val ENCODER: Attribute.SimpleEncoder<IntRange> = object : Attribute.SimpleEncoder<IntRange>(TYPE_NAME) {
+        @JvmField val ENCODER: SimpleEncoder<IntRange> = object : SimpleEncoder<IntRange>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): IntRange {
                 input.takeLength(8)

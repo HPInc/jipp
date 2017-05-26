@@ -16,72 +16,12 @@ import com.hp.jipp.util.HexStrings
  *
  * @param valueTag must be valid for the attribute type, according to the encoder.
  */
-data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: BaseEncoder<T>) :
+data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: Encoder<T>) :
         Pretty.Printable, HexStrings {
 
     init {
         if (!(encoder.valid(valueTag) || Hook.`is`(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
             throw BuildError("Invalid $valueTag for ${encoder.type}")
-        }
-    }
-
-    interface EncoderFinder {
-        @Throws(IOException::class)
-        fun find(valueTag: Tag, name: String): BaseEncoder<*>
-    }
-
-    abstract class SimpleEncoder<T>(override val type: String) : BaseEncoder<T>() {
-        /** Read a single value from the input stream, making use of the set of encoders */
-        @Throws(IOException::class)
-        abstract fun readValue(input: DataInputStream, valueTag: Tag): T
-
-        @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T {
-            return readValue(input, valueTag)
-        }
-    }
-
-    /**
-     * Reads/writes attributes to the attribute's type.
-     */
-    abstract class BaseEncoder<T> {
-
-        /** Return a human-readable name describing this type */
-        abstract val type: String
-
-        /** Read a single value from the input stream, making use of the set of encoders */
-        @Throws(IOException::class)
-        abstract fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T
-
-        /** Write a single value to the output stream */
-        @Throws(IOException::class)
-        abstract fun writeValue(out: DataOutputStream, value: T)
-
-        /** Return true if this tag can be handled by this encoder */
-        abstract fun valid(valueTag: Tag): Boolean
-
-        /** Read an attribute and its values from the data stream */
-        @Throws(IOException::class)
-        fun read(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag, name: String): Attribute<T> {
-            val all = listOf(readValue(input, finder, valueTag)) +
-                    generateList { readAdditionalValue(input, valueTag, finder) }
-            return Attribute(valueTag, name, all, this)
-        }
-
-        /** Read a single additional value if possible  */
-        @Throws(IOException::class)
-        private fun readAdditionalValue(input: DataInputStream, valueTag: Tag, finder: Attribute.EncoderFinder): T? {
-            if (input.available() < 3) return null
-            input.mark(3)
-            if (Tag.read(input) === valueTag) {
-                val nameLength = input.readShort().toInt()
-                if (nameLength == 0) {
-                    return readValue(input, finder, valueTag)
-                }
-            }
-            // Failed to parse an additional value so back up and quit.
-            input.reset()
-            return null
         }
     }
 
@@ -124,28 +64,25 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
             printer.open(Pretty.ARRAY, prefix)
         }
 
-        for (value in values) {
-            when(value) {
-                is String -> printer.add("\"" + value + "\"")
-                is ByteArray -> printer.add("x" + value.toHexString())
-                is Pretty.Printable -> value.print(printer)
-                else -> printer.add(value.toString())
+        values.forEach {
+            when(it) {
+                is Pretty.Printable -> it.print(printer)
+                else -> printer.add(toPrintable(it))
             }
         }
         printer.close()
     }
 
     override fun toString(): String {
-        val stringValues = values.map {
-            when (it) {
-                is String -> "\"$it\""
-                is ByteArray -> "x" + it.toHexString()
-                else -> it.toString()
-            }
-        }
-
+        val stringValues = values.map { toPrintable(it) }
         val valueString = if (stringValues.size == 1) stringValues[0] else stringValues.toString()
         return "$name($valueTag): $valueString"
+    }
+
+    private fun toPrintable(value: T): String = when (value) {
+        is String -> "\"$value\""
+        is ByteArray -> "x" + value.toHexString()
+        else -> value.toString()
     }
 
     companion object {
@@ -168,7 +105,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
          */
         @Throws(IOException::class)
         @JvmStatic
-        fun read(input: DataInputStream, finder: EncoderFinder, valueTag: Tag): Attribute<*> {
+        fun read(input: DataInputStream, finder: Encoder.Finder, valueTag: Tag): Attribute<*> {
             val name = String(input.readValueBytes())
             return finder.find(valueTag, name).read(input, finder, valueTag, name)
         }

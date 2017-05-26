@@ -7,10 +7,10 @@ import org.junit.rules.ExpectedException;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-import com.google.common.collect.ImmutableList;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.KotlinTest;
@@ -57,14 +57,14 @@ public class AttributeTest {
     public void multiBoolean() throws IOException {
         AttributeType<Boolean> booleanType = new BooleanType(Tag.BooleanValue, "name");
         Attribute<Boolean> attribute = cycle(booleanType.of(true, false));
-        assertEquals(ImmutableList.of(true, false), attribute.getValues());
+        assertEquals(Arrays.asList(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
         AttributeType<Integer> integerType = new IntegerType(Tag.IntegerValue, "name");
         Attribute<Integer> attribute = cycle(integerType.of(-50505, 50505));
-        assertEquals(ImmutableList.of(-50505, 50505), attribute.getValues());
+        assertEquals(Arrays.asList(-50505, 50505), attribute.getValues());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AttributeTest {
         AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
                         Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob)));
-        assertEquals(ImmutableList.of(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
+        assertEquals(Arrays.asList(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
                 group.getValues(Attributes.OperationsSupported));
     }
 
@@ -83,7 +83,7 @@ public class AttributeTest {
                         Operation.of("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
-        assertEquals(ImmutableList.of(Operation.of("Operation(x4040)", 0x4040)),
+        assertEquals(Arrays.asList(Operation.of("Operation(x4040)", 0x4040)),
                 group.getValues(Attributes.OperationsSupported));
     }
 
@@ -103,9 +103,9 @@ public class AttributeTest {
                 0
         };
         Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)),
-                new Attribute.EncoderFinder() {
+                new Encoder.Finder() {
                     @Override
-                    public Attribute.BaseEncoder<?> find(Tag valueTag, String name) throws IOException {
+                    public Encoder<?> find(Tag valueTag, String name) throws IOException {
                         throw new ParseError("");
                     }
                 }, Tag.OctetString);
@@ -129,7 +129,7 @@ public class AttributeTest {
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
         exception.expectMessage("Invalid tag(x77) for Integer");
-        new Attribute<>(Tag.get(0x77), "", ImmutableList.of(5), IntegerType.ENCODER);
+        new Attribute<>(Tag.get(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
     }
 
     @Test

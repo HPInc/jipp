@@ -25,7 +25,7 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
         private val TYPE_NAME = "LangString"
 
         @JvmField
-        val ENCODER: Attribute.SimpleEncoder<LangString> = object : Attribute.SimpleEncoder<LangString>(TYPE_NAME) {
+        val ENCODER: SimpleEncoder<LangString> = object : SimpleEncoder<LangString>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): LangString {
                 val bytes = OctetStringType.ENCODER.readValue(input, valueTag)

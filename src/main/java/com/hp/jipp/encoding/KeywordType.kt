@@ -11,7 +11,7 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, name: String) :
 
     /** An encoder for Keyword types  */
     class Encoder<T : Keyword>(private val factory: Keyword.Factory<T>, all: Collection<T>, name: String) :
-            Attribute.SimpleEncoder<T>(name) {
+            SimpleEncoder<T>(name) {
 
         private val map: Map<String, T> = all.map { it.name to it }.toMap()
 

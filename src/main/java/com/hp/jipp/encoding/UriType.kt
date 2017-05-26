@@ -9,7 +9,7 @@ class UriType(tag: Tag, name: String) : AttributeType<URI>(ENCODER, tag, name) {
     companion object {
         private val TYPE_NAME = "URI"
 
-        @JvmField val ENCODER: Attribute.SimpleEncoder<URI> = object : Attribute.SimpleEncoder<URI>(TYPE_NAME) {
+        @JvmField val ENCODER: SimpleEncoder<URI> = object : SimpleEncoder<URI>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: URI) {
                 StringType.ENCODER.writeValue(out, value.toString())

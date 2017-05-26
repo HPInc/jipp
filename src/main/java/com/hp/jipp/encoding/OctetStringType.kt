@@ -9,7 +9,7 @@ class OctetStringType(tag: Tag, name: String) : AttributeType<ByteArray>(OctetSt
         private val TYPE_NAME = "OctetString"
 
         @JvmField
-        val ENCODER: Attribute.SimpleEncoder<ByteArray> = object : Attribute.SimpleEncoder<ByteArray>(TYPE_NAME) {
+        val ENCODER: SimpleEncoder<ByteArray> = object : SimpleEncoder<ByteArray>(TYPE_NAME) {
 
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: ByteArray) {

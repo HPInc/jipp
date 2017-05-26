@@ -18,7 +18,7 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
         /** Used to terminate a collection  */
         private val EndCollectionAttribute = OctetStringType(Tag.EndCollection, "").of()
 
-        @JvmField val ENCODER: Attribute.BaseEncoder<AttributeCollection> = object : Attribute.BaseEncoder<AttributeCollection>() {
+        @JvmField val ENCODER: Encoder<AttributeCollection> = object : Encoder<AttributeCollection>() {
 
             override val type: String
                 get() = TYPE_NAME
@@ -42,7 +42,7 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
             }
 
             @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): AttributeCollection {
+            override fun readValue(input: DataInputStream, finder: Finder, valueTag: Tag): AttributeCollection {
                 input.skipValueBytes()
                 val builder = ArrayList<Attribute<*>>()
 

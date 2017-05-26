@@ -5,12 +5,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.MediaSize;
 import com.hp.jipp.util.BuildError;
@@ -18,7 +17,6 @@ import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
 
 import static com.hp.jipp.encoding.Cycler.*;
-
 
 public class AttributeGroupTest {
 
@@ -43,7 +41,7 @@ public class AttributeGroupTest {
     public void multiMultiAttribute() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8","utf-16")));
-        assertEquals(ImmutableList.of("utf-8", "utf-16"), group.getValues(Attributes.AttributesCharset));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), group.getValues(Attributes.AttributesCharset));
     }
 
     @Test
@@ -88,8 +86,8 @@ public class AttributeGroupTest {
     public void missingEncoder() throws Exception {
         // This cannot happen but if it did it would throw nicely.
         exception.expect(ParseError.class);
-        AttributeGroup.finderOf(ImmutableMap.<String, AttributeType<?>>of(),
-                ImmutableList.<Attribute.BaseEncoder<?>>of())
+        AttributeGroup.finderOf(Collections.<String, AttributeType<?>>emptyMap(),
+                Arrays.<Encoder<?>>asList())
                 .find(Tag.NameWithLanguage, "haha");
     }
 
@@ -114,6 +112,6 @@ public class AttributeGroupTest {
         AttributeGroup group = AttributeGroup.of(Tag.OperationAttributes);
         KotlinTest.cover(group,
                 group.copy(group.component1(), group.component2()),
-                group.copy(group.component1(), ImmutableList.of(Attributes.JobName.of("name"))));
+                group.copy(group.component1(), Arrays.asList(Attributes.JobName.of("name"))));
     }
 }

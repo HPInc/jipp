@@ -1,7 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.Attribute.SimpleEncoder
-
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.util.*

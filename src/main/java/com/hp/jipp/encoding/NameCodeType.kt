@@ -11,14 +11,14 @@ class NameCodeType<T : NameCode>(val nameCodeEncoder: NameCodeType.Encoder<T>, n
 
     /** An encoder for NameCode enumerations.  */
     data class Encoder<T : NameCode>(override val type: String, val map: Map<Int, T>,
-                                     val factory: NameCode.Factory<T>) : Attribute.BaseEncoder<T>() {
+                                     val factory: NameCode.Factory<T>) : com.hp.jipp.encoding.Encoder<T>() {
 
         /** Returns a known enum, or creates a new instance if not found  */
         operator fun get(code: Int): T =
             map[code] ?: factory.of("$type(x${Integer.toHexString(code)})", code)
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, finder: Attribute.EncoderFinder, valueTag: Tag): T {
+        override fun readValue(input: DataInputStream, finder: Finder, valueTag: Tag): T {
             return get(IntegerType.ENCODER.readValue(input, valueTag))
         }
 

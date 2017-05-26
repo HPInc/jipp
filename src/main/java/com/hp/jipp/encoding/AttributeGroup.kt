@@ -87,10 +87,10 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         }
 
         @JvmStatic fun finderOf(attributeTypes: Map<String, AttributeType<*>>,
-                              encoders: List<Attribute.BaseEncoder<*>>): Attribute.EncoderFinder {
-            return object : Attribute.EncoderFinder {
+                              encoders: List<Encoder<*>>): Encoder.Finder {
+            return object : Encoder.Finder {
                 @Throws(IOException::class)
-                override fun find(valueTag: Tag, name: String): Attribute.BaseEncoder<*> {
+                override fun find(valueTag: Tag, name: String): Encoder<*> {
                     // Check for a matching attribute type
                     val attributeType = attributeTypes[name]
                     if (attributeType != null && attributeType.encoder.valid(valueTag)) {
