@@ -17,7 +17,7 @@ public class KeyValueTest {
     @Test
     public void empty() throws Exception {
         Map<String, String> value = ImmutableMap.of();
-        Attribute<Map<String, String>> attribute = keyValueType.of(ImmutableList.of(value));
+        @SuppressWarnings("unchecked") Attribute<Map<String, String>> attribute = keyValueType.of(value);
         assertEquals(value, cycle(keyValueType, attribute).getValue(0));
     }
 
@@ -27,5 +27,4 @@ public class KeyValueTest {
         Attribute<Map<String, String>> attribute = keyValueType.of(ImmutableList.of(value));
         assertEquals(value, cycle(keyValueType, attribute).getValue(0));
     }
-
 }

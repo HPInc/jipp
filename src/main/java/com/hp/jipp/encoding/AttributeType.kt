@@ -18,10 +18,10 @@ open class AttributeType<T>(val encoder: Attribute.BaseEncoder<T>, val tag: Tag,
     }
 
     /** Create an attribute of this attribute type with supplied values */
-    fun of(vararg values: T): Attribute<T> = of(Arrays.asList(*values))
+    open fun of(vararg values: T): Attribute<T> = of(Arrays.asList(*values))
 
     /** Create an attribute of this attribute type with supplied values */
-    fun of(values: List<T>): Attribute<T> = Attribute(tag, name, values, encoder)
+    open fun of(values: List<T>): Attribute<T> = Attribute(tag, name, values, encoder)
 
     /** Return true if the attribute has a matching encoder */
     fun isValid(attribute: Attribute<*>): Boolean {
@@ -29,7 +29,7 @@ open class AttributeType<T>(val encoder: Attribute.BaseEncoder<T>, val tag: Tag,
     }
 
     /** If possible, convert the supplied attribute into an attribute of this type. */
-    // TODO: Replace Optional with Attribute<T>?
+    // TODO: Optional -> Attribute<T>? type
     open fun of(attribute: Attribute<*>): Optional<Attribute<T>> {
         if (attribute.encoder === encoder) {
             return Optional.of(of(attribute.values.map {

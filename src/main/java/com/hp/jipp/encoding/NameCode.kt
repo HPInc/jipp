@@ -20,12 +20,15 @@ abstract class NameCode {
 
     companion object {
         /** Convert a List of T into a Map of integer codes to T, where T is a NameCode subclass. */
-        @JvmStatic fun <T : NameCode> toCodeMap(nameCodes: Iterable<T>): Map<Int, T> =
+        fun <T : NameCode> toCodeMap(nameCodes: Iterable<T>): Map<Int, T> =
                 nameCodes.map { it.code to it }.toMap()
 
         /** Using Java reflection, look up all statically-declared instances of T */
-        @JvmStatic inline fun <reified T : NameCode> allFrom(origin: Class<*>): Collection<T> {
-            return Util.getStaticObjects(origin).filter { it is T }.map { it as T }
+        fun <T : NameCode> allFrom(cls: Class<*>): Collection<T> {
+            return Util.getStaticObjects(cls).filter { cls.isAssignableFrom(it.javaClass) }.map {
+                @Suppress("UNCHECKED_CAST")
+                it as T
+            }
         }
     }
 }
