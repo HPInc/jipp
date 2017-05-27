@@ -76,7 +76,7 @@ public class IppClient {
      * Fetch printer attributes from a specific URI.
      */
     public Printer getPrinterAttributes(UUID printerUuid, URI printerUri) throws IOException {
-        Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
@@ -85,7 +85,7 @@ public class IppClient {
         Packet response = mTransport.send(printerUri, request);
         AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
-            return Printer.of(printerUuid, printerUri, printerAttributes);
+            return new Printer(printerUuid, printerUri, printerAttributes);
         } else {
             throw new IOException("No printer attributes in response");
         }
@@ -106,13 +106,13 @@ public class IppClient {
                     Attributes.PrinterStateMessage.getName()
                 ));
 
-        Packet request = Packet.of(Operation.GetPrinterAttributes, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes));
 
         Packet response = mTransport.send(printer.getUri(), request);
         AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
         if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
-            return PrinterStatus.of(printerAttributes);
+            return PrinterStatus.Companion.of(printerAttributes);
         } else {
             throw new IOException("No printer-attributes from " + printer);
         }
@@ -122,7 +122,7 @@ public class IppClient {
      * Request the printer identify itself to the user somehow
      */
     public Packet identifyPrinter(Printer printer, IdentifyAction action, String message) throws IOException {
-        Packet request = Packet.of(Operation.IdentifyPrinter, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.IdentifyPrinter, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
@@ -136,7 +136,7 @@ public class IppClient {
     /** Validated a job based on the contents of a job request. */
     public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
         URI uri = jobRequest.getPrinter().getUri();
-        Packet request = Packet.of(Operation.ValidateJob, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.ValidateJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
@@ -145,7 +145,7 @@ public class IppClient {
                         Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())));
 
         Packet response = mTransport.send(uri, request);
-        return ValidatedJob.of(jobRequest, response);
+        return new ValidatedJob(jobRequest, response);
     }
 
     /** Send a job request, including its document, returning a new print job. */
@@ -164,16 +164,16 @@ public class IppClient {
                 Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())
         );
 
-        Packet request = Packet.builder(Operation.PrintJob, mId.getAndIncrement())
-                .setAttributeGroups(AttributeGroup.Companion.of(Tag.OperationAttributes, attributes))
-                .setInputStreamFactory(new InputStreamFactory() {
+        Packet.Builder builder = new Packet.Builder(Operation.PrintJob, mId.getAndIncrement());
+        builder.setAttributeGroups(AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
+        builder.setInputStreamFactory(new InputStreamFactory() {
                     @Override
                     public InputStream createInputStream() throws IOException {
                         return jobRequest.getDocument().openDocument();
                     }
-                }).build();
+                });
 
-        Packet response = mTransport.send(printerUri, request);
+        Packet response = mTransport.send(printerUri, builder.build());
         return toPrintJob(jobRequest, response);
     }
 
@@ -182,7 +182,7 @@ public class IppClient {
         if (group == null) {
             throw new IOException("Missing job-attributes in response from " + jobRequest.getPrinter());
         }
-        return Job.of(getJobId(group, jobRequest.getPrinter()), jobRequest, group);
+        return new Job(getJobId(group, jobRequest.getPrinter()), jobRequest, group);
     }
 
     private int getJobId(AttributeGroup group, Printer printer) throws IOException {
@@ -206,7 +206,7 @@ public class IppClient {
                 Attributes.PrinterUri.of(printerUri),
                 Attributes.RequestingUserName.of(mUserName));
 
-        Packet request = Packet.of(Operation.CreateJob, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.CreateJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
         Packet response = mTransport.send(printerUri, request);
@@ -230,16 +230,15 @@ public class IppClient {
                 Attributes.DocumentName.of(jobRequest.getDocument().getName()),
                 Attributes.LastDocument.of(true));
 
-        Packet request = Packet.builder(Operation.SendDocument, mId.getAndIncrement())
-                .setAttributeGroups(operationAttributes)
-                .setInputStreamFactory(new InputStreamFactory() {
+        Packet.Builder builder = new Packet.Builder(Operation.SendDocument, mId.getAndIncrement());
+        builder.setAttributeGroups(operationAttributes);
+        builder.setInputStreamFactory(new InputStreamFactory() {
                     @Override
                     public InputStream createInputStream() throws IOException {
                         return jobRequest.getDocument().openDocument();
                     }
-                }).build();
-
-        Packet response = mTransport.send(printerUri, request);
+                });
+        Packet response = mTransport.send(printerUri, builder.build());
         AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
         if (group == null) throw new IOException("Missing job attributes");
         return job.withAttributes(group);
@@ -270,7 +269,7 @@ public class IppClient {
                         Attributes.RequestingUserName.of(mUserName)));
         attributes.addAll(extras);
 
-        Packet request = Packet.of(Operation.GetJobs, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.GetJobs, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
         Packet response = mTransport.send(printer.getUri(), request);
@@ -278,7 +277,7 @@ public class IppClient {
         List<Job> jobs = new ArrayList<>();
         for (AttributeGroup group : response.getAttributeGroups()) {
             if (group.getTag().equals(Tag.JobAttributes)) {
-                jobs.add(Job.of(getJobId(group, printer), printer, group));
+                jobs.add(new Job(getJobId(group, printer), printer, group));
             }
         }
 
@@ -287,14 +286,14 @@ public class IppClient {
 
     /** Fetch new status for a job and return the updated job. */
     public Job getJobStatus(Job job) throws IOException {
-        Packet request = Packet.of(Operation.GetJobAttributes, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.GetJobAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(job.getPrinter().getUri()),
                         Attributes.JobId.of(job.getId()),
                         Attributes.RequestingUserName.of(mUserName),
-                        Attributes.RequestedAttributes.of(JobStatus.getAttributeNames())));
+                        Attributes.RequestedAttributes.of(JobStatus.AttributeNames)));
         AttributeGroup jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
                 .getAttributeGroup(Tag.JobAttributes);
         if (jobAttributes == null) throw new IOException("Missing job attributes");
@@ -304,7 +303,7 @@ public class IppClient {
     /** Send a print job cancellation request */
     public Packet cancelJob(Job job) throws IOException {
         URI printerUri = job.getPrinter().getUri();
-        Packet request = Packet.of(Operation.CancelJob, mId.getAndIncrement(),
+        Packet request = new Packet(Operation.CancelJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),

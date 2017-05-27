@@ -11,10 +11,16 @@ import java.io.IOException
  */
 class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCODER, tag, name) {
 
-    override fun of(attribute: Attribute<*>): Attribute<String>? =
-        if (!(attribute.valueTag == Tag.NameWithLanguage && tag == Tag.NameWithoutLanguage) ||
-                attribute.valueTag == Tag.TextWithLanguage && tag == Tag.TextWithoutLanguage) null
-        else of(attribute.values.map { (it as LangString).string })
+    override fun of(attribute: Attribute<*>): Attribute<String>? {
+        val values: List<String> = attribute.values.mapNotNull {
+            when(it) {
+                is String -> it
+                is LangString -> it.string
+                else -> null
+            }
+        }
+        return if (values.isNotEmpty()) of(values) else null
+    }
 
     companion object {
         private val TYPE_NAME = "String"

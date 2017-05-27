@@ -65,7 +65,8 @@ public class AttributeTypeTest {
     @Test
     public void enumAttributeType() throws Exception {
         AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
-                Attributes.OperationsSupported.of(Operation.CancelJob, Operation.CreateJob)));
+                Attributes.OperationsSupported.of(Operation.CancelJob,
+                        Operation.CreateJob)));
         assertEquals(Arrays.asList(Operation.CancelJob, Operation.CreateJob),
                 group.get(Attributes.OperationsSupported).getValues());
     }
@@ -79,7 +80,7 @@ public class AttributeTypeTest {
         assertEquals("JobState(xff)", JobState.ENCODER.get(0xFF).getName());
         assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
 
-        assertEquals("PrinterState(x7)", PrinterState.ENCODER.get(7).getName());
+        assertEquals("PrinterState(x7)", PrinterState.Companion.getENCODER().get(7).getName());
         assertEquals("Status(x777)", Status.ENCODER.get(0x777).getName());
     }
 

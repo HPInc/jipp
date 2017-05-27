@@ -51,7 +51,7 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri");
 
     public static final NameCodeType<Operation> OperationsSupported =
-            Operation.typeOf("operations-supported");
+            Operation.Companion.typeOf("operations-supported");
 
     public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
@@ -74,7 +74,7 @@ public final class Attributes {
             new StringType(Tag.NameWithoutLanguage, "printer-name");
 
     public static final NameCodeType<PrinterState> PrinterState =
-            new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+            new NameCodeType<>(com.hp.jipp.model.PrinterState.Companion.getENCODER(), "printer-state");
 
     public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");
@@ -95,10 +95,10 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri-supported");
 
     public static final KeywordType<IdentifyAction> IdentifyActionsSupported =
-            IdentifyAction.typeOf("identify-actions-supported");
+            IdentifyAction.Companion.typeOf("identify-actions-supported");
 
     public static final KeywordType<IdentifyAction> IdentifyActionsDefault =
-            IdentifyAction.typeOf("identify-actions-default");
+            IdentifyAction.Companion.typeOf("identify-actions-default");
 
     // Printer Attributes in PWG 5100.9
     public static final KeyValueType PrinterAlert =
@@ -152,7 +152,7 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "message");
 
     public static final KeywordType<IdentifyAction> IdentifyActions =
-            IdentifyAction.typeOf("identify-actions");
+            IdentifyAction.Companion.typeOf("identify-actions");
 
     // Others
 

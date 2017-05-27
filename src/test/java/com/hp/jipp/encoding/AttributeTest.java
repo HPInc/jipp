@@ -71,8 +71,10 @@ public class AttributeTest {
     public void enumAttribute() throws IOException {
         AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
-                        Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob)));
-        assertEquals(Arrays.asList(Operation.CancelJob, Operation.GetJobAttributes, Operation.CreateJob),
+                        Operation.CancelJob, Operation.GetJobAttributes,
+                        Operation.CreateJob)));
+        assertEquals(Arrays.asList(Operation.CancelJob, Operation.GetJobAttributes,
+                Operation.CreateJob),
                 group.getValues(Attributes.OperationsSupported));
     }
 
@@ -80,10 +82,10 @@ public class AttributeTest {
     public void surpriseEnum() throws IOException {
         AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
-                        Operation.of("vendor-specific", 0x4040))));
+                        new Operation("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
-        assertEquals(Arrays.asList(Operation.of("Operation(x4040)", 0x4040)),
+        assertEquals(Arrays.asList(new Operation("Operation(x4040)", 0x4040)),
                 group.getValues(Attributes.OperationsSupported));
     }
 

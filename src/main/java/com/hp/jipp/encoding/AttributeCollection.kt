@@ -10,9 +10,7 @@ data class AttributeCollection(val attributes: List<Attribute<*>>) : Pretty.Prin
     operator fun <T> get(type: AttributeType<T>): Attribute<T>? {
         return attributes
                 .firstOrNull { it.valueTag == type.tag && it.name == type.name }
-                ?.let {
-                    it as Attribute<T>
-                }
+                ?.let { type.of(it) }
     }
 
     /** Return all values found from the first attribute matching the type, or an empty list if no match  */

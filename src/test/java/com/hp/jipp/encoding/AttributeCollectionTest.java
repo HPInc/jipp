@@ -109,6 +109,14 @@ public class AttributeCollectionTest {
 
         assertEquals(colorType.of("blue"), collection.get(colorType));
         assertNull(collection.get(new StringType(Tag.Keyword, "media-not-color")));
+
+        assertEquals(mediaSizeType.of(
+                new AttributeCollection(
+                        xDimensionType.of(6),
+                        yDimensionType.of(4)),
+                new AttributeCollection(
+                        xDimensionType.of(12),
+                        yDimensionType.of(5))), collection.get(mediaSizeType));
     }
 
     @Test

@@ -17,7 +17,7 @@ public class PrinterTest {
     UUID uuid = UUID.randomUUID();
     URI printerUri = new URI("ipp://sample.com");
 
-    Printer printer = Printer.of(uuid, printerUri, AttributeGroup.Companion.of(Tag.PrinterAttributes,
+    Printer printer = new Printer(uuid, printerUri, AttributeGroup.Companion.of(Tag.PrinterAttributes,
             Attributes.PrinterInfo.of("printername")));
 
     @Test
@@ -27,10 +27,9 @@ public class PrinterTest {
 
     @Test
     public void getBlankInfo() {
-        printer = Printer.of(uuid, printerUri, AttributeGroup.Companion.of(Tag.PrinterAttributes));
+        printer = new Printer(uuid, printerUri, AttributeGroup.Companion.of(Tag.PrinterAttributes));
         assertEquals("", printer.getInfo());
         assertTrue(!printer.toString().contains("info")); // Skip name if not present
-
     }
 
     public PrinterTest() throws URISyntaxException {
