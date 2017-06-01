@@ -73,6 +73,9 @@ public final class Attributes {
     public static final StringType PrinterName =
             new StringType(Tag.NameWithoutLanguage, "printer-name");
 
+    public static final StringType PrinterDnsSdName =
+            new StringType(Tag.NameWithoutLanguage, "printer-dns-sd-name");
+
     public static final NameCodeType<PrinterState> PrinterState =
             new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 

@@ -66,7 +66,7 @@ public class IppClient {
             }
         }
         if (lastThrown != null) {
-            throw new IOException("Fail after trying uris " + uris, lastThrown);
+            throw new IOException("Fail after trying uris " + uris + ": " + lastThrown);
         } else {
             throw new IllegalArgumentException("No printer URIs present");
         }

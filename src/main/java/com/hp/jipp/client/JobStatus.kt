@@ -13,7 +13,7 @@ data class JobStatus(val state: JobState, val reasons: List<String>, @Nullable v
     override fun toString(): String {
         return "JobStatus{state=" + state.name +
                 (if (reasons.isEmpty()) "" else " r=" + reasons) +
-                (if (message == null) "m=$message" else "") +
+                (if (message == null) " m=$message" else "") +
                 (if (detailedMessages.isEmpty()) "" else " x=" + detailedMessages) +
                 "}"
     }
@@ -27,7 +27,7 @@ data class JobStatus(val state: JobState, val reasons: List<String>, @Nullable v
 
         @Throws(IOException::class)
         @JvmStatic fun of(attributes: AttributeGroup): JobStatus {
-            val state = attributes.getValue(Attributes.JobState) ?: throw IOException("Missing " + Attributes.JobState.name)
+            val state = attributes.getValue(Attributes.JobState) ?: JobState.Pending
             return JobStatus(state,
                     attributes.getValues(Attributes.JobStateReasons),
                     attributes.getValue(Attributes.JobStateMessage),

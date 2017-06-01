@@ -40,4 +40,6 @@ data class Operation(override val name: String, override val code: Int) : Code()
             return NameCodeType(ENCODER, attributeName)
         }
     }
+
+    override fun toString() = name
 }

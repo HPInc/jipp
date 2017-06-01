@@ -46,6 +46,7 @@ data class Status(override val name: String, override val code: Int) : Code() {
                 Status::class.java, object : NameCode.Factory<Status> {
             override fun of(name: String, code: Int) = Status(name, code)
         })
-
     }
+
+    override fun toString() = name
 }

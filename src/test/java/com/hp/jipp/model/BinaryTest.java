@@ -2,6 +2,7 @@ package com.hp.jipp.model;
 
 import org.junit.Test;
 
+import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Bytes;
 
@@ -22,10 +23,9 @@ public class BinaryTest {
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Bytes.read(binFile))));
             if (packet.getAttributeGroup(Tag.PrinterAttributes) == null) continue;
 
-            System.out.println("For " + binFile);
-            System.out.println("Printer info=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
-                    " name=" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
-                    " uris= " + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterUriSupported));
+            System.out.println(binFile + "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
+                    "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
+                    "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterDnsSdName));
         }
     }
 
