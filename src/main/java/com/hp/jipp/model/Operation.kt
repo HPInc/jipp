@@ -9,6 +9,8 @@ import com.hp.jipp.encoding.NameCode
  * @see [RFC2911 Section 5.2.2](https://tools.ietf.org/html/rfc2911.section-5.2.2)
  */
 data class Operation(override val name: String, override val code: Int) : Code() {
+    override fun toString() = name
+
     companion object {
         @JvmField val PrintJob = Operation("Print-Job", 0x0002)
         @JvmField val PrintUri = Operation("Print-URI", 0x0003)
@@ -40,6 +42,4 @@ data class Operation(override val name: String, override val code: Int) : Code()
             return NameCodeType(ENCODER, attributeName)
         }
     }
-
-    override fun toString() = name
 }

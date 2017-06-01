@@ -2,6 +2,9 @@ package com.hp.jipp.encoding
 
 /** A unit of measurement used to describe resolution */
 data class ResolutionUnit(override val name: String, override val code: Int) : NameCode() {
+
+    override fun toString() = name
+
     companion object {
         @JvmField val DotsPerInch = ResolutionUnit("dpi", 3)
         @JvmField val DotsPerCentimeter = ResolutionUnit("dpcm", 4)

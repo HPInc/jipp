@@ -4,7 +4,6 @@ import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeType
 import com.hp.jipp.encoding.NameCode
 import com.hp.jipp.encoding.NameCodeType
-import com.hp.jipp.util.Bytes
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.Pretty
@@ -13,23 +12,19 @@ import org.jetbrains.annotations.Nullable
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.Arrays
 
 /**
  * A request packet as specified in RFC2910.
  * @param data Extra data to appear after the packet
  *
  */
-data class Packet(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
+class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
                   val attributeGroups: List<AttributeGroup> = listOf(), @Nullable val data: ByteArray? = null,
                   @Nullable val inputStreamFactory: InputStreamFactory? = null) {
 
     constructor(code: Code, requestId: Int, vararg groups: AttributeGroup): this(code = code.code, requestId = requestId,
             attributeGroups = listOf(*groups))
-
-
-    // TODO: Override equals (necessary?)
 
     /**
      * Return this response packet's Status code
@@ -76,7 +71,7 @@ data class Packet(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int
 
         val factory = inputStreamFactory
         if (factory != null) {
-            factory.createInputStream().use { `in` -> Bytes.copy(`in`, out) }
+            factory.createInputStream().use { it.copyTo(out) }
         }
     }
 
@@ -101,23 +96,30 @@ data class Packet(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int
         return printer.print()
     }
 
+
+    // Custom equals/hashCode because possible ByteArray. TODO: Get rid of ByteArray
+    override fun equals(other: Any?): Boolean {
+        if (other !is Packet) return false
+        return other.versionNumber == versionNumber &&
+                other.code == code &&
+                other.requestId == requestId &&
+                other.attributeGroups == attributeGroups &&
+                other.inputStreamFactory == other.inputStreamFactory &&
+                Arrays.equals(other.data, data)
+    }
+
+    override fun hashCode(): Int =
+            ((((versionNumber * 31 + code) * 31 + requestId) * 31 + attributeGroups.hashCode()) * 31 +
+                    (data?.hashCode() ?: 0)) * 31 + (inputStreamFactory?.hashCode() ?: 0)
+
     override fun toString(): String {
         return prefix() + " " + attributeGroups
     }
-
-    fun builder(): Builder = Builder(this)
 
     class Builder(var code: Int, var requestId: Int) {
         constructor(code: Code, requestId: Int) : this(code.code, requestId)
         constructor(code: Code, requestId: Int, vararg groups: AttributeGroup) : this(code.code, requestId) {
             attributeGroups = listOf(*groups)
-        }
-
-        constructor(packet: Packet) : this(packet.code, packet.requestId) {
-            versionNumber = packet.versionNumber
-            attributeGroups = packet.attributeGroups
-            data = packet.data
-            inputStreamFactory = packet.inputStreamFactory
         }
 
         var versionNumber: Int = DEFAULT_VERSION_NUMBER
@@ -149,9 +151,7 @@ data class Packet(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int
             }
             return object : Parser {
                 @Throws(IOException::class)
-                override fun parse(`in`: DataInputStream): Packet {
-                    return Packet.read(`in`, attributeTypeMap)
-                }
+                override fun parse(input: DataInputStream) = Packet.read(input, attributeTypeMap)
             }
         }
 

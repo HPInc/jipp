@@ -14,6 +14,8 @@ data class JobState(override val name: String, override val code: Int) : NameCod
     val isFinal: Boolean
         get() = this === Canceled || this === Aborted || this === Completed
 
+    override fun toString() = name
+
     companion object {
 
         @JvmField val Pending = JobState("pending", 3)

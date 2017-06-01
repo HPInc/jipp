@@ -22,8 +22,9 @@ public class BinaryTest {
         for (File binFile : getBinFiles()) {
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Bytes.read(binFile))));
             if (packet.getAttributeGroup(Tag.PrinterAttributes) == null) continue;
+            if (packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo).isEmpty()) continue;
 
-            System.out.println(binFile + "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
+            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
                     "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
                     "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterDnsSdName));
         }
@@ -34,7 +35,6 @@ public class BinaryTest {
         // For each bin file cycle and print
         for (File binFile : getBinFiles()) {
             byte[] bytes = Bytes.read(binFile);
-
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
@@ -70,19 +70,20 @@ public class BinaryTest {
         }
     }
 
-    @Test
-    public void speedTest() throws Exception {
-        for (File binFile : getBinFiles()) {
-            byte[] bytes = Bytes.read(binFile);
-            long nanos = System.nanoTime();
-            int reps = 100;
-            for (int i = 0; i < reps; i++) {
-                try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
-                    parser.parse(in);
-                }
-            }
-            System.out.println("Rx " + reps + " of " + binFile.getName() + " (" + bytes.length + " bytes): " +
-                    ((System.nanoTime() - nanos)/1000) + "us");
-        }
-    }
+    // Enable when necessary, we have too many test files to try this every time
+//    @Test
+//    public void speedTest() throws Exception {
+//        for (File binFile : getBinFiles()) {
+//            byte[] bytes = Bytes.read(binFile);
+//            long nanos = System.nanoTime();
+//            int reps = 100;
+//            for (int i = 0; i < reps; i++) {
+//                try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
+//                    parser.parse(in);
+//                }
+//            }
+//            System.out.println("Rx " + reps + " of " + binFile.getName() + " (" + bytes.length + " bytes): " +
+//                    ((System.nanoTime() - nanos)/1000) + "us");
+//        }
+//    }
 }

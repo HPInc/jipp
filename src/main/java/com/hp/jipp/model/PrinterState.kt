@@ -5,6 +5,9 @@ import com.hp.jipp.encoding.NameCodeType
 
 /** An enumeration of possible printer states  */
 class PrinterState(override val name: String, override val code: Int) : NameCode() {
+
+    override fun toString() = name
+
     companion object {
 
         @JvmField val Idle = PrinterState("idle", 3)

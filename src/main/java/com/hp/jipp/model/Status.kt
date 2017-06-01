@@ -7,6 +7,9 @@ import com.hp.jipp.encoding.NameCodeType
  * A status code, as found in a response packet. See RFC2911 section 13.1.
  */
 data class Status(override val name: String, override val code: Int) : Code() {
+
+    override fun toString() = name
+
     companion object {
 
         @JvmField val Ok = Status("ok", 0x0000)
@@ -47,6 +50,4 @@ data class Status(override val name: String, override val code: Int) : Code() {
             override fun of(name: String, code: Int) = Status(name, code)
         })
     }
-
-    override fun toString() = name
 }

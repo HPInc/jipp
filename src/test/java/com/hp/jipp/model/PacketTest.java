@@ -349,6 +349,26 @@ public class PacketTest {
     }
 
     @Test
+    public void goodStreamBytes() throws Exception {
+        final byte[] bytes = new byte[] {
+                (byte)0x01,
+                (byte)0x02,
+                (byte)0x03,
+                (byte)0x04,
+                (byte)0x05,
+        };
+
+        builder.setInputStreamFactory(new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() throws IOException {
+                return new ByteArrayInputStream(bytes);
+            }
+        });
+        packet = cycle(builder.build());
+        assertArrayEquals(bytes, packet.getData());
+    }
+
+    @Test
     public void printCorrectly() throws IOException {
         builder.setAttributeGroups(AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(Operation.CreateJob)));
