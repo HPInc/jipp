@@ -15,7 +15,7 @@ public class KeywordTest {
         public static final Sample Two = of("two");
         public static final Sample Three = of("three");
 
-        public static final KeywordType.Encoder<Sample> ENCODER = KeywordType.Encoder.Companion.of(
+        public static final KeywordType.Encoder<Sample> ENCODER = KeywordType.Encoder.of(
                 Sample.class, new Keyword.Factory<Sample>() {
                     @Override
                     public Sample of(String name) {

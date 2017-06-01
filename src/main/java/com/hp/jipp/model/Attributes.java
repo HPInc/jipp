@@ -74,7 +74,7 @@ public final class Attributes {
             new StringType(Tag.NameWithoutLanguage, "printer-name");
 
     public static final NameCodeType<PrinterState> PrinterState =
-            new NameCodeType<>(com.hp.jipp.model.PrinterState.Companion.getENCODER(), "printer-state");
+            new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
 
     public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");

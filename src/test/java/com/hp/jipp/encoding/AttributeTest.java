@@ -69,7 +69,7 @@ public class AttributeTest {
 
     @Test
     public void enumAttribute() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
+        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
                         Operation.CancelJob, Operation.GetJobAttributes,
                         Operation.CreateJob)));
@@ -80,7 +80,7 @@ public class AttributeTest {
 
     @Test
     public void surpriseEnum() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes,
+        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.OperationsSupported.of(
                         new Operation("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
@@ -104,7 +104,7 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)),
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
                 new Encoder.Finder() {
                     @Override
                     public Encoder<?> find(Tag valueTag, String name) throws IOException {
@@ -124,7 +124,7 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
     }
 
     @Test

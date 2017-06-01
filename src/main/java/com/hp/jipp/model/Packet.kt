@@ -141,7 +141,7 @@ data class Packet(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int
         val DEFAULT_VERSION_NUMBER = 0x0101
 
         /** Return a parser with knowledge of specified attribute types  */
-        fun parserOf(attributeTypes: List<AttributeType<*>>): Parser {
+        @JvmStatic fun parserOf(attributeTypes: List<AttributeType<*>>): Parser {
 
             val attributeTypeMap = HashMap<String, AttributeType<*>>()
             for (attributeType in attributeTypes) {

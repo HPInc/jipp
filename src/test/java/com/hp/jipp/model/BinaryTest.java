@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BinaryTest {
-    private Packet.Parser parser = Packet.Companion.parserOf(Attributes.All);
+    private Packet.Parser parser = Packet.parserOf(Attributes.All);
 
     @Test
     public void scanNames() throws Exception {

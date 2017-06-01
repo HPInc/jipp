@@ -32,7 +32,7 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, name: String) :
             get() = map.values
 
         companion object {
-            fun <T : Keyword> of(cls: Class<T>, factory: Keyword.Factory<T>): Encoder<T> =
+            @JvmStatic fun <T : Keyword> of(cls: Class<T>, factory: Keyword.Factory<T>): Encoder<T> =
                 Encoder(factory, Util.getStaticObjects(cls)
                         .filter { cls.isAssignableFrom(it.javaClass) }
                         .map {

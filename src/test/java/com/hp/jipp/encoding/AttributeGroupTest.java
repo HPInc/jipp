@@ -54,7 +54,7 @@ public class AttributeGroupTest {
     @Test
     public void duplicateName() throws Exception {
         exception.expect(BuildError.class);
-        AttributeGroup.Companion.of(Tag.OperationAttributes,
+        AttributeGroup.of(Tag.OperationAttributes,
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesCharset.of("utf-8"));
     }
@@ -101,7 +101,7 @@ public class AttributeGroupTest {
                         resolverName.of("fullbleed-sizes"),
                         Attributes.Media.of(MediaSize.NaLetter, MediaSize.IsoA4)));
 
-        AttributeGroup group = cycle(AttributeGroup.Companion.of(Tag.PrinterAttributes, jobConstraints));
+        AttributeGroup group = cycle(AttributeGroup.of(Tag.PrinterAttributes, jobConstraints));
         System.out.println(group);
         assertEquals(MediaSize.NaLetter, group.getValue(jobConstraintsSupported).values(Attributes.Media).get(0));
         assertEquals(MediaSize.IsoA4, group.getValue(jobConstraintsSupported).values(Attributes.Media).get(1));

@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Cycler {
 
-    public static final Packet.Parser sParser = Packet.Companion.parserOf(Attributes.All);
+    public static final Packet.Parser sParser = Packet.parserOf(Attributes.All);
     public static final Map<String, AttributeType<?>> sAttributeTypeMap = new HashMap<>();
     static {
         for (AttributeType<?> entry: Attributes.All) {
@@ -46,7 +46,7 @@ public class Cycler {
 
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
-        return AttributeGroup.Companion.read(Tag.Companion.read(in), sAttributeTypeMap, in);
+        return AttributeGroup.read(Tag.read(in), sAttributeTypeMap, in);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {
@@ -61,7 +61,7 @@ public class Cycler {
     public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        Tag tag = Tag.Companion.read(in);
+        Tag tag = Tag.read(in);
         String name = new String(IppEncodingsKt.readValueBytes(in), Util.UTF8);
         return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
@@ -69,7 +69,7 @@ public class Cycler {
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) Attribute.Companion.read(in, sFinder, Tag.Companion.read(in));
+        return (Attribute<T>) Attribute.read(in, sFinder, Tag.read(in));
     }
 
 

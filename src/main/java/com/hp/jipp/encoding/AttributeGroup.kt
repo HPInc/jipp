@@ -105,7 +105,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         }
 
         @Throws(IOException::class)
-        fun read(startTag: Tag, attributeTypes: Map<String, AttributeType<*>>, input: DataInputStream): AttributeGroup {
+        @JvmStatic fun read(startTag: Tag, attributeTypes: Map<String, AttributeType<*>>, input: DataInputStream): AttributeGroup {
             var more = true
             val attributes = ArrayList<Attribute<*>>()
             val finder = finderOf(attributeTypes, AttributeGroup.ENCODERS)

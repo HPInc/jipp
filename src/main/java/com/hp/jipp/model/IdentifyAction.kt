@@ -18,7 +18,7 @@ class IdentifyAction(override val name: String) : Keyword() {
             }
         })
 
-        fun typeOf(name: String): KeywordType<IdentifyAction> {
+        @JvmStatic fun typeOf(name: String): KeywordType<IdentifyAction> {
             return KeywordType(ENCODER, name)
         }
     }

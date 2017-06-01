@@ -44,7 +44,7 @@ public class AttributeCollectionTest {
                 (byte)0x00,
                 (byte)0x00
         };
-        Attribute.Companion.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
+        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
     }
 
     @Test
