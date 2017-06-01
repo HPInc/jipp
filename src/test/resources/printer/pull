@@ -1,0 +1,8 @@
+#! /bin/bash
+#
+# Pull JIPP trace files and wipe from device
+#
+adb pull /storage/emulated/0/jipp .
+adb shell rm -rf /storage/emulated/0/jipp
+cp -r jipp/* .
+rm -rf jipp
