@@ -78,7 +78,7 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
     /** Parses packets  */
     interface Parser {
         @Throws(IOException::class)
-        fun parse(`in`: DataInputStream): Packet
+        fun parse(input: DataInputStream): Packet
     }
 
     private fun prefix(): String {

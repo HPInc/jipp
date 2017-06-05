@@ -3,10 +3,10 @@ buildscript {
     ext.kotlin_version = '1.1.2-4'
     repositories {
         jcenter()
-        maven() {
+        maven {
             url "https://plugins.gradle.org/m2/"
         }
-        maven() {
+        maven {
             url 'https://maven.google.com'
         }
     }
