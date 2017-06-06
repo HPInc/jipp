@@ -1,14 +1,13 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
+import com.hp.jipp.util.Bytes
 import com.hp.jipp.util.Hook
-import com.hp.jipp.util.Pretty
+import com.hp.jipp.util.PrettyPrinter
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-
-import com.hp.jipp.util.HexStrings
 
 /**
  * An IPP attribute, composed of a one-byte "value tag" suggesting its type, a human-readable string name, and one or
@@ -17,7 +16,7 @@ import com.hp.jipp.util.HexStrings
  * @param valueTag must be valid for the attribute type, according to the encoder.
  */
 data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: Encoder<T>) :
-        Pretty.Printable, HexStrings {
+        PrettyPrinter.Printable {
 
     init {
         if (!(encoder.valid(valueTag) || Hook.`is`(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
@@ -56,17 +55,17 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         out.writeString(name)
     }
 
-    override fun print(printer: Pretty.Printer) {
+    override fun print(printer: PrettyPrinter) {
         val prefix = "$name($valueTag)"
         if (values.size == 1) {
-            printer.open(Pretty.KEY_VALUE, prefix)
+            printer.open(PrettyPrinter.KEY_VALUE, prefix)
         } else {
-            printer.open(Pretty.ARRAY, prefix)
+            printer.open(PrettyPrinter.ARRAY, prefix)
         }
 
         values.forEach {
             when(it) {
-                is Pretty.Printable -> it.print(printer)
+                is PrettyPrinter.Printable -> it.print(printer)
                 else -> printer.add(toPrintable(it))
             }
         }
@@ -81,7 +80,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     private fun toPrintable(value: T): String = when (value) {
         is String -> "\"$value\""
-        is ByteArray -> "x" + value.toHexString()
+        is ByteArray -> "x" + Bytes.toHexString(value)
         else -> value.toString()
     }
 

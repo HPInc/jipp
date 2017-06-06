@@ -23,7 +23,8 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.util.Util;
+import com.hp.jipp.util.KotlinTest;
+import com.hp.jipp.util.Reflect;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
@@ -159,7 +160,7 @@ public class PacketTest {
     @Test
     public void writeSingleAttributePacket() throws IOException {
         Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.Charset, "attributes-charset")
-                .of("US-ASCII".getBytes(Util.UTF8));
+                .of("US-ASCII".getBytes(Reflect.UTF8));
         List<AttributeGroup> group = new ArrayList<>();
         group.add(AttributeGroup.of(Tag.OperationAttributes, simpleAttribute));
         builder.setAttributeGroups(group);
@@ -401,6 +402,18 @@ public class PacketTest {
         assertTrue(packet.toString().contains("dLen=1"));
         assertTrue(packet.toString().contains("dLen=1"));
         assertTrue(packet.prettyPrint(120, "  ").contains("dLen=1"));
+    }
+
+    @Test
+    public void cover() throws Exception {
+        builder.setAttributeGroups(AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(Operation.CreateJob)));
+        packet = builder.build();
+
+        builder.setAttributeGroups(AttributeGroup.of(Tag.PrinterAttributes,
+                Attributes.OperationsSupported.of(Operation.GetPrinterAttributes)));
+        KotlinTest.cover(packet, cycle(packet),
+                builder.build());
     }
 
     /** Write the entire contents of this packet to a single byte array */

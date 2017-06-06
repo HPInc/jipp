@@ -5,13 +5,13 @@ import com.hp.jipp.encoding.BooleanType;
 import com.hp.jipp.encoding.IntegerType;
 import com.hp.jipp.encoding.KeyValueType;
 import com.hp.jipp.encoding.KeywordType;
-import com.hp.jipp.encoding.NameCodeType;
+import com.hp.jipp.encoding.EnumType;
 import com.hp.jipp.encoding.RangeOfIntegerType;
 import com.hp.jipp.encoding.ResolutionType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.encoding.UriType;
-import com.hp.jipp.util.Util;
+import com.hp.jipp.util.Reflect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +50,8 @@ public final class Attributes {
     public static final UriType PrinterUri =
             new UriType(Tag.Uri, "printer-uri");
 
-    public static final NameCodeType<Operation> OperationsSupported =
-            Operation.Companion.typeOf("operations-supported");
+    public static final Operation.Type OperationsSupported =
+            new Operation.Type("operations-supported");
 
     public static final StringType RequestedAttributes =
             new StringType(Tag.Keyword, "requested-attributes");
@@ -76,8 +76,8 @@ public final class Attributes {
     public static final StringType PrinterDnsSdName =
             new StringType(Tag.NameWithoutLanguage, "printer-dns-sd-name");
 
-    public static final NameCodeType<PrinterState> PrinterState =
-            new NameCodeType<>(com.hp.jipp.model.PrinterState.ENCODER, "printer-state");
+    public static final PrinterState.Type PrinterState =
+            new PrinterState.Type("printer-state");
 
     public static final StringType PrinterStateReasons =
             new StringType(Tag.Keyword, "printer-state-reasons");
@@ -98,10 +98,10 @@ public final class Attributes {
             new UriType(Tag.Uri, "printer-uri-supported");
 
     public static final KeywordType<IdentifyAction> IdentifyActionsSupported =
-            IdentifyAction.Companion.typeOf("identify-actions-supported");
+            IdentifyAction.typeOf("identify-actions-supported");
 
     public static final KeywordType<IdentifyAction> IdentifyActionsDefault =
-            IdentifyAction.Companion.typeOf("identify-actions-default");
+            IdentifyAction.typeOf("identify-actions-default");
 
     // Printer Attributes in PWG 5100.9
     public static final KeyValueType PrinterAlert =
@@ -125,10 +125,13 @@ public final class Attributes {
     public static final MediaSize.Type Media =
             new MediaSize.Type("media");
 
+    public static final Finishings.Type Finishings =
+            new Finishings.Type("finishings-default");
+
     // 3.2.1.1 Print-Job Response
 
-    public static final NameCodeType<JobState> JobState =
-            new NameCodeType<>(com.hp.jipp.model.JobState.ENCODER, "job-state");
+    public static final JobState.Type JobState =
+            new JobState.Type("job-state");
 
     public static final UriType JobUri = new UriType(Tag.Uri, "job-uri");
 
@@ -143,6 +146,13 @@ public final class Attributes {
     public static final StringType JobDetailedStatusMessages =
             new StringType(Tag.TextWithoutLanguage, "job-detailed-status-messages");
 
+    public static final Finishings.Type FinishingsDefault =
+            new Finishings.Type("finishings-default");
+
+    public static final EnumType<Finishings> FinishingsSupported =
+            new Finishings.Type("finishings-supported");
+
+
     // 3.2.6.1 Get-Jobs request
     public static final BooleanType MyJobs = new BooleanType(Tag.BooleanValue, "my-jobs");
 
@@ -155,7 +165,7 @@ public final class Attributes {
             new StringType(Tag.TextWithoutLanguage, "message");
 
     public static final KeywordType<IdentifyAction> IdentifyActions =
-            IdentifyAction.Companion.typeOf("identify-actions");
+            IdentifyAction.typeOf("identify-actions");
 
     // Others
 
@@ -174,7 +184,7 @@ public final class Attributes {
     /** Return all accessible static members of the specified class which are AttributeType objects */
     public static List<AttributeType<?>> staticMembers(Class<?> cls) {
         List<AttributeType<?>> members = new ArrayList<>();
-        for (Object object : Util.getStaticObjects(cls)) {
+        for (Object object : Reflect.getStaticObjects(cls)) {
             if (object instanceof AttributeType<?>) {
                 members.add((AttributeType<?>) object);
             }

@@ -1,7 +1,6 @@
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.NameCode
-import com.hp.jipp.encoding.NameCodeType
+import com.hp.jipp.encoding.EnumType
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
@@ -45,9 +44,6 @@ data class Status(override val name: String, override val code: Int) : Code() {
         @JvmField val ServerErrorMultipleDocumentJobsNotSupported = Status("server-error-multiple-document-jobs-not-supported", 0x0509)
 
         @JvmField
-        val ENCODER: NameCodeType.Encoder<Status> = NameCodeType.Encoder.of(
-                Status::class.java, object : NameCode.Factory<Status> {
-            override fun of(name: String, code: Int) = Status(name, code)
-        })
+        val ENCODER = EnumType.Encoder(Status::class.java, { name, code -> Status(name, code) })
     }
 }

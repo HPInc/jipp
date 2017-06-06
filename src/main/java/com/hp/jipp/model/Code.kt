@@ -1,22 +1,16 @@
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.NameCode
-import com.hp.jipp.encoding.NameCodeType
+import com.hp.jipp.encoding.Enum
+import com.hp.jipp.encoding.EnumType
 
 /** A superset of Status and Operation  */
-abstract class Code : NameCode() {
+abstract class Code : Enum() {
 
     companion object {
-        private val all: List<Code> by lazy {
-            Status.ENCODER.map.values + Operation.ENCODER.map.values
-        }
-
-        val ENCODER: NameCodeType.Encoder<Code> by lazy {
-            NameCodeType.Encoder.of("Code", all, object : NameCode.Factory<Code> {
-                override fun of(name: String, code: Int): Code {
-                    return Status(name, code)
-                }
-            })
+        // MUST be lazy because Status and Operation are subclasses.
+        val ENCODER by lazy {
+            EnumType.Encoder("Code", Status.ENCODER.map.values + Operation.ENCODER.map.values,
+                    { name, code -> Status(name, code) })
         }
     }
 }

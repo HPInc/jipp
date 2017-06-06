@@ -7,7 +7,7 @@ import java.io.IOException
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
  */
-data class Tag(override val name: String, override val code: Int) : NameCode() {
+data class Tag(override val name: String, override val code: Int) : Enum() {
 
     /** Write this tag to the output stream  */
     @Throws(IOException::class)
@@ -62,8 +62,8 @@ data class Tag(override val name: String, override val code: Int) : NameCode() {
         @JvmField val MimeMediaType = Tag("mimeMediaType", 0x49)
         @JvmField val MemberAttributeName = Tag("memberAttrName", 0x4A)
 
-        private val all: Collection<Tag> = NameCode.allFrom(Tag::class.java)
-        private val codeMap = NameCode.toCodeMap(all)
+        private val all: Collection<Tag> = Enum.allFrom(Tag::class.java)
+        private val codeMap = Enum.toCodeMap(all)
 
         @JvmStatic fun get(code: Int) = codeMap[code] ?: Tag("tag(x%x)".format(code), code)
 

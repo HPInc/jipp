@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Util {
+public final class Reflect {
     public static final String UTF8 = "UTF-8";
 
     /** Use reflection to return all static, accessible, initialized objects in the class */

@@ -3,7 +3,7 @@ package com.hp.jipp.encoding;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Packet;
 import com.hp.jipp.util.ParseError;
-import com.hp.jipp.util.Util;
+import com.hp.jipp.util.Reflect;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,7 +62,7 @@ public class Cycler {
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
         Tag tag = Tag.read(in);
-        String name = new String(IppEncodingsKt.readValueBytes(in), Util.UTF8);
+        String name = new String(IppEncodingsKt.readValueBytes(in), Reflect.UTF8);
         return attributeType.getEncoder().read(in, sFinder, tag, name);
     }
 

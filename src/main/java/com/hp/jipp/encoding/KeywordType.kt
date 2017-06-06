@@ -1,6 +1,6 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.Util
+import com.hp.jipp.util.Reflect
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -33,7 +33,7 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, name: String) :
 
         companion object {
             @JvmStatic fun <T : Keyword> of(cls: Class<T>, factory: Keyword.Factory<T>): Encoder<T> =
-                Encoder(factory, Util.getStaticObjects(cls)
+                Encoder(factory, Reflect.getStaticObjects(cls)
                         .filter { cls.isAssignableFrom(it.javaClass) }
                         .map {
                             @Suppress("UNCHECKED_CAST")

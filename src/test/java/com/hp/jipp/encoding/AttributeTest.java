@@ -15,7 +15,7 @@ import com.hp.jipp.model.Status;
 import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
-import com.hp.jipp.util.Util;
+import com.hp.jipp.util.Reflect;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 
@@ -29,7 +29,7 @@ public class AttributeTest {
     @Test
     public void octetString() throws IOException {
         AttributeType<byte[]> octetStringType = new OctetStringType(Tag.OctetString, "name");
-        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Util.UTF8));
+        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Reflect.UTF8));
         assertArrayEquals(new byte[] {
                 (byte)0x30, // OctetString
                 (byte)0x00,
@@ -42,15 +42,15 @@ public class AttributeTest {
         attribute = cycle(attribute);
         assertEquals(Tag.OctetString, attribute.getValueTag());
         assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(Util.UTF8), attribute.getValue(0));
+        assertArrayEquals("value".getBytes(Reflect.UTF8), attribute.getValue(0));
     }
 
     @Test
     public void multiOctetString() throws IOException {
         AttributeType<byte[]> stringType = new OctetStringType(Tag.NameWithoutLanguage, "name");
-        Attribute<byte[]> attribute = stringType.of("value".getBytes(Util.UTF8), "value2".getBytes(Util.UTF8));
-        assertArrayEquals("value".getBytes(Util.UTF8), attribute.getValue(0));
-        assertArrayEquals("value2".getBytes(Util.UTF8), attribute.getValue(1));
+        Attribute<byte[]> attribute = stringType.of("value".getBytes(Reflect.UTF8), "value2".getBytes(Reflect.UTF8));
+        assertArrayEquals("value".getBytes(Reflect.UTF8), attribute.getValue(0));
+        assertArrayEquals("value2".getBytes(Reflect.UTF8), attribute.getValue(1));
     }
 
     @Test

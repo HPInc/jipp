@@ -1,7 +1,7 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.ParseError
-import com.hp.jipp.util.Util
+import com.hp.jipp.util.Reflect
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -17,7 +17,7 @@ fun DataOutputStream.writeValueBytes(bytes: ByteArray) {
 /** Writes a UTF-8 string to output */
 @Throws(IOException::class)
 fun DataOutputStream.writeString(string: String) {
-    writeValueBytes(string.toByteArray(charset(Util.UTF8)))
+    writeValueBytes(string.toByteArray(charset(Reflect.UTF8)))
 }
 
 /** Skip (discard) a length-value pair  */

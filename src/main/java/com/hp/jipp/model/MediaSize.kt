@@ -4,7 +4,7 @@ import com.hp.jipp.encoding.AttributeType
 import com.hp.jipp.encoding.SimpleEncoder
 import com.hp.jipp.encoding.StringType
 import com.hp.jipp.encoding.Tag
-import com.hp.jipp.util.Util
+import com.hp.jipp.util.Reflect
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -22,6 +22,7 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
     /** A media size type based solely on keyword values with width/height inferred  */
     class Type(name: String) : AttributeType<MediaSize>(ENCODER, Tag.Keyword, name)
 
+    override fun toString() = "MediaSize($name, ${width}x${height})"
     companion object {
         private val WIDTH_HEIGHT = Pattern.compile(
                 "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
@@ -206,7 +207,7 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
         @JvmField val Roc16k = of("roc_16k_7.75x10.75in")
         @JvmField val Roc8k = of("roc_8k_10.75x15.5in")
 
-        private val all: Map<String, MediaSize> = Util.getStaticObjects(MediaSize::class.java)
+        private val all: Map<String, MediaSize> = Reflect.getStaticObjects(MediaSize::class.java)
                 .filter { MediaSize::class.java.isAssignableFrom(it.javaClass) }
                 .map { (it as MediaSize).name to it }.toMap()
 

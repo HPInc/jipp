@@ -1,7 +1,6 @@
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.NameCodeType
-import com.hp.jipp.encoding.NameCode
+import com.hp.jipp.encoding.EnumType
 
 /**
  * An operation code as found in request packets and elsewhere.
@@ -10,6 +9,8 @@ import com.hp.jipp.encoding.NameCode
  */
 data class Operation(override val name: String, override val code: Int) : Code() {
     override fun toString() = name
+
+    class Type(name: String) : EnumType<Operation>(ENCODER, name)
 
     companion object {
         @JvmField val PrintJob = Operation("Print-Job", 0x0002)
@@ -32,14 +33,6 @@ data class Operation(override val name: String, override val code: Int) : Code()
         @JvmField val IdentifyPrinter = Operation("Identify-Printer", 0x003C)
 
         /** The encoder for converting integers to Operation objects  */
-        @JvmField val ENCODER: NameCodeType.Encoder<Operation> = NameCodeType.Encoder.of(
-                Operation::class.java, object : NameCode.Factory<Operation> {
-            override fun of(name: String, code: Int) = Operation(name, code)
-        })
-
-        /** Create and return a [NameCodeType] based on this NameCode  */
-        fun typeOf(attributeName: String): NameCodeType<Operation> {
-            return NameCodeType(ENCODER, attributeName)
-        }
+        @JvmField val ENCODER = EnumType.Encoder(Operation::class.java, { name, code -> Operation(name, code) })
     }
 }

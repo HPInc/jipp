@@ -3,7 +3,7 @@ package com.hp.jipp.encoding
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.Hook
 import com.hp.jipp.util.ParseError
-import com.hp.jipp.util.Pretty
+import com.hp.jipp.util.PrettyPrinter
 import org.jetbrains.annotations.Nullable
 
 import java.io.DataInputStream
@@ -13,7 +13,7 @@ import java.util.Arrays
 import java.util.HashSet
 
 /** A specific group of attributes found in a packet. */
-data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pretty.Printable {
+data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : PrettyPrinter.Printable {
 
     init {
         // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
@@ -61,8 +61,8 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             attributes.forEach { it.write(out) }
         }
 
-    override fun print(printer: Pretty.Printer) {
-        printer.open(Pretty.OBJECT, tag.toString())
+    override fun print(printer: PrettyPrinter) {
+        printer.open(PrettyPrinter.OBJECT, tag.toString())
         printer.addAll(attributes)
         printer.close()
     }

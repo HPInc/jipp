@@ -2,11 +2,11 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeType
-import com.hp.jipp.encoding.NameCode
-import com.hp.jipp.encoding.NameCodeType
+import com.hp.jipp.encoding.Enum
+import com.hp.jipp.encoding.EnumType
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.encoding.Tag
-import com.hp.jipp.util.Pretty
+import com.hp.jipp.util.PrettyPrinter
 import org.jetbrains.annotations.Nullable
 
 import java.io.DataInputStream
@@ -39,9 +39,9 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
         get() = getCode(Operation.ENCODER)
 
     /**
-     * Return a NameCode corresponding to this packet's code.
+     * Return a Enum corresponding to this packet's code.
      */
-    private fun <T : NameCode> getCode(encoder: NameCodeType.Encoder<T>): T = encoder[code]
+    private fun <T : Enum> getCode(encoder: EnumType.Encoder<T>): T = encoder[code]
 
     /** Returns the first attribute with the specified delimiter  */
     fun getAttributeGroup(delimiter: Tag): AttributeGroup? {
@@ -90,12 +90,9 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
                 ")"
     }
 
-    fun prettyPrint(maxWidth: Int, indent: String): String {
-        val printer = Pretty.printer(prefix(), Pretty.OBJECT, indent, maxWidth)
-        printer.addAll(attributeGroups)
-        return printer.print()
-    }
-
+    fun prettyPrint(maxWidth: Int, indent: String) = PrettyPrinter(prefix(), PrettyPrinter.OBJECT, indent, maxWidth)
+            .addAll(attributeGroups)
+            .print()
 
     // Custom equals/hashCode because possible ByteArray. TODO: Get rid of ByteArray
     override fun equals(other: Any?): Boolean {

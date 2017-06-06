@@ -19,7 +19,7 @@ public class HookTest {
 
     @Test
     public void utilCoverage() {
-        new Util();
+        new Reflect();
         new Hook();
     }
 }

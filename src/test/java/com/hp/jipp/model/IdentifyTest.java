@@ -1,6 +1,5 @@
 package com.hp.jipp.model;
 
-
 import com.hp.jipp.encoding.AttributeType;
 
 import org.junit.Test;

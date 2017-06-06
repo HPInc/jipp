@@ -1,20 +1,22 @@
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.NameCode
-import com.hp.jipp.encoding.NameCodeType
+import com.hp.jipp.encoding.Enum
+import com.hp.jipp.encoding.EnumType
 
 /**
  * Job State values.
 
  * @see [RFC2911 Section 4.3.7](https://tools.ietf.org/html/rfc2911.section-4.3.7)
  */
-data class JobState(override val name: String, override val code: Int) : NameCode() {
+data class JobState(override val name: String, override val code: Int) : Enum() {
 
     /** Return true if this state is the terminating state for a job  */
     val isFinal: Boolean
-        get() = this === Canceled || this === Aborted || this === Completed
+        get() = this == Canceled || this == Aborted || this == Completed
 
     override fun toString() = name
+
+    class Type(name: String) : EnumType<JobState>(ENCODER, name)
 
     companion object {
 
@@ -26,9 +28,6 @@ data class JobState(override val name: String, override val code: Int) : NameCod
         @JvmField val Aborted = JobState("aborted", 8)
         @JvmField val Completed = JobState("completed", 9)
 
-        @JvmField val ENCODER: NameCodeType.Encoder<JobState> = NameCodeType.Encoder.of(
-                JobState::class.java, object : NameCode.Factory<JobState> {
-            override fun of(name: String, code: Int) = JobState(name, code)
-        })
+        @JvmField val ENCODER = EnumType.Encoder(JobState::class.java, { name, code -> JobState(name, code) })
     }
 }
