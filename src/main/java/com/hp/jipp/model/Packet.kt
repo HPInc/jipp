@@ -65,6 +65,7 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
             group.write(out)
         }
         Tag.EndOfAttributes.write(out)
+
         if (data != null) {
             out.write(data)
         }

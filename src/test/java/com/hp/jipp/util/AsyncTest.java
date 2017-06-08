@@ -36,7 +36,7 @@ public class AsyncTest {
             latch.countDown();
         }
 
-        public void await() {
+        void await() {
             try {
                 latch.await();
             } catch (InterruptedException ignored) {
@@ -76,6 +76,20 @@ public class AsyncTest {
         assertEquals(Integer.valueOf(5), listener.value);
     }
 
+    @Test
+    public void incomplete() throws Exception {
+        async = new Async<>(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                Thread.sleep(500);
+                return 5;
+            }
+        });
+        assertFalse(async.isComplete());
+        assertFalse(async.isError());
+        assertFalse(async.isValue());
+
+    }
     @Test
     public void error() throws Exception {
         async = new Async<>(new Callable<Integer>() {
@@ -253,7 +267,7 @@ public class AsyncTest {
             }
         });
 
-        Async<Integer> async2 = async.flatMap(new Async.FlatMapper<Integer, Integer>() {
+        Async<Integer> async2 = async.flatMap(new Async.Mapper<Integer, Async<Integer>>() {
             @Override
             public Async<Integer> map(final Integer integer) {
                 return new Async<>(new Callable<Integer>() {
@@ -399,4 +413,15 @@ public class AsyncTest {
         Thread.sleep(25);
         assertNull(null, listener.error);
         assertNull(null, listener.value);
-    }}
+    }
+
+    @Test
+    public void timeout() throws Exception {
+        async = Async.<Integer>success(5).delay(DELAY);
+        async.timeout(5);
+        async.await(DELAY);
+        assertTrue(async.isComplete());
+        assertTrue(async.isError());
+    }
+}
+

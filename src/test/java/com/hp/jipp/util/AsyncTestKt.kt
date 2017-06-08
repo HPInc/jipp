@@ -24,7 +24,7 @@ class AsyncTestKt {
 
     @Test
     fun recoverUnneeded() {
-        assertEquals(Integer.valueOf(4), Async { 4 }.recover { _ -> 5}.get(DELAY))
+        assertEquals(Integer.valueOf(4), Async { 4 }.recover { _ -> 5 }.get(DELAY))
     }
 
     companion object {

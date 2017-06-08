@@ -3,6 +3,8 @@ package com.hp.jipp.util
 import java.util.*
 import java.util.concurrent.*
 
+typealias TryCallback<T> = (Try<T>) -> Unit
+
 /**
  * A holder for a value that may complete successfully or end in a thrown error.
  * Similar to Scala's [Future](https://www.scala-lang.org/api/2.12.2/scala/concurrent/Future.html).
@@ -32,8 +34,9 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
             tell()
         }
 
+
     /** Listeners waiting for results */
-    private var listeners: List<Listener<T>> = listOf()
+    private var listeners: List<TryCallback<T>> = listOf()
 
     /** Future doing work on a service, if necessary */
     private var future: Future<Unit>? = null
@@ -93,6 +96,18 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
         true
     }
 
+    /** Cancels this async if it has not completed in the specified period */
+    fun timeout(millis: Long) {
+        val timer = Timer()
+        timer.schedule(object: TimerTask() {
+            override fun run() {
+                this@Async.cancel()
+            }
+        }, millis)
+
+        listen { _ -> timer.cancel() }
+    }
+
     /** Wait up to timeout for a value to arrive and return it, or null */
     fun await(timeout: Long): T? = try { get(timeout) } catch (ignored: Throwable) { null }
 
@@ -100,35 +115,41 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
     fun get(timeout: Long): T? {
         if (!isComplete()) {
             val latch = CountDownLatch(1)
-            listen(object : Listener<T> {
-                override fun onError(thrown: Throwable) {
-                    latch.countDown()
-                }
-
-                override fun onSuccess(value: T) {
-                    latch.countDown()
-                }
-            })
+            listen { _ -> latch.countDown() }
             latch.await(timeout, TimeUnit.MILLISECONDS)
         }
 
         return this.result?.get()
     }
 
-    /** Tell all current listeners about results */
+    /** Tell all callbacks about results */
     private fun tell() {
-        if (result == null) return
+        val result = this.result ?: return
         val toTell = synchronized(this) {
             val toTell = listeners
             // Only one notification is given
             listeners = listOf()
             toTell
         }
-        val result = this.result
-        when (result) {
-            is Success<T> -> toTell.forEach { executor.execute { it.onSuccess(result.value) } }
-            is Error<T> -> toTell.forEach { executor.execute { it.onError(result.thrown) } }
+        // Inform outside of synchronized block
+        toTell.forEach { executor.execute { it(result) }}
+    }
+
+    /** Listen for completion, returning this */
+    private fun listen(listener: TryCallback<T>): Async<T> {
+        synchronized(this) {
+            listeners += listener
         }
+        tell()
+        return this
+    }
+
+    /** Stop listening for completion */
+    private fun unlisten(listener: TryCallback<T>): Async<T> {
+        synchronized(this) {
+            listeners -= listener
+        }
+        return this
     }
 
     /** Adds a callback to be invoked if success is reached and returns the original async. */
@@ -136,57 +157,28 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
             onSuccess(executor, callback::onSuccess)
 
     /** Adds a callback to be invoked if success is reached and returns the original async. */
-    fun onSuccess(executor: ExecutorService = this.executor, callback: (T) -> Unit): Async<T> {
-        listen(object : Async.Listener<T> {
-            override fun onSuccess(value: T) {
-                executor.submit {
-                    callback(value)
-                }
-            }
-
-            override fun onError(thrown: Throwable) {
-                // Ignore
-            }
-        })
-        return this
-    }
+    fun onSuccess(executor: ExecutorService = this.executor, callback: (T) -> Unit) =
+            listen { if (it is Success<T>) executor.submit { callback(it.value) } }
 
     @JvmOverloads fun onError(executor: ExecutorService = this.executor, callback: ErrorListener): Async<T> =
             onError(executor, callback::onError)
 
     /** Adds a callback to be invoked if an error is reached and returns the original async. */
-    @JvmOverloads fun onError(executor: ExecutorService = this.executor, callback: (Throwable) -> Unit): Async<T> {
-        listen(object : Async.Listener<T> {
-            override fun onSuccess(value: T) {
-                // Ignore
-            }
-
-            override fun onError(thrown: Throwable) {
-                executor.submit {
-                    callback(thrown)
-                }
-            }
-        })
-        return this
-    }
+    @JvmOverloads fun onError(executor: ExecutorService = this.executor, callback: (Throwable) -> Unit) =
+            listen { if (it is Error<T>) executor.submit { callback(it.thrown) } }
 
     /** Adds a callback to be invoked upon completion, and returns the original async */
-    @JvmOverloads fun onDone(executor: ExecutorService = this.executor, callback: Listener<T>): Async<T> {
-        listen(object : Async.Listener<T> {
-            override fun onSuccess(value: T) {
-                executor.submit {
-                    callback.onSuccess(value)
+    @JvmOverloads fun onDone(executor: ExecutorService = this.executor, callback: Listener<T>) =
+            onDone(executor) {
+                when (it) {
+                    is Error<T> -> callback.onError(it.thrown)
+                    is Success<T> -> callback.onSuccess(it.value)
                 }
             }
 
-            override fun onError(thrown: Throwable) {
-                executor.submit {
-                    callback.onError(thrown)
-                }
-            }
-        })
-        return this
-    }
+    /** Adds a callback to be invoked upon completion, and returns the original async */
+    fun onDone(executor: ExecutorService = this.executor, callback: TryCallback<T>) =
+        listen { executor.submit { callback(it) } }
 
     @JvmOverloads fun <U> map(executor: ExecutorService = this.executor, mapper: Mapper<T, U>) =
             flatMap(executor, { thrown -> Async(executor) { (mapper::map)(thrown) } })
@@ -195,30 +187,21 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
     fun <U> map(executor: ExecutorService = this.executor, mapper: (T) -> U): Async<U> =
             flatMap(executor, { thrown -> Async(executor) { mapper(thrown) } })
 
-    @JvmOverloads fun <U> flatMap(executor: ExecutorService = this.executor, mapper: FlatMapper<T, U>) =
+    @JvmOverloads fun <U> flatMap(executor: ExecutorService = this.executor, mapper: Mapper<T, Async<U>>) =
             flatMap(executor, mapper::map)
 
     /** Return a new async to hold the converted asynchronous result */
     fun <U> flatMap(executor: ExecutorService = this.executor, mapper: (T) -> Async<U>): Async<U> {
         val async = Async<U>(executor)
 
-        val listener = object : Listener<T> {
-            override fun onSuccess(value: T) {
-                val next = mapper(value)
-                next.listen(object : Listener<U> {
-                    override fun onSuccess(value: U) {
-                        async.safeSetResult(Success(value))
-                    }
-
-                    override fun onError(thrown: Throwable) {
-                        async.safeSetResult(Error(thrown))
-                    }
-                })
-                async.onCancel = { -> next.cancel() }
-            }
-
-            override fun onError(thrown: Throwable) {
-                async.safeSetResult(Error(thrown))
+        val listener: TryCallback<T> = {
+            when(it) {
+                is Error<T> -> async.safeSetResult(Error<U>(it.thrown))
+                is Success<T> -> {
+                    val next = mapper(it.value)
+                    next.listen { async.safeSetResult(it) }
+                    async.onCancel = { -> next.cancel() }
+                }
             }
         }
 
@@ -243,29 +226,20 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
             flatRecover(executor, { thrown -> Async(executor) { mapper(thrown) } })
 
     /** Return a new async that applies the mapper if this async results in an error */
-    @JvmOverloads fun flatRecover(executor: ExecutorService = this.executor, mapper: FlatMapper<Throwable, T>) =
+    @JvmOverloads fun flatRecover(executor: ExecutorService = this.executor, mapper: Mapper<Throwable, Async<T>>) =
             flatRecover(executor, mapper::map)
 
     /** Return a new async that applies the mapper if this async results in an error */
     fun flatRecover(executor: ExecutorService = this.executor, mapper: (Throwable) -> Async<T>): Async<T> {
         val async = Async<T>(executor)
-        val listener = object : Listener<T> {
-            override fun onSuccess(value: T) {
-                async.result = Success(value)
-            }
-
-            override fun onError(thrown: Throwable) {
-                val next = mapper(thrown)
-                next.listen(object : Listener<T> {
-                    override fun onError(thrown: Throwable) {
-                        async.safeSetResult(Error(thrown))
-                    }
-
-                    override fun onSuccess(value: T) {
-                        async.safeSetResult(Success(value))
-                    }
-                })
-                async.onCancel = { -> next.cancel() }
+        val listener: TryCallback<T> = {
+            when(it) {
+                is Error<T> -> {
+                    val next = mapper(it.thrown)
+                    next.listen { async.safeSetResult(it) }
+                    async.onCancel = { -> next.cancel() }
+                }
+                is Success<T> -> async.result = it
             }
         }
         async.onCancel = { -> unlisten(listener) }
@@ -273,39 +247,22 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
         return async
     }
 
-    /** Listen for completion */
-    private fun listen(listener: Listener<T>): Async<T> {
-        synchronized(this) {
-            listeners += listener
-        }
-        tell()
-        return this
-    }
-
-    /** Stop listening for completion */
-    private fun unlisten(listener: Listener<T>): Async<T> {
-        synchronized(this) {
-            listeners -= listener
-        }
-        return this
-    }
-
     /** Return a new Async which provides this async's success value after a delay */
     @JvmOverloads fun delay(executor: ExecutorService = this.executor, millis: Long): Async<T> {
         val async = Async<T>(executor)
         val timer = Timer()
-        val listener = object : Listener<T> {
-            override fun onSuccess(value: T) {
-                async.onCancel = { timer.cancel() }
-                timer.schedule(object: TimerTask() {
-                    override fun run() {
-                        async.safeSetResult(Success(value))
-                    }
-                }, millis)
-            }
 
-            override fun onError(thrown: Throwable) {
-                async.safeSetResult(Error(thrown))
+        val listener: TryCallback<T> = {
+            when (it) {
+                is Error<T> -> async.safeSetResult(it)
+                is Success<T> -> {
+                    async.onCancel = { timer.cancel() }
+                    timer.schedule(object : TimerTask() {
+                        override fun run() {
+                            async.safeSetResult(it)
+                        }
+                    }, millis)
+                }
             }
         }
         async.onCancel = { unlisten(listener) }
@@ -313,6 +270,7 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
         return async
     }
 
+    // Well-named callbacks for Java use
     interface Listener<in T> : ErrorListener, SuccessListener<T>
 
     interface SuccessListener<in T> {
@@ -325,10 +283,6 @@ class Async<T> private constructor(val executor: ExecutorService = DEFAULT_EXECU
 
     interface Mapper<in T, out U> {
         @Throws(Throwable::class) fun map(from: T): U
-    }
-
-    interface FlatMapper<in T, U> {
-        @Throws(Throwable::class) fun map(from: T): Async<U>
     }
 
     companion object {

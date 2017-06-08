@@ -66,7 +66,7 @@ public class IppClient {
     private Async<Printer> nextPrinterUriAttributes(final UUID printerUuid, final Stack<URI> uris,
                                                     Async<Printer> previous) {
         if (uris.isEmpty()) return previous;
-        return previous.flatRecover(new Async.FlatMapper<Throwable, Printer>() {
+        return previous.flatRecover(new Async.Mapper<Throwable, Async<Printer>>() {
             @Override
             public Async<Printer> map(Throwable from) throws Throwable {
                 return nextPrinterUriAttributes(printerUuid, uris, getPrinterAttributes(printerUuid, uris.pop()));
