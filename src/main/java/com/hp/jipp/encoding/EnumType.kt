@@ -10,13 +10,22 @@ import java.io.IOException
 open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String) :
         AttributeType<T>(enumEncoder, Tag.EnumValue, name) {
 
-    /** An encoder for Enums. */
+    /**
+     * An [Encoder] for [Enum] values
+     * @param type Human-readable type of the [Enum]
+     * @param map predefined [Enum] instances to reuse when decoding
+     * @param factory a way to create new [Enum] instances of the correct type when decoding an undefined value
+     */
     data class Encoder<T : Enum>(override val type: String, val map: Map<Int, T>,
                                  val factory: (name: String, code: Int) -> T) : com.hp.jipp.encoding.Encoder<T>() {
 
         constructor(name: String, enums: Collection<T>, factory: (name: String, code: Int) -> T):
                 this(name, Enum.toCodeMap(enums), factory)
 
+        /**
+         * Create an EnumType encoder for a subclass of Enum. All public static instances of the class
+         * will be included as potential values for decoding purposes.
+         */
         constructor(cls: Class<T>, factory: (name: String, code: Int) -> T):
                 this(cls.simpleName, Reflect.getStaticObjects(cls)
                         .filter { cls.isAssignableFrom(it.javaClass)}
@@ -28,7 +37,7 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String
         constructor(cls: Class<T>, factory: com.hp.jipp.encoding.Enum.Factory<T>):
                 this(cls, { name: String, code: Int -> factory.of(name, code) })
 
-        /** Returns a known enum, or creates a new instance if not found  */
+        /** Returns a known [Enum], or creates a new instance from factory if not found  */
         operator fun get(code: Int): T =
             map[code] ?: factory("$type(x${Integer.toHexString(code)})", code)
 

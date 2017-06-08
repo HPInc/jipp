@@ -14,6 +14,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
         classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.14"
     }
 }
 
@@ -24,6 +25,7 @@ apply plugin: 'net.ltgt.apt'
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: 'org.jetbrains.dokka'
 
 repositories {
     jcenter()
@@ -60,9 +62,13 @@ checkstyle {
     sourceSets -= sourceSets.test
 }
 
-javadoc {
-    options.links "http://google.github.io/guava/releases/20.0/api/docs"
-    options.links "http://docs.oracle.com/javase/7/docs/api/"
+dokka {
+    outputDirectory = "$buildDir/javadoc"
+    outputFormat = "javadoc"
+    externalDocumentationLink {
+        url = new URL("http://google.github.io/guava/releases/20.0/api/docs")
+        url = new URL("http://docs.oracle.com/javase/7/docs/api/")
+    }
 }
 
 test.finalizedBy jacocoTestReport

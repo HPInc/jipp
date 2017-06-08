@@ -18,7 +18,7 @@ class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER
             override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
                 input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
                 return Resolution(input.readInt(), input.readInt(),
-                        ResolutionUnit.ENCODER.get(input.readByte().toInt()))
+                        ResolutionUnit.ENCODER[input.readByte().toInt()])
             }
 
             @Throws(IOException::class)

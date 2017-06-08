@@ -9,8 +9,7 @@ import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Attributes;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
-
-import org.jetbrains.annotations.Nullable;
+import com.hp.jipp.util.Async;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +17,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +37,7 @@ public class IppClient {
          * Gets the packet, synchronously delivers it to the specified URL, and returns the response
          * or throws if the response is not 200 OK.
          */
-        Packet send(URI uri, Packet packet) throws IOException;
+        Async<Packet> send(URI uri, Packet packet);
     }
 
     private final Transport mTransport;
@@ -56,45 +56,51 @@ public class IppClient {
      * Fetch current printer attributes into a new copy of the printer, or throw. Each uri is attempted
      * until one of them works, the resulting Printer includes the first successful URI.
      */
-    public Printer getPrinterAttributes(UUID printerUuid, List<URI> uris) throws IOException {
-        @Nullable IOException lastThrown = null;
-        for (URI uri : uris) {
-            try {
-                return getPrinterAttributes(printerUuid, uri);
-            } catch (IOException thrown) {
-                lastThrown = thrown;
+    public Async<Printer> getPrinterAttributes(UUID printerUuid, List<URI> uris) {
+        final Stack<URI> uriStack = new Stack<>();
+        uriStack.addAll(uris);
+        return nextPrinterUriAttributes(printerUuid, uriStack,
+                Async.<Printer>error(new IllegalArgumentException("No URIs")));
+    }
+
+    private Async<Printer> nextPrinterUriAttributes(final UUID printerUuid, final Stack<URI> uris,
+                                                    Async<Printer> previous) {
+        if (uris.isEmpty()) return previous;
+        return previous.flatRecover(new Async.FlatMapper<Throwable, Printer>() {
+            @Override
+            public Async<Printer> map(Throwable from) throws Throwable {
+                return nextPrinterUriAttributes(printerUuid, uris, getPrinterAttributes(printerUuid, uris.pop()));
             }
-        }
-        if (lastThrown != null) {
-            throw new IOException("Fail after trying uris " + uris + ": " + lastThrown);
-        } else {
-            throw new IllegalArgumentException("No printer URIs present");
-        }
+        });
     }
 
     /**
      * Fetch printer attributes from a specific URI.
      */
-    public Printer getPrinterAttributes(UUID printerUuid, URI printerUri) throws IOException {
+    public Async<Printer> getPrinterAttributes(final UUID printerUuid, final URI printerUri) {
         Packet request = new Packet(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printerUri),
                         Attributes.RequestingUserName.of(mUserName)));
-        Packet response = mTransport.send(printerUri, request);
-        AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
-            return new Printer(printerUuid, printerUri, printerAttributes);
-        } else {
-            throw new IOException("No printer attributes in response");
-        }
+        return mTransport.send(printerUri, request).map(new Async.Mapper<Packet, Printer>() {
+            @Override
+            public Printer map(Packet response) throws Throwable {
+                AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+                if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
+                    return new Printer(printerUuid, printerUri, printerAttributes);
+                } else {
+                    throw new IOException("No printer attributes in response");
+                }
+            }
+        });
     }
 
     /**
      * Fetch the printer's current status. Uses the primary URI only.
      */
-    public PrinterStatus getPrinterStatus(Printer printer) throws IOException {
+    public Async<PrinterStatus> getPrinterStatus(final Printer printer) {
         List<Attribute<?>> operationAttributes = Arrays.<Attribute<?>>asList(
                 Attributes.AttributesCharset.of("utf-8"),
                 Attributes.AttributesNaturalLanguage.of("en"),
@@ -109,19 +115,23 @@ public class IppClient {
         Packet request = new Packet(Operation.GetPrinterAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, operationAttributes));
 
-        Packet response = mTransport.send(printer.getUri(), request);
-        AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
-        if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
-            return PrinterStatus.Companion.of(printerAttributes);
-        } else {
-            throw new IOException("No printer-attributes from " + printer);
-        }
+        return mTransport.send(printer.getUri(), request).map(new Async.Mapper<Packet, PrinterStatus>() {
+            @Override
+            public PrinterStatus map(Packet response) throws Throwable {
+                AttributeGroup printerAttributes = response.getAttributeGroup(Tag.PrinterAttributes);
+                if (response.getStatus().equals(Status.Ok) && printerAttributes != null) {
+                    return PrinterStatus.Companion.of(printerAttributes);
+                } else {
+                    throw new IOException("No printer-attributes from " + printer);
+                }
+            }
+        });
     }
 
     /**
      * Request the printer identify itself to the user somehow
      */
-    public Packet identifyPrinter(Printer printer, IdentifyAction action, String message) throws IOException {
+    public Async<Packet> identifyPrinter(Printer printer, IdentifyAction action, String message) {
         Packet request = new Packet(Operation.IdentifyPrinter, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -134,7 +144,7 @@ public class IppClient {
     }
 
     /** Validated a job based on the contents of a job request. */
-    public ValidatedJob validateJob(JobRequest jobRequest) throws IOException {
+    public Async<ValidatedJob> validateJob(final JobRequest jobRequest) {
         URI uri = jobRequest.getPrinter().getUri();
         Packet request = new Packet(Operation.ValidateJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
@@ -144,12 +154,16 @@ public class IppClient {
                         Attributes.RequestingUserName.of(mUserName),
                         Attributes.DocumentFormat.of(jobRequest.getDocument().getDocumentType())));
 
-        Packet response = mTransport.send(uri, request);
-        return new ValidatedJob(jobRequest, response);
+        return mTransport.send(uri, request).map(new Async.Mapper<Packet, ValidatedJob>() {
+            @Override
+            public ValidatedJob map(Packet response) throws Throwable {
+                return new ValidatedJob(jobRequest, response);
+            }
+        });
     }
 
     /** Send a job request, including its document, returning a new print job. */
-    public Job printJob(final JobRequest jobRequest) throws IOException {
+    public Async<Job> printJob(final JobRequest jobRequest) {
         // See https://tools.ietf.org/html/rfc2911#section-3.2.1.1
 
         URI printerUri = jobRequest.getPrinter().getUri();
@@ -173,8 +187,12 @@ public class IppClient {
                     }
                 });
 
-        Packet response = mTransport.send(printerUri, builder.build());
-        return toPrintJob(jobRequest, response);
+        return mTransport.send(printerUri, builder.build()).map(new Async.Mapper<Packet, Job>() {
+            @Override
+            public Job map(Packet response) throws Throwable {
+                return toPrintJob(jobRequest, response);
+            }
+        });
     }
 
     private Job toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
@@ -197,7 +215,7 @@ public class IppClient {
      * Send a job request not including its document, returning a new print job. Should be followed by
      * sendDocument to deliver document data.
      */
-    public Job createJob(JobRequest jobRequest) throws IOException {
+    public Async<Job> createJob(final JobRequest jobRequest) {
         URI printerUri = jobRequest.getPrinter().getUri();
 
         List<Attribute<?>> attributes = Arrays.<Attribute<?>>asList(
@@ -209,12 +227,16 @@ public class IppClient {
         Packet request = new Packet(Operation.CreateJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
-        Packet response = mTransport.send(printerUri, request);
-        return toPrintJob(jobRequest, response);
+        return mTransport.send(printerUri, request).map(new Async.Mapper<Packet, Job>() {
+            @Override
+            public Job map(Packet response) throws Throwable {
+                return toPrintJob(jobRequest, response);
+            }
+        });
     }
 
     /** Deliver document data for a print job, returning the updated print job. */
-    public Job sendDocument(Job job) throws IOException {
+    public Async<Job> sendDocument(final Job job) {
         final JobRequest jobRequest = job.getJobRequest();
         if (jobRequest == null) throw new IllegalArgumentException("No job request present");
 
@@ -238,10 +260,15 @@ public class IppClient {
                         return jobRequest.getDocument().openDocument();
                     }
                 });
-        Packet response = mTransport.send(printerUri, builder.build());
-        AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
-        if (group == null) throw new IOException("Missing job attributes");
-        return job.withAttributes(group);
+
+        return mTransport.send(printerUri, builder.build()).map(new Async.Mapper<Packet, Job>() {
+            @Override
+            public Job map(Packet response) throws Throwable {
+                AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
+                if (group == null) throw new IOException("Missing job attributes");
+                return job.withAttributes(group);
+            }
+        });
     }
 
     /**
@@ -249,7 +276,7 @@ public class IppClient {
      * <p>
      * Job records returned here will not contain any PrintJobRequest.
      */
-    public List<Job> getJobs(Printer printer, Attribute<?>... extras) throws IOException {
+    public Async<List<Job>> getJobs(Printer printer, Attribute<?>... extras) {
         return getJobs(printer, Arrays.asList(extras));
     }
 
@@ -261,7 +288,7 @@ public class IppClient {
      * @param extras Additional Operation Attributes to send along with the request
      * @see <a href="https://tools.ietf.org/html/rfc2911#section-3.2.6.1">RFC2911 Section 3.2.6.1</a>
      */
-    public List<Job> getJobs(Printer printer, List<Attribute<?>> extras) throws IOException {
+    public Async<List<Job>> getJobs(final Printer printer, List<Attribute<?>> extras) {
         List<Attribute<?>> attributes = new ArrayList<>();
         attributes.addAll(Arrays.asList(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
@@ -272,20 +299,22 @@ public class IppClient {
         Packet request = new Packet(Operation.GetJobs, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes, attributes));
 
-        Packet response = mTransport.send(printer.getUri(), request);
-
-        List<Job> jobs = new ArrayList<>();
-        for (AttributeGroup group : response.getAttributeGroups()) {
-            if (group.getTag().equals(Tag.JobAttributes)) {
-                jobs.add(new Job(getJobId(group, printer), printer, group));
+        return mTransport.send(printer.getUri(), request).map(new Async.Mapper<Packet, List<Job>>() {
+            @Override
+            public List<Job> map(Packet response) throws Throwable {
+                List<Job> jobs = new ArrayList<>();
+                for (AttributeGroup group : response.getAttributeGroups()) {
+                    if (group.getTag().equals(Tag.JobAttributes)) {
+                        jobs.add(new Job(getJobId(group, printer), printer, group));
+                    }
+                }
+                return jobs;
             }
-        }
-
-        return jobs;
+        });
     }
 
     /** Fetch new status for a job and return the updated job. */
-    public Job getJobStatus(Job job) throws IOException {
+    public Async<Job> getJobStatus(final Job job) {
         Packet request = new Packet(Operation.GetJobAttributes, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,
                         Attributes.AttributesCharset.of("utf-8"),
@@ -294,14 +323,18 @@ public class IppClient {
                         Attributes.JobId.of(job.getId()),
                         Attributes.RequestingUserName.of(mUserName),
                         Attributes.RequestedAttributes.of(JobStatus.AttributeNames)));
-        AttributeGroup jobAttributes = mTransport.send(job.getPrinter().getUri(), request)
-                .getAttributeGroup(Tag.JobAttributes);
-        if (jobAttributes == null) throw new IOException("Missing job attributes");
-        return job.withStatus(JobStatus.of(jobAttributes));
+        return mTransport.send(job.getPrinter().getUri(), request).map(new Async.Mapper<Packet, Job>() {
+            @Override
+            public Job map(Packet response) throws Throwable {
+                AttributeGroup jobAttributes = response.getAttributeGroup(Tag.JobAttributes);
+                if (jobAttributes == null) throw new IOException("Missing job attributes");
+                return job.withStatus(JobStatus.of(jobAttributes));
+            }
+        });
     }
 
     /** Send a print job cancellation request */
-    public Packet cancelJob(Job job) throws IOException {
+    public Async<Packet> cancelJob(Job job) {
         URI printerUri = job.getPrinter().getUri();
         Packet request = new Packet(Operation.CancelJob, mId.getAndIncrement(),
                 AttributeGroup.Companion.of(Tag.OperationAttributes,

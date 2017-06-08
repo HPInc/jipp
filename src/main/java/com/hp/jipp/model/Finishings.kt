@@ -3,7 +3,7 @@ package com.hp.jipp.model
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
 
-/** Finishings as defined in <a ref="https://tools.ietf.org/html/rfc8011#section-5.2.6">RFC8011 Section 5.2.6</a> */
+/** Finishings as defined in [RFC8011 Section 5.2.6](https://tools.ietf.org/html/rfc8011#section-5.2.6). */
 data class Finishings(override val name: String, override val code: Int) : Enum() {
 
     override fun toString() = name
@@ -31,7 +31,6 @@ data class Finishings(override val name: String, override val code: Int) : Enum(
         @JvmField val StapleDualRight = Finishings("staple-dual-right", 30)
         @JvmField val StapleDualBottom = Finishings("staple-dual-bottom", 31)
 
-        @JvmField val ENCODER = EnumType.Encoder(Finishings::class.java,
-                { name, code -> Finishings(name, code) })
+        @JvmField val ENCODER = EnumType.Encoder(Finishings::class.java, { name, code -> Finishings(name, code) })
     }
 }
