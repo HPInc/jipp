@@ -1,10 +1,10 @@
 #!/bin/bash -e
 #
 # Analyzes dependencies and builds a graph of them. Assumes a recent build.
-# 
+#
 
 REPORT_DIR=build/reports/classycle
-CLASSPATH=build/classes/main/com/hp/jipp
+CLASSPATH=build/classes/java/main/com/hp/jipp
 CLASSYCLE_JAR=script/classycle.jar
 PACKAGE=com.hp.jipp
 

@@ -1,8 +1,8 @@
 package com.hp.jipp.model;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.util.Bytes;
 
@@ -11,7 +11,10 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class BinaryTest {
@@ -50,13 +53,23 @@ public class BinaryTest {
         }
     }
 
-    private List<File> getBinFiles() {
-        File printerDir = new File(getClass().getResource("/printer").getPath());
+    private List<File> getBinFiles() throws IOException {
+        File printerDir = new File(getResource("printer"));
         assertTrue(printerDir.isDirectory());
 
         List<File> files = new ArrayList<>();
         getBinFiles(files, printerDir);
         return files;
+    }
+
+    private String getResource(String path) {
+        URL url = getClass().getClassLoader().getResource("printer");
+        if (url != null) return url.getPath();
+
+        // Running in AndroidStudio, manually adjust path
+        url = getClass().getClassLoader().getResource(".");
+        assertNotNull(url);
+        return url.getPath().replace("/build/classes/java/test/", "/build/resources/test/" + path);
     }
 
     private void getBinFiles(List<File> files, File dir) {
