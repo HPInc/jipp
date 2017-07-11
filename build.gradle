@@ -104,5 +104,7 @@ check.dependsOn graphDeps
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.6.3'
+
 }

@@ -3,6 +3,7 @@ package com.hp.jipp.util
 import java.util.*
 import java.util.concurrent.*
 
+/** A function that handles a Try result */
 typealias TryCallback<T> = (Try<T>) -> Unit
 
 /**
