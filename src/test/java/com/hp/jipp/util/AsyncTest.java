@@ -65,7 +65,7 @@ public class AsyncTest {
 
         // Get the value and ensure everything is in the right state
         assertEquals(Integer.valueOf(5), async.get(25));
-        assertTrue(async.isComplete());
+        assertTrue(async.isDone());
         assertTrue(async.isValue());
         assertEquals(Integer.valueOf(5), async.getValue());
         assertFalse(async.isError());
@@ -85,7 +85,7 @@ public class AsyncTest {
                 return 5;
             }
         });
-        assertFalse(async.isComplete());
+        assertFalse(async.isDone());
         assertFalse(async.isError());
         assertFalse(async.isValue());
 
@@ -100,7 +100,7 @@ public class AsyncTest {
         });
         async.onDone(listener);
         assertNull(async.await(50));
-        assertTrue(async.isComplete());
+        assertTrue(async.isDone());
         assertFalse(async.isValue());
         assertNull(async.getValue());
         assertTrue(async.isError());
@@ -327,7 +327,7 @@ public class AsyncTest {
             }
         });
         Thread.sleep(10);
-        assertFalse(async.isComplete());
+        assertFalse(async.isDone());
     }
 
     @Test
@@ -339,12 +339,12 @@ public class AsyncTest {
             }
         });
         Thread.sleep(10);
-        assertFalse(async.isComplete());
+        assertFalse(async.isDone());
     }
 
     @Test
     public void runRunnable() throws Exception {
-        Async<Unit> async = Async.run(new Runnable() {
+        Async<Unit> async = Async.work(new Runnable() {
             @Override
             public void run() {
             }
@@ -440,7 +440,7 @@ public class AsyncTest {
         async = Async.<Integer>success(5).delay(DELAY);
         async.timeout(5);
         async.await(DELAY);
-        assertTrue(async.isComplete());
+        assertTrue(async.isDone());
         assertTrue(async.isError());
     }
 
@@ -461,5 +461,4 @@ public class AsyncTest {
         listener.await();
         assertEquals(boom, listener.error);
     }
-
 }

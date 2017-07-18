@@ -66,21 +66,21 @@ open class Async<Result> internal constructor(
 
     /** Return true if completed successfully with a value */
     fun isValue(): Boolean = synchronized(this) {
-        return isComplete() && result is Success<Result>
+        return isDone() && result is Success<Result>
     }
 
     /** Return true if completed with error */
     fun isError(): Boolean = synchronized(this) {
-        return isComplete() && result is Error<Result>
+        return isDone() && result is Error<Result>
     }
 
     /** Return true if complete with either success or error. */
-    fun isComplete() = result != null
+    fun isDone() = result != null
 
-    /** Stop the attempt to get a value on this async */
+    /** Stop the attempt to get a value on this async (if it is not already done). */
     fun cancel() = synchronized(this) {
         // If it's complete then can't do anything
-        if (isComplete()) return false
+        if (isDone()) return false
 
         safeSetResult(Error(CancellationException()))
 
@@ -113,7 +113,7 @@ open class Async<Result> internal constructor(
 
     /** Like [await] but throws if the attempt to get the value threw */
     fun get(timeout: Long): Result? {
-        if (!isComplete()) {
+        if (!isDone()) {
             val latch = CountDownLatch(1)
             listen { _ -> latch.countDown() }
             latch.await(timeout, TimeUnit.MILLISECONDS)
@@ -169,7 +169,7 @@ open class Async<Result> internal constructor(
 
     /** Adds a callback to be invoked upon completion, and returns the original async */
     @JvmOverloads fun onDone(executor: ExecutorService = this.executor, callback: Listener<Result>) =
-            onDone(executor) {
+            this(executor) {
                 when (it) {
                     is Error<Result> -> callback.onError(it.thrown)
                     is Success<Result> -> callback.onSuccess(it.value)
@@ -177,18 +177,24 @@ open class Async<Result> internal constructor(
             }
 
     /** Adds a callback to be invoked upon completion, and returns the original async */
-    fun onDone(executor: ExecutorService = this.executor, callback: TryCallback<Result>) =
+    operator fun invoke(executor: ExecutorService = this.executor, callback: TryCallback<Result>): Async<Result> =
             listen { executor.submit { callback(it) } }
 
-
+    /**
+     * Supply code that will run on the first and only time this Async is cancelled. If the async is never
+     * cancelled, the supplied code never executes
+     */
     @JvmOverloads fun onCancel(executor: ExecutorService = this.executor, runnable: Runnable) =
         onCancel(executor, runnable::run)
 
+    /**
+     * Supply code that will run on the first and only time this Async is cancelled. If it is never
+     * cancelled the supplied code never executes.
+     */
     fun onCancel(executor: ExecutorService = this.executor, block: () -> Unit): Async<Result> {
         synchronized(this) {
             val oldCancelBlock = cancelBlock
             cancelBlock = {
-                System.out.println("Requesting execution of cancellation block")
                 executor.execute(block)
                 if (oldCancelBlock != null) oldCancelBlock()
             }
@@ -197,11 +203,11 @@ open class Async<Result> internal constructor(
     }
 
     @JvmOverloads fun <U> map(executor: ExecutorService = this.executor, mapper: Mapper<Result, U>) =
-            flatMap(executor, { thrown -> Async.work(executor) { (mapper::map)(thrown) } })
+            flatMap(executor, { thrown -> Async(executor) { (mapper::map)(thrown) } })
 
     /** Return a new async to hold the converted result */
     fun <U> map(executor: ExecutorService = this.executor, mapper: (Result) -> U): Async<U> =
-            flatMap(executor, { thrown -> Async.work(executor) { mapper(thrown) } })
+            flatMap(executor, { thrown -> Async(executor) { mapper(thrown) } })
 
     @JvmOverloads fun <U> flatMap(executor: ExecutorService = this.executor, mapper: Mapper<Result, Async<U>>) =
             flatMap(executor, mapper::map)
@@ -219,7 +225,7 @@ open class Async<Result> internal constructor(
                         next.listen { settable.safeSetResult(it) }
                         settable.onCancel { -> next.cancel() }
                     } catch (thrown: Exception) {
-                        settable.setError(thrown);
+                        settable.setError(thrown)
                     }
                 }
             }
@@ -233,7 +239,7 @@ open class Async<Result> internal constructor(
 
     /** Safely set a result when it's not clear whether cancel might have occurred */
     internal fun safeSetResult(result: Try<Result>) = synchronized(this) {
-        if (!isComplete()) this.result = result
+        if (!isDone()) this.result = result
     }
 
     /** Return a new async that applies the mapper if this async results in an error */
@@ -242,7 +248,7 @@ open class Async<Result> internal constructor(
 
     /** Return a new async that applies the mapper if this async results in an error */
     fun recover(executor: ExecutorService = this.executor, mapper: (Throwable) -> Result) =
-            flatRecover(executor, { thrown -> Async.work(executor) { mapper(thrown) } })
+            flatRecover(executor, { thrown -> Async(executor) { mapper(thrown) } })
 
     /** Return a new async that applies the mapper if this async results in an error */
     @JvmOverloads fun flatRecover(executor: ExecutorService = this.executor, mapper: Mapper<Throwable, Async<Result>>) =
@@ -314,17 +320,18 @@ open class Async<Result> internal constructor(
             DEFAULT_EXECUTOR = service
         }
 
-        fun <Result> work(executor: ExecutorService = DEFAULT_EXECUTOR, block: () -> Result) : Async<Result> =
+        /** Return an async which completes with the result of the code block (including its exception if it throws) */
+        operator fun <Result> invoke(executor: ExecutorService = DEFAULT_EXECUTOR, block: () -> Result) : Async<Result> =
                 Async(executor, block)
 
         @JvmStatic @JvmOverloads
         fun <Result> work(executor: ExecutorService = DEFAULT_EXECUTOR, toRun: Callable<Result>) : Async<Result> =
-                work(executor, toRun::call)
+                Async(executor, toRun::call)
 
         /** Return an async which completes when something has finished executing */
         @JvmStatic @JvmOverloads
-        fun run(executor: ExecutorService = DEFAULT_EXECUTOR, toRun: Runnable): Async<Unit> =
-                work(executor, toRun::run)
+        fun work(executor: ExecutorService = DEFAULT_EXECUTOR, toRun: Runnable): Async<Unit> =
+                Async(executor, toRun::run)
 
         /** Return a completed async containing an error */
         @JvmStatic fun <T> error(thrown: Throwable): Async<T> {
@@ -355,8 +362,7 @@ open class Async<Result> internal constructor(
                       toRun: () -> T): Async<T> =
                 Async.success(Unit).delay(millis = delay).map(executor) { _ -> toRun() }
 
-        // TODO: Join?
-        // TODO: Zip?
+        // Consider .join, .zip, ?
     }
 }
 
@@ -369,7 +375,7 @@ class SettableAsync<Result> @JvmOverloads constructor(executor: ExecutorService 
     /** Sets the success value. Ignored if this async is already complete. */
     fun setSuccess(value: Result) {
         synchronized(this) {
-            if (isComplete()) return
+            if (isDone()) return
             result = Success(value)
         }
     }
@@ -377,7 +383,7 @@ class SettableAsync<Result> @JvmOverloads constructor(executor: ExecutorService 
     /** Sets an error state. Ignored if this async is already complete. */
     fun setError(thrown: Throwable) {
         synchronized(this) {
-            if (isComplete()) return
+            if (isDone()) return
             result = Error(thrown)
         }
     }
