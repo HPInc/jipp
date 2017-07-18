@@ -54,7 +54,7 @@ public class AsyncTest {
 
     @Test
     public void background() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(5);
@@ -78,7 +78,7 @@ public class AsyncTest {
 
     @Test
     public void incomplete() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(500);
@@ -92,7 +92,7 @@ public class AsyncTest {
     }
     @Test
     public void error() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 throw boom;
@@ -113,7 +113,7 @@ public class AsyncTest {
 
     @Test
     public void cancel() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 // May be cancelled before we are even scheduled
@@ -128,7 +128,7 @@ public class AsyncTest {
 
     @Test
     public void get() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 // May be cancelled before we are even scheduled
@@ -142,7 +142,7 @@ public class AsyncTest {
 
     @Test
     public void getNotDone() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 // May be cancelled before we are even scheduled
@@ -155,7 +155,7 @@ public class AsyncTest {
 
     @Test
     public void lateCancel() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(5000);
@@ -171,7 +171,7 @@ public class AsyncTest {
 
     @Test
     public void map() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 return 5;
@@ -190,7 +190,7 @@ public class AsyncTest {
 
     @Test
     public void cancelMap() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(10);
@@ -213,7 +213,7 @@ public class AsyncTest {
 
     @Test
     public void cancelMapFirst() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(5000);
@@ -235,7 +235,7 @@ public class AsyncTest {
 
     @Test
     public void cancelMapLate() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(20);
@@ -259,7 +259,7 @@ public class AsyncTest {
 
     @Test
     public void flatMap() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(10);
@@ -270,7 +270,7 @@ public class AsyncTest {
         Async<Integer> async2 = async.flatMap(new Async.Mapper<Integer, Async<Integer>>() {
             @Override
             public Async<Integer> map(final Integer integer) {
-                return new Async<>(new Callable<Integer>() {
+                return Async.work(new Callable<Integer>() {
                     @Override
                     public Integer call() throws Exception {
                         return integer + 1;
@@ -283,8 +283,28 @@ public class AsyncTest {
     }
 
     @Test
+    public void flatMapException() throws Exception {
+        async = Async.work(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return 5;
+            }
+        });
+
+        Async<Integer> async2 = async.flatMap(new Async.Mapper<Integer, Async<Integer>>() {
+            @Override
+            public Async<Integer> map(final Integer integer) throws Exception {
+                throw boom;
+            }
+        });
+
+        assertNull(async2.await(100));
+        assertEquals(boom, async2.getError());
+    }
+
+    @Test
     public void recover() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 throw boom;
@@ -297,7 +317,7 @@ public class AsyncTest {
         });
         assertEquals(Integer.valueOf(5), async.await(DELAY));
     }
-    
+
     @Test
     public void delay() throws Exception {
         async = Async.delay(150, new Callable<Integer>() {
@@ -343,7 +363,7 @@ public class AsyncTest {
 
     @Test
     public void cancelSlowDelay() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Thread.sleep(15);
@@ -365,7 +385,7 @@ public class AsyncTest {
 
     @Test
     public void onSuccess() {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 return 4;
@@ -377,7 +397,7 @@ public class AsyncTest {
 
     @Test
     public void onSuccessError() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 throw boom;
@@ -391,7 +411,7 @@ public class AsyncTest {
 
     @Test
     public void onError() {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 throw boom;
@@ -403,7 +423,7 @@ public class AsyncTest {
 
     @Test
     public void onErrorSuccess() throws Exception {
-        async = new Async<>(new Callable<Integer>() {
+        async = Async.work(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 return 5;
@@ -423,5 +443,23 @@ public class AsyncTest {
         assertTrue(async.isComplete());
         assertTrue(async.isError());
     }
-}
 
+    @Test
+    public void settable() throws Exception {
+        SettableAsync<Integer> settableAsync = new SettableAsync<>();
+        settableAsync.onDone(listener);
+        settableAsync.setSuccess(5);
+        listener.await();
+        assertEquals(Integer.valueOf(5), listener.value);
+    }
+
+    @Test
+    public void settableError() throws Exception {
+        SettableAsync<Integer> settableAsync = new SettableAsync<>();
+        settableAsync.onDone(listener);
+        settableAsync.setError(boom);
+        listener.await();
+        assertEquals(boom, listener.error);
+    }
+
+}

@@ -198,6 +198,7 @@ public class IppClient {
     private Job toPrintJob(JobRequest jobRequest, Packet response) throws IOException {
         AttributeGroup group = response.getAttributeGroup(Tag.JobAttributes);
         if (group == null) {
+            // TODO: In server-error-busy or other server error cases we throw without conveying reason
             throw new IOException("Missing job-attributes in response from " + jobRequest.getPrinter());
         }
         return new Job(getJobId(group, jobRequest.getPrinter()), jobRequest, group);
