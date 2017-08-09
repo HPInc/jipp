@@ -105,7 +105,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Must be "compile" so users of this library can see its APIs
-    compile 'com.gladed:kotlin-late:0.3.2'
+    compile 'com.gladed:kotlin-late:0.3.3'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.8.9'
