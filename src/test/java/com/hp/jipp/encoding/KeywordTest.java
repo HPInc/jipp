@@ -25,7 +25,7 @@ public class KeywordTest {
         private final String name;
 
         public static KeywordType<Sample> typeOf(String name) {
-            return new KeywordType<>(ENCODER, name);
+            return new KeywordType<Sample>(ENCODER, name);
         }
 
         public static Sample of(String name) {

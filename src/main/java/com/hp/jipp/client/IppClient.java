@@ -58,7 +58,7 @@ public class IppClient {
      * until one of them works, the resulting Printer includes the first successful URI.
      */
     public Late<Printer> getPrinterAttributes(UUID printerUuid, List<URI> uris) {
-        final Stack<URI> uriStack = new Stack<>();
+        final Stack<URI> uriStack = new Stack<URI>();
         uriStack.addAll(uris);
         return nextPrinterUriAttributes(printerUuid, uriStack,
                 Late.<Printer>fail(new IllegalArgumentException("No URIs")));
@@ -290,8 +290,8 @@ public class IppClient {
      * @see <a href="https://tools.ietf.org/html/rfc2911#section-3.2.6.1">RFC2911 Section 3.2.6.1</a>
      */
     public Late<List<Job>> getJobs(final Printer printer, List<Attribute<?>> extras) {
-        List<Attribute<?>> attributes = new ArrayList<>();
-        attributes.addAll(Arrays.asList(Attributes.AttributesCharset.of("utf-8"),
+        List<Attribute<?>> attributes = new ArrayList<Attribute<?>>();
+        attributes.addAll(Arrays.<Attribute<?>>asList(Attributes.AttributesCharset.of("utf-8"),
                         Attributes.AttributesNaturalLanguage.of("en"),
                         Attributes.PrinterUri.of(printer.getUri()),
                         Attributes.RequestingUserName.of(mUserName)));
@@ -303,7 +303,7 @@ public class IppClient {
         return mTransport.send(printer.getUri(), request).map(new F1<Packet, List<Job>>() {
             @Override
             public List<Job> apply(Packet response) throws Exception {
-                List<Job> jobs = new ArrayList<>();
+                List<Job> jobs = new ArrayList<Job>();
                 for (AttributeGroup group : response.getAttributeGroups()) {
                     if (group.getTag().equals(Tag.JobAttributes)) {
                         jobs.add(new Job(getJobId(group, printer), printer, group));

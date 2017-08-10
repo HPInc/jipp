@@ -183,7 +183,7 @@ public final class Attributes {
 
     /** Return all accessible static members of the specified class which are AttributeType objects */
     public static List<AttributeType<?>> staticMembers(Class<?> cls) {
-        List<AttributeType<?>> members = new ArrayList<>();
+        List<AttributeType<?>> members = new ArrayList<AttributeType<?>>();
         for (Object object : Reflect.getStaticObjects(cls)) {
             if (object instanceof AttributeType<?>) {
                 members.add((AttributeType<?>) object);

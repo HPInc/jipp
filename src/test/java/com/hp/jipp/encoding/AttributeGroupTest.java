@@ -112,6 +112,6 @@ public class AttributeGroupTest {
         AttributeGroup group = AttributeGroup.of(Tag.OperationAttributes);
         KotlinTest.cover(group,
                 group.copy(group.component1(), group.component2()),
-                group.copy(group.component1(), Arrays.asList(Attributes.JobName.of("name"))));
+                group.copy(group.component1(), Collections.singletonList(Attributes.JobName.of("name"))));
     }
 }

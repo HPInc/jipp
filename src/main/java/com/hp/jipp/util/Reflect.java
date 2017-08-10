@@ -10,7 +10,7 @@ public final class Reflect {
 
     /** Use reflection to return all static, accessible, initialized objects in the class */
     public static List<Object> getStaticObjects(Class cls) {
-        List<Object> objects = new ArrayList<>();
+        List<Object> objects = new ArrayList<Object>();
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
             if (!Modifier.isStatic(field.getModifiers())) continue;

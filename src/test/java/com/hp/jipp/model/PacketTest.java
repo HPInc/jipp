@@ -116,7 +116,7 @@ public class PacketTest {
 
     @Test
     public void writeSingleEmptyAttributeGroupPacket() throws IOException {
-        List<AttributeGroup> emptyGroup = new ArrayList<>();
+        List<AttributeGroup> emptyGroup = new ArrayList<AttributeGroup>();
         emptyGroup.add(AttributeGroup.of(Tag.OperationAttributes));
         builder.setAttributeGroups(emptyGroup);
         packet = builder.build();
@@ -144,7 +144,7 @@ public class PacketTest {
 
     @Test
     public void readMultiEmptyAttributeGroupPacket() throws IOException {
-        List<AttributeGroup> groups = new ArrayList<>();
+        List<AttributeGroup> groups = new ArrayList<AttributeGroup>();
         groups.add(AttributeGroup.of(Tag.OperationAttributes));
         groups.add(AttributeGroup.of(Tag.JobAttributes));
         groups.add(AttributeGroup.of(Tag.get((byte)0x08))); // reserved but legal
@@ -161,7 +161,7 @@ public class PacketTest {
     public void writeSingleAttributePacket() throws IOException {
         Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.Charset, "attributes-charset")
                 .of("US-ASCII".getBytes(Reflect.UTF8));
-        List<AttributeGroup> group = new ArrayList<>();
+        List<AttributeGroup> group = new ArrayList<AttributeGroup>();
         group.add(AttributeGroup.of(Tag.OperationAttributes, simpleAttribute));
         builder.setAttributeGroups(group);
         packet = builder.build();
@@ -221,7 +221,7 @@ public class PacketTest {
     public void readSingleAttributePacket() throws IOException {
         Attribute<String> stringAttribute = new StringType(Tag.Charset, "attributes-charset")
                 .of("US-ASCII");
-        List<AttributeGroup> group = new ArrayList<>();
+        List<AttributeGroup> group = new ArrayList<AttributeGroup>();
         group.add(AttributeGroup.of(Tag.OperationAttributes, stringAttribute));
         builder.setAttributeGroups(group);
         packet = cycle(builder.build());
@@ -236,7 +236,7 @@ public class PacketTest {
         Attribute<String> multiValueAttribute = new StringType(Tag.Charset, "attributes-charset")
                 .of("US-ASCII", "UTF-8");
 
-        List<AttributeGroup> group = new ArrayList<>();
+        List<AttributeGroup> group = new ArrayList<AttributeGroup>();
         group.add(AttributeGroup.of(Tag.OperationAttributes, multiValueAttribute));
         builder.setAttributeGroups(group);
         packet = builder.build();
@@ -418,7 +418,8 @@ public class PacketTest {
 
     /** Write the entire contents of this packet to a single byte array */
     public static byte[] getBytes(Packet packet) {
-        try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()) {
+        ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+        try {
             packet.write(new DataOutputStream(outBytes));
             return outBytes.toByteArray();
         } catch (IOException e) {

@@ -131,7 +131,7 @@ public class AttributeTest {
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
         exception.expectMessage("Invalid tag(x77) for Integer");
-        new Attribute<>(Tag.get(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
+        new Attribute<Integer>(Tag.get(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
     }
 
     @Test

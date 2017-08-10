@@ -24,10 +24,10 @@ public class KeyValueTest {
 
     @Test
     public void notEmpty() throws Exception {
-        Map<String, String> value = new HashMap<>();
+        Map<String, String> value = new HashMap<String, String>();
         value.put("one", "two");
         value.put("three", "four");
-        Attribute<Map<String, String>> attribute = keyValueType.of(Arrays.asList(value));
+        Attribute<Map<String, String>> attribute = keyValueType.of(Collections.singletonList(value));
         assertEquals(value, cycle(keyValueType, attribute).getValue(0));
     }
 }

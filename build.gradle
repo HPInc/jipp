@@ -14,7 +14,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
         classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.14"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.15"
     }
 }
 
@@ -35,8 +35,8 @@ repositories {
 }
 
 allprojects {
-    targetCompatibility = 1.7
-    sourceCompatibility = 1.7
+    targetCompatibility = 1.6
+    sourceCompatibility = 1.6
 }
 
 // This hack puts testing resource files where we can get to them
@@ -72,6 +72,14 @@ dokka {
 }
 
 test.finalizedBy jacocoTestReport
+
+test {
+    testLogging {
+        events "failed"
+        showExceptions true
+        exceptionFormat "full"
+    }
+}
 
 jacocoTestReport {
     reports {

@@ -55,7 +55,7 @@ public class BinaryTest {
         File printerDir = new File(getResource("printer"));
         assertTrue(printerDir.isDirectory());
 
-        List<File> files = new ArrayList<>();
+        List<File> files = new ArrayList<File>();
         getBinFiles(files, printerDir);
         return files;
     }

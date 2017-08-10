@@ -102,7 +102,7 @@ public class IppClientTest {
     public void getPrinterAttributesRequest() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername"))).build();
-        printer = client.getPrinterAttributes(uuid, printerUri).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, printerUri).get(DELAY);
         System.out.println(printer);
 
         List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
@@ -117,7 +117,7 @@ public class IppClientTest {
     public void getPrinterAttributesResult() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername"))).build();
-        printer = client.getPrinterAttributes(uuid, Arrays.asList(printerUri)).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, Arrays.asList(printerUri)).get(DELAY);
         assertEquals(Operation.GetPrinterAttributes, request.getOperation());
         assertEquals(printer.getUri(), sendUri);
         assertEquals("printername", printer.getAttributes().getValue(Attributes.PrinterInfo));
@@ -131,7 +131,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IOException.class);
         exception.expectMessage("No printer attributes in response");
-        printer = client.getPrinterAttributes(uuid, printerUri).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, printerUri).get(DELAY);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IOException.class);
         exception.expectMessage("No printer attributes in response");
-        printer = client.getPrinterAttributes(uuid, uris).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, uris).get(DELAY);
     }
 
     @Test
@@ -151,13 +151,13 @@ public class IppClientTest {
         // Throw because what else
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("No URIs");
-        printer = client.getPrinterAttributes(uuid, Collections.<URI>emptyList()).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, Collections.<URI>emptyList()).get(DELAY);
     }
 
     @Test
     public void validateJob() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01).build();;
-        ValidatedJob validatedJob = client.validateJob(jobRequest).await(DELAY);
+        ValidatedJob validatedJob = client.validateJob(jobRequest).get(DELAY);
         assertEquals(Status.Ok, validatedJob.getPacket().getStatus());
     }
 
@@ -172,7 +172,7 @@ public class IppClientTest {
                 AttributeGroup.of(Tag.JobAttributes,
                         Attributes.JobId.of(3), Attributes.JobState.of(JobState.PendingHeld)))
                 .build();
-        List<Job> jobs = client.getJobs(printer).await(DELAY);
+        List<Job> jobs = client.getJobs(printer).get(DELAY);
         assertEquals(Integer.valueOf(2), jobs.get(0).getAttributes().getValue(Attributes.JobId));
         assertEquals(Integer.valueOf(3), jobs.get(1).getAttributes().getValue(Attributes.JobId));
     }
@@ -184,7 +184,7 @@ public class IppClientTest {
                 Attributes.PrinterState.of(PrinterState.Stopped),
                         Attributes.PrinterStateReasons.of("bored", "tired"),
                         Attributes.PrinterStateMessage.of("it's complicated"))).build();
-        PrinterStatus status = client.getPrinterStatus(printer).await(DELAY);
+        PrinterStatus status = client.getPrinterStatus(printer).get(DELAY);
         System.out.println(status);
         assertEquals("it's complicated", status.getMessage());
         assertEquals(Arrays.asList("bored", "tired"), status.getReasons());
@@ -203,7 +203,7 @@ public class IppClientTest {
     public void badPrinterStatus() throws Exception {
         exception.expect(IOException.class);
         response = new Packet.Builder(Status.ServerErrorInternalError, 0x01).build();
-        client.getPrinterStatus(printer).await(DELAY);
+        client.getPrinterStatus(printer).get(DELAY);
     }
 
     @Test
@@ -212,7 +212,7 @@ public class IppClientTest {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterStateReasons.of("bored", "tired"),
                 Attributes.PrinterStateMessage.of("it's complicated"))).build();
-        client.getPrinterStatus(printer).await(DELAY);
+        client.getPrinterStatus(printer).get(DELAY);
     }
 
     @Test
@@ -223,7 +223,7 @@ public class IppClientTest {
                         Attributes.JobState.of(JobState.Processing),
                         Attributes.JobStateReasons.of("none"))).build();
 
-        job = client.printJob(jobRequest).await(DELAY);
+        job = client.printJob(jobRequest).get(DELAY);
         assertEquals(101, job.getId());
         assertEquals(JobState.Processing, job.getStatus().getState());
         assertEquals(Arrays.asList("none"), job.getStatus().getReasons());
@@ -234,7 +234,7 @@ public class IppClientTest {
     public void createJob() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing))).build();
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
         assertEquals(111, job.getId());
         job.getJobRequest().getDocument();
     }
@@ -243,25 +243,25 @@ public class IppClientTest {
     public void badCreateJobResponse() throws Exception {
         exception.expect(IOException.class);
         response = new Packet.Builder(Status.ServerErrorBusy, 0x01).build();;
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
     }
 
     @Test
     public void badCreateJobResponseAttributes() throws Exception {
         exception.expect(IOException.class);
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes)).build();;
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
     }
 
     @Test
     public void sendDocument() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending))).build();
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
 
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing))).build();
-        job = client.sendDocument(job).await(DELAY);
+        job = client.sendDocument(job).get(DELAY);
         assertEquals("document",
                 request.getAttributeGroup(Tag.OperationAttributes).getValues(Attributes.DocumentName).get(0));
         assertEquals(JobState.Processing, job.getStatus().getState());
@@ -272,11 +272,11 @@ public class IppClientTest {
         // Set up a job
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending))).build();
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
 
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Processing))).build();
-        job = client.getJobStatus(job).await(DELAY);
+        job = client.getJobStatus(job).get(DELAY);
         System.out.println(job);
         assertEquals(JobState.Processing, job.getStatus().getState());
     }
@@ -286,11 +286,11 @@ public class IppClientTest {
         // Set up a job
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.JobAttributes,
                 Attributes.JobId.of(111), Attributes.JobState.of(JobState.Pending))).build();
-        job = client.createJob(jobRequest).await(DELAY);
+        job = client.createJob(jobRequest).get(DELAY);
 
         // Cancel it
         response = new Packet.Builder(Status.Ok, 0x01).build();;
-        Packet canceled = client.cancelJob(job).await(DELAY);
+        Packet canceled = client.cancelJob(job).get(DELAY);
         assertEquals(Status.Ok, canceled.getStatus());
     }
 
@@ -298,7 +298,7 @@ public class IppClientTest {
     public void checkUserName() throws Exception {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername"))).build();
-        printer = client.getPrinterAttributes(uuid, printerUri).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, printerUri).get(DELAY);
 
         List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 
@@ -311,7 +311,7 @@ public class IppClientTest {
         response = new Packet.Builder(Status.Ok, 0x01, AttributeGroup.of(Tag.PrinterAttributes,
                 Attributes.PrinterInfo.of("printername"))).build();
         client.setUserName("donald_duck");
-        printer = client.getPrinterAttributes(uuid, printerUri).await(DELAY);
+        printer = client.getPrinterAttributes(uuid, printerUri).get(DELAY);
 
         List<Attribute<?>> attributes = request.getAttributeGroup(Tag.OperationAttributes).getAttributes();
 

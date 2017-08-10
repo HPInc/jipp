@@ -16,7 +16,7 @@ import java.util.Map;
 public class Cycler {
 
     public static final Packet.Parser sParser = Packet.parserOf(Attributes.All);
-    public static final Map<String, AttributeType<?>> sAttributeTypeMap = new HashMap<>();
+    public static final Map<String, AttributeType<?>> sAttributeTypeMap = new HashMap<String, AttributeType<?>>();
     static {
         for (AttributeType<?> entry: Attributes.All) {
             sAttributeTypeMap.put(entry.getName(), entry);
