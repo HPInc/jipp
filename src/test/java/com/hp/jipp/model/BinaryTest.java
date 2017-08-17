@@ -29,7 +29,8 @@ public class BinaryTest {
 
             System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.printerAttributes, Types.printerInfo) +
                     "\t" + packet.getValues(Tag.printerAttributes, Types.printerName) +
-                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName));
+                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName) +
+                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerUuid));
         }
     }
 
@@ -45,9 +46,10 @@ public class BinaryTest {
 
             Object inputTray = packet.getValue(Tag.printerAttributes, Types.printerInputTray);
             Object printerAlert = packet.getValue(Tag.printerAttributes, Types.printerAlert);
+
+            // TODO: inputTray and printerAlert can be encoded with slight differences (sometimes with
+            // terminating ;) causing a binary mismatch. Not sure how to deal with this and still have a valid test
             if (inputTray == null && printerAlert == null) {
-                // TODO: Deal with the fact that device encoding differs slightly for some of these items,
-                // (terminating ; anyone?) causing binary mismatch.
                 assertArrayEquals(bytes, Cycler.toBytes(packet));
             }
         }

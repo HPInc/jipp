@@ -10,8 +10,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -239,6 +241,18 @@ public class PacketTest {
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Types.attributesCharset);
         assertEquals(Arrays.asList("US-ASCII", "UTF-8"), attribute.getValues());
+    }
+
+    @Test
+    public void withAttributeGroups() throws IOException {
+        Packet copyFrom = new Packet(0x0102, Operation.getJobAttributes.getCode(), 777);
+        packet = new Packet(0x0102, Operation.getJobAttributes.getCode(), 777, groupOf(Tag.operationAttributes),
+                groupOf(Tag.jobAttributes));
+        List<AttributeGroup> groups = Arrays.asList(
+                groupOf(Tag.operationAttributes),
+                groupOf(Tag.jobAttributes));
+        assertNotEquals(copyFrom, packet);
+        assertEquals(copyFrom.withAttributeGroups(groups), packet);
     }
 
     @Test

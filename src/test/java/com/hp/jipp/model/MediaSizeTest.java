@@ -50,9 +50,6 @@ public class MediaSizeTest {
         assertEquals(0, parse("iso_a10_26").getHeight());
     }
 
-    // TODO: This type should be interpreted within collections but it seems not to be.
-    // media(keyword): ["na_executive_7.25x10.5in", "na_letter_8.5x11in", "na_legal_8.5x14in", "na_govt-letter_8x10in", "na_invoice_5.5x8.5in", "iso_a5_148x210mm", "iso_a4_210x297mm", "iso_b5_176x250mm", "jis_b5_182x257mm", "na_monarch_3.875x7.5in", "na_number-10_4.125x9.5in", "iso_dl_110x220mm", "iso_c5_162x229mm", "iso_c6_114x162mm", "na_a2_4.375x5.75in", "na_personal_3.625x6.5in", "jpn_chou3_120x235mm", "jpn_chou4_90x205mm", "na_foolscap_8.5x13in"]]
-
     private MediaSize parse(String input) throws Exception {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
         StringType.ENCODER.writeValue(new DataOutputStream(outBytes), input);

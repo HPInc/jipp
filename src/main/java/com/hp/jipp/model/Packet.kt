@@ -45,6 +45,9 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
     // Return a Enum corresponding to this packet's code.
     private fun <T : Enum> getCode(encoder: EnumType.Encoder<T>): T = encoder[code]
 
+    /** Return a copy of this packet with attribute groups replaced */
+    fun withAttributeGroups(groups: List<AttributeGroup>) = copy(attributeGroups = groups)
+
     /** Returns the first attribute with the specified delimiter  */
     fun getAttributeGroup(delimiter: Tag): AttributeGroup? {
         return attributeGroups.firstOrNull { it.tag === delimiter }
