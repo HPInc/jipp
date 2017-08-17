@@ -11,9 +11,10 @@ import java.io.IOException
 /** An language-encoded string attribute type  */
 class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStringType.ENCODER, tag, name) {
 
+    /** Return an [Attribute] of this type */
     override fun of(attribute: Attribute<*>): Attribute<LangString>? {
-        if (!(attribute.valueTag == Tag.NameWithoutLanguage && tag == Tag.NameWithLanguage) ||
-                attribute.valueTag == Tag.TextWithoutLanguage && tag == Tag.TextWithLanguage) {
+        if (!(attribute.valueTag == Tag.nameWithoutLanguage && tag == Tag.nameWithLanguage) ||
+                attribute.valueTag == Tag.textWithoutLanguage && tag == Tag.textWithLanguage) {
             return null
         }
         // TODO: If we don't know the language this is actually a dangerous thing to do
@@ -47,7 +48,7 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
             }
 
             override fun valid(valueTag: Tag): Boolean {
-                return valueTag === Tag.NameWithLanguage || valueTag === Tag.TextWithLanguage
+                return valueTag === Tag.nameWithLanguage || valueTag === Tag.textWithLanguage
             }
         }
     }

@@ -14,7 +14,6 @@ import org.junit.rules.ExpectedException;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class AttributeCollectionTest {
@@ -23,9 +22,9 @@ public class AttributeCollectionTest {
 
     private CollectionType mediaColType = new CollectionType("media-col");
     private CollectionType mediaSizeType = new CollectionType("media-size");
-    private StringType colorType = new StringType(Tag.Keyword, "media-color");
-    private IntegerType xDimensionType = new IntegerType(Tag.IntegerValue, "x-dimension");
-    private IntegerType yDimensionType = new IntegerType(Tag.IntegerValue, "y-dimension");
+    private StringType colorType = new StringType(Tag.keyword, "media-color");
+    private IntegerType xDimensionType = new IntegerType(Tag.integerValue, "x-dimension");
+    private IntegerType yDimensionType = new IntegerType(Tag.integerValue, "y-dimension");
 
     @Test
     public void badCollection() throws IOException {
@@ -33,19 +32,19 @@ public class AttributeCollectionTest {
         exception.expectMessage("Bad tag in collection: printer-attributes");
 
         byte[] bytes = new byte[] {
-//                (byte)Tag.BeginCollection.getCode(), // Read already
+//                (byte)Tag.beginCollection.getCode(), // Read already
                 (byte)0x00,
                 (byte)0x09,
                 'm', 'e', 'd' , 'i', 'a', '-', 'c', 'o', 'l',
                 (byte)0x00,
                 (byte)0x00,
-                (byte) Tag.PrinterAttributes.getCode(), // NOT a good delimiter
+                (byte) Tag.printerAttributes.getCode(), // NOT a good delimiter
                 (byte)0x00,
                 (byte)0x00,
                 (byte)0x00,
                 (byte)0x00
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.BeginCollection);
+        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.beginCollection);
     }
 
     @Test
@@ -109,7 +108,7 @@ public class AttributeCollectionTest {
                         ));
 
         assertEquals(colorType.of("blue"), collection.get(colorType));
-        assertNull(collection.get(new StringType(Tag.Keyword, "media-not-color")));
+        assertNull(collection.get(new StringType(Tag.keyword, "media-not-color")));
 
         assertEquals(mediaSizeType.of(
                 new AttributeCollection(

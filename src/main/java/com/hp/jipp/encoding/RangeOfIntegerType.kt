@@ -4,10 +4,11 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+/** Attribute type for [IntRange] attributes */
 class RangeOfIntegerType(name: String) :
-        AttributeType<IntRange>(ENCODER, Tag.RangeOfInteger, name) {
+        AttributeType<IntRange>(ENCODER, Tag.rangeOfInteger, name) {
     companion object {
-        private val TYPE_NAME = "RangeOfInteger"
+        private val TYPE_NAME = "rangeOfInteger"
 
         @JvmField val ENCODER: SimpleEncoder<IntRange> = object : SimpleEncoder<IntRange>(TYPE_NAME) {
             @Throws(IOException::class)
@@ -24,7 +25,7 @@ class RangeOfIntegerType(name: String) :
                 out.writeInt(value.first)
                 out.writeInt(value.last)
             }
-            override fun valid(valueTag: Tag) = valueTag === Tag.RangeOfInteger
+            override fun valid(valueTag: Tag) = valueTag === Tag.rangeOfInteger
         }
     }
 }

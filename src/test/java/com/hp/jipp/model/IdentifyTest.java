@@ -12,9 +12,9 @@ public class IdentifyTest {
     @Test
     public void actions() throws Exception {
         AttributeType<IdentifyAction> IdentifyActions = IdentifyAction.typeOf("identify-actions");
-        assertTrue(IdentifyAction.Display == cycle(IdentifyActions,
-                IdentifyActions.of(IdentifyAction.Display)).getValue(0));
-        assertEquals("display", IdentifyAction.Display.toString());
+        assertTrue(IdentifyAction.display == cycle(IdentifyActions,
+                IdentifyActions.of(IdentifyAction.display)).getValue(0));
+        assertEquals("display", IdentifyAction.display.toString());
     }
 
     @Test

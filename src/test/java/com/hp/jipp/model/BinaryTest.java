@@ -2,8 +2,8 @@ package com.hp.jipp.model;
 
 import org.junit.Test;
 
+import com.hp.jipp.encoding.Cycler;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.util.Bytes;
 
 import static org.junit.Assert.*;
 
@@ -15,19 +15,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.io.FilesKt;
+
 public class BinaryTest {
-    private Packet.Parser parser = Packet.parserOf(Attributes.All);
+    private Packet.Parser parser = Packet.parserOf(Types.all);
 
     @Test
     public void scanNames() throws Exception {
         for (File binFile : getBinFiles()) {
-            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(Bytes.read(binFile))));
-            if (packet.getAttributeGroup(Tag.PrinterAttributes) == null) continue;
-            if (packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo).isEmpty()) continue;
+            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
+            if (packet.getAttributeGroup(Tag.printerAttributes) == null) continue;
+            if (packet.getValues(Tag.printerAttributes, Types.printerInfo).isEmpty()) continue;
 
-            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterInfo) +
-                    "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterName) +
-                    "\t" + packet.getValues(Tag.PrinterAttributes, Attributes.PrinterDnsSdName));
+            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.printerAttributes, Types.printerInfo) +
+                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerName) +
+                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName));
         }
     }
 
@@ -35,18 +37,18 @@ public class BinaryTest {
     public void cycleBinaries() throws Exception {
         // For each bin file cycle and print
         for (File binFile : getBinFiles()) {
-            byte[] bytes = Bytes.read(binFile);
+            byte[] bytes = FilesKt.readBytes(binFile);
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
             Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
             System.out.println(packet.prettyPrint(200, "  "));
 
-            Object inputTray = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterInputTray);
-            Object printerAlert = packet.getValue(Tag.PrinterAttributes, Attributes.PrinterAlert);
+            Object inputTray = packet.getValue(Tag.printerAttributes, Types.printerInputTray);
+            Object printerAlert = packet.getValue(Tag.printerAttributes, Types.printerAlert);
             if (inputTray == null && printerAlert == null) {
                 // TODO: Deal with the fact that device encoding differs slightly for some of these items,
                 // (terminating ; anyone?) causing binary mismatch.
-                assertArrayEquals(bytes, PacketTest.getBytes(packet));
+                assertArrayEquals(bytes, Cycler.toBytes(packet));
             }
         }
     }

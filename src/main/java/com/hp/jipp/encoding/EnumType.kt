@@ -1,14 +1,13 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.Reflect
-
+import com.hp.jipp.util.getStaticObjects
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
 /** An IPP enum type */
 open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String) :
-        AttributeType<T>(enumEncoder, Tag.EnumValue, name) {
+        AttributeType<T>(enumEncoder, Tag.enumValue, name) {
 
     /**
      * An [Encoder] for [Enum] values
@@ -21,21 +20,6 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String
 
         constructor(name: String, enums: Collection<T>, factory: (name: String, code: Int) -> T):
                 this(name, Enum.toCodeMap(enums), factory)
-
-        /**
-         * Create an EnumType encoder for a subclass of Enum. All public static instances of the class
-         * will be included as potential values for decoding purposes.
-         */
-        constructor(cls: Class<T>, factory: (name: String, code: Int) -> T):
-                this(cls.simpleName, Reflect.getStaticObjects(cls)
-                        .filter { cls.isAssignableFrom(it.javaClass)}
-                        .map {
-                            @Suppress("UNCHECKED_CAST")
-                            it as T
-                        }, factory)
-
-        constructor(cls: Class<T>, factory: com.hp.jipp.encoding.Enum.Factory<T>):
-                this(cls, { name: String, code: Int -> factory.of(name, code) })
 
         /** Returns a known [Enum], or creates a new instance from factory if not found  */
         operator fun get(code: Int): T =
@@ -51,11 +35,33 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String
             IntegerType.ENCODER.writeValue(out, value.code)
         }
 
-        override fun valid(valueTag: Tag): Boolean = valueTag == Tag.EnumValue
+        override fun valid(valueTag: Tag): Boolean = valueTag == Tag.enumValue
     }
 
     override fun of(attribute: Attribute<*>): Attribute<T>? =
-        if (attribute.valueTag !== Tag.EnumValue) null
-        else of(attribute.values.filter { it is Int }
-                .map { enumEncoder[it as Int] } )
+        if (attribute.valueTag !== Tag.enumValue) null
+        else of(attribute.values
+                .filter { it is Int }
+                .map { enumEncoder[it as Int] })
 }
+
+/**
+ * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
+ * will be included as potential values for decoding purposes.
+ */
+fun <T: Enum> encoderOf(cls: Class<T>, factory: (name: String, code: Int) -> T) =
+        cls.run {
+            EnumType.Encoder(simpleName, getStaticObjects()
+                    .filter { isAssignableFrom(it.javaClass) }
+                    .map {
+                        @Suppress("UNCHECKED_CAST")
+                        it as T
+                    }, factory)
+        }
+
+/**
+ * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
+ * will be included as potential values for decoding purposes.
+ */
+fun <T: Enum> encoderOf(cls: Class<T>, factory: Enum.Factory<T>) =
+        encoderOf(cls) { name, code -> factory.of(name, code) }

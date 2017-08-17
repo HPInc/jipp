@@ -4,9 +4,10 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+/** An [AttributeType] for octet string values (binary data) */
 class OctetStringType(tag: Tag, name: String) : AttributeType<ByteArray>(OctetStringType.ENCODER, tag, name) {
     companion object {
-        private val TYPE_NAME = "OctetString"
+        private val TYPE_NAME = "octetString"
 
         @JvmField
         val ENCODER: SimpleEncoder<ByteArray> = object : SimpleEncoder<ByteArray>(TYPE_NAME) {
@@ -22,7 +23,7 @@ class OctetStringType(tag: Tag, name: String) : AttributeType<ByteArray>(OctetSt
             }
 
             override fun valid(valueTag: Tag): Boolean {
-                // OctetString is a fallback for all types we don't otherwise understand
+                // octetString is a fallback for all types we don't otherwise understand
                 return true
             }
         }

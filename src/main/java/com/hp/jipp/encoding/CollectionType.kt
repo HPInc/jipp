@@ -11,12 +11,13 @@ import java.io.IOException
 
  * @see [RFC3382](https://tools.ietf.org/html/rfc3382)
  */
-class CollectionType(name: String) : AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.BeginCollection, name) {
+class CollectionType(name: String) :
+        AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection, name) {
     companion object {
         private val TYPE_NAME = "Collection"
 
-        /** Used to terminate a collection  */
-        private val EndCollectionAttribute = OctetStringType(Tag.EndCollection, "").of()
+        // Terminates a collection
+        private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").of()
 
         @JvmField val ENCODER: Encoder<AttributeCollection> = object : Encoder<AttributeCollection>() {
 
@@ -28,17 +29,17 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
                 out.writeShort(0) // Empty value
 
                 for (attribute in value.attributes) {
-                    // Write a MemberAttributeName attribute
-                    Tag.MemberAttributeName.write(out)
+                    // Write a memberAttributeName attribute
+                    out.writeTag(Tag.memberAttributeName)
                     out.writeShort(0)
                     out.writeString(attribute.name)
 
                     // Write the attribute, but without its name
-                    attribute.withName("").write(out)
+                    out.writeAttribute(attribute.withName(""))
                 }
 
                 // Terminating attribute
-                EndCollectionAttribute.write(out)
+                out.writeAttribute(endCollectionAttribute)
             }
 
             @Throws(IOException::class)
@@ -46,22 +47,23 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
                 input.skipValueBytes()
                 val builder = ArrayList<Attribute<*>>()
 
-                // Read attribute pairs until EndCollection is reached.
+                // Read attribute pairs until endCollection is reached.
                 while (true) {
-                    val tag = Tag.read(input)
-                    if (tag === Tag.EndCollection) {
+                    val tag = input.readTag()
+                    if (tag === Tag.endCollection) {
                         // Skip the rest of this attr and return.
                         input.skipValueBytes()
                         input.skipValueBytes()
                         break
-                    } else if (tag === Tag.MemberAttributeName) {
+                    } else if (tag === Tag.memberAttributeName) {
                         input.skipValueBytes()
                         val memberName = input.readString()
-                        val memberTag = Tag.read(input)
+                        val memberTag = input.readTag()
 
                         // Read and throw away the blank attribute name
                         input.readValueBytes()
-                        builder.add(finder.find(memberTag, memberName).read(input, finder, memberTag, memberName))
+                        val encoder = finder.find(memberTag, memberName)
+                        builder.add(input.readAttribute(encoder, finder, memberTag, memberName))
 
                     } else {
                         throw ParseError("Bad tag in collection: " + tag)
@@ -71,7 +73,7 @@ class CollectionType(name: String) : AttributeType<AttributeCollection>(Collecti
             }
 
             override fun valid(valueTag: Tag): Boolean {
-                return valueTag === Tag.BeginCollection
+                return valueTag === Tag.beginCollection
             }
         }
     }

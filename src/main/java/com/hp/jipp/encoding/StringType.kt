@@ -13,7 +13,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
 
     override fun of(attribute: Attribute<*>): Attribute<String>? {
         val values: List<String> = attribute.values.mapNotNull {
-            when(it) {
+            when (it) {
                 is String -> it
                 is LangString -> it.string
                 else -> null

@@ -15,11 +15,13 @@ import com.hp.jipp.model.Status;
 import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
-import com.hp.jipp.util.Reflect;
-import com.hp.jipp.model.Attributes;
+import com.hp.jipp.model.Types;
 import com.hp.jipp.model.Operation;
 
+import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
+
+import kotlin.text.Charsets;
 
 public class AttributeTest {
 
@@ -28,10 +30,10 @@ public class AttributeTest {
 
     @Test
     public void octetString() throws IOException {
-        AttributeType<byte[]> octetStringType = new OctetStringType(Tag.OctetString, "name");
-        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Reflect.UTF8));
+        AttributeType<byte[]> octetStringType = new OctetStringType(Tag.octetString, "name");
+        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Charsets.UTF_8));
         assertArrayEquals(new byte[] {
-                (byte)0x30, // OctetString
+                (byte)0x30, // octetString
                 (byte)0x00,
                 (byte)0x04,
                 'n', 'a', 'm', 'e',
@@ -40,60 +42,60 @@ public class AttributeTest {
                 'v', 'a', 'l', 'u', 'e'
         }, toBytes(attribute));
         attribute = cycle(attribute);
-        assertEquals(Tag.OctetString, attribute.getValueTag());
+        assertEquals(Tag.octetString, attribute.getValueTag());
         assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(Reflect.UTF8), attribute.getValue(0));
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.getValue(0));
     }
 
     @Test
     public void multiOctetString() throws IOException {
-        AttributeType<byte[]> stringType = new OctetStringType(Tag.NameWithoutLanguage, "name");
-        Attribute<byte[]> attribute = stringType.of("value".getBytes(Reflect.UTF8), "value2".getBytes(Reflect.UTF8));
-        assertArrayEquals("value".getBytes(Reflect.UTF8), attribute.getValue(0));
-        assertArrayEquals("value2".getBytes(Reflect.UTF8), attribute.getValue(1));
+        AttributeType<byte[]> stringType = new OctetStringType(Tag.nameWithoutLanguage, "name");
+        Attribute<byte[]> attribute = stringType.of("value".getBytes(Charsets.UTF_8), "value2".getBytes(Charsets.UTF_8));
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.getValue(0));
+        assertArrayEquals("value2".getBytes(Charsets.UTF_8), attribute.getValue(1));
     }
 
     @Test
     public void multiBoolean() throws IOException {
-        AttributeType<Boolean> booleanType = new BooleanType(Tag.BooleanValue, "name");
+        AttributeType<Boolean> booleanType = new BooleanType(Tag.booleanValue, "name");
         Attribute<Boolean> attribute = cycle(booleanType.of(true, false));
         assertEquals(Arrays.asList(true, false), attribute.getValues());
     }
 
     @Test
     public void multiInteger() throws IOException {
-        AttributeType<Integer> integerType = new IntegerType(Tag.IntegerValue, "name");
+        AttributeType<Integer> integerType = new IntegerType(Tag.integerValue, "name");
         Attribute<Integer> attribute = cycle(integerType.of(-50505, 50505));
         assertEquals(Arrays.asList(-50505, 50505), attribute.getValues());
     }
 
     @Test
     public void enumAttribute() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
-                Attributes.OperationsSupported.of(
-                        Operation.CancelJob, Operation.GetJobAttributes,
-                        Operation.CreateJob)));
-        assertEquals(Arrays.asList(Operation.CancelJob, Operation.GetJobAttributes,
-                Operation.CreateJob),
-                group.getValues(Attributes.OperationsSupported));
+        AttributeGroup group = Cycler.cycle(groupOf(Tag.printerAttributes,
+                Types.operationsSupported.of(
+                        Operation.cancelJob, Operation.getJobAttributes,
+                        Operation.createJob)));
+        assertEquals(Arrays.asList(Operation.cancelJob, Operation.getJobAttributes,
+                Operation.createJob),
+                group.getValues(Types.operationsSupported));
     }
 
     @Test
     public void surpriseEnum() throws IOException {
-        AttributeGroup group = Cycler.cycle(AttributeGroup.of(Tag.PrinterAttributes,
-                Attributes.OperationsSupported.of(
+        AttributeGroup group = Cycler.cycle(groupOf(Tag.printerAttributes,
+                Types.operationsSupported.of(
                         new Operation("vendor-specific", 0x4040))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
         assertEquals(Arrays.asList(new Operation("Operation(x4040)", 0x4040)),
-                group.getValues(Attributes.OperationsSupported));
+                group.getValues(Types.operationsSupported));
     }
 
     @Test
     public void invalidTag() {
         exception.expect(BuildError.class);
         // String is not Integer; should throw.
-        new StringType(Tag.IntegerValue, "something");
+        new StringType(Tag.integerValue, "something");
     }
 
     @Test
@@ -104,13 +106,13 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)),
+        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)),
                 new Encoder.Finder() {
                     @Override
                     public Encoder<?> find(Tag valueTag, String name) throws IOException {
                         throw new ParseError("");
                     }
-                }, Tag.OctetString);
+                }, Tag.octetString);
     }
 
     @Test
@@ -124,22 +126,22 @@ public class AttributeTest {
                 1,
                 0
         };
-        Attribute.read(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.IntegerValue);
+        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.integerValue);
     }
 
     @Test
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
         exception.expectMessage("Invalid tag(x77) for Integer");
-        new Attribute<Integer>(Tag.get(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
+        new Attribute<Integer>(TagKt.toTag(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
     }
 
     @Test
     public void tagNames() throws Exception {
         assertEquals("Integer", IntegerType.ENCODER.getType());
-        assertEquals("OctetString", OctetStringType.ENCODER.getType());
-        assertEquals("RangeOfInteger", RangeOfIntegerType.ENCODER.getType());
-        assertEquals("Resolution", ResolutionType.ENCODER.getType());
+        assertEquals("octetString", OctetStringType.ENCODER.getType());
+        assertEquals("rangeOfInteger", RangeOfIntegerType.ENCODER.getType());
+        assertEquals("resolution", ResolutionType.ENCODER.getType());
         assertEquals("LangString", LangStringType.ENCODER.getType());
         assertEquals("Integer", IntegerType.ENCODER.getType());
         assertEquals("URI", UriType.ENCODER.getType());
@@ -166,7 +168,7 @@ public class AttributeTest {
         };
 
         Resolution resolution = ResolutionType.ENCODER.readValue(
-                new DataInputStream(new ByteArrayInputStream(bytes)), Tag.Resolution);
+                new DataInputStream(new ByteArrayInputStream(bytes)), Tag.resolution);
         assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
 
         KotlinTest.cover(resolution,
@@ -192,23 +194,24 @@ public class AttributeTest {
 
     @Test
     public void badConversion() throws IOException {
-        assertNull(Attributes.JobId.of(Attributes.JobName.of("string")));
+        assertNull(Types.jobId.of(Types.jobName.of("string")));
     }
 
     @Test
     public void goodConversion() throws IOException {
-        assertEquals(Attributes.JobId.of(1),
-                Attributes.JobId.of(new IntegerType(Tag.IntegerValue, "job-id").of(1)));
+        assertEquals(Types.jobId.of(1),
+                Types.jobId.of(new IntegerType(Tag.integerValue, "job-id").of(1)));
     }
 
     @Test
     public void printBinary() throws Exception {
-        assertTrue(new OctetStringType(Tag.OctetString, "data").of(new byte[] { 1, 2, 3 }).toString().contains("x010203"));
+        System.out.println(new OctetStringType(Tag.octetString, "data").of(new byte[] { 1, 2, 3 }).toString());
+        assertTrue(new OctetStringType(Tag.octetString, "data").of(new byte[] { 1, 2, 3 }).toString().contains("x010203"));
     }
 
     @Test
     public void cover() throws IOException {
-        Attribute<String> jobName = Attributes.JobName.of("hello");
+        Attribute<String> jobName = Types.jobName.of("hello");
         KotlinTest.cover(jobName,
                 jobName.copy(jobName.component1(), jobName.component2(), jobName.component3(), jobName.component4()),
                 jobName.copy(jobName.component1(), "goodbye", jobName.component3(), jobName.component4()));

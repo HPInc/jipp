@@ -6,25 +6,29 @@ import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.encoding.Tag
+import com.hp.jipp.encoding.readGroup
+import com.hp.jipp.encoding.readTag
+import com.hp.jipp.encoding.writeGroup
+import com.hp.jipp.encoding.writeTag
 import com.hp.jipp.util.PrettyPrinter
-import org.jetbrains.annotations.Nullable
+import com.hp.jipp.util.toList
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.util.Arrays
 
 /**
  * A request packet as specified in RFC2910.
- * @param data Extra data to appear after the packet
- *
  */
-class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
-                  val attributeGroups: List<AttributeGroup> = listOf(), @Nullable val data: ByteArray? = null,
-                  @Nullable val inputStreamFactory: InputStreamFactory? = null) {
+data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
+                              val attributeGroups: List<AttributeGroup> = listOf()) {
 
-    constructor(code: Code, requestId: Int, vararg groups: AttributeGroup): this(code = code.code, requestId = requestId,
-            attributeGroups = listOf(*groups))
+    @JvmOverloads
+    constructor(versionNumber: Int = DEFAULT_VERSION_NUMBER, code: Int, requestId: Int,
+                vararg groups: AttributeGroup) : this(versionNumber, code, requestId, listOf(*groups))
+
+    constructor(code: Code, requestId: Int, vararg groups: AttributeGroup):
+            this(code = code.code, requestId = requestId, attributeGroups = listOf(*groups))
 
     /**
      * Return this response packet's Status code
@@ -38,9 +42,7 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
     val operation: Operation
         get() = getCode(Operation.ENCODER)
 
-    /**
-     * Return a Enum corresponding to this packet's code.
-     */
+    // Return a Enum corresponding to this packet's code.
     private fun <T : Enum> getCode(encoder: EnumType.Encoder<T>): T = encoder[code]
 
     /** Returns the first attribute with the specified delimiter  */
@@ -48,36 +50,20 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
         return attributeGroups.firstOrNull { it.tag === delimiter }
     }
 
-    /** Return a value from the specified group if present  */
+    /** Return the first value of an [AttributeType] in an [AttributeGroup] having the supplied [Tag], if any */
     fun <T> getValue(groupDelimiter: Tag, attributeType: AttributeType<T>): T? =
         getAttributeGroup(groupDelimiter)?.getValue(attributeType)
 
+    /**
+     * Return all values of an [AttributeType] from an [AttributeGroup] having the supplied [Tag], or an empty
+     * list if none.
+     */
     fun <T> getValues(groupDelimiter: Tag, attributeType: AttributeType<T>): List<T> =
         getAttributeGroup(groupDelimiter)?.getValues(attributeType) ?: emptyList()
 
-    /** Write the contents of this object to the output stream as per RFC2910  */
-    @Throws(IOException::class)
-    fun write(out: DataOutputStream) {
-        out.writeShort(versionNumber)
-        out.writeShort(code)
-        out.writeInt(requestId)
-        for (group in attributeGroups) {
-            group.write(out)
-        }
-        Tag.EndOfAttributes.write(out)
-
-        if (data != null) {
-            out.write(data)
-        }
-
-        val factory = inputStreamFactory
-        if (factory != null) {
-            factory.createInputStream().use { it.copyTo(out) }
-        }
-    }
-
     /** Parses packets  */
     interface Parser {
+        /** Parse a single packet out of the supplied [DataInputStream]. */
         @Throws(IOException::class)
         fun parse(input: DataInputStream): Packet
     }
@@ -86,54 +72,16 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
         return "Packet(v=x" + Integer.toHexString(versionNumber) +
                 " code=" + getCode(Code.ENCODER) +
                 " rId=x" + Integer.toHexString(requestId) +
-                (if (data == null) "" else ", dLen=" + data.size) +
-                (if (inputStreamFactory != null) " stream" else "") +
                 ")"
     }
 
+    /** Return a pretty-printed version of this packet (including separators and line breaks) */
     fun prettyPrint(maxWidth: Int, indent: String) = PrettyPrinter(prefix(), PrettyPrinter.OBJECT, indent, maxWidth)
             .addAll(attributeGroups)
             .print()
 
-    // Custom equals/hashCode because possible ByteArray. TODO: Get rid of ByteArray
-    override fun equals(other: Any?): Boolean {
-        if (other !is Packet) return false
-        return other.versionNumber == versionNumber &&
-                other.code == code &&
-                other.requestId == requestId &&
-                other.attributeGroups == attributeGroups &&
-                other.inputStreamFactory == other.inputStreamFactory &&
-                Arrays.equals(other.data, data)
-    }
-
-    override fun hashCode(): Int =
-            ((((versionNumber * 31 + code) * 31 + requestId) * 31 + attributeGroups.hashCode()) * 31 +
-                    (data?.hashCode() ?: 0)) * 31 + (inputStreamFactory?.hashCode() ?: 0)
-
     override fun toString(): String {
         return prefix() + " " + attributeGroups
-    }
-
-    class Builder(var code: Int, var requestId: Int) {
-        constructor(code: Code, requestId: Int) : this(code.code, requestId)
-        constructor(code: Code, requestId: Int, vararg groups: AttributeGroup) : this(code.code, requestId) {
-            attributeGroups = listOf(*groups)
-        }
-
-        var versionNumber: Int = DEFAULT_VERSION_NUMBER
-        var attributeGroups: List<AttributeGroup> = listOf()
-        @Nullable var data: ByteArray? = null
-        @Nullable var inputStreamFactory: InputStreamFactory? = null
-
-        fun setCode(code: Code) {
-            this.code = code.code
-        }
-
-        fun setAttributeGroups(vararg groups: AttributeGroup) {
-            attributeGroups = listOf(*groups)
-        }
-
-        fun build() = Packet(versionNumber, code, requestId, attributeGroups, data, inputStreamFactory)
     }
 
     companion object {
@@ -142,49 +90,46 @@ class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val co
 
         /** Return a parser with knowledge of specified attribute types  */
         @JvmStatic fun parserOf(attributeTypes: List<AttributeType<*>>): Parser {
+            val attributeTypeMap = attributeTypes.map {
+                it.name to it
+            }.toMap()
 
-            val attributeTypeMap = HashMap<String, AttributeType<*>>()
-            for (attributeType in attributeTypes) {
-                attributeTypeMap.put(attributeType.name, attributeType)
-            }
             return object : Parser {
                 @Throws(IOException::class)
-                override fun parse(input: DataInputStream) = Packet.read(input, attributeTypeMap)
+                override fun parse(input: DataInputStream) = input.readPacket(attributeTypeMap)
             }
         }
 
-        /**
-         * Read the contents of the input stream, returning a parsed Packet or throwing an exception.*
-         * Note: the input stream is not closed.
-         */
-        @Throws(IOException::class)
-        private fun read(input: DataInputStream, attributeTypes: Map<String, AttributeType<*>>): Packet {
+    }
+}
 
-            val versionNumber = input.readShort().toInt()
-            val code = input.readShort().toInt()
-            val requestId = input.readInt()
+@Throws(IOException::class)
+private fun DataInputStream.readPacket(attributeTypes: Map<String, AttributeType<*>>): Packet {
 
-            val builder = Builder(code, requestId)
-            builder.versionNumber = versionNumber
+    val versionNumber = readShort().toInt()
+    val code = readShort().toInt()
+    val requestId = readInt()
 
-            val attributeGroups = ArrayList<AttributeGroup>()
-            while (true) {
-                val tag = Tag.read(input)
-                if (tag === Tag.EndOfAttributes) {
-                    if (input.available() > 0) {
-                        val data = ByteArray(input.available())
-                        input.read(data)
-                        builder.data = data
-                    }
-                    break
-                } else if (tag.isDelimiter) {
-                    attributeGroups.add(AttributeGroup.read(tag, attributeTypes, input))
-                } else {
-                    throw ParseError("Illegal delimiter " + tag)
-                }
-            }
-            builder.attributeGroups = attributeGroups
-            return builder.build()
+    return Packet(versionNumber, code, requestId, { readNextGroup(attributeTypes) }.toList())
+}
+
+private fun DataInputStream.readNextGroup(attributeTypes: Map<String, AttributeType<*>>): AttributeGroup? {
+    val tag = readTag()
+    return when (tag) {
+        Tag.endOfAttributes -> null
+        else -> {
+            if (!tag.isDelimiter) throw ParseError("Illegal delimiter " + tag)
+            readGroup(tag, attributeTypes)
         }
     }
+}
+
+/** Write a Packet to this [DataOutputStream] as per RFC2910  */
+@Throws(IOException::class)
+fun DataOutputStream.writePacket(packet: Packet) {
+    writeShort(packet.versionNumber)
+    writeShort(packet.code)
+    writeInt(packet.requestId)
+    packet.attributeGroups.forEach(this::writeGroup)
+    writeTag(Tag.endOfAttributes)
 }

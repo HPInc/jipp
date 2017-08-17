@@ -8,8 +8,9 @@ package com.hp.jipp.encoding
 abstract class Keyword {
     abstract val name: String
 
-    /** A factory for Keyword objects */
+    /** A factory for keyword objects */
     interface Factory<out T : Keyword> {
+        /** Return a new Keyword instance */
         fun of(name: String): T
     }
 

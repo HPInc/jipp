@@ -1,6 +1,6 @@
 package com.hp.jipp.util
 
-import org.junit.Assert.*
+import org.junit.Assert.* // ktlint-disable no-wildcard-imports
 
 class KotlinTest {
 
@@ -12,7 +12,7 @@ class KotlinTest {
             assertEquals(o, same)
             assertEquals(o.hashCode(), same.hashCode())
             assertEquals(o.toString(), same.toString())
-            assertNotEquals(o, diff);
+            assertNotEquals(o, diff)
         }
     }
 }

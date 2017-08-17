@@ -1,15 +1,15 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.Reflect
-
+import com.hp.jipp.util.getStaticObjects
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+/** Attribute type for attributes based on [Keyword] */
 class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, name: String) :
-        AttributeType<T>(encoder, Tag.Keyword, name) {
+        AttributeType<T>(encoder, Tag.keyword, name) {
 
-    /** An encoder for Keyword types  */
+    /** An encoder for keyword types  */
     class Encoder<T : Keyword>(private val factory: Keyword.Factory<T>, all: Collection<T>, name: String) :
             SimpleEncoder<T>(name) {
 
@@ -26,19 +26,26 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, name: String) :
             StringType.ENCODER.writeValue(out, value.name)
         }
 
-        override fun valid(valueTag: Tag) = valueTag == Tag.Keyword
+        override fun valid(valueTag: Tag) = valueTag == Tag.keyword
 
         val all: Collection<T>
             get() = map.values
-
-        companion object {
-            @JvmStatic fun <T : Keyword> of(cls: Class<T>, factory: Keyword.Factory<T>): Encoder<T> =
-                Encoder(factory, Reflect.getStaticObjects(cls)
-                        .filter { cls.isAssignableFrom(it.javaClass) }
-                        .map {
-                            @Suppress("UNCHECKED_CAST")
-                            it as T
-                        }, cls.simpleName)
-        }
     }
 }
+
+// Perhaps encoderOf would be better here.
+
+/** Return a new [Encoder] for a class internally defining static [Keyword] objects */
+fun <T : Keyword> encoderOf(cls: Class<T>, factory: Keyword.Factory<T>): KeywordType.Encoder<T> =
+        KeywordType.Encoder(factory, cls.getStaticObjects()
+                .filter { cls.isAssignableFrom(it.javaClass) }
+                .map {
+                    @Suppress("UNCHECKED_CAST")
+                    it as T
+                }, cls.simpleName)
+
+/** Return a new [Encoder] for a class internally defining static [Keyword] objects */
+fun <T : Keyword> encoderOf(cls: Class<T>, factory: (String) -> T): KeywordType.Encoder<T> =
+        encoderOf(cls, object : Keyword.Factory<T> {
+            override fun of(name: String): T = factory(name)
+        })

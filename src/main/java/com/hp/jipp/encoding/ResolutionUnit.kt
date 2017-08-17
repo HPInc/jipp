@@ -6,11 +6,14 @@ data class ResolutionUnit(override val name: String, override val code: Int) : E
     override fun toString() = name
 
     companion object {
-        @JvmField val DotsPerInch = ResolutionUnit("dpi", 3)
-        @JvmField val DotsPerCentimeter = ResolutionUnit("dpcm", 4)
+        @JvmField
+        val dotsPerInch = ResolutionUnit("dpi", 3)
+
+        @JvmField
+        val dotsPerCentimeter = ResolutionUnit("dpcm", 4)
 
         /** The encoder for converting integers to Operation objects  */
         @JvmField
-        val ENCODER = EnumType.Encoder(ResolutionUnit::class.java, { name, code -> ResolutionUnit(name, code) })
+        val ENCODER = encoderOf(ResolutionUnit::class.java, { name, code -> ResolutionUnit(name, code) })
     }
 }

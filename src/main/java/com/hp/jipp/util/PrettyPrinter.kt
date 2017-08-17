@@ -11,21 +11,16 @@ import java.util.Stack
  * @param indent a single level of indent
  * @param maxWidth maximum width of a line before forcing grouped items each onto their own line
  */
-class PrettyPrinter internal constructor(prefix: String, style: Style, private val mIndent: String,
-                                   private val mMaxWidth: Int) {
-    /** An object that knows how to pretty-print itself  */
-    interface Printable {
-        /** Add a representation of self to the printer  */
-        fun print(printer: PrettyPrinter)
-    }
+class PrettyPrinter internal constructor(prefix: String, style: Style, private val indent: String,
+                                         private val maxWidth: Int) {
 
     private val mGroups = Stack<Group>()
 
     init {
         // Push a root group
-        mGroups.push(Group(SILENT, "", mMaxWidth))
+        mGroups.push(Group(SILENT, "", maxWidth))
         // Push the user's initial group (closed by print())
-        mGroups.push(Group(style, prefix, mMaxWidth))
+        mGroups.push(Group(style, prefix, maxWidth))
     }
 
     /**
@@ -33,7 +28,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
      * group, until [.close] is called.
      */
     @JvmOverloads fun open(style: Style, prefix: String = ""): PrettyPrinter {
-        mGroups.push(Group(style, prefix, mMaxWidth))
+        mGroups.push(Group(style, prefix, maxWidth))
         return this
     }
 
@@ -50,11 +45,11 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
 
     private fun innerClose() {
         val closed = mGroups.pop()
-        val startPos = mGroups.size * (mIndent.length - 1)
-        if (startPos + closed.width() < mMaxWidth) {
+        val startPos = mGroups.size * (indent.length - 1)
+        if (startPos + closed.width() < maxWidth) {
             innerAdd(closed.compressed())
         } else {
-            innerAdd(closed.expanded(startPos, String(CharArray(mGroups.size)).replace("\u0000", mIndent)))
+            innerAdd(closed.expanded(startPos, String(CharArray(mGroups.size)).replace("\u0000", indent)))
         }
     }
 
@@ -82,7 +77,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
 
     private fun innerAdd(item: Any) {
         val group = mGroups.peek()
-        if (item is Printable) {
+        if (item is PrettyPrintable) {
             item.print(this)
         } else {
             group.items.add(item)
@@ -109,7 +104,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
         /** A style for key/value pairs e.g. "Me A/B/C". Works best when there is only one value.  */
         @JvmField val KEY_VALUE = Style(" ", "", "/", "")
 
-        /** A style used internally for the root group  */
+        // A style used internally for the root group
         private val SILENT = Style("", "", ",", "")
 
         /** Style used for delimiting members of a pretty-printed group  */
@@ -127,10 +122,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
                 if (!prefix.isEmpty()) {
                     result += prefix.length + style.spacer.length
                 }
-                result += style.opener.length + style.spacer.length
-                for (item in items) {
-                    result += item.toString().length
-                }
+                result += style.opener.length + style.spacer.length + items.sumBy { it.toString().length }
                 result += (items.size - 1) * style.separator.length + style.spacer.length
                 result += style.spacer.length + style.closer.length
                 return result
@@ -144,7 +136,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
                 }
                 out.append(style.opener)
                 out.append(style.spacer)
-                out.append(Strings.join(style.separator + style.spacer, items))
+                out.append(items.joinToString(separator = style.separator + style.spacer))
                 out.append(style.spacer)
                 out.append(style.closer)
                 return out.toString()
@@ -169,38 +161,44 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
 
                 if (compact) {
                     out.append(style.spacer)
-                    var curWidth = startPos + out.length
-                    for (i in items.indices) {
-                        val itemString = items[i].toString()
-                        if (i > 0) {
-                            val expectedWidth = style.separator.length + style.spacer.length + itemString.length
-                            if (curWidth + expectedWidth > maxWidth) {
-                                out.append(style.separator)
-                                out.append(NEWLINE)
-                                out.append(indent)
-                                out.append(itemString)
-                                curWidth = indent.length + itemString.length
-                            } else {
-                                out.append(style.separator)
-                                out.append(style.spacer)
-                                out.append(itemString)
-                                curWidth += style.separator.length
-                                curWidth += style.spacer.length
-                                curWidth += itemString.length
-                            }
-                        } else {
-                            out.append(itemString)
-                            curWidth += itemString.length
-                        }
-                    }
+                    wrap(out, startPos, indent)
                 } else {
                     out.append(NEWLINE)
                     out.append(indent)
-                    out.append(Strings.join(style.separator + NEWLINE + indent, items))
+                    out.append(items.joinToString(separator = style.separator + NEWLINE + indent))
                 }
                 out.append(style.spacer)
                 out.append(style.closer)
                 return out.toString()
+            }
+
+            private fun wrap(out: StringBuilder, startPos: Int, indent: String) {
+                var curWidth = startPos + out.length
+
+                if (items.isNotEmpty()) {
+                    val itemString = items.first().toString()
+                    out.append(itemString)
+                    curWidth += itemString.length
+                }
+
+                items.drop(1).forEach {
+                    val itemString = it.toString()
+                    val expectedWidth = style.separator.length + style.spacer.length + itemString.length
+                    if (curWidth + expectedWidth > maxWidth) {
+                        out.append(style.separator)
+                        out.append(NEWLINE)
+                        out.append(indent)
+                        out.append(itemString)
+                        curWidth = indent.length + itemString.length
+                    } else {
+                        out.append(style.separator)
+                        out.append(style.spacer)
+                        out.append(itemString)
+                        curWidth += style.separator.length
+                        curWidth += style.spacer.length
+                        curWidth += itemString.length
+                    }
+                }
             }
         }
     }

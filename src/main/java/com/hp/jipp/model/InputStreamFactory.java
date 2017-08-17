@@ -3,6 +3,10 @@ package com.hp.jipp.model;
 import java.io.IOException;
 import java.io.InputStream;
 
+// Note: this must remain a Java interface to allow Kotlin to declare as
+// InputStreamFactory { ... }
+// See https://youtrack.jetbrains.com/issue/KT-7770
+
 public interface InputStreamFactory {
     // Note: Similar to Supplier<InputStream> but allows for IOException to be thrown.
 

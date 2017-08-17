@@ -5,6 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 import java.net.URI
 
+/** An [AttributeType] for [URI] attributes */
 class UriType(tag: Tag, name: String) : AttributeType<URI>(ENCODER, tag, name) {
     companion object {
         private val TYPE_NAME = "URI"
@@ -19,7 +20,7 @@ class UriType(tag: Tag, name: String) : AttributeType<URI>(ENCODER, tag, name) {
             override fun readValue(input: DataInputStream, valueTag: Tag) =
                 URI.create(StringType.ENCODER.readValue(input, valueTag))
 
-            override fun valid(valueTag: Tag) = valueTag === Tag.Uri
+            override fun valid(valueTag: Tag) = valueTag === Tag.uri
         }
     }
 }

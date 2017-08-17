@@ -15,8 +15,8 @@ public class KeywordTest {
         public static final Sample Two = of("two");
         public static final Sample Three = of("three");
 
-        public static final KeywordType.Encoder<Sample> ENCODER = KeywordType.Encoder.of(
-                Sample.class, new Keyword.Factory<Sample>() {
+        public static final KeywordType.Encoder<Sample> ENCODER = KeywordTypeKt.encoderOf(Sample.class,
+                new Keyword.Factory<Sample>() {
                     @Override
                     public Sample of(String name) {
                         return Sample.of(name);
@@ -48,6 +48,6 @@ public class KeywordTest {
 
     @Test
     public void rejectInvalid() {
-        assertFalse(Sample.ENCODER.valid(Tag.IntegerValue));
+        assertFalse(Sample.ENCODER.valid(Tag.integerValue));
     }
 }

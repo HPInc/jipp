@@ -35,14 +35,14 @@ public class MediaSizeTest {
     @Test
     public void build() throws Exception {
         MediaSize.Type mediaSupportedType = new MediaSize.Type("media-supported");
-        assertTrue(MediaSize.JisB7 == cycle(mediaSupportedType, mediaSupportedType.of(
-                MediaSize.JisB7)).getValue(0));
+        assertTrue(MediaSize.jisB7 == cycle(mediaSupportedType, mediaSupportedType.of(
+                MediaSize.jisB7)).getValue(0));
     }
 
     @Test
     public void same() throws Exception {
         // Referential equality because this size is known
-        assertTrue(MediaSize.IsoA10 == parse("iso_a10_26x37mm"));
+        assertTrue(MediaSize.isoA10 == parse("iso_a10_26x37mm"));
     }
 
     @Test
@@ -58,6 +58,6 @@ public class MediaSizeTest {
         StringType.ENCODER.writeValue(new DataOutputStream(outBytes), input);
 
         return MediaSize.ENCODER.readValue(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())),
-                Tag.Keyword);
+                Tag.keyword);
     }
 }

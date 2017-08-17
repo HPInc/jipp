@@ -2,12 +2,12 @@ package com.hp.jipp.encoding
 
 import org.junit.Test
 
-import org.junit.Assert.*
+import org.junit.Assert.* // ktlint-disable no-wildcard-imports
 
-import com.hp.jipp.encoding.Cycler.*
+import com.hp.jipp.encoding.Cycler.* // ktlint-disable no-wildcard-imports
 
 import com.hp.jipp.util.KotlinTest
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 
 class EnumTest {
     /** An enumeration of possible printer states  */
@@ -21,10 +21,7 @@ class EnumTest {
             private val Secret = Sample("secret", 4)
 
             // Use Enum.Factory for Java code coverage
-            val ENCODER: EnumType.Encoder<Sample> = EnumType.Encoder(Sample::class.java,
-                    object : Enum.Factory<Sample> {
-                        override fun of(name: String, code: Int) = Sample(name, code)
-                    })
+            val ENCODER: EnumType.Encoder<Sample> = encoderOf(Sample::class.java, { name, code -> Sample(name, code) })
         }
     }
 
@@ -40,7 +37,7 @@ class EnumTest {
     @Test
     @Throws(Exception::class)
     fun custom() {
-        val custom = Sample("Sample(x77)", 0x77);
+        val custom = Sample("Sample(x77)", 0x77)
         assertEquals(custom, cycle(MySample, MySample.of(custom)).getValue(0))
     }
 
@@ -48,7 +45,7 @@ class EnumTest {
     @Throws(Exception::class)
     fun fetchFromGroup() {
         assertEquals(listOf(Sample.Two, Sample.Three),
-                cycle(AttributeGroup.of(Tag.JobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample))
+                cycle(groupOf(Tag.jobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample))
     }
 
     @Test

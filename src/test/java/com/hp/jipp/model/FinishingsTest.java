@@ -13,16 +13,16 @@ import static com.hp.jipp.encoding.Cycler.*;
 public class FinishingsTest {
     @Test
     public void testFinishings() throws Exception {
-        Finishings finishings[] = new Finishings[] { Finishings.Bind, Finishings.Cover };
+        Finishings finishings[] = new Finishings[] { Finishings.bind, Finishings.cover};
 
         assertEquals(Arrays.asList(finishings),
-                cycle(Attributes.FinishingsSupported.of(finishings)).getValues());
+                cycle(Types.finishingsSupported.of(finishings)).getValues());
     }
 
     @Test
     public void cover() throws Exception {
-        KotlinTest.cover(Attributes.FinishingsSupported.of(Finishings.EdgeStitch),
-                cycle(Attributes.FinishingsSupported.of(Finishings.EdgeStitch)),
-                Attributes.FinishingsSupported.of(Finishings.ENCODER.get(88)));
+        KotlinTest.cover(Types.finishingsSupported.of(Finishings.edgeStitch),
+                cycle(Types.finishingsSupported.of(Finishings.edgeStitch)),
+                Types.finishingsSupported.of(Finishings.ENCODER.get(88)));
     }
 }

@@ -24,7 +24,7 @@ class BooleanType(tag: Tag, name: String) : AttributeType<Boolean>(BooleanType.E
             }
 
             override fun valid(valueTag: Tag): Boolean {
-                return valueTag === Tag.BooleanValue
+                return valueTag === Tag.booleanValue
             }
         }
     }

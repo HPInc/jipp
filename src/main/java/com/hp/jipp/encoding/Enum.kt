@@ -1,6 +1,6 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.Reflect
+import com.hp.jipp.util.getStaticObjects
 
 /**
  * A machine-readable integer code paired with a human-readable name.
@@ -13,6 +13,7 @@ abstract class Enum {
 
     /** A factory for objects of a Enum subclass  */
     interface Factory<out T : Enum> {
+        /** Return a new [Enum] from a name/code pair */
         fun of(name: String, code: Int): T
     }
 
@@ -25,7 +26,7 @@ abstract class Enum {
 
         /** Using Java reflection, look up all statically-declared instances of T */
         fun <T : Enum> allFrom(cls: Class<*>): Collection<T> {
-            return Reflect.getStaticObjects(cls).filter { cls.isAssignableFrom(it.javaClass) }.map {
+            return cls.getStaticObjects().filter { cls.isAssignableFrom(it.javaClass) }.map {
                 @Suppress("UNCHECKED_CAST")
                 it as T
             }

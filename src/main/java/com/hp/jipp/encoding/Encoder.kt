@@ -1,12 +1,11 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.util.toSequence
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-/**
- * Reads/writes attribute values
- */
+/** Reads/writes attribute values */
 abstract class Encoder<T> {
 
     /** Return a human-readable name describing this type */
@@ -23,32 +22,48 @@ abstract class Encoder<T> {
     /** Return true if this tag can be handled by this encoder */
     abstract fun valid(valueTag: Tag): Boolean
 
-    /** Read an attribute and its values from the data stream */
-    @Throws(IOException::class)
-    fun read(input: DataInputStream, finder: Finder, valueTag: Tag, name: String): Attribute<T> {
-        val all = listOf(readValue(input, finder, valueTag)) +
-                Attribute.generateList { readAdditionalValue(input, valueTag, finder) }
-        return Attribute(valueTag, name, all, this)
-    }
-
-    /** Read a single additional value if possible  */
-    @Throws(IOException::class)
-    private fun readAdditionalValue(input: DataInputStream, valueTag: Tag, finder: Finder): T? {
-        if (input.available() < 3) return null
-        input.mark(3)
-        if (Tag.read(input) === valueTag) {
-            val nameLength = input.readShort().toInt()
-            if (nameLength == 0) {
-                return readValue(input, finder, valueTag)
-            }
-        }
-        // Failed to parse an additional value so back up and quit.
-        input.reset()
-        return null
-    }
-
+    /** An object that can look up the appropriate encoder based on a tag/name pair */
     interface Finder {
+        /** For a given tag and attribute name, return the correct [Encoder] */
         @Throws(IOException::class)
         fun find(valueTag: Tag, name: String): Encoder<*>
+    }
+
+    companion object {
+        internal val LENGTH_LEN: Int = 2
+
+        internal val TAG_LEN: Int = 2
+    }
+}
+
+/** Write a value to this [DataOutputStream] using the supplied [Encoder] */
+@Throws(IOException::class)
+fun <T> DataOutputStream.writeValue(encoder: Encoder<T>, value: T) {
+    encoder.writeValue(this, value)
+}
+
+/** Read an [Attribute] from a [DataInputStream] */
+@Throws(IOException::class)
+fun <T> DataInputStream.readAttribute(encoder: Encoder<T>, finder: Encoder.Finder, valueTag: Tag, name: String):
+        Attribute<T> {
+    val all = listOf(encoder.readValue(this, finder, valueTag)) +
+            { readAdditionalValue(encoder, valueTag, finder) }.toSequence()
+    return Attribute(valueTag, name, all, encoder)
+}
+
+// Read a single additional value, if possible
+@Throws(IOException::class)
+private fun <T> DataInputStream.readAdditionalValue(encoder: Encoder<T>, valueTag: Tag, finder: Encoder.Finder): T? {
+    // We need to look ahead so mark maximum amount
+    if (available() < Encoder.TAG_LEN + Encoder.LENGTH_LEN) return null
+    mark(Encoder.TAG_LEN + Encoder.LENGTH_LEN)
+
+    return if (readTag() == valueTag && readShort().toInt() == 0) {
+        // Tag matches and no name, so this is an additional value
+        encoder.readValue(this, finder, valueTag)
+    } else {
+        // NOT an additional value so reset stream and return null
+        reset()
+        null
     }
 }

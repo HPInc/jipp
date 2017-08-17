@@ -1,11 +1,11 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
-import com.hp.jipp.util.Bytes
 import com.hp.jipp.util.Hook
+import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
+import com.hp.jipp.util.toHexString
 
-import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
@@ -16,7 +16,7 @@ import java.io.IOException
  * @param valueTag must be valid for the attribute type, according to the encoder.
  */
 data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: Encoder<T>) :
-        PrettyPrinter.Printable {
+        PrettyPrintable {
 
     init {
         if (!(encoder.valid(valueTag) || Hook.`is`(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
@@ -32,29 +32,6 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
     /** Return a copy of this attribute with a different name */
     fun withName(newName: String): Attribute<T> = copy(name = newName)
 
-    /** Write this attribute (including all of its values) to the output stream */
-    @Throws(IOException::class)
-    fun write(out: DataOutputStream) {
-        writeHeader(out, valueTag, name)
-        if (values.isEmpty()) {
-            out.writeShort(0)
-            return
-        }
-
-        encoder.writeValue(out, getValue(0))
-        for (i in 1..values.size - 1) {
-            writeHeader(out, valueTag, "")
-            encoder.writeValue(out, values[i])
-        }
-    }
-
-    /** Write value tag and name components of an attribute */
-    @Throws(IOException::class)
-    private fun writeHeader(out: DataOutputStream, valueTag: Tag, name: String) {
-        valueTag.write(out)
-        out.writeString(name)
-    }
-
     override fun print(printer: PrettyPrinter) {
         val prefix = "$name($valueTag)"
         if (values.size == 1) {
@@ -64,8 +41,8 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         }
 
         values.forEach {
-            when(it) {
-                is PrettyPrinter.Printable -> it.print(printer)
+            when (it) {
+                is PrettyPrintable -> it.print(printer)
                 else -> printer.add(toPrintable(it))
             }
         }
@@ -80,33 +57,35 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     private fun toPrintable(value: T): String = when (value) {
         is String -> "\"$value\""
-        is ByteArray -> "x" + Bytes.toHexString(value)
+        is ByteArray -> "x" + value.toHexString()
         else -> value.toString()
     }
 
     companion object {
-        /** Return a list from all returns from a generator until null */
-        fun <T> generateList(generator: () -> T?): List<T> {
-            val items = ArrayList<T>()
-            var value: T? = generator()
-            while (value != null) {
-                items.add(value)
-                value = generator()
-            }
-            return items
-        }
-
         /** Set to false in [Hook] to disable builders that accept invalid tags.  */
         val HOOK_ALLOW_BUILD_INVALID_TAGS = Attribute::class.java.name + ".HOOK_ALLOW_BUILD_INVALID_TAGS"
-
-        /**
-         * Read an attribute from an input stream, based on its tag
-         */
-        @Throws(IOException::class)
-        @JvmStatic
-        fun read(input: DataInputStream, finder: Encoder.Finder, valueTag: Tag): Attribute<*> {
-            val name = String(input.readValueBytes())
-            return finder.find(valueTag, name).read(input, finder, valueTag, name)
-        }
     }
+}
+
+/** Write this attribute (including all of its values) to the output stream */
+@Throws(IOException::class)
+fun <T> DataOutputStream.writeAttribute(attribute: Attribute<T>) {
+    writeHeader(attribute)
+    if (attribute.values.isEmpty()) {
+        writeShort(0)
+    } else {
+        writeValue(attribute.encoder, attribute.values[0])
+    }
+
+    attribute.values.drop(1).forEach {
+        writeHeader(attribute, name = "")
+        writeValue(attribute.encoder, it)
+    }
+}
+
+// Write ONLY the value tag + name components of an attribute
+@Throws(IOException::class)
+private fun <T> DataOutputStream.writeHeader(attribute: Attribute<T>, name: String = attribute.name) {
+    writeTag(attribute.valueTag)
+    writeString(name)
 }

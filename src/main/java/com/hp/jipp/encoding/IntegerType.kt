@@ -4,6 +4,7 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+/** Attribute type for [Int] attributes */
 class IntegerType(tag: Tag, name: String) : AttributeType<Int>(IntegerType.ENCODER, tag, name) {
     companion object {
         private val TYPE_NAME = "Integer"
@@ -22,7 +23,7 @@ class IntegerType(tag: Tag, name: String) : AttributeType<Int>(IntegerType.ENCOD
             }
 
             override fun valid(valueTag: Tag): Boolean {
-                return Tag.IntegerValue == valueTag || Tag.EnumValue == valueTag
+                return Tag.integerValue == valueTag || Tag.enumValue == valueTag
             }
         }
     }

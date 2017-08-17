@@ -14,6 +14,7 @@ import com.hp.jipp.encoding.ResolutionUnit;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
+import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
 
 import java.util.Arrays;
@@ -29,46 +30,46 @@ public class AttributeTypeTest {
     @Test
     public void bogus() {
         // Jacoco: Fake coverage of utility class
-        new Attributes();
+        new Types();
     }
 
     @Test
     public void naturalLanguage() throws Exception {
-        Attribute<String> attribute = cycle(Attributes.AttributesNaturalLanguage,
-                Attributes.AttributesNaturalLanguage.of("en"));
+        Attribute<String> attribute = cycle(Types.attributesNaturalLanguage,
+                Types.attributesNaturalLanguage.of("en"));
         assertEquals(Collections.singletonList("en"), attribute.getValues());
     }
 
     @Test
     public void naturalLanguageFromGroup() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
-                Attributes.AttributesNaturalLanguage.of("en")));
+        AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
+                Types.attributesNaturalLanguage.of("en")));
 
-        Attribute<String> attribute = group.get(Attributes.AttributesNaturalLanguage);
+        Attribute<String> attribute = group.get(Types.attributesNaturalLanguage);
         assertEquals(Collections.singletonList("en"), attribute.getValues());
     }
 
     @Test
     public void ignoreBadTypeNaturalLanguage() throws Exception {
         exception.expect(RuntimeException.class);
-        // Throws because NaturalLanguage is not 5
-        new IntegerType(Tag.NaturalLanguage, "attributes-natural-language");
+        // Throws because naturalLanguage is not 5
+        new IntegerType(Tag.naturalLanguage, "attributes-natural-language");
     }
 
     @Test
     public void ignoreBadNameNaturalLanguage() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.OperationAttributes,
-                new StringType(Tag.NaturalLanguage, "attributes-NATURAL-language").of("en")));
-        assertNull(group.get(Attributes.AttributesNaturalLanguage));
+        AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
+                new StringType(Tag.naturalLanguage, "attributes-NATURAL-language").of("en")));
+        assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
     @Test
     public void enumAttributeType() throws Exception {
-        AttributeGroup group = cycle(AttributeGroup.of(Tag.PrinterAttributes,
-                Attributes.OperationsSupported.of(Operation.CancelJob,
-                        Operation.CreateJob)));
-        assertEquals(Arrays.asList(Operation.CancelJob, Operation.CreateJob),
-                group.get(Attributes.OperationsSupported).getValues());
+        AttributeGroup group = cycle(groupOf(Tag.printerAttributes,
+                Types.operationsSupported.of(Operation.cancelJob,
+                        Operation.createJob)));
+        assertEquals(Arrays.asList(Operation.cancelJob, Operation.createJob),
+                group.get(Types.operationsSupported).getValues());
     }
 
     @Test
@@ -86,17 +87,17 @@ public class AttributeTypeTest {
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        IntRange range = cycle(Attributes.CopiesSupported.of(new IntRange(0, 99))).getValue(0);
+        IntRange range = cycle(Types.copiesSupported.of(new IntRange(0, 99))).getValue(0);
         assertEquals(0, range.getFirst());
         assertEquals(99, range.getLast());
     }
 
     @Test
     public void resolution() throws Exception {
-        Resolution resolution = cycle(Attributes.PrinterResolutionDefault.of(
-                new Resolution(300, 600, ResolutionUnit.DotsPerInch))).getValue(0);
+        Resolution resolution = cycle(Types.printerResolutionDefault.of(
+                new Resolution(300, 600, ResolutionUnit.dotsPerInch))).getValue(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
-        assertEquals(ResolutionUnit.DotsPerInch, resolution.getUnit());
+        assertEquals(ResolutionUnit.dotsPerInch, resolution.getUnit());
     }
 }

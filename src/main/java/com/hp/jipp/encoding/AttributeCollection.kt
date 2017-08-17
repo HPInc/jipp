@@ -1,9 +1,10 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 
 /** The collection of attributes found within a [CollectionType] attribute.  */
-data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrinter.Printable {
+data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrintable {
     constructor(vararg attributes: Attribute<*>) : this(listOf(*attributes))
 
     /** Return the first attribute matching the type  */

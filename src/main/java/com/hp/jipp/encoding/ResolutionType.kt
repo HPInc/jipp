@@ -4,10 +4,11 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
+/** Attribute type for encoding of a [Resolution] */
 class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER, tag, name) {
 
     companion object {
-        private val TYPE_NAME = "Resolution"
+        private val TYPE_NAME = "resolution"
 
         private val INT_LENGTH = 4
         private val BYTE_LENGTH = 1
@@ -29,7 +30,7 @@ class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER
                 out.writeByte(value.unit.code.toByte().toInt())
             }
 
-            override fun valid(valueTag: Tag) = Tag.Resolution == valueTag
+            override fun valid(valueTag: Tag) = Tag.resolution == valueTag
         }
     }
 }
