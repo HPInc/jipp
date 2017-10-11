@@ -3,7 +3,6 @@ package com.hp.jipp.util
 import org.junit.Assert.* // ktlint-disable no-wildcard-imports
 
 class KotlinTest {
-
     companion object {
         private val NOT_O = Any()
         @JvmStatic fun cover(o: Any, same: Any, diff: Any) {

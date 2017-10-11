@@ -4,15 +4,14 @@ import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeType
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
-import com.hp.jipp.util.ParseError
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.encoding.readGroup
 import com.hp.jipp.encoding.readTag
 import com.hp.jipp.encoding.writeGroup
 import com.hp.jipp.encoding.writeTag
+import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toList
-
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
