@@ -22,7 +22,7 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
     /** A media size type based solely on keyword values with width/height inferred  */
     class Type(name: String) : AttributeType<MediaSize>(ENCODER, Tag.keyword, name)
 
-    override fun toString() = "MediaSize($name, ${width}x${height})"
+    override fun toString() = "MediaSize($name, ${width}x$height)"
     companion object {
         private val WIDTH_HEIGHT = Pattern.compile(
                 "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")

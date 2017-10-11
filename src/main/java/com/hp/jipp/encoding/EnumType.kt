@@ -49,7 +49,7 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, name: String
  * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
  * will be included as potential values for decoding purposes.
  */
-fun <T: Enum> encoderOf(cls: Class<T>, factory: (name: String, code: Int) -> T) =
+fun <T : Enum> encoderOf(cls: Class<T>, factory: (name: String, code: Int) -> T) =
         cls.run {
             EnumType.Encoder(simpleName, getStaticObjects()
                     .filter { isAssignableFrom(it.javaClass) }
@@ -63,5 +63,5 @@ fun <T: Enum> encoderOf(cls: Class<T>, factory: (name: String, code: Int) -> T) 
  * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
  * will be included as potential values for decoding purposes.
  */
-fun <T: Enum> encoderOf(cls: Class<T>, factory: Enum.Factory<T>) =
+fun <T : Enum> encoderOf(cls: Class<T>, factory: Enum.Factory<T>) =
         encoderOf(cls) { name, code -> factory.of(name, code) }
