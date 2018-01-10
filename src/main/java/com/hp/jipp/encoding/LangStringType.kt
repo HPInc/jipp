@@ -13,14 +13,21 @@ class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStr
 
     /** Return an [Attribute] of this type */
     override fun of(attribute: Attribute<*>): Attribute<LangString>? {
-        if (!(attribute.valueTag == Tag.nameWithoutLanguage && tag == Tag.nameWithLanguage) ||
-                attribute.valueTag == Tag.textWithoutLanguage && tag == Tag.textWithLanguage) {
+        if (!validInputTag(attribute.valueTag)) {
             return null
         }
+
         // TODO: If we don't know the language this is actually a dangerous thing to do
         // Apply conversion from StringType to a LangStringType on demand
         return of(attribute.values.map { LangString(it as String) })
     }
+
+    private fun validInputTag(fromTag: Tag): Boolean =
+            when (fromTag) {
+                Tag.nameWithoutLanguage -> tag == Tag.nameWithLanguage
+                Tag.textWithoutLanguage -> tag == Tag.textWithLanguage
+                else -> fromTag == tag
+            }
 
     companion object {
         private val TYPE_NAME = "LangString"

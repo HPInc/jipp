@@ -5,7 +5,7 @@ import com.hp.jipp.util.PrettyPrinter
 
 /** The collection of attributes found within a [CollectionType] attribute.  */
 data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrintable {
-    constructor(vararg attributes: Attribute<*>) : this(listOf(*attributes))
+    constructor(vararg attributes: Attribute<*>) : this(attributes.toList())
 
     /** Return the first attribute matching the type  */
     operator fun <T> get(type: AttributeType<T>): Attribute<T>? {

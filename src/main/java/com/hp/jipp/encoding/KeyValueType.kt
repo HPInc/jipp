@@ -41,7 +41,7 @@ class KeyValueType(name: String) : AttributeType<Map<String, String>>(ENCODER, T
     // Include these to allow java to see the correct types instead of Map<String, ? extends String>
 
     override fun of(vararg values: Map<String, String>): Attribute<Map<String, String>> =
-            super.of(listOf(*values))
+            super.of(values.toList())
 
     override fun of(values: List<Map<String, String>>): Attribute<Map<String, String>> =
             super.of(values)

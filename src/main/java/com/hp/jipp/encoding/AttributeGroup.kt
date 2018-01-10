@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.util.Arrays
 import java.util.HashSet
 
 /** A specific group of attributes found in a packet. */
@@ -123,7 +122,7 @@ fun DataInputStream.readGroup(startTag: Tag, attributeTypes: Map<String, Attribu
 
 /** Return a new [AttributeGroup] */
 fun groupOf(startTag: Tag, vararg attributes: Attribute<*>) =
-        AttributeGroup(startTag, Arrays.asList(*attributes))
+        AttributeGroup(startTag, attributes.toList())
 
 /** Return a new [AttributeGroup] */
 fun groupOf(startTag: Tag, attributes: List<Attribute<*>>) =

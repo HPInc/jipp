@@ -24,10 +24,10 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
 
     @JvmOverloads
     constructor(versionNumber: Int = DEFAULT_VERSION_NUMBER, code: Int, requestId: Int,
-                vararg groups: AttributeGroup) : this(versionNumber, code, requestId, listOf(*groups))
+                vararg groups: AttributeGroup) : this(versionNumber, code, requestId, groups.toList())
 
     constructor(code: Code, requestId: Int, vararg groups: AttributeGroup):
-            this(code = code.code, requestId = requestId, attributeGroups = listOf(*groups))
+            this(code = code.code, requestId = requestId, attributeGroups = groups.toList())
 
     /**
      * Return this response packet's Status code

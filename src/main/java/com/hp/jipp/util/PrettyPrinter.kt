@@ -33,12 +33,14 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
     }
 
     /**
-     * Close the current group, falling back to the parent group. Any new items added will appear in the previously
-     * opened group.
+     * Close the current group, falling back to the parent group. Any new items added will appear
+     * in the previously opened group.
      */
     fun close(): PrettyPrinter {
-        if (mGroups.size < 3) throw IllegalArgumentException("nothing open to close")
-        if (mGroups.size < 2) throw IllegalArgumentException("close after print")
+        checkUnprinted()
+        if (mGroups.size < GROUP_SIZE_MIN_OPEN) {
+            throw IllegalArgumentException("nothing open to close")
+        }
         innerClose()
         return this
     }
@@ -49,7 +51,14 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
         if (startPos + closed.width() < maxWidth) {
             innerAdd(closed.compressed())
         } else {
-            innerAdd(closed.expanded(startPos, String(CharArray(mGroups.size)).replace("\u0000", indent)))
+            innerAdd(closed.expanded(startPos, String(CharArray(mGroups.size))
+                    .replace("\u0000", indent)))
+        }
+    }
+
+    private fun checkUnprinted() {
+        if (mGroups.size < GROUP_SIZE_MIN_CLOSED) {
+            throw IllegalArgumentException("print already called")
         }
     }
 
@@ -57,7 +66,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
      * Add items to the current group
      */
     fun addAll(items: Collection<Any>): PrettyPrinter {
-        if (mGroups.size < 2) throw IllegalArgumentException("print already called")
+        checkUnprinted()
         for (item in items) {
             innerAdd(item)
         }
@@ -68,7 +77,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
      * Add items to the current group
      */
     fun add(vararg items: Any): PrettyPrinter {
-        if (mGroups.size < 2) throw IllegalArgumentException("print already called")
+        checkUnprinted()
         for (item in items) {
             innerAdd(item)
         }
@@ -94,6 +103,9 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
 
     companion object {
         private val NEWLINE = "\n"
+        private val GROUP_SIZE_MIN_CLOSED = 2
+        private val GROUP_SIZE_MIN_OPEN = 3
+        private val SHORT_DIVISOR = 3
 
         /** A style for arrays, e.g. "Me [ A, B, C ]"  */
         @JvmField val ARRAY = Style("[", "]", ",", " ")
@@ -151,13 +163,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
                 out.append(style.opener)
 
                 // If all contained items are relatively short, use a semi-expanded form
-                var compact = true
-                for (item in items) {
-                    if (item.toString().length > maxWidth / 3) {
-                        compact = false
-                        break
-                    }
-                }
+                val compact = items.none { it.toString().length > maxWidth / SHORT_DIVISOR }
 
                 if (compact) {
                     out.append(style.spacer)

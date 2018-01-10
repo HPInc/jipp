@@ -24,6 +24,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
 
     companion object {
         private val TYPE_NAME = "String"
+        private val TAG_MASK = 0x40
 
         @JvmField
         val ENCODER: SimpleEncoder<String> = object : SimpleEncoder<String>(TYPE_NAME) {
@@ -33,7 +34,7 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag) = input.readString()
 
-            override fun valid(valueTag: Tag) = valueTag.code and 0x40 == 0x40
+            override fun valid(valueTag: Tag) = valueTag.code and TAG_MASK == TAG_MASK
         }
     }
 }

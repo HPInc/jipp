@@ -17,6 +17,7 @@ import java.util.regex.Pattern
  * @param width in 1/100 of a millimeter or 1/2540 of an inch
  * @param height in 1/100 of a millimeter or 1/2540 of an inch
  */
+@Suppress("LargeClass") // We just have a lot of possible fields
 data class MediaSize(val name: String, val width: Int, val height: Int) {
 
     /** A media size type based solely on keyword values with width/height inferred  */
@@ -26,6 +27,9 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
     companion object {
         private val WIDTH_HEIGHT = Pattern.compile(
                 "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
+        private val WIDTH_HEIGHT_DIMENSION_COUNT = 4
+        private val WIDTH_HEIGHT_UNIT_AT = 5
+
         private val TYPE_NAME = "MediaSize"
         private val MM_HUNDREDTHS_PER_INCH = 2540
         private val MM_HUNDREDTHS_PER_MM = 100
@@ -213,17 +217,18 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
 
         private fun of(name: String): MediaSize {
             val matches = WIDTH_HEIGHT.matcher(name)
-            if (!matches.find() || matches.groupCount() < 4) {
+            if (!matches.find() || matches.groupCount() < WIDTH_HEIGHT_DIMENSION_COUNT) {
                 // No way to guess media size from name
                 return MediaSize(name, 0, 0)
             }
 
-            // Assume mm
-            var units = MM_HUNDREDTHS_PER_MM
-            if (matches.groupCount() >= 5 && matches.group(5) != null && matches.group(5) == "in") {
-                units = MM_HUNDREDTHS_PER_INCH
+            // Assume mm unless "in"
+            val unitString = if (matches.groupCount() >= WIDTH_HEIGHT_UNIT_AT) {
+                matches.group(WIDTH_HEIGHT_UNIT_AT)
+            } else {
+                null
             }
-
+            val units = if (unitString == "in") MM_HUNDREDTHS_PER_INCH else MM_HUNDREDTHS_PER_MM
             val x = (java.lang.Double.parseDouble(matches.group(1)) * units).toInt()
             val y = (java.lang.Double.parseDouble(matches.group(3)) * units).toInt()
             return MediaSize(name, x, y)

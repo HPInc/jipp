@@ -3,8 +3,6 @@ package com.hp.jipp.encoding
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.Hook
 
-import java.util.Arrays
-
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
  */
@@ -17,7 +15,7 @@ open class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag, val name: Str
     }
 
     /** Create an attribute of this attribute type with supplied values */
-    open fun of(vararg values: T): Attribute<T> = of(Arrays.asList(*values))
+    open fun of(vararg values: T): Attribute<T> = of(values.toList())
 
     /** Create an attribute of this attribute type with supplied values */
     open fun of(values: List<T>): Attribute<T> = Attribute(tag, name, values, encoder)
