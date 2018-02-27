@@ -23,8 +23,8 @@ class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCO
     }
 
     companion object {
-        private val TYPE_NAME = "String"
-        private val TAG_MASK = 0x40
+        private const val TYPE_NAME = "String"
+        private const val TAG_MASK = 0x40
 
         @JvmField
         val ENCODER: SimpleEncoder<String> = object : SimpleEncoder<String>(TYPE_NAME) {
