@@ -30,9 +30,11 @@ abstract class Encoder<T> {
     }
 
     companion object {
-        internal val LENGTH_LEN: Int = 2
+        internal const val LENGTH_LEN: Int = 2
 
-        internal val TAG_LEN: Int = 2
+        internal const val TAG_LEN: Int = 2
+
+        internal const val INT_LEN = 4
     }
 }
 

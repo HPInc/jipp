@@ -27,6 +27,8 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
     companion object {
         private val WIDTH_HEIGHT = Pattern.compile(
                 "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
+        private val WIDTH_AT = 1
+        private val HEIGHT_AT = 3
         private val WIDTH_HEIGHT_DIMENSION_COUNT = 4
         private val WIDTH_HEIGHT_UNIT_AT = 5
 
@@ -229,8 +231,8 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
                 null
             }
             val units = if (unitString == "in") MM_HUNDREDTHS_PER_INCH else MM_HUNDREDTHS_PER_MM
-            val x = (java.lang.Double.parseDouble(matches.group(1)) * units).toInt()
-            val y = (java.lang.Double.parseDouble(matches.group(3)) * units).toInt()
+            val x = (java.lang.Double.parseDouble(matches.group(WIDTH_AT)) * units).toInt()
+            val y = (java.lang.Double.parseDouble(matches.group(HEIGHT_AT)) * units).toInt()
             return MediaSize(name, x, y)
         }
 

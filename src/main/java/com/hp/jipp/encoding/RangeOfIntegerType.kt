@@ -8,12 +8,12 @@ import java.io.IOException
 class RangeOfIntegerType(name: String) :
         AttributeType<IntRange>(ENCODER, Tag.rangeOfInteger, name) {
     companion object {
-        private val TYPE_NAME = "rangeOfInteger"
+        private const val TYPE_NAME = "rangeOfInteger"
 
         @JvmField val ENCODER: SimpleEncoder<IntRange> = object : SimpleEncoder<IntRange>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): IntRange {
-                input.takeLength(8)
+                input.takeLength(INT_LEN + INT_LEN)
                 val low = input.readInt()
                 val high = input.readInt()
                 return IntRange(low, high) // vs Closed range
@@ -21,7 +21,7 @@ class RangeOfIntegerType(name: String) :
 
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: IntRange) {
-                out.writeShort(8)
+                out.writeShort(INT_LEN + INT_LEN)
                 out.writeInt(value.first)
                 out.writeInt(value.last)
             }

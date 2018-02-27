@@ -1,6 +1,6 @@
 // Global settings
 buildscript {
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.21'
     repositories {
         jcenter()
         maven {
@@ -36,10 +36,8 @@ repositories {
     }
 }
 
-allprojects {
-    targetCompatibility = 1.6
-    sourceCompatibility = 1.6
-}
+targetCompatibility = 1.6
+sourceCompatibility = 1.6
 
 // This hack puts testing resource files where we can get to them
 task copyTestResources(type: Copy) {
