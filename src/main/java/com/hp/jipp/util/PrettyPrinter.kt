@@ -25,7 +25,7 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
 
     /**
      * Open a new pretty-printed group of the specified style and prefix. Any items added will be appended to this
-     * group, until [.close] is called.
+     * group, until [close] is called.
      */
     @JvmOverloads fun open(style: Style, prefix: String = ""): PrettyPrinter {
         mGroups.push(Group(style, prefix, maxWidth))

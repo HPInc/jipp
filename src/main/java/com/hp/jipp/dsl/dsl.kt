@@ -12,17 +12,20 @@ import com.hp.jipp.model.Packet.Companion.DEFAULT_VERSION_NUMBER
 
 /**
  * DSL for defining an IPP packet. By default, the packet's `versionNumber` is set to
- * [DEFAULT_VERSION_NUMBER] and its `requestId` is set to 1001.
+ * [DEFAULT_VERSION_NUMBER] and its `requestId` is set to [DEFAULT_REQUEST_ID].
  */
-@Suppress("ClassName")
+@Suppress("ClassName", "ClassNaming")
 object ippPacket {
-    operator fun invoke(operation: Operation, requestId: Int = 1001, init: IppPacketContext.() -> Unit): Packet {
+    /** The default request ID (1001), which can be overridden with `requestId = 123` */
+    const val DEFAULT_REQUEST_ID = 1001
+    operator fun invoke(operation: Operation,
+                        requestId: Int = DEFAULT_REQUEST_ID,
+                        init: IppPacketContext.() -> Unit): Packet {
         val context = IppPacketContext(DEFAULT_VERSION_NUMBER, operation.code, requestId)
         context.init()
         return context.build()
     }
 }
-
 
 /**
  * Context for building an IPP [Packet].
@@ -42,7 +45,7 @@ class IppPacketContext internal constructor(var versionNumber: Int,
 }
 
 /** DSL for defining an AttributeGroup */
-@Suppress("ClassName")
+@Suppress("ClassName", "ClassNaming")
 object group {
     operator fun invoke(tag: Tag, init: AttributeGroupContext.() -> Unit): AttributeGroup {
         val context = AttributeGroupContext(tag)
@@ -52,7 +55,7 @@ object group {
 }
 
 @IppDslMarker
-class AttributeGroupContext internal constructor(var tag: Tag)  {
+class AttributeGroupContext internal constructor(var tag: Tag) {
     private val attributes = ArrayList<Attribute<*>>()
 
     /** Add an attribute to the group having a specified value */

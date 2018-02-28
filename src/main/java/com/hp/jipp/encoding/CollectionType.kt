@@ -9,7 +9,7 @@ import java.io.IOException
 /**
  * A type for attribute collections.
 
- * @see [RFC3382](https://tools.ietf.org/html/rfc3382)
+ * @see RFC3382 (https://tools.ietf.org/html/rfc3382)
  */
 class CollectionType(name: String) :
         AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection, name) {
