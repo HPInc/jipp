@@ -4,8 +4,11 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-/** Attribute type for [Int] attributes */
+/** Attribute type for [Int] attributes. May also encode an enum type if it is not recognized. */
 class IntegerType(tag: Tag, name: String) : AttributeType<Int>(IntegerType.ENCODER, tag, name) {
+
+    constructor(name: String) : this(Tag.integerValue, name)
+
     companion object {
         private const val TYPE_NAME = "Integer"
 

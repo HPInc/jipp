@@ -14,7 +14,7 @@ abstract class Transport {
      * Note: implementations should check [Thread.interrupted] periodically and fail gracefully.
      */
     @Throws(IOException::class)
-    abstract fun sendData(uri: URI, packetData: PacketData): PacketData
+    abstract fun sendData(uri: URI, request: PacketData): PacketData
 
     /** Shortcut for [sendData] when no additional data is delivered or expected in return */
     fun send(uri: URI, packet: Packet): Packet =

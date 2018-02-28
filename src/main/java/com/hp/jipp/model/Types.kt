@@ -117,6 +117,10 @@ class Types {
         @JvmField
         val printerSupply = KeyValueType("printer-supply")
 
+        // Attributes in 5100.11
+        @JvmField
+        val jobPasswordEncryptionSupported = JobPasswordEncryption.Type("job-password-encryption-supported")
+
         // 3.2.1.1 Print-Job Request
 
         @JvmField
