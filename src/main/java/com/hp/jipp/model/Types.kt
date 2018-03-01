@@ -77,6 +77,9 @@ class Types {
         val printerDnsSdName = StringType(Tag.nameWithoutLanguage, "printer-dns-sd-name")
 
         @JvmField
+        val printerMakeAndModel = StringType(Tag.textWithoutLanguage, "printer-make-and-model")
+
+        @JvmField
         val printerState = com.hp.jipp.model.PrinterState.Type("printer-state")
 
         @JvmField

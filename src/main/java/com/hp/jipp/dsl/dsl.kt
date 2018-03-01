@@ -7,6 +7,7 @@ import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Packet
 import com.hp.jipp.model.Packet.Companion.DEFAULT_VERSION_NUMBER
+import com.hp.jipp.model.Status
 
 @DslMarker annotation class IppDslMarker
 
@@ -20,11 +21,19 @@ object ippPacket {
     const val DEFAULT_REQUEST_ID = 1001
     operator fun invoke(operation: Operation,
                         requestId: Int = DEFAULT_REQUEST_ID,
-                        init: IppPacketContext.() -> Unit): Packet {
-        val context = IppPacketContext(DEFAULT_VERSION_NUMBER, operation.code, requestId)
-        context.init()
-        return context.build()
-    }
+                        init: IppPacketContext.() -> Unit) =
+            with(IppPacketContext(DEFAULT_VERSION_NUMBER, operation.code, requestId)) {
+                init()
+                build()
+            }
+
+    operator fun invoke(status: Status,
+                        requestId: Int = DEFAULT_REQUEST_ID,
+                        init: IppPacketContext.() -> Unit) =
+            with(IppPacketContext(DEFAULT_VERSION_NUMBER, status.code, requestId)) {
+                init()
+                build()
+            }
 }
 
 /**
@@ -34,6 +43,11 @@ object ippPacket {
 class IppPacketContext internal constructor(var versionNumber: Int,
                                             var code: Int, var requestId: Int) {
     private val groups = ArrayList<AttributeGroup>()
+
+    /** Allow code to be set/get as a status */
+    private var status: Status
+        set(value: Status) { code = value.code }
+        get() = Status.ENCODER[code]
 
     /** Add a new attribute group to the packet */
     fun group(tag: Tag, init: AttributeGroupContext.() -> Unit) {

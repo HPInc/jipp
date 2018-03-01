@@ -13,3 +13,5 @@ data class PacketData(val packet: Packet, val data: InputStream?) : Closeable {
         data?.close()
     }
 }
+
+fun Packet.toPacketData() = PacketData(this, null)
