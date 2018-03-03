@@ -1,5 +1,6 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.dsl.CollectionContext
 import com.hp.jipp.util.ParseError
 
 import java.io.DataInputStream
@@ -11,13 +12,23 @@ import java.io.IOException
 
  * @see RFC3382 (https://tools.ietf.org/html/rfc3382)
  */
-class CollectionType(name: String) :
-        AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection, name) {
+open class CollectionType(override val name: String) :
+        AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection) {
+
+    operator fun invoke(vararg attributes: Attribute<*>) = this(AttributeCollection(attributes.toList()))
+
+    /** Return a new Collection based on this collection type and the contents supplied in the block */
+    operator fun invoke(init: CollectionContext.() -> Unit) =
+        this(CollectionContext().let {
+            it.init()
+            it.build()
+        })
+
     companion object {
         private val TYPE_NAME = "Collection"
 
         // Terminates a collection
-        private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").of()
+        private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").empty()
 
         @JvmField val ENCODER: Encoder<AttributeCollection> = object : Encoder<AttributeCollection>() {
 

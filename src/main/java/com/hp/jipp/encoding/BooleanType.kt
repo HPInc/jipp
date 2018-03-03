@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** A boolean attribute type */
-class BooleanType(tag: Tag, name: String) : AttributeType<Boolean>(BooleanType.ENCODER, tag, name) {
+class BooleanType(tag: Tag, override val name: String) : AttributeType<Boolean>(BooleanType.ENCODER, tag) {
     companion object {
         private val TYPE_NAME = "Boolean"
 

@@ -7,14 +7,14 @@ import com.hp.jipp.util.getStaticObjects
  */
 abstract class Enum {
 
-    abstract val name: String
-
     abstract val code: Int
+
+    abstract val name: String
 
     /** A factory for objects of a Enum subclass  */
     interface Factory<out T : Enum> {
         /** Return a new [Enum] from a name/code pair */
-        fun of(name: String, code: Int): T
+        fun of(code: Int, name: String): T
     }
 
     override fun toString() = name

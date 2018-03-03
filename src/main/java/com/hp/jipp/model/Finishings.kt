@@ -5,7 +5,7 @@ import com.hp.jipp.encoding.EnumType
 import com.hp.jipp.encoding.encoderOf
 
 /** Finishings as defined in [RFC8011 Section 5.2.6](https://tools.ietf.org/html/rfc8011#section-5.2.6). */
-data class Finishings(override val name: String, override val code: Int) : Enum() {
+data class Finishings(override val code: Int, override val name: String) : Enum() {
 
     override fun toString() = name
 
@@ -13,26 +13,26 @@ data class Finishings(override val name: String, override val code: Int) : Enum(
     class Type(name: String) : EnumType<Finishings>(ENCODER, name)
 
     companion object {
-        @JvmField val none = Finishings("none", 3)
-        @JvmField val staple = Finishings("staple", 4)
-        @JvmField val punch = Finishings("punch", 5)
-        @JvmField val cover = Finishings("cover", 6)
-        @JvmField val bind = Finishings("bind", 7)
-        @JvmField val saddleStitch = Finishings("saddle-stitch", 8)
-        @JvmField val edgeStitch = Finishings("edge-stitch", 9)
-        @JvmField val stapleTopLeft = Finishings("staple-top-left", 20)
-        @JvmField val stapleBottomLeft = Finishings("staple-bottom-left", 21)
-        @JvmField val stapleTopRight = Finishings("staple-top-right", 22)
-        @JvmField val stapleBottomRight = Finishings("staple-bottom-right", 23)
-        @JvmField val edgeStitchLeft = Finishings("edge-stitch-left", 24)
-        @JvmField val edgeStitchTop = Finishings("edge-stitch-top", 25)
-        @JvmField val edgeStitchRight = Finishings("edge-stitch-right", 26)
-        @JvmField val edgeStitchBottom = Finishings("edge-stitch-bottom", 27)
-        @JvmField val stapleDualLeft = Finishings("staple-dual-left", 28)
-        @JvmField val stapleDualTop = Finishings("staple-dual-top", 29)
-        @JvmField val stapleDualRight = Finishings("staple-dual-right", 30)
-        @JvmField val stapleDualBottom = Finishings("staple-dual-bottom", 31)
+        @JvmField val none = Finishings(3, "none")
+        @JvmField val staple = Finishings(4, "staple")
+        @JvmField val punch = Finishings(5, "punch")
+        @JvmField val cover = Finishings(6, "cover")
+        @JvmField val bind = Finishings(7, "bind")
+        @JvmField val saddleStitch = Finishings(8, "saddle-stitch")
+        @JvmField val edgeStitch = Finishings(9, "edge-stitch")
+        @JvmField val stapleTopLeft = Finishings(20, "staple-top-left")
+        @JvmField val stapleBottomLeft = Finishings(21, "staple-bottom-left")
+        @JvmField val stapleTopRight = Finishings(22, "staple-top-right")
+        @JvmField val stapleBottomRight = Finishings(23, "staple-bottom-right")
+        @JvmField val edgeStitchLeft = Finishings(24, "edge-stitch-left")
+        @JvmField val edgeStitchTop = Finishings(25, "edge-stitch-top")
+        @JvmField val edgeStitchRight = Finishings(26, "edge-stitch-right")
+        @JvmField val edgeStitchBottom = Finishings(27, "edge-stitch-bottom")
+        @JvmField val stapleDualLeft = Finishings(28, "staple-dual-left")
+        @JvmField val stapleDualTop = Finishings(29, "staple-dual-top")
+        @JvmField val stapleDualRight = Finishings(30, "staple-dual-right")
+        @JvmField val stapleDualBottom = Finishings(31, "staple-dual-bottom")
 
-        @JvmField val ENCODER = encoderOf(Finishings::class.java, { name, code -> Finishings(name, code) })
+        @JvmField val ENCODER = encoderOf(Finishings::class.java, { code, name -> Finishings(code, name) })
     }
 }

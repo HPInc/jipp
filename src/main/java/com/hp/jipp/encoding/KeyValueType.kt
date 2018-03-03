@@ -4,7 +4,7 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 
 /** Attribute type for Key/Value pairs */
-class KeyValueType(name: String) : AttributeType<Map<String, String>>(ENCODER, Tag.octetString, name) {
+class KeyValueType(override val name: String) : AttributeType<Map<String, String>>(ENCODER, Tag.octetString) {
     companion object {
         @JvmField val ENCODER = object : SimpleEncoder<Map<String, String>>("KeyValue") {
             val ELEMENT_SEPARATOR = ";"
@@ -40,9 +40,9 @@ class KeyValueType(name: String) : AttributeType<Map<String, String>>(ENCODER, T
 
     // Include these to allow java to see the correct types instead of Map<String, ? extends String>
 
-    override fun of(vararg values: Map<String, String>): Attribute<Map<String, String>> =
-            super.of(values.toList())
+    override fun of(value: Map<String, String>, vararg values: Map<String, String>): Attribute<Map<String, String>> =
+            super.invoke(listOf(value) + values.toList())
 
     override fun of(values: List<Map<String, String>>): Attribute<Map<String, String>> =
-            super.of(values)
+            super.invoke(values)
 }

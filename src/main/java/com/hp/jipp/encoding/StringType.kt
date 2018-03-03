@@ -9,7 +9,7 @@ import java.io.IOException
 
  * Some string types have a length-limit.
  */
-class StringType(tag: Tag, name: String) : AttributeType<String>(StringType.ENCODER, tag, name) {
+open class StringType(tag: Tag, override val name: String) : AttributeType<String>(StringType.ENCODER, tag) {
 
     override fun of(attribute: Attribute<*>): Attribute<String>? {
         val values: List<String> = attribute.values.mapNotNull {

@@ -16,6 +16,6 @@ class IdentifyAction(override val name: String) : Keyword() {
         val ENCODER = encoderOf(IdentifyAction::class.java) { IdentifyAction(it) }
 
         /** Return a new [KeywordType] for a type with the specified name */
-        @JvmStatic fun typeOf(name: String) = KeywordType(ENCODER, name)
+        @JvmStatic operator fun invoke(name: String) = KeywordType(ENCODER, name)
     }
 }

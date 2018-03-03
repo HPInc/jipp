@@ -5,17 +5,17 @@ import com.hp.jipp.encoding.EnumType
 import com.hp.jipp.encoding.encoderOf
 
 /** An enumeration of possible printer states  */
-data class PrinterState(override val name: String, override val code: Int) : Enum() {
+data class PrinterState(override val code: Int, override val name: String) : Enum() {
 
     /** An attribute type for [PrinterState] objects */
     class Type(name: String) : EnumType<PrinterState>(ENCODER, name)
 
     companion object {
 
-        @JvmField val idle = PrinterState("idle", 3)
-        @JvmField val processing = PrinterState("processing", 4)
-        @JvmField val stopped = PrinterState("stopped", 5)
+        @JvmField val idle = PrinterState(3, "idle")
+        @JvmField val processing = PrinterState(4, "processing")
+        @JvmField val stopped = PrinterState(5, "stopped")
 
-        @JvmField val ENCODER = encoderOf(PrinterState::class.java, { name, code -> PrinterState(name, code) })
+        @JvmField val ENCODER = encoderOf(PrinterState::class.java, { code, name -> PrinterState(code, name) })
     }
 }

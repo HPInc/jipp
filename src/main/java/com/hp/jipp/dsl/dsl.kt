@@ -1,9 +1,6 @@
 package com.hp.jipp.dsl
 
-import com.hp.jipp.encoding.Attribute
-import com.hp.jipp.encoding.AttributeGroup
-import com.hp.jipp.encoding.AttributeType
-import com.hp.jipp.encoding.Tag
+import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Packet
 import com.hp.jipp.model.Packet.Companion.DEFAULT_VERSION_NUMBER
@@ -40,8 +37,8 @@ object ippPacket {
  * Context for building an IPP [Packet].
  */
 @IppDslMarker
-class IppPacketContext internal constructor(var versionNumber: Int,
-                                            var code: Int, var requestId: Int) {
+class IppPacketContext constructor(var versionNumber: Int = DEFAULT_VERSION_NUMBER,
+                                   var code: Int, var requestId: Int = ippPacket.DEFAULT_REQUEST_ID) {
     private val groups = ArrayList<AttributeGroup>()
 
     /** Allow code to be set/get as a status */
@@ -52,6 +49,15 @@ class IppPacketContext internal constructor(var versionNumber: Int,
     /** Add a new attribute group to the packet */
     fun group(tag: Tag, init: AttributeGroupContext.() -> Unit) {
         groups.add(group.invoke(tag, init))
+    }
+
+    /** Add an operation attributes group */
+    fun operationAttributes(init: AttributeGroupContext.() -> Unit) {
+        groups.add(group.invoke(Tag.operationAttributes, init))
+    }
+
+    fun jobAttributes(init: AttributeGroupContext.() -> Unit) {
+        groups.add(group.invoke(Tag.jobAttributes, init))
     }
 
     /** Build the final packet with current values */
@@ -68,25 +74,40 @@ object group {
     }
 }
 
+/** Any context which can receive attributes */
+sealed class AttributesContext {
+    internal val attributes = ArrayList<Attribute<*>>()
+
+    fun attr(vararg attribute: Attribute<*>) {
+        attributes.addAll(attribute.toList())
+    }
+
+    /** Add an attribute to the group having one or more values */
+    fun <T> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
+        if (values.isEmpty()) {
+            attr(attributeType.of(value))
+        } else {
+            attr(attributeType.of(listOf(value) + values.toList()))
+        }
+    }
+
+    /** Add a collection */
+    fun col(collectionType: CollectionType, init: CollectionContext.() -> Unit) {
+        attr(collectionType(CollectionContext().let {
+            it.init()
+            it.build()
+        }))
+    }
+}
+
 @IppDslMarker
-class AttributeGroupContext internal constructor(var tag: Tag) {
-    private val attributes = ArrayList<Attribute<*>>()
-
-    /** Add an attribute to the group having a specified value */
-    fun <T> attr(attributeType: AttributeType<T>, value: T) {
-        attributes.add(attributeType.of(value))
-    }
-
-    /** Add an attribute to the group having a number of values */
-    fun <T> attr(attributeType: AttributeType<T>, vararg values: T) {
-        attributes.add(attributeType.of(values.toList()))
-    }
-
-    /** Add a list of attributes to the group */
-    fun attrs(list: List<Attribute<*>>) {
-        attributes.addAll(list)
-    }
-
+class AttributeGroupContext internal constructor(var tag: Tag) : AttributesContext() {
     /** Build the final attribute group */
     internal fun build(): AttributeGroup = AttributeGroup(tag, attributes.toList())
+}
+
+@IppDslMarker
+class CollectionContext : AttributesContext() {
+    /** Build the final collection */
+    internal fun build(): AttributeCollection = AttributeCollection(attributes.toList())
 }

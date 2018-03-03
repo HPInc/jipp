@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for encoding of a [Resolution] */
-class ResolutionType(tag: Tag, name: String) : AttributeType<Resolution>(ENCODER, tag, name) {
+class ResolutionType(tag: Tag, override val name: String) : AttributeType<Resolution>(ENCODER, tag) {
 
     companion object {
         private val TYPE_NAME = "resolution"

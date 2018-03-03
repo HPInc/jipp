@@ -14,7 +14,7 @@ import java.io.IOException
 data class JobPasswordEncryption(val name: String) {
 
     /** A media size type based solely on keyword values with width/height inferred  */
-    class Type(name: String) : AttributeType<JobPasswordEncryption>(ENCODER, Tag.keyword, name)
+    class Type(override val name: String) : AttributeType<JobPasswordEncryption>(ENCODER, Tag.keyword)
 
     override fun toString() = "JobPasswordEncryption($name)"
 

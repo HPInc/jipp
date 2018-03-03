@@ -28,12 +28,6 @@ public class AttributeTypeTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void bogus() {
-        // Jacoco: Fake coverage of utility class
-        new Types();
-    }
-
-    @Test
     public void naturalLanguage() throws Exception {
         Attribute<String> attribute = cycle(Types.attributesNaturalLanguage,
                 Types.attributesNaturalLanguage.of("en"));

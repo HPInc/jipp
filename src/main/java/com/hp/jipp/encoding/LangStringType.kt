@@ -9,7 +9,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** An language-encoded string attribute type  */
-class LangStringType(tag: Tag, name: String) : AttributeType<LangString>(LangStringType.ENCODER, tag, name) {
+class LangStringType(tag: Tag, override val name: String) : AttributeType<LangString>(LangStringType.ENCODER, tag) {
 
     /** Return an [Attribute] of this type */
     override fun of(attribute: Attribute<*>): Attribute<LangString>? {

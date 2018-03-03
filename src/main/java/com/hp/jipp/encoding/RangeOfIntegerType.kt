@@ -5,8 +5,8 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for [IntRange] attributes */
-class RangeOfIntegerType(name: String) :
-        AttributeType<IntRange>(ENCODER, Tag.rangeOfInteger, name) {
+class RangeOfIntegerType(override val name: String) :
+        AttributeType<IntRange>(ENCODER, Tag.rangeOfInteger) {
     companion object {
         private const val TYPE_NAME = "rangeOfInteger"
 

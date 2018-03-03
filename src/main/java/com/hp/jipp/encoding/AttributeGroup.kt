@@ -5,7 +5,6 @@ import com.hp.jipp.util.Hook
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
-import org.jetbrains.annotations.Nullable
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -37,7 +36,6 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
     /** Return a attribute from this group.  */
     operator fun <T> get(attributeType: AttributeType<T>): Attribute<T>? {
         val attribute = map[attributeType.name] ?: return null
-
         return if (attributeType.isValid(attribute)) {
             @Suppress("UNCHECKED_CAST")
             attribute as Attribute<T>
@@ -50,11 +48,11 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
      * Return all values for the specified attribute type in this group, or an empty list if not present
      */
     fun <T> getValues(attributeType: AttributeType<T>): List<T> =
-        get(attributeType)?.values ?: listOf()
+            get(attributeType)?.values ?: listOf()
 
     /** Return the first value in this group of the given [AttributeType], or null if none present */
-    @Nullable fun <T> getValue(attributeType: AttributeType<T>): T? =
-        get(attributeType)?.values?.get(0)
+    fun <T> getValue(attributeType: AttributeType<T>): T? =
+            get(attributeType)?.values?.get(0)
 
     override fun print(printer: PrettyPrinter) {
         printer.open(PrettyPrinter.OBJECT, tag.toString())

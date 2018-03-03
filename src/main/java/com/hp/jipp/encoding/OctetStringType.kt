@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** An [AttributeType] for octet string values (binary data) */
-class OctetStringType(tag: Tag, name: String) : AttributeType<ByteArray>(OctetStringType.ENCODER, tag, name) {
+class OctetStringType(tag: Tag, override val name: String) : AttributeType<ByteArray>(OctetStringType.ENCODER, tag) {
     companion object {
         private val TYPE_NAME = "octetString"
 

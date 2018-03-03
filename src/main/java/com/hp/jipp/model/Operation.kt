@@ -8,33 +8,52 @@ import com.hp.jipp.encoding.encoderOf
  *
  * @see [RFC2911 Section 5.2.2](https://tools.ietf.org/html/rfc2911.section-5.2.2)
  */
-data class Operation(override val name: String, override val code: Int) : Code() {
+open class Operation(override val code: Int, override val name: String) : Code() {
     override fun toString() = name
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        other as Operation
+        if (name != other.name) return false
+        if (code != other.code) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var hash = PRIME
+        hash = hash * BIG_PRIME + name.hashCode()
+        hash = hash * BIG_PRIME + code.hashCode()
+        return hash
+    }
 
     /** The [EnumType] for [Operation] attributes. */
     class Type(name: String) : EnumType<Operation>(ENCODER, name)
 
     companion object {
-        @JvmField val printJob = Operation("Print-Job", 0x0002)
-        @JvmField val printUri = Operation("Print-URI", 0x0003)
-        @JvmField val validateJob = Operation("Validate-Job", 0x0004)
-        @JvmField val createJob = Operation("Create-Job", 0x0005)
-        @JvmField val sendDocument = Operation("Send-Document", 0x0006)
-        @JvmField val sendUri = Operation("Send-URI", 0x0007)
-        @JvmField val cancelJob = Operation("Cancel-Job", 0x0008)
-        @JvmField val getJobAttributes = Operation("Get-Job-Attributes", 0x0009)
-        @JvmField val getJobs = Operation("Get-Jobs", 0x000A)
-        @JvmField val getPrinterAttributes = Operation("Get-Printer-Attributes", 0x000B)
-        @JvmField val holdJob = Operation("Hold-Job", 0x000C)
-        @JvmField val releaseJob = Operation("Release-Job", 0x000D)
-        @JvmField val restartJob = Operation("Restart-Job", 0x000E)
-        @JvmField val pausePrinter = Operation("Pause-Printer", 0x0010)
-        @JvmField val resumePrinter = Operation("Resume-Printer", 0x0011)
-        @JvmField val purgeJobs = Operation("Purge-Jobs", 0x0012)
-        @JvmField val closeJob = Operation("Close-Job", 0x003B)
-        @JvmField val identifyPrinter = Operation("Identify-Printer", 0x003C)
+        private val PRIME = 17
+        private val BIG_PRIME = 31
+
+        @JvmField val printJob = Operation(0x0002, "Print-Job")
+        @JvmField val printUri = Operation(0x0003, "Print-URI")
+        @JvmField val validateJob = Operation(0x0004, "Validate-Job")
+        @JvmField val createJob = Operation(0x0005, "Create-Job")
+        @JvmField val sendDocument = Operation(0x0006, "Send-Document")
+        @JvmField val sendUri = Operation(0x0007, "Send-URI")
+        @JvmField val cancelJob = Operation(0x0008, "Cancel-Job")
+        @JvmField val getJobAttributes = Operation(0x0009, "Get-Job-Attributes")
+        @JvmField val getJobs = Operation(0x000A, "Get-Jobs")
+        @JvmField val getPrinterAttributes = Operation(0x000B, "Get-Printer-Attributes")
+        @JvmField val holdJob = Operation(0x000C, "Hold-Job")
+        @JvmField val releaseJob = Operation(0x000D, "Release-Job")
+        @JvmField val restartJob = Operation(0x000E, "Restart-Job")
+        @JvmField val pausePrinter = Operation(0x0010, "Pause-Printer")
+        @JvmField val resumePrinter = Operation(0x0011, "Resume-Printer")
+        @JvmField val purgeJobs = Operation(0x0012, "Purge-Jobs")
+        @JvmField val closeJob = Operation(0x003B, "Close-Job")
+        @JvmField val identifyPrinter = Operation(0x003C, "Identify-Printer")
 
         /** The encoder for converting integers to Operation objects  */
-        @JvmField val ENCODER = encoderOf(Operation::class.java, { name, code -> Operation(name, code) })
+        @JvmField val ENCODER = encoderOf(Operation::class.java, { code, name -> Operation(code, name) })
     }
 }

@@ -6,7 +6,7 @@ import java.io.IOException
 import java.net.URI
 
 /** An [AttributeType] for [URI] attributes */
-class UriType(tag: Tag, name: String) : AttributeType<URI>(ENCODER, tag, name) {
+open class UriType(tag: Tag, override val name: String) : AttributeType<URI>(ENCODER, tag) {
     companion object {
         private val TYPE_NAME = "URI"
 

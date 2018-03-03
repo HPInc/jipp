@@ -84,10 +84,10 @@ public class AttributeTest {
     public void surpriseEnum() throws IOException {
         AttributeGroup group = Cycler.cycle(groupOf(Tag.printerAttributes,
                 Types.operationsSupported.of(
-                        new Operation("vendor-specific", 0x4040))));
+                        new Operation(0x4040, "vendor-specific"))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
-        assertEquals(Arrays.asList(new Operation("Operation(x4040)", 0x4040)),
+        assertEquals(Arrays.asList(new Operation(0x4040, "Operation(x4040)")),
                 group.getValues(Types.operationsSupported));
     }
 
@@ -177,7 +177,7 @@ public class AttributeTest {
 
         ResolutionUnit unit = resolution.getUnit();
         KotlinTest.cover(unit, unit.copy(unit.component1(), unit.component2()),
-                unit.copy("other", unit.component2()));
+                unit.copy(unit.component1(), "copy"));
     }
 
     @Test

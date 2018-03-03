@@ -6,7 +6,8 @@ import com.hp.jipp.util.Hook
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
  */
-open class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag, val name: String) {
+abstract class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag) {
+    abstract val name: String
 
     init {
         if (!(encoder.valid(tag) || Hook.`is`(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
@@ -15,10 +16,26 @@ open class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag, val name: Str
     }
 
     /** Create an attribute of this attribute type with supplied values */
-    open fun of(vararg values: T): Attribute<T> = of(values.toList())
+    open operator fun invoke(values: List<T>) = Attribute(tag, name, values, encoder)
 
-    /** Create an attribute of this attribute type with supplied values */
-    open fun of(values: List<T>): Attribute<T> = Attribute(tag, name, values, encoder)
+    operator fun invoke(value: T, vararg values: T): Attribute<T> =
+            if (values.isEmpty()) invoke(value) else invoke(listOf(value) + values)
+
+    operator fun invoke(value: T) = invoke(listOf(value))
+
+    fun empty() = Attribute(tag, name, listOf(), encoder)
+
+    // "of()" for java uses...
+
+    open fun of(values: List<T>) = invoke(values)
+
+    fun of(values: Array<T>) = invoke(values.toList())
+
+    open fun of(value: T, vararg values: T): Attribute<T> = if (values.isEmpty()) {
+        invoke(listOf(value))
+    } else {
+        invoke(listOf(value) + values)
+    }
 
     /** Return true if the attribute has a matching encoder */
     fun isValid(attribute: Attribute<*>): Boolean {
@@ -28,7 +45,7 @@ open class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag, val name: Str
     /** If possible, convert the supplied attribute into an attribute of this type. */
     open fun of(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.encoder === encoder) {
-            of(attribute.values.map {
+            invoke(attribute.values.map {
                 @Suppress("UNCHECKED_CAST")
                 it as T
             })

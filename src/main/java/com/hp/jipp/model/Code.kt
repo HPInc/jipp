@@ -10,7 +10,7 @@ abstract class Code : Enum() {
         // MUST be lazy because Status and Operation are subclasses.
         val ENCODER by lazy {
             EnumType.Encoder("Code", Status.ENCODER.map.values + Operation.ENCODER.map.values,
-                    { name: String, code: Int -> Status(name, code) })
+                    { code, name -> Status(code, name) })
         }
     }
 }

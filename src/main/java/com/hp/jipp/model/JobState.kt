@@ -9,7 +9,7 @@ import com.hp.jipp.encoding.encoderOf
 
  * @see [RFC2911 Section 4.3.7](https://tools.ietf.org/html/rfc2911.section-4.3.7)
  */
-data class JobState(override val name: String, override val code: Int) : Enum() {
+data class JobState( override val code: Int, override val name: String) : Enum() {
 
     /** Return true if this state is the terminating state for a job  */
     val isFinal: Boolean
@@ -19,14 +19,14 @@ data class JobState(override val name: String, override val code: Int) : Enum() 
     class Type(name: String) : EnumType<JobState>(ENCODER, name)
 
     companion object {
-        @JvmField val pending = JobState("pending", 3)
-        @JvmField val pendingHeld = JobState("pending-held", 4)
-        @JvmField val processing = JobState("processing", 5)
-        @JvmField val processingStopped = JobState("processing-stopped", 6)
-        @JvmField val canceled = JobState("canceled", 7)
-        @JvmField val aborted = JobState("aborted", 8)
-        @JvmField val completed = JobState("completed", 9)
+        @JvmField val pending = JobState(3, "pending")
+        @JvmField val pendingHeld = JobState(4, "pending-held")
+        @JvmField val processing = JobState(5, "processing")
+        @JvmField val processingStopped = JobState(6, "processing-stopped")
+        @JvmField val canceled = JobState(7, "canceled")
+        @JvmField val aborted = JobState(8, "aborted")
+        @JvmField val completed = JobState(9, "completed")
 
-        @JvmField val ENCODER = encoderOf(JobState::class.java, { name, code -> JobState(name, code) })
+        @JvmField val ENCODER = encoderOf(JobState::class.java, { code, name -> JobState(code, name) })
     }
 }

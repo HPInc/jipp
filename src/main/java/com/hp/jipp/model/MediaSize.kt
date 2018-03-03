@@ -21,7 +21,7 @@ import java.util.regex.Pattern
 data class MediaSize(val name: String, val width: Int, val height: Int) {
 
     /** A media size type based solely on keyword values with width/height inferred  */
-    class Type(name: String) : AttributeType<MediaSize>(ENCODER, Tag.keyword, name)
+    open class Type(override val name: String) : AttributeType<MediaSize>(ENCODER, Tag.keyword)
 
     override fun toString() = "MediaSize($name, ${width}x$height)"
     companion object {

@@ -11,7 +11,7 @@ import static com.hp.jipp.encoding.Cycler.*;
 public class IdentifyTest {
     @Test
     public void actions() throws Exception {
-        AttributeType<IdentifyAction> IdentifyActions = IdentifyAction.typeOf("identify-actions");
+        AttributeType<IdentifyAction> IdentifyActions = IdentifyAction.invoke("identify-actions");
         assertTrue(IdentifyAction.display == cycle(IdentifyActions,
                 IdentifyActions.of(IdentifyAction.display)).getValue(0));
         assertEquals("display", IdentifyAction.display.toString());
@@ -19,7 +19,7 @@ public class IdentifyTest {
 
     @Test
     public void acceptOtherActions() throws Exception {
-        AttributeType<IdentifyAction> IdentifyActions = IdentifyAction.typeOf("identify-actions");
+        AttributeType<IdentifyAction> IdentifyActions = IdentifyAction.invoke("identify-actions");
         assertEquals("flare-gun",
                 cycle(IdentifyActions, IdentifyActions.of(new IdentifyAction("flare-gun"))).getValue(0).getName());
     }

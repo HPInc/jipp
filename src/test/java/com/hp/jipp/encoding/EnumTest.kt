@@ -11,18 +11,18 @@ import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 
 class EnumTest {
     /** An enumeration of possible printer states  */
-    data class Sample constructor(override val name: String, override val code: Int) : Enum() {
+    data class Sample constructor(override val code: Int, override val name: String) : Enum() {
         companion object {
-            @JvmField val One = Sample("one", 1)
-            @JvmField val Two = Sample("two", 2)
-            @JvmField val Three = Sample("three", 3)
+            @JvmField val One = Sample(1, "one")
+            @JvmField val Two = Sample(2, "two")
+            @JvmField val Three = Sample(3, "three")
 
             // Cannot be reached
-            private val Secret = Sample("secret", 4)
+            private val Secret = Sample(4, "secret")
 
             // Use Enum.Factory for better Java code coverage
             val ENCODER = encoderOf(Sample::class.java, object : Enum.Factory<Sample> {
-                override fun of(name: String, code: Int) = Sample(name, code)
+                override fun of(code: Int, name: String) = Sample(code, name)
             })
         }
     }
@@ -39,7 +39,7 @@ class EnumTest {
     @Test
     @Throws(Exception::class)
     fun custom() {
-        val custom = Sample("Sample(x77)", 0x77)
+        val custom = Sample(0x77, "Sample(x77)")
         assertEquals(custom, cycle(MySample, MySample.of(custom)).getValue(0))
     }
 
