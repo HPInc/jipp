@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist timestamp="1520041356830"></Blacklist>
+  <Whitelist timestamp="1520041356830">
+    <ID>WildcardImport:Types.kt$import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports</ID>
+    <ID>WildcardImport:dsl.kt$import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports</ID>
+  </Whitelist>
+</SmellBaseline>

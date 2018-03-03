@@ -11,7 +11,8 @@ data class Status(override val code: Int, override val name: String) : Code() {
 
     companion object {
         @JvmField val ok = Status(0x0000, "successful-ok")
-        @JvmField val okIgnoredOrSubstitutedAttributes = Status(0x0001, "successful-ok-ignored-or-substituted-attributes")
+        @JvmField val okIgnoredOrSubstitutedAttributes =
+                Status(0x0001, "successful-ok-ignored-or-substituted-attributes")
         @JvmField val okConflictingAttributes = Status(0x0002, "successful-ok-conflicting-attributes")
         @JvmField val clientErrorBadRequest = Status(0x0400, "client-error-bad-request")
         @JvmField val clientErrorForbidden = Status(0x0401, "client-error-forbidden")
@@ -40,7 +41,6 @@ data class Status(override val code: Int, override val name: String) : Code() {
         @JvmField val clientErrorCompressionError = Status(0x0410, "client-error-compression-error")
         @JvmField val clientErrorDocumentFormatError = Status(0x0411, "client-error-document-format-error")
         @JvmField val clientErrorDocumentAccessError = Status(0x0412, "client-error-document-access-error")
-
         @JvmField val serverErrorInternalError = Status(0x0500, "server-error-internal-error")
         @JvmField val serverErrorOperationNotSupported =
                 Status(0x0501, "server-error-operation-not-supported")
