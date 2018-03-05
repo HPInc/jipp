@@ -5,8 +5,8 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-/** Attribute type for attributes based on [Keyword] */
-class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val name: String) :
+/** Attribute type for attributes based on [Keyword] or a simple string name */
+class KeywordOrNameType<T : Keyword>(encoder: KeywordOrNameType.Encoder<T>, override val name: String) :
         AttributeType<T>(encoder, Tag.keyword) {
 
     /** An encoder for keyword types  */
@@ -26,7 +26,7 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val nam
             StringType.ENCODER.writeValue(out, value.name)
         }
 
-        override fun valid(valueTag: Tag) = valueTag == Tag.keyword
+        override fun valid(valueTag: Tag) = valueTag == Tag.keyword || valueTag == Tag.nameWithoutLanguage
 
         val all: Collection<T>
             get() = map.values
@@ -34,8 +34,8 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val nam
 
     companion object {
         /** Return a new [Encoder] for a class internally defining static [Keyword] objects */
-        fun <T : Keyword> encoderOf(cls: Class<T>, factory: Keyword.Factory<T>): KeywordType.Encoder<T> =
-                KeywordType.Encoder(factory, cls.getStaticObjects()
+        fun <T : Keyword> encoderOf(cls: Class<T>, factory: Keyword.Factory<T>): KeywordOrNameType.Encoder<T> =
+                KeywordOrNameType.Encoder(factory, cls.getStaticObjects()
                         .filter { cls.isAssignableFrom(it.javaClass) }
                         .map {
                             @Suppress("UNCHECKED_CAST")
@@ -43,7 +43,7 @@ class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val nam
                         }, cls.simpleName)
 
         /** Return a new [Encoder] for a class internally defining static [Keyword] objects */
-        fun <T : Keyword> encoderOf(cls: Class<T>, factory: (String) -> T): KeywordType.Encoder<T> =
+        fun <T : Keyword> encoderOf(cls: Class<T>, factory: (String) -> T): KeywordOrNameType.Encoder<T> =
                 encoderOf(cls, object : Keyword.Factory<T> {
                     override fun of(name: String): T = factory(name)
                 })

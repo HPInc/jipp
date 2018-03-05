@@ -59,8 +59,9 @@ public class Cycler {
         return bytesOut.toByteArray();
     }
 
+    /** Return an attribute encoded by itself and parsed through an AttributeType */
     @SuppressWarnings("unchecked")
-    public static <T> Attribute<T> cycle(AttributeType attributeType, Attribute<T> attribute)
+    public static <T, U> Attribute<T> cycle(AttributeType<T> attributeType, Attribute<U> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
         Tag tag = TagKt.readTag(in);
