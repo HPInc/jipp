@@ -5,7 +5,6 @@ import com.hp.jipp.encoding.Keyword
 import com.hp.jipp.encoding.KeywordOrNameType
 import com.hp.jipp.encoding.Tag
 
-
 data class JobPasswordEncryption(override val name: String) : Keyword() {
 
     /** A media size type based solely on keyword values with width/height inferred  */
