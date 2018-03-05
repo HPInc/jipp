@@ -1,6 +1,10 @@
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.*
+import com.hp.jipp.encoding.AttributeType
+import com.hp.jipp.encoding.Keyword
+import com.hp.jipp.encoding.KeywordOrNameType
+import com.hp.jipp.encoding.Tag
+
 
 data class JobPasswordEncryption(override val name: String) : Keyword() {
 
