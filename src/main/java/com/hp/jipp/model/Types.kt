@@ -23,6 +23,7 @@ object Types {
     @JvmField val jobId = IntegerType(Tag.integerValue, "job-id")
     @JvmField val jobName = StringType(Tag.nameWithoutLanguage, "job-name")
     @JvmField val jobPassword = OctetStringType(Tag.octetString, "job-password")
+    @JvmField val jobPasswordSupported = IntegerType("job-password-supported")
     @JvmField val jobPasswordEncryption = JobPasswordEncryption.Type("job-password-encryption")
     @JvmField val jobPasswordEncryptionSupported = JobPasswordEncryption.Type("job-password-encryption-supported")
     @JvmField val jobState = JobState.Type("job-state")

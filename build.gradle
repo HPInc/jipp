@@ -100,7 +100,7 @@ detekt {
 
 // Graph dependencies
 task graphDeps(type: Exec) {
-    commandLine 'script/graphDeps'
+    commandLine 'bin/graphDeps'
 }
 
 configure(graphDeps) {
@@ -113,7 +113,6 @@ afterEvaluate {
 
     check.dependsOn ktlintCheck
     check.dependsOn detektCheck
-    check.dependsOn graphDeps
 }
 
 dependencies {

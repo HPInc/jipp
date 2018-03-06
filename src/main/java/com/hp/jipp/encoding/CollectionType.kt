@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding
 
-import com.hp.jipp.dsl.CollectionContext
 import com.hp.jipp.util.ParseError
 
 import java.io.DataInputStream
@@ -16,13 +15,6 @@ open class CollectionType(override val name: String) :
         AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection) {
 
     operator fun invoke(vararg attributes: Attribute<*>) = this(AttributeCollection(attributes.toList()))
-
-    /** Return a new Collection based on this collection type and the contents supplied in the block */
-    operator fun invoke(init: CollectionContext.() -> Unit) =
-        this(CollectionContext().let {
-            it.init()
-            it.build()
-        })
 
     companion object {
         private val TYPE_NAME = "Collection"

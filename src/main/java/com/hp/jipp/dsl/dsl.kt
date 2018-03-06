@@ -100,6 +100,13 @@ sealed class AttributesContext {
     }
 }
 
+/** Return a new Collection based on a collection type and the contents supplied in the block */
+operator fun CollectionType.invoke(init: CollectionContext.() -> Unit) =
+        this(CollectionContext().let {
+            it.init()
+            it.build()
+        })
+
 @IppDslMarker
 class AttributeGroupContext internal constructor(var tag: Tag) : AttributesContext() {
     /** Build the final attribute group */

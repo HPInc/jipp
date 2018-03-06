@@ -6,7 +6,7 @@ dependencies:
     - sudo apt-get update; sudo apt-get install python graphviz
 test:
   override:
-    - ./gradlew check dokka jar
+    - ./gradlew check dokka graphDeps jar
   post:
     - cp -r ./build/javadoc $CIRCLE_ARTIFACTS/javadoc
     - cp -r ./build/reports $CIRCLE_ARTIFACTS/reports
