@@ -217,7 +217,8 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
                 .filter { MediaSize::class.java.isAssignableFrom(it.javaClass) }
                 .map { (it as MediaSize).name to it }.toMap()
 
-        private fun of(name: String): MediaSize {
+        @JvmStatic
+        fun of(name: String): MediaSize {
             val matches = WIDTH_HEIGHT.matcher(name)
             if (!matches.find() || matches.groupCount() < WIDTH_HEIGHT_DIMENSION_COUNT) {
                 // No way to guess media size from name
