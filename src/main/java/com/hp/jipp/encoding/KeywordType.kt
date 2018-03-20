@@ -6,7 +6,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for attributes based on [Keyword] */
-class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val name: String) :
+open class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val name: String) :
         AttributeType<T>(encoder, Tag.keyword) {
 
     /** An encoder for keyword types  */

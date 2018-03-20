@@ -57,7 +57,7 @@ public class AttributeTest {
 
     @Test
     public void multiBoolean() throws IOException {
-        AttributeType<Boolean> booleanType = new BooleanType(Tag.booleanValue, "name");
+        AttributeType<Boolean> booleanType = new BooleanType("name");
         Attribute<Boolean> attribute = cycle(booleanType.of(true, false));
         assertEquals(Arrays.asList(true, false), attribute.getValues());
     }

@@ -2,7 +2,6 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.Keyword
 import com.hp.jipp.encoding.KeywordType
-import com.hp.jipp.encoding.encoderOf
 
 /** A keyword attribute describing the action by which a printer may identify itself. */
 class IdentifyAction(override val name: String) : Keyword() {
