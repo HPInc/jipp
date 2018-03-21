@@ -74,7 +74,7 @@ public class PacketTest {
                 (byte) 0x09,
         };
         exception.expect(EOFException.class);
-        parser.parse(new DataInputStream(new ByteArrayInputStream(in)));
+        Packet.parse(new DataInputStream(new ByteArrayInputStream(in)));
     }
 
     @Test

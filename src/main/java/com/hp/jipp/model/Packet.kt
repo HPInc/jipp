@@ -102,6 +102,10 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
             }
         }
 
+        private val parser = Packet.parserOf(Types.all)
+
+        /** Parses input using the default packet parser */
+        @JvmStatic fun parse(input: DataInputStream): Packet = parser.parse(input)
     }
 }
 
