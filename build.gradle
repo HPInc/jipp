@@ -1,6 +1,6 @@
 // Global settings
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.2.31'
     ext.dokka_version = '0.9.16'
     repositories {
         jcenter()
