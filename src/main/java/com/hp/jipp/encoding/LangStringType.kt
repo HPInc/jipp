@@ -1,3 +1,6 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
@@ -17,8 +20,8 @@ class LangStringType(tag: Tag, override val name: String) : AttributeType<LangSt
             return null
         }
 
-        // TODO: If we don't know the language this is actually a dangerous thing to do
         // Apply conversion from StringType to a LangStringType on demand
+        // NOTE: we do not know the actual language so this may be a bad idea.
         return of(attribute.values.map { LangString(it as String) })
     }
 

@@ -1,8 +1,8 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.model.PacketKt;
+import com.hp.jipp.model.IppPacketKt;
 import com.hp.jipp.model.Types;
-import com.hp.jipp.model.Packet;
+import com.hp.jipp.model.IppPacket;
 import com.hp.jipp.util.ParseError;
 
 import java.io.ByteArrayInputStream;
@@ -17,7 +17,7 @@ import kotlin.text.Charsets;
 
 public class Cycler {
 
-    public static final Packet.Parser sParser = Packet.parserOf(Types.all);
+    public static final IppPacket.Parser sParser = IppPacket.parserOf(Types.all);
     public static final Map<String, AttributeType<?>> sAttributeTypeMap = new HashMap<String, AttributeType<?>>();
     static {
         for (AttributeType<?> entry: Types.all) {
@@ -81,14 +81,14 @@ public class Cycler {
         return bytesOut.toByteArray();
     }
 
-    public static Packet cycle(Packet in) throws IOException {
+    public static IppPacket cycle(IppPacket in) throws IOException {
         return sParser.parse(new DataInputStream(new ByteArrayInputStream(toBytes(in))));
     }
 
-    public static byte[] toBytes(Packet in) throws IOException {
+    public static byte[] toBytes(IppPacket in) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(bytesOut);
-        PacketKt.writePacket(out, in);
+        IppPacketKt.writePacket(out, in);
         return bytesOut.toByteArray();
     }
 }

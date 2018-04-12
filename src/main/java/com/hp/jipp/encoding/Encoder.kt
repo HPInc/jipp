@@ -1,3 +1,6 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.toSequence
@@ -31,9 +34,7 @@ abstract class Encoder<T> {
 
     companion object {
         internal const val LENGTH_LEN: Int = 2
-
         internal const val TAG_LEN: Int = 2
-
         internal const val INT_LEN = 4
     }
 }

@@ -1,9 +1,12 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 import com.hp.jipp.model.Operation
-import com.hp.jipp.model.Packet
-import com.hp.jipp.model.Packet.Companion.DEFAULT_VERSION_NUMBER
+import com.hp.jipp.model.IppPacket
+import com.hp.jipp.model.IppPacket.Companion.DEFAULT_VERSION_NUMBER
 import com.hp.jipp.model.Status
 
 @DslMarker annotation class IppDslMarker
@@ -34,7 +37,7 @@ object ippPacket {
 }
 
 /**
- * Context for building an IPP [Packet].
+ * Context for building an IPP [IppPacket].
  */
 @IppDslMarker
 class IppPacketContext constructor(var versionNumber: Int = DEFAULT_VERSION_NUMBER,
@@ -61,7 +64,7 @@ class IppPacketContext constructor(var versionNumber: Int = DEFAULT_VERSION_NUMB
     }
 
     /** Build the final packet with current values */
-    fun build(): Packet = Packet(versionNumber, code, requestId, groups)
+    fun build(): IppPacket = IppPacket(versionNumber, code, requestId, groups)
 }
 
 /** DSL for defining an AttributeGroup */

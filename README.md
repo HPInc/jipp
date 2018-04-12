@@ -1,32 +1,41 @@
-# JIPP (Java IPP)
-[![CircleCI](https://circleci.com/gh/e2em/jipp-core.svg?style=svg&circle-token=6641e01d90c7cf22d45e6b01d46bf2e9630777c4)](https://circleci.com/gh/e2em/jipp-core)
-[![CodeCov](https://codecov.io/github/e2em/jipp/coverage.svg?branch=master&token=tBlASKX9VN)](https://codecov.io/github/e2em/jipp-core)
+# JIPP: A Java implementation of IPP
 
-Core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
+This project contains the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
 
 Features:
-* Supports construction of IPP servers, clients, and routers.
-* IPP operations and attributes for basic operations are present.
+* Supports construction of IPP servers, clients, routers, gateways, etc.
+* Common operations and attributes are defined and ready to use.
 * Can be extended to support new operations and attributes.
-* Can be used over any transport.
+* Can be used over any transport (typically HTTP)
+* Includes a pretty-printer for human-readable IPP packet display
 
-What can I do with this?
-* Implement an Android Print Service
+What could I do with this?
 * Scan and show available printers on your network to your users.
+* Implement an Android Print Service
 * Test IPP clients or IPP printers in interesting ways.
-* Experiment with alternative transports.
+* Experiment with alternative IPP transports.
 * Implement a cloud-based print server or client.
 
-# API Documentation
+This library supplies a Java-compatible API but is actually implemented in [Kotlin](https://kotlinlang.org/).
 
-JavaDoc is currently available from the latest build artifacts at https://circleci.com.
+## Usage
 
-# Build requirements
+1. Add the current version of JIPP to your project
+2. Create an `IppClientTransport` or `IppServerTransport`
+3. Use the transport to create, parse and exchange `IppPacket` objects
 
-A full build of this project requires `python` (2.x) and `dot` which are readily accessible in most distributions.
+## Dependencies
 
-# Related projects
+`jipp-core`'s only dependencies are JDK 6+ and the current Kotlin runtime.
+
+## Building
+
+`./gradlew build`
+
+A full build of this project requires `python` (2.x) and `dot` to generate dependency graphs
+
+## Related projects
 
 * [`javax.print` (JSR6)](https://docs.oracle.com/javase/7/docs/api/javax/print/package-summary.html) - Standard Java printing APIs. IPP 1.1 only, client-side only. API is not supported by Android.
 * [Cups4J](http://www.cups4j.org/) - GPL licensed, with a [port to Android](https://github.com/BenoitDuffez/AndroidCupsPrint).
-* [JSPI](https://github.com/bhagyas/jspi) - Copied from an old open source project, installed as a maven repo.
+* [JSPI](https://github.com/bhagyas/jspi)

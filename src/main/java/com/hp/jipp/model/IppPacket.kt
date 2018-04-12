@@ -1,3 +1,6 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.AttributeGroup
@@ -12,15 +15,17 @@ import com.hp.jipp.encoding.writeTag
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toList
+import java.io.BufferedInputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import java.io.InputStream
 
 /**
- * A request packet as specified in RFC2910.
+ * An IPP packet as specified in RFC2910.
  */
-data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
-                              val attributeGroups: List<AttributeGroup> = listOf()) {
+data class IppPacket constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
+                                 val attributeGroups: List<AttributeGroup> = listOf()) {
 
     @JvmOverloads
     constructor(versionNumber: Int = DEFAULT_VERSION_NUMBER, code: Int, requestId: Int,
@@ -67,11 +72,11 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
     interface Parser {
         /** Parse a single packet out of the supplied [DataInputStream]. */
         @Throws(IOException::class)
-        fun parse(input: DataInputStream): Packet
+        fun parse(input: InputStream): IppPacket
     }
 
     private fun prefix(): String {
-        return "Packet(v=x" + Integer.toHexString(versionNumber) +
+        return "IppPacket(v=x" + Integer.toHexString(versionNumber) +
                 " code=" + getCode(Code.ENCODER) +
                 " rId=x" + Integer.toHexString(requestId) +
                 ")"
@@ -88,7 +93,7 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
 
     companion object {
         /** Default version number to be sent in a packet (0x0101 for IPP 1.1)  */
-        val DEFAULT_VERSION_NUMBER = 0x0101
+        const val DEFAULT_VERSION_NUMBER = 0x0101
 
         /** Return a parser with knowledge of specified attribute types  */
         @JvmStatic fun parserOf(attributeTypes: List<AttributeType<*>>): Parser {
@@ -98,25 +103,26 @@ data class Packet constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, v
 
             return object : Parser {
                 @Throws(IOException::class)
-                override fun parse(input: DataInputStream) = input.readPacket(attributeTypeMap)
+                override fun parse(input: InputStream) =
+                        DataInputStream(BufferedInputStream(input)).readPacket(attributeTypeMap)
             }
         }
 
-        private val parser = Packet.parserOf(Types.all)
+        private val parser = IppPacket.parserOf(Types.all)
 
         /** Parses input using the default packet parser */
-        @JvmStatic fun parse(input: DataInputStream): Packet = parser.parse(input)
+        @JvmStatic fun parse(input: InputStream): IppPacket = parser.parse(input)
     }
 }
 
 @Throws(IOException::class)
-private fun DataInputStream.readPacket(attributeTypes: Map<String, AttributeType<*>>): Packet {
+private fun DataInputStream.readPacket(attributeTypes: Map<String, AttributeType<*>>): IppPacket {
 
     val versionNumber = readShort().toInt()
     val code = readShort().toInt()
     val requestId = readInt()
 
-    return Packet(versionNumber, code, requestId, { readNextGroup(attributeTypes) }.toList())
+    return IppPacket(versionNumber, code, requestId, { readNextGroup(attributeTypes) }.toList())
 }
 
 private fun DataInputStream.readNextGroup(attributeTypes: Map<String, AttributeType<*>>): AttributeGroup? {
@@ -124,7 +130,7 @@ private fun DataInputStream.readNextGroup(attributeTypes: Map<String, AttributeT
     return when (tag) {
         Tag.endOfAttributes -> null
         else -> {
-            if (!tag.isDelimiter) throw ParseError("Illegal delimiter " + tag)
+            if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
             readGroup(tag, attributeTypes)
         }
     }
@@ -132,10 +138,10 @@ private fun DataInputStream.readNextGroup(attributeTypes: Map<String, AttributeT
 
 /** Write a Packet to this [DataOutputStream] as per RFC2910  */
 @Throws(IOException::class)
-fun DataOutputStream.writePacket(packet: Packet) {
-    writeShort(packet.versionNumber)
-    writeShort(packet.code)
-    writeInt(packet.requestId)
-    packet.attributeGroups.forEach(this::writeGroup)
+fun DataOutputStream.writePacket(ippPacket: IppPacket) {
+    writeShort(ippPacket.versionNumber)
+    writeShort(ippPacket.code)
+    writeInt(ippPacket.requestId)
+    ippPacket.attributeGroups.forEach(this::writeGroup)
     writeTag(Tag.endOfAttributes)
 }

@@ -18,12 +18,12 @@ import java.util.List;
 import kotlin.io.FilesKt;
 
 public class BinaryTest {
-    private Packet.Parser parser = Packet.parserOf(Types.all);
+    private IppPacket.Parser parser = IppPacket.parserOf(Types.all);
 
     @Test
     public void scanNames() throws Exception {
         for (File binFile : getBinFiles()) {
-            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
+            IppPacket packet = parser.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
             if (packet.getAttributeGroup(Tag.printerAttributes) == null) continue;
             if (packet.getValues(Tag.printerAttributes, Types.printerInfo).isEmpty()) continue;
 
@@ -41,7 +41,7 @@ public class BinaryTest {
             byte[] bytes = FilesKt.readBytes(binFile);
             // Parse and build each packet to ensure that we can model it perfectly in memory
             System.out.println("\nParsing packet from " + binFile.getName());
-            Packet packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
+            IppPacket packet = parser.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
             System.out.println(packet.prettyPrint(200, "  "));
 
             Object inputTray = packet.getValue(Tag.printerAttributes, Types.printerInputTray);

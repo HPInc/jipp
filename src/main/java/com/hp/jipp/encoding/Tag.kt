@@ -1,20 +1,11 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.encoding
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-
-/** Read and return a [Tag] from the input stream  */
-fun DataInputStream.readTag(): Tag = readByte().toInt().toTag()
-
-/** Write this tag to the output stream  */
-@Throws(IOException::class)
-fun DataOutputStream.writeTag(tag: Tag) {
-    writeByte(tag.code.toByte().toInt())
-}
-
-/** Return or create a [Tag] for the supplied code */
-fun Int.toTag() = Tag.codeMap[this] ?: Tag("tag(x%x)".format(this), this)
 
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
@@ -69,3 +60,15 @@ data class Tag(override val name: String, override val code: Int) : Enum() {
         internal val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
     }
 }
+
+/** Read and return a [Tag] from the input stream  */
+fun DataInputStream.readTag(): Tag = readByte().toInt().toTag()
+
+/** Write this tag to the output stream  */
+@Throws(IOException::class)
+fun DataOutputStream.writeTag(tag: Tag) {
+    writeByte(tag.code.toByte().toInt())
+}
+
+/** Return or create a [Tag] for the supplied code */
+fun Int.toTag() = Tag.codeMap[this] ?: Tag("tag(x%x)".format(this), this)

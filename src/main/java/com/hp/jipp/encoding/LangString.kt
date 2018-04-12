@@ -1,3 +1,6 @@
+// Copyright 2017 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.encoding
 
 /** A string, possibly encoded with language  */
