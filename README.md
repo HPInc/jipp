@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/HPInc/jipp-core.svg?style=svg&circle-token=4baa4b142e5cc6f6cf6e803a8c5832a9dd755a25)](https://circleci.com/gh/HPInc/jipp-core)
+[![CodeCov](https://codecov.io/github/HPInc/jipp-core/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp-core)
 
 # JIPP: A Java implementation of IPP
 
