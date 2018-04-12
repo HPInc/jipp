@@ -36,6 +36,9 @@ jobs:
       # Build
       - run: gradle dependencies build graphDeps
 
+      # Upload coverage report
+      - run: bash <(curl -s https://codecov.io/bash)
+
       # Capture dependencies
       - save_cache:
           paths:
