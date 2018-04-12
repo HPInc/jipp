@@ -16,6 +16,10 @@ jobs:
       JVM_OPTS: -Xmx3200m
       TERM: dumb
 
+    branches:
+      ignore:
+        - gh-pages
+
     steps:
       - run: sudo apt install openjfx graphviz
 
