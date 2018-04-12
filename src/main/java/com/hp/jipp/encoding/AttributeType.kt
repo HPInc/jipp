@@ -4,7 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
-import com.hp.jipp.util.Hook
 
 /**
  * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
@@ -13,7 +12,7 @@ abstract class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag) {
     abstract val name: String
 
     init {
-        if (!(encoder.valid(tag) || Hook.`is`(Attribute.HOOK_ALLOW_BUILD_INVALID_TAGS))) {
+        if (!encoder.valid(tag)) {
             throw BuildError("Invalid tag $tag for encoder $encoder")
         }
     }
