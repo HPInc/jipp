@@ -24,8 +24,6 @@ def printArrows(arrows):
         else:
             print '  "%s" -> "%s"' % (left, right)
 
-
-
 # Show all package-level dependencies
 print 'subgraph clusterPackages {'
 print '  label="Packages"'
