@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import sys
+import re
 import xml.etree.ElementTree as ET
 
 doc = ET.parse(sys.stdin)
@@ -14,35 +15,53 @@ def trim(name):
     else:
         return name
 
+def printArrows(arrows):
+    for left, right in arrows:
+        if [right, left] in arrows:
+            arrows.remove([left, right])
+            arrows.remove([right, left])
+            print '  "%s" -> "%s" [dir=both color=red]' % (left, right)
+        else:
+            print '  "%s" -> "%s"' % (left, right)
+
+
+
 # Show all package-level dependencies
 print 'subgraph clusterPackages {'
 print '  label="Packages"'
+arrows = []
 for package in doc.findall("./packages/package"):
     packageName = package.get("name")
     print '  "%s" [ label="%s" shape=box ]' % (packageName, trim(packageName))
     for p2 in package.getchildren():
         n2 = p2.get("name")        
         if p2.get("type") == "usesInternal" and packageName != n2:
-            print '  "%s" -> "%s";' % (packageName, n2)
+            arrows.append([packageName, n2])
+printArrows(arrows)
+
 print '}'
 
-for package in doc.findall("./packages/package"):
+for package in reversed(doc.findall("./packages/package")):
     packageName = package.get("name")
-    print 'subgraph cluster%s {' % trim(packageName)
+    print 'subgraph cluster%s {' % re.sub("[\.]", "", trim(packageName))
     print '  label="%s"' % packageName
     for cls in doc.findall("./classes/class"):
         className = cls.get("name")
         if className.startswith("%s." % packageName):
-            print '  "%s" [ label="%s" ]' % (className, className[len(packageName) + 1:])
+            shortName = className[len(packageName) + 1:]
+            if not "." in shortName:
+                print '  "%s" [ label="%s" ]' % (className, shortName)
     print '}'
 
 
+arrows = []
 for c1 in doc.findall("./classes/class"):
     n1 = c1.get("name")
     for c2 in c1.getchildren():
         n2 = c2.get("name")
         if c2.get("type") == "usesInternal" and n1 != n2:
             if n1[:n1.rfind(".")] == n2[:n2.rfind(".")]:
-                print '  "%s" -> "%s";' % (n1, n2)
+                arrows.append([n1, n2])
+printArrows(arrows)
 
 print '}'
