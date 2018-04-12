@@ -16,6 +16,10 @@ jobs:
       JVM_OPTS: -Xmx3200m
       TERM: dumb
 
+    branches:
+      ignore:
+        - gh-pages
+
     steps:
       - run: sudo apt install openjfx graphviz
 
@@ -31,6 +35,9 @@ jobs:
 
       # Build
       - run: gradle dependencies build graphDeps
+
+      # Upload coverage report
+      - run: bash <(curl -s https://codecov.io/bash)
 
       # Capture dependencies
       - save_cache:

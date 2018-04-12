@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/HPInc/jipp-core.svg?style=svg&circle-token=4baa4b142e5cc6f6cf6e803a8c5832a9dd755a25)](https://circleci.com/gh/HPInc/jipp-core)
+[![CodeCov](https://codecov.io/github/HPInc/jipp-core/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp-core)
+
 # JIPP: A Java implementation of IPP
 
 This project contains the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
@@ -8,6 +11,7 @@ Features:
 * Can be extended to support new operations and attributes.
 * Can be used over any transport (typically HTTP)
 * Includes a pretty-printer for human-readable IPP packet display
+* Kotlin users can access a type-safe packet building [DSL](https://kotlinlang.org/docs/reference/type-safe-builders.html)
 
 What could I do with this?
 * Scan and show available printers on your network to your users.
