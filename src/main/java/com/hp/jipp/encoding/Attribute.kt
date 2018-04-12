@@ -4,7 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
-import com.hp.jipp.util.Hook
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toHexString
@@ -22,7 +21,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         PrettyPrintable {
 
     init {
-        if (!(encoder.valid(valueTag) || Hook.`is`(HOOK_ALLOW_BUILD_INVALID_TAGS))) {
+        if (!(encoder.valid(valueTag))) {
             throw BuildError("Invalid $valueTag for ${encoder.type}")
         }
     }
@@ -62,11 +61,6 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         is String -> "\"$value\""
         is ByteArray -> "x" + value.toHexString()
         else -> value.toString()
-    }
-
-    companion object {
-        /** Set to false in [Hook] to disable builders that accept invalid tags.  */
-        val HOOK_ALLOW_BUILD_INVALID_TAGS = Attribute::class.java.name + ".HOOK_ALLOW_BUILD_INVALID_TAGS"
     }
 }
 

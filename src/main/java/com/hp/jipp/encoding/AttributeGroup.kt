@@ -4,7 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
-import com.hp.jipp.util.Hook
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
@@ -23,7 +22,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         // Throw if someone attempts this.
         val exist = HashSet<String>()
         for ((_, name) in attributes) {
-            if (exist.contains(name) && !Hook.`is`(HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP)) {
+            if (exist.contains(name)) {
                 throw BuildError("Attribute Group contains more than one '" + name +
                         "' in " + attributes)
             }
