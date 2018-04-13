@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.model.IppPacketKt;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.model.IppPacket;
 import com.hp.jipp.util.ParseError;
@@ -48,14 +47,14 @@ public class Cycler {
 
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(group)));
-        return AttributeGroupKt.readGroup(in, TagKt.readTag(in), sAttributeTypeMap);
+        return AttributeGroup.read(in, Tag.read(in), sAttributeTypeMap);
     }
 
     public static byte[] toBytes(AttributeGroup group) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(bytesOut);
-        AttributeGroupKt.writeGroup(out, group);
-        TagKt.writeTag(out, Tag.endOfAttributes);
+        group.write(out);
+        Tag.endOfAttributes.write(out);
         return bytesOut.toByteArray();
     }
 
@@ -64,7 +63,7 @@ public class Cycler {
     public static <T, U> Attribute<T> cycle(AttributeType<T> attributeType, Attribute<U> attribute)
             throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        Tag tag = TagKt.readTag(in);
+        Tag tag = Tag.read(in);
         String name = new String(IppEncodingsKt.readValueBytes(in), Charsets.UTF_8);
         return EncoderKt.readAttribute(in, attributeType.getEncoder(), sFinder, tag, name);
     }
@@ -72,12 +71,12 @@ public class Cycler {
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(toBytes(attribute)));
-        return (Attribute<T>) IppEncodingsKt.readAttribute(in, sFinder, TagKt.readTag(in));
+        return (Attribute<T>) IppEncodingsKt.readAttribute(in, sFinder, Tag.read(in));
     }
 
     public static byte[] toBytes(Attribute<?> attribute) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        AttributeKt.writeAttribute(new DataOutputStream(bytesOut), attribute);
+        attribute.write(new DataOutputStream(bytesOut));
         return bytesOut.toByteArray();
     }
 
@@ -88,7 +87,7 @@ public class Cycler {
     public static byte[] toBytes(IppPacket in) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(bytesOut);
-        IppPacketKt.writePacket(out, in);
+        in.write(out);
         return bytesOut.toByteArray();
     }
 }

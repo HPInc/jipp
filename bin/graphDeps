@@ -4,7 +4,7 @@
 #
 
 REPORT_DIR=build/reports/classycle
-CLASSPATH="build/classes/java/main build/classes/kotlin/main"
+CLASSPATH="build/classes/kotlin/main"
 BIN=bin
 CLASSYCLE_JAR=$BIN/classycle.jar
 PACKAGE=com.hp.jipp

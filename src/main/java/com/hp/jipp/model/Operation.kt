@@ -9,7 +9,7 @@ import com.hp.jipp.encoding.encoderOf
 /**
  * An operation code as found in request packets and elsewhere.
  *
- * @see [RFC2911 Section 5.2.2](https://tools.ietf.org/html/rfc2911.section-5.2.2)
+ * See [RFC2911 Section 5.2.2](https://tools.ietf.org/html/rfc2911.section-5.2.2)
  */
 open class Operation(override val code: Int, override val name: String) : Code() {
     override fun toString() = name

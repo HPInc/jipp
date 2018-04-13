@@ -12,7 +12,7 @@ import java.io.IOException
 /**
  * A type for attribute collections.
 
- * @see RFC3382 (https://tools.ietf.org/html/rfc3382)
+ * See RFC3382 (https://tools.ietf.org/html/rfc3382)
  */
 open class CollectionType(override val name: String) :
         AttributeType<AttributeCollection>(CollectionType.ENCODER, Tag.beginCollection) {
@@ -20,7 +20,7 @@ open class CollectionType(override val name: String) :
     operator fun invoke(vararg attributes: Attribute<*>) = this(AttributeCollection(attributes.toList()))
 
     companion object {
-        private val TYPE_NAME = "Collection"
+        private const val TYPE_NAME = "Collection"
 
         // Terminates a collection
         private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").empty()
@@ -36,16 +36,16 @@ open class CollectionType(override val name: String) :
 
                 for (attribute in value.attributes) {
                     // Write a memberAttributeName attribute
-                    out.writeTag(Tag.memberAttributeName)
+                    Tag.memberAttributeName.write(out)
                     out.writeShort(0)
                     out.writeString(attribute.name)
 
                     // Write the attribute, but without its name
-                    out.writeAttribute(attribute.withName(""))
+                    attribute.withName("").write(out)
                 }
 
                 // Terminating attribute
-                out.writeAttribute(endCollectionAttribute)
+                endCollectionAttribute.write(out)
             }
 
             @Throws(IOException::class)
@@ -55,7 +55,7 @@ open class CollectionType(override val name: String) :
 
                 // Read attribute pairs until endCollection is reached.
                 while (true) {
-                    val tag = input.readTag()
+                    val tag = Tag.read(input)
                     if (tag === Tag.endCollection) {
                         // Skip the rest of this attr and return.
                         input.skipValueBytes()
@@ -64,7 +64,7 @@ open class CollectionType(override val name: String) :
                     } else if (tag === Tag.memberAttributeName) {
                         input.skipValueBytes()
                         val memberName = input.readString()
-                        val memberTag = input.readTag()
+                        val memberTag = Tag.read(input)
 
                         // Read and throw away the blank attribute name
                         input.readValueBytes()
@@ -72,7 +72,7 @@ open class CollectionType(override val name: String) :
                         builder.add(input.readAttribute(encoder, finder, memberTag, memberName))
 
                     } else {
-                        throw ParseError("Bad tag in collection: " + tag)
+                        throw ParseError("Bad tag in collection: $tag")
                     }
                 }
                 return AttributeCollection(builder)

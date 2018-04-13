@@ -16,5 +16,3 @@ data class IppPacketData(val ippPacket: IppPacket, val data: InputStream?) : Clo
         data?.close()
     }
 }
-
-fun IppPacket.toPacketData() = IppPacketData(this, null)

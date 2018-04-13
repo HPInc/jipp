@@ -10,7 +10,7 @@ import com.hp.jipp.encoding.encoderOf
 /**
  * Job State values.
 
- * @see [RFC2911 Section 4.3.7](https://tools.ietf.org/html/rfc2911.section-4.3.7)
+ * See [RFC2911 Section 4.3.7](https://tools.ietf.org/html/rfc2911.section-4.3.7)
  */
 data class JobState( override val code: Int, override val name: String) : Enum() {
 

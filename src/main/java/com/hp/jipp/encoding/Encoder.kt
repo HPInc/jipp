@@ -61,7 +61,7 @@ private fun <T> DataInputStream.readAdditionalValue(encoder: Encoder<T>, valueTa
     if (available() < Encoder.TAG_LEN + Encoder.LENGTH_LEN) return null
     mark(Encoder.TAG_LEN + Encoder.LENGTH_LEN)
 
-    return if (readTag() == valueTag && readShort().toInt() == 0) {
+    return if (Tag.read(this) == valueTag && readShort().toInt() == 0) {
         // Tag matches and no name, so this is an additional value
         encoder.readValue(this, finder, valueTag)
     } else {
