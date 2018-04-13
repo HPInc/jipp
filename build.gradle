@@ -26,15 +26,20 @@ apply plugin: 'jacoco'
 apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 repositories {
+    mavenCentral()
     jcenter()
     maven() {
         url = "https://plugins.gradle.org/m2/"
     }
 }
 
-version = "0.5.0"
+version = '0.5.0'
+group = 'com.hp.jipp'
+
 targetCompatibility = 1.6
 sourceCompatibility = 1.6
 
@@ -116,6 +121,116 @@ afterEvaluate {
     check.dependsOn detektCheck
 }
 
+signing {
+    sign configurations.archives
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            customizePom(pom)
+            groupId "com.hp.jipp"
+            artifactId 'jipp-core'
+
+            from components.java
+
+            // create the sign pom artifact
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+
+            // create the signed artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = 'jar.asc'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            //url "https://oss.sonatype.org/content/repositories/snapshots"
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+    }
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Parse/build IPP packets'
+            name 'jipp-core'
+            url 'https://github.com/HPInc/jipp-core'
+            organization {
+                name 'HP Development Company, L.P.'
+                url 'https://github.com/HPInc'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/HPInc/jipp-core/issues'
+            }
+            licenses {
+                license {
+                    name 'MIT'
+                    url 'https://github.com/HPInc/jipp-core/blob/master/LICENSE.md'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/HPInc/jipp-core'
+                connection 'scm:git:git://github.com/HPInc/jipp-core.git'
+                developerConnection 'scm:git:ssh://git@github.com:HPInc/jipp-core.git'
+            }
+            developers {
+                developer {
+                    name 'Glade Diviney'
+                }
+            }
+        }
+    }
+}
+
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+    }
+
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
+    }
+
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+}
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
