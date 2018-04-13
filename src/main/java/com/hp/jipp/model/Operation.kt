@@ -4,7 +4,6 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.EnumType
-import com.hp.jipp.encoding.encoderOf
 
 /**
  * An operation code as found in request packets and elsewhere.
@@ -31,7 +30,7 @@ open class Operation(override val code: Int, override val name: String) : Code()
     }
 
     /** The [EnumType] for [Operation] attributes. */
-    class Type(name: String) : EnumType<Operation>(ENCODER, name)
+    class Type(name: String) : EnumType<Operation>(Encoder, name)
 
     companion object {
         private val PRIME = 17
@@ -57,6 +56,8 @@ open class Operation(override val code: Int, override val name: String) : Code()
         @JvmField val identifyPrinter = Operation(0x003C, "Identify-Printer")
 
         /** The encoder for converting integers to Operation objects  */
-        @JvmField val ENCODER = encoderOf(Operation::class.java, { code, name -> Operation(code, name) })
+        @JvmField val Encoder = EnumType.Encoder(Operation::class.java) { code, name ->
+            Operation(code, name)
+        }
     }
 }

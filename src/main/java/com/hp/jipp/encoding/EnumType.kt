@@ -23,8 +23,20 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
         val map: Map<Int, T>,
         val factory: (code: Int, name: String) -> T
     ) : com.hp.jipp.encoding.Encoder<T>() {
+
         constructor(name: String, enums: Collection<T>, factory: (code: Int, name: String) -> T):
                 this(name, Enum.toCodeMap(enums), factory)
+
+        /**
+         * Construct an [EnumType] encoder for a subclass of Enum. All public static instances of the class
+         * will be included as potential values for decoding purposes.
+         */
+        constructor(cls: Class<T>, factory: (code: Int, name: String) -> T):
+            this(cls.simpleName,
+                cls.getStaticObjects().filter { cls.isAssignableFrom(it.javaClass) }.map {
+                    @Suppress("UNCHECKED_CAST")
+                    it as T
+                }, factory)
 
         /** Returns a known [Enum], or creates a new instance from factory if not found  */
         operator fun get(code: Int): T =
@@ -49,24 +61,3 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
                 .filter { it is Int }
                 .map { enumEncoder[it as Int] })
 }
-
-/**
- * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
- * will be included as potential values for decoding purposes.
- */
-fun <T : Enum> encoderOf(cls: Class<T>, factory: (code: Int, name: String) -> T) =
-        cls.run {
-            EnumType.Encoder(simpleName, getStaticObjects()
-                    .filter { isAssignableFrom(it.javaClass) }
-                    .map {
-                        @Suppress("UNCHECKED_CAST")
-                        it as T
-                    }, factory)
-        }
-
-/**
- * Create an [EnumType] encoder for a subclass of Enum. All public static instances of the class
- * will be included as potential values for decoding purposes.
- */
-fun <T : Enum> encoderOf(cls: Class<T>, factory: Enum.Factory<T>) =
-        encoderOf(cls) { code, name -> factory.of(code, name) }

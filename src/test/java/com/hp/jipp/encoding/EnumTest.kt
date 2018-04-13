@@ -21,13 +21,11 @@ class EnumTest {
             private val Secret = Sample(4, "secret")
 
             // Use Enum.Factory for better Java code coverage
-            val ENCODER = encoderOf(Sample::class.java, object : Enum.Factory<Sample> {
-                override fun of(code: Int, name: String) = Sample(code, name)
-            })
+            val Encoder = EnumType.Encoder(Sample::class.java) { code, name -> Sample(code, name) }
         }
     }
 
-    private var MySample = EnumType(Sample.ENCODER, "my-sample")
+    private var MySample = EnumType(Sample.Encoder, "my-sample")
 
     @Test
     @Throws(Exception::class)

@@ -3,7 +3,7 @@
 
 package com.hp.jipp.model
 
-import com.hp.jipp.encoding.encoderOf
+import com.hp.jipp.encoding.EnumType
 
 /**
  * A status code, as found in a response packet. See RFC2911 section 13.1.
@@ -58,6 +58,8 @@ data class Status(override val code: Int, override val name: String) : Code() {
                 Status(0x0509, "server-error-multiple-document-jobs-not-supported")
 
         @JvmField
-        val Encoder = encoderOf(Status::class.java, { code, name -> Status(code, name) })
+        val Encoder = EnumType.Encoder(Status::class.java) { code, name ->
+            Status(code, name)
+        }
     }
 }

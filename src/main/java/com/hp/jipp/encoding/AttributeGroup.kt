@@ -70,7 +70,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
     companion object {
 
         /** Default encoders available to parse incoming data  */
-        @JvmField val ENCODERS = listOf(
+        @JvmField val encoders = listOf(
                 IntegerType.Encoder, UriType.Encoder, StringType.Encoder, BooleanType.Encoder, LangStringType.Encoder,
                 CollectionType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder, OctetStringType.Encoder)
 
@@ -102,7 +102,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         fun read(input: DataInputStream, startTag: Tag, attributeTypes: Map<String, AttributeType<*>>): AttributeGroup {
             var more = true
             val attributes = ArrayList<Attribute<*>>()
-            val finder = AttributeGroup.finderOf(attributeTypes, AttributeGroup.ENCODERS)
+            val finder = AttributeGroup.finderOf(attributeTypes, AttributeGroup.encoders)
 
             while (more) {
                 input.mark(1)

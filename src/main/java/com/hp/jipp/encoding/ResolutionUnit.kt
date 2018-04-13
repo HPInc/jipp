@@ -15,6 +15,8 @@ data class ResolutionUnit(override val code: Int, override val name: String) : E
 
         /** The encoder for converting integers to Operation objects  */
         @JvmField
-        val ENCODER = encoderOf(ResolutionUnit::class.java, { code, name -> ResolutionUnit(code, name) })
+        val Encoder = EnumType.Encoder(ResolutionUnit::class.java) { code, name ->
+            ResolutionUnit(code, name)
+        }
     }
 }

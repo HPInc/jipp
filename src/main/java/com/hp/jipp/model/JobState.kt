@@ -5,7 +5,6 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
-import com.hp.jipp.encoding.encoderOf
 
 /**
  * Job State values.
@@ -19,7 +18,7 @@ data class JobState( override val code: Int, override val name: String) : Enum()
         get() = this == canceled || this == aborted || this == completed
 
     /** The attribute type for a [JobState] attribute */
-    class Type(name: String) : EnumType<JobState>(ENCODER, name)
+    class Type(name: String) : EnumType<JobState>(Encoder, name)
 
     companion object {
         @JvmField val pending = JobState(3, "pending")
@@ -30,6 +29,8 @@ data class JobState( override val code: Int, override val name: String) : Enum()
         @JvmField val aborted = JobState(8, "aborted")
         @JvmField val completed = JobState(9, "completed")
 
-        @JvmField val ENCODER = encoderOf(JobState::class.java, { code, name -> JobState(code, name) })
+        @JvmField val Encoder = EnumType.Encoder(JobState::class.java) { code, name ->
+            JobState(code, name)
+        }
     }
 }

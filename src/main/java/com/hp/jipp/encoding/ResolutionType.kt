@@ -19,7 +19,7 @@ class ResolutionType(tag: Tag, override val name: String) : AttributeType<Resolu
         override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
             input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
             return Resolution(input.readInt(), input.readInt(),
-                    ResolutionUnit.ENCODER[input.readByte().toInt()])
+                    ResolutionUnit.Encoder[input.readByte().toInt()])
         }
 
         @Throws(IOException::class)

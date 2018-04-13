@@ -15,9 +15,10 @@ class IdentifyAction(override val name: String) : Keyword() {
         @JvmField val sound = IdentifyAction("sound")
         @JvmField val speak = IdentifyAction("speak")
 
-        val ENCODER = KeywordType.encoderOf(IdentifyAction::class.java) { IdentifyAction(it) }
+        @JvmStatic
+        val Encoder = KeywordType.encoderOf(IdentifyAction::class.java) { IdentifyAction(it) }
 
         /** Return a new [KeywordType] for a type with the specified name */
-        @JvmStatic operator fun invoke(name: String) = KeywordType(ENCODER, name)
+        @JvmStatic fun of(name: String) = KeywordType(Encoder, name)
     }
 }

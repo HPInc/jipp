@@ -24,9 +24,10 @@ import java.util.regex.Pattern
 data class MediaSize(val name: String, val width: Int, val height: Int) {
 
     /** A media size type based solely on keyword values with width/height inferred  */
-    open class Type(override val name: String) : AttributeType<MediaSize>(ENCODER, Tag.keyword)
+    open class Type(override val name: String) : AttributeType<MediaSize>(Encoder, Tag.keyword)
 
     override fun toString() = "MediaSize($name, ${width}x$height)"
+
     companion object {
         private val WIDTH_HEIGHT = Pattern.compile(
                 "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
@@ -35,7 +36,6 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
         private val WIDTH_HEIGHT_DIMENSION_COUNT = 4
         private val WIDTH_HEIGHT_UNIT_AT = 5
 
-        private val TYPE_NAME = "MediaSize"
         private val MM_HUNDREDTHS_PER_INCH = 2540
         private val MM_HUNDREDTHS_PER_MM = 100
 
@@ -240,7 +240,7 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
             return MediaSize(name, x, y)
         }
 
-        @JvmField val ENCODER: SimpleEncoder<MediaSize> = object : SimpleEncoder<MediaSize>(TYPE_NAME) {
+        @JvmField val Encoder = object : SimpleEncoder<MediaSize>("MediaSize") {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): MediaSize {
                 val name = StringType.Encoder.readValue(input, valueTag)
