@@ -11,9 +11,10 @@ abstract class Code : Enum() {
 
     companion object {
         // MUST be lazy because Status and Operation are subclasses.
-        val ENCODER by lazy {
-            EnumType.Encoder("Code", Status.Encoder.map.values + Operation.ENCODER.map.values,
-                    { code, name -> Status(code, name) })
+        val Encoder by lazy {
+            EnumType.Encoder("Code", Status.Encoder.map.values + Operation.Encoder.map.values) {
+                code: Int, name: String -> Status(code, name)
+            }
         }
     }
 }

@@ -54,7 +54,7 @@ public class MediaSizeTest {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
         StringType.Encoder.writeValue(new DataOutputStream(outBytes), input);
 
-        return MediaSize.ENCODER.readValue(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())),
+        return MediaSize.Encoder.readValue(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())),
                 Tag.keyword);
     }
 }

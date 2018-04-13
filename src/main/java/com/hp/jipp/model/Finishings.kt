@@ -5,7 +5,6 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
-import com.hp.jipp.encoding.encoderOf
 
 /** Finishings as defined in [RFC8011 Section 5.2.6](https://tools.ietf.org/html/rfc8011#section-5.2.6). */
 data class Finishings(override val code: Int, override val name: String) : Enum() {
@@ -13,7 +12,7 @@ data class Finishings(override val code: Int, override val name: String) : Enum(
     override fun toString() = name
 
     /** An attribute type for [Finishings] attributes */
-    class Type(name: String) : EnumType<Finishings>(ENCODER, name)
+    class Type(name: String) : EnumType<Finishings>(Encoder, name)
 
     companion object {
         @JvmField val none = Finishings(3, "none")
@@ -36,6 +35,8 @@ data class Finishings(override val code: Int, override val name: String) : Enum(
         @JvmField val stapleDualRight = Finishings(30, "staple-dual-right")
         @JvmField val stapleDualBottom = Finishings(31, "staple-dual-bottom")
 
-        @JvmField val ENCODER = encoderOf(Finishings::class.java, { code, name -> Finishings(code, name) })
+        @JvmField val Encoder = EnumType.Encoder(Finishings::class.java) { code, name ->
+            Finishings(code, name)
+        }
     }
 }

@@ -23,6 +23,6 @@ public class FinishingsTest {
     public void cover() throws Exception {
         KotlinTest.cover(Types.finishingsSupported.of(Finishings.edgeStitch),
                 cycle(Types.finishingsSupported.of(Finishings.edgeStitch)),
-                Types.finishingsSupported.of(Finishings.ENCODER.get(88)));
+                Types.finishingsSupported.of(Finishings.Encoder.get(88)));
     }
 }

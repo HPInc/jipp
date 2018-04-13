@@ -10,13 +10,14 @@ import com.hp.jipp.encoding.KeywordType
 class Sides(override val name: String) : Keyword() {
 
     /** An attribute type for [Sides] attributes */
-    class Type(name: String) : KeywordType<Sides>(ENCODER, name)
+    class Type(name: String) : KeywordType<Sides>(Encoder, name)
 
     companion object {
         @JvmField val oneSided = Sides("one-sided")
         @JvmField val twoSidedLongEdge = Sides("two-sided-long-edge")
         @JvmField val twoSidedShortEdge = Sides("two-sided-short-edge")
 
-        val ENCODER = KeywordType.encoderOf(Sides::class.java) { Sides(it) }
+        @JvmStatic
+        val Encoder = KeywordType.encoderOf(Sides::class.java) { Sides(it) }
     }
 }

@@ -11,7 +11,7 @@ import com.hp.jipp.encoding.Tag
 data class JobPasswordEncryption(override val name: String) : Keyword() {
 
     /** A media size type based solely on keyword values with width/height inferred  */
-    class Type(override val name: String) : AttributeType<JobPasswordEncryption>(ENCODER, Tag.keyword)
+    class Type(override val name: String) : AttributeType<JobPasswordEncryption>(Encoder, Tag.keyword)
 
     override fun toString() = name
 
@@ -24,7 +24,7 @@ data class JobPasswordEncryption(override val name: String) : Keyword() {
 
         private fun of(name: String) = JobPasswordEncryption(name)
 
-        @JvmField val ENCODER = KeywordOrNameType.encoderOf(JobPasswordEncryption::class.java) {
+        @JvmField val Encoder = KeywordOrNameType.encoderOf(JobPasswordEncryption::class.java) {
             JobPasswordEncryption(it)
         }
     }

@@ -72,10 +72,10 @@ public class AttributeTypeTest {
 
     @Test
     public void verifyWeirdEnums() throws Exception {
-        assertEquals("JobState(xff)", JobState.ENCODER.get(0xFF).getName());
-        assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
+        assertEquals("JobState(xff)", JobState.Encoder.get(0xFF).getName());
+        assertEquals(0xFF, JobState.Encoder.get(0xFF).getCode());
 
-        assertEquals("PrinterState(x7)", PrinterState.ENCODER.get(7).getName());
+        assertEquals("PrinterState(x7)", PrinterState.Encoder.get(7).getName());
         assertEquals("Status(x777)", Status.Encoder.get(0x777).getName());
     }
 

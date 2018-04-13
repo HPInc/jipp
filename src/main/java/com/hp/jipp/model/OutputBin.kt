@@ -12,7 +12,7 @@ import com.hp.jipp.encoding.Tag
 data class OutputBin(override val name: String) : Keyword() {
 
     /** A media size type based solely on keyword values with width/height inferred  */
-    class Type(override val name: String) : AttributeType<OutputBin>(ENCODER, Tag.keyword)
+    class Type(override val name: String) : AttributeType<OutputBin>(Encoder, Tag.keyword)
 
     override fun toString() = name
 
@@ -29,11 +29,11 @@ data class OutputBin(override val name: String) : Keyword() {
         @JvmField val faceDown = of("face-down")
         @JvmField val largeCapacity = of("large-capacity")
         @JvmField val myMailbox = of("my-mailbox")
-        // Note: there are also stacker-N, mailbox-N, and tray-N posibilities
+        // Note: there are also stacker-N, mailbox-N, and tray-N possibilities...
 
         private fun of(name: String) = OutputBin(name)
 
-        @JvmField val ENCODER = KeywordOrNameType.encoderOf(OutputBin::class.java) {
+        @JvmField val Encoder = KeywordOrNameType.encoderOf(OutputBin::class.java) {
             OutputBin(it)
         }
     }

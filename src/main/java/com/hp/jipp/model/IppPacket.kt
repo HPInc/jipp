@@ -47,7 +47,7 @@ data class IppPacket constructor(
      * Return this request packet's Operation code
      */
     val operation: Operation
-        get() = getCode(Operation.ENCODER)
+        get() = getCode(Operation.Encoder)
 
     // Return a Enum corresponding to this packet's code.
     private fun <T : Enum> getCode(encoder: EnumType.Encoder<T>): T = encoder[code]
@@ -80,7 +80,7 @@ data class IppPacket constructor(
 
     private fun prefix(): String {
         return "IppPacket(v=x" + Integer.toHexString(versionNumber) +
-                " code=" + getCode(Code.ENCODER) +
+                " code=" + getCode(Code.Encoder) +
                 " rId=x" + Integer.toHexString(requestId) +
                 ")"
     }

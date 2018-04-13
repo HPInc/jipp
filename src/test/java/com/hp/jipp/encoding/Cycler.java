@@ -36,7 +36,7 @@ public class Cycler {
             }
 
             // If no valid match above then try with each default encoder
-            for (Encoder<?> encoder: AttributeGroup.ENCODERS) {
+            for (Encoder<?> encoder: AttributeGroup.encoders) {
                 if (encoder.valid(valueTag)) {
                     return encoder;
                 }
