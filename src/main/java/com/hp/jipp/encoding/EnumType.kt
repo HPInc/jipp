@@ -18,7 +18,7 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
      * @param map predefined [Enum] instances to reuse when decoding
      * @param factory a way to create new [Enum] instances of the correct type when decoding an undefined value
      */
-    data class Encoder<T : Enum>(override val type: String, val map: Map<Int, T>,
+    data class Encoder<T : Enum>(override val typeName: String, val map: Map<Int, T>,
                                  val factory: (code: Int, name: String) -> T) : com.hp.jipp.encoding.Encoder<T>() {
 
         constructor(name: String, enums: Collection<T>, factory: (code: Int, name: String) -> T):
@@ -26,16 +26,16 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
 
         /** Returns a known [Enum], or creates a new instance from factory if not found  */
         operator fun get(code: Int): T =
-            map[code] ?: factory(code, "$type(x${Integer.toHexString(code)})")
+            map[code] ?: factory(code, "$typeName(x${Integer.toHexString(code)})")
 
         @Throws(IOException::class)
         override fun readValue(input: DataInputStream, finder: Finder, valueTag: Tag): T {
-            return get(IntegerType.ENCODER.readValue(input, valueTag))
+            return get(IntegerType.Encoder.readValue(input, valueTag))
         }
 
         @Throws(IOException::class)
         override fun writeValue(out: DataOutputStream, value: T) {
-            IntegerType.ENCODER.writeValue(out, value.code)
+            IntegerType.Encoder.writeValue(out, value.code)
         }
 
         override fun valid(valueTag: Tag): Boolean = valueTag == Tag.enumValue

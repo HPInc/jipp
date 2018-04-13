@@ -12,7 +12,7 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** An language-encoded string attribute type  */
-class LangStringType(tag: Tag, override val name: String) : AttributeType<LangString>(LangStringType.ENCODER, tag) {
+class LangStringType(tag: Tag, override val name: String) : AttributeType<LangString>(Encoder, tag) {
 
     /** Return an [Attribute] of this type */
     override fun of(attribute: Attribute<*>): Attribute<LangString>? {
@@ -32,34 +32,29 @@ class LangStringType(tag: Tag, override val name: String) : AttributeType<LangSt
                 else -> fromTag == tag
             }
 
-    companion object {
-        private val TYPE_NAME = "LangString"
+    companion object Encoder : SimpleEncoder<LangString>("LangString") {
+        @Throws(IOException::class)
+        override fun readValue(input: DataInputStream, valueTag: Tag): LangString {
+            val bytes = OctetStringType.Encoder.readValue(input, valueTag)
+            val inBytes = DataInputStream(ByteArrayInputStream(bytes))
 
-        @JvmField
-        val ENCODER: SimpleEncoder<LangString> = object : SimpleEncoder<LangString>(TYPE_NAME) {
-            @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, valueTag: Tag): LangString {
-                val bytes = OctetStringType.ENCODER.readValue(input, valueTag)
-                val inBytes = DataInputStream(ByteArrayInputStream(bytes))
+            val lang = inBytes.readString()
+            val string = inBytes.readString()
+            return LangString(string, lang)
+        }
 
-                val lang = inBytes.readString()
-                val string = inBytes.readString()
-                return LangString(string, lang)
-            }
+        @Throws(IOException::class)
+        override fun writeValue(out: DataOutputStream, value: LangString) {
+            val bytesOut = ByteArrayOutputStream()
+            val dataOut = DataOutputStream(bytesOut)
+            value.lang ?: throw BuildError("Cannot write a LangString without a language")
+            dataOut.writeString(value.lang)
+            dataOut.writeString(value.string)
+            OctetStringType.Encoder.writeValue(out, bytesOut.toByteArray())
+        }
 
-            @Throws(IOException::class)
-            override fun writeValue(out: DataOutputStream, value: LangString) {
-                val bytesOut = ByteArrayOutputStream()
-                val dataOut = DataOutputStream(bytesOut)
-                value.lang ?: throw BuildError("Cannot write a LangString without a language")
-                dataOut.writeString(value.lang)
-                dataOut.writeString(value.string)
-                OctetStringType.ENCODER.writeValue(out, bytesOut.toByteArray())
-            }
-
-            override fun valid(valueTag: Tag): Boolean {
-                return valueTag === Tag.nameWithLanguage || valueTag === Tag.textWithLanguage
-            }
+        override fun valid(valueTag: Tag): Boolean {
+            return valueTag === Tag.nameWithLanguage || valueTag === Tag.textWithLanguage
         }
     }
 }

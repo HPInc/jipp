@@ -20,13 +20,13 @@ open class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override va
 
         @Throws(IOException::class)
         override fun readValue(input: DataInputStream, valueTag: Tag): T {
-            val key = StringType.ENCODER.readValue(input, valueTag)
+            val key = StringType.Encoder.readValue(input, valueTag)
             return map[key] ?: factory.of(key)
         }
 
         @Throws(IOException::class)
         override fun writeValue(out: DataOutputStream, value: T) {
-            StringType.ENCODER.writeValue(out, value.name)
+            StringType.Encoder.writeValue(out, value.name)
         }
 
         override fun valid(valueTag: Tag) = valueTag == Tag.keyword

@@ -18,13 +18,11 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
 
     init {
         // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-        // is malformed (see [RFC2911] section 3.1.3).
-        // Throw if someone attempts this.
+        // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
         val exist = HashSet<String>()
         for ((_, name) in attributes) {
             if (exist.contains(name)) {
-                throw BuildError("Attribute Group contains more than one '" + name +
-                        "' in " + attributes)
+                throw BuildError("Attribute Group contains more than one '$name` in $attributes")
             }
             exist.add(name)
         }
@@ -70,13 +68,11 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
     }
 
     companion object {
-        val HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP = AttributeGroup::class.java.name +
-                ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP"
 
         /** Default encoders available to parse incoming data  */
         @JvmField val ENCODERS = listOf(
-                IntegerType.ENCODER, UriType.ENCODER, StringType.ENCODER, BooleanType.ENCODER, LangStringType.ENCODER,
-                CollectionType.ENCODER, RangeOfIntegerType.ENCODER, ResolutionType.ENCODER, OctetStringType.ENCODER)
+                IntegerType.Encoder, UriType.Encoder, StringType.Encoder, BooleanType.Encoder, LangStringType.Encoder,
+                CollectionType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder, OctetStringType.Encoder)
 
         /** Return a finder for the given attributeTypes and encoders */
         @JvmStatic fun finderOf(attributeTypes: Map<String, AttributeType<*>>,
@@ -118,7 +114,6 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             }
             return groupOf(startTag, attributes)
         }
-
     }
 }
 

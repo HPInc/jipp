@@ -58,6 +58,6 @@ data class Status(override val code: Int, override val name: String) : Code() {
                 Status(0x0509, "server-error-multiple-document-jobs-not-supported")
 
         @JvmField
-        val ENCODER = encoderOf(Status::class.java, { code, name -> Status(code, name) })
+        val Encoder = encoderOf(Status::class.java, { code, name -> Status(code, name) })
     }
 }

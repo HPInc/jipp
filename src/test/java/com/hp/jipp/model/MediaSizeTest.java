@@ -52,7 +52,7 @@ public class MediaSizeTest {
 
     private MediaSize parse(String input) throws Exception {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-        StringType.ENCODER.writeValue(new DataOutputStream(outBytes), input);
+        StringType.Encoder.writeValue(new DataOutputStream(outBytes), input);
 
         return MediaSize.ENCODER.readValue(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())),
                 Tag.keyword);

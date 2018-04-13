@@ -133,22 +133,22 @@ public class AttributeTest {
     public void badTag() throws Exception {
         exception.expect(BuildError.class);
         exception.expectMessage("Invalid tag(x77) for Integer");
-        new Attribute<Integer>(Tag.fromInt(0x77), "", Arrays.asList(5), IntegerType.ENCODER);
+        new Attribute<Integer>(Tag.fromInt(0x77), "", Arrays.asList(5), IntegerType.Encoder);
     }
 
     @Test
     public void tagNames() throws Exception {
-        assertEquals("Integer", IntegerType.ENCODER.getType());
-        assertEquals("octetString", OctetStringType.ENCODER.getType());
-        assertEquals("rangeOfInteger", RangeOfIntegerType.ENCODER.getType());
-        assertEquals("resolution", ResolutionType.ENCODER.getType());
-        assertEquals("LangString", LangStringType.ENCODER.getType());
-        assertEquals("Integer", IntegerType.ENCODER.getType());
-        assertEquals("URI", UriType.ENCODER.getType());
-        assertEquals("Collection", CollectionType.ENCODER.getType());
-        assertEquals("Boolean", BooleanType.ENCODER.getType());
-        assertEquals("String", StringType.ENCODER.getType());
-        assertEquals("Status", Status.ENCODER.getType());
+        assertEquals("Integer", IntegerType.Encoder.getTypeName());
+        assertEquals("octetString", OctetStringType.Encoder.getTypeName());
+        assertEquals("rangeOfInteger", RangeOfIntegerType.Encoder.getTypeName());
+        assertEquals("resolution", ResolutionType.Encoder.getTypeName());
+        assertEquals("LangString", LangStringType.Encoder.getTypeName());
+        assertEquals("Integer", IntegerType.Encoder.getTypeName());
+        assertEquals("URI", UriType.Encoder.getTypeName());
+        assertEquals("Collection", CollectionType.Encoder.getTypeName());
+        assertEquals("Boolean", BooleanType.Encoder.getTypeName());
+        assertEquals("String", StringType.Encoder.getTypeName());
+        assertEquals("Status", Status.Encoder.getTypeName());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class AttributeTest {
                 5,
         };
 
-        Resolution resolution = ResolutionType.ENCODER.readValue(
+        Resolution resolution = ResolutionType.Encoder.readValue(
                 new DataInputStream(new ByteArrayInputStream(bytes)), Tag.resolution);
         assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
 

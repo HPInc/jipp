@@ -12,7 +12,7 @@ import java.io.IOException
 
  * Some string types have a length-limit.
  */
-open class StringType(tag: Tag, override val name: String) : AttributeType<String>(StringType.ENCODER, tag) {
+open class StringType(tag: Tag, override val name: String) : AttributeType<String>(Encoder, tag) {
 
     override fun of(attribute: Attribute<*>): Attribute<String>? {
         val values: List<String> = attribute.values.mapNotNull {
@@ -25,19 +25,14 @@ open class StringType(tag: Tag, override val name: String) : AttributeType<Strin
         return if (values.isNotEmpty()) of(values) else null
     }
 
-    companion object {
-        private const val TYPE_NAME = "String"
+    companion object Encoder : SimpleEncoder<String>("String") {
         private const val TAG_MASK = 0x40
+        @Throws(IOException::class)
+        override fun writeValue(out: DataOutputStream, value: String) = out.writeString(value)
 
-        @JvmField
-        val ENCODER: SimpleEncoder<String> = object : SimpleEncoder<String>(TYPE_NAME) {
-            @Throws(IOException::class)
-            override fun writeValue(out: DataOutputStream, value: String) = out.writeString(value)
+        @Throws(IOException::class)
+        override fun readValue(input: DataInputStream, valueTag: Tag) = input.readString()
 
-            @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, valueTag: Tag) = input.readString()
-
-            override fun valid(valueTag: Tag) = valueTag.code and TAG_MASK == TAG_MASK
-        }
+        override fun valid(valueTag: Tag) = valueTag.code and TAG_MASK == TAG_MASK
     }
 }

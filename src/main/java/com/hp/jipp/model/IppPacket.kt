@@ -34,7 +34,7 @@ data class IppPacket constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER
      * Return this response packet's Status code
      */
     val status: Status
-        get() = getCode(Status.ENCODER)
+        get() = getCode(Status.Encoder)
 
     /**
      * Return this request packet's Operation code
