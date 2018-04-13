@@ -60,6 +60,8 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+compileKotlin.kotlinOptions.allWarningsAsErrors = true
+
 dokka {
     outputDirectory = "$buildDir/javadoc"
     outputFormat = "javadoc"

@@ -108,10 +108,10 @@ class PrettyPrinter internal constructor(
     }
 
     companion object {
-        private val NEWLINE = "\n"
-        private val GROUP_SIZE_MIN_CLOSED = 2
-        private val GROUP_SIZE_MIN_OPEN = 3
-        private val SHORT_DIVISOR = 3
+        private const val NEWLINE = "\n"
+        private const val GROUP_SIZE_MIN_CLOSED = 2
+        private const val GROUP_SIZE_MIN_OPEN = 3
+        private const val SHORT_DIVISOR = 3
 
         /** A style for arrays, e.g. "Me [ A, B, C ]"  */
         @JvmField val ARRAY = Style("[", "]", ",", " ")
