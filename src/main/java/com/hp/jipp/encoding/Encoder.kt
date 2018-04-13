@@ -12,7 +12,7 @@ import java.io.IOException
 abstract class Encoder<T> {
 
     /** Return a human-readable name describing this type */
-    abstract val type: String
+    abstract val typeName: String
 
     /** Read a single value from the input stream, making use of the set of encoders */
     @Throws(IOException::class)

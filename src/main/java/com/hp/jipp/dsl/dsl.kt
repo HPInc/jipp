@@ -47,7 +47,7 @@ class IppPacketContext constructor(var versionNumber: Int = DEFAULT_VERSION_NUMB
     /** Allow code to be set/get as a status */
     private var status: Status
         set(value) { code = value.code }
-        get() = Status.ENCODER[code]
+        get() = Status.Encoder[code]
 
     /** Add a new attribute group to the packet */
     fun group(tag: Tag, init: AttributeGroupContext.() -> Unit) {

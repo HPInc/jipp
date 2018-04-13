@@ -243,13 +243,13 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
         @JvmField val ENCODER: SimpleEncoder<MediaSize> = object : SimpleEncoder<MediaSize>(TYPE_NAME) {
             @Throws(IOException::class)
             override fun readValue(input: DataInputStream, valueTag: Tag): MediaSize {
-                val name = StringType.ENCODER.readValue(input, valueTag)
+                val name = StringType.Encoder.readValue(input, valueTag)
                 return all[name] ?: MediaSize.of(name)
             }
 
             @Throws(IOException::class)
             override fun writeValue(out: DataOutputStream, value: MediaSize) {
-                StringType.ENCODER.writeValue(out, value.name)
+                StringType.Encoder.writeValue(out, value.name)
             }
 
             override fun valid(valueTag: Tag): Boolean {

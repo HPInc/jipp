@@ -8,32 +8,28 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for encoding of a [Resolution] */
-class ResolutionType(tag: Tag, override val name: String) : AttributeType<Resolution>(ENCODER, tag) {
+class ResolutionType(tag: Tag, override val name: String) : AttributeType<Resolution>(Encoder, tag) {
 
-    companion object {
-        private val TYPE_NAME = "resolution"
+    companion object Encoder : SimpleEncoder<Resolution>("resolution") {
 
-        private val INT_LENGTH = 4
-        private val BYTE_LENGTH = 1
+        private const val INT_LENGTH = 4
+        private const val BYTE_LENGTH = 1
 
-        @JvmField
-        val ENCODER: SimpleEncoder<Resolution> = object : SimpleEncoder<Resolution>(TYPE_NAME) {
-            @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
-                input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
-                return Resolution(input.readInt(), input.readInt(),
-                        ResolutionUnit.ENCODER[input.readByte().toInt()])
-            }
-
-            @Throws(IOException::class)
-            override fun writeValue(out: DataOutputStream, value: Resolution) {
-                out.writeShort(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
-                out.writeInt(value.crossFeedResolution)
-                out.writeInt(value.feedResolution)
-                out.writeByte(value.unit.code.toByte().toInt())
-            }
-
-            override fun valid(valueTag: Tag) = Tag.resolution == valueTag
+        @Throws(IOException::class)
+        override fun readValue(input: DataInputStream, valueTag: Tag): Resolution {
+            input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
+            return Resolution(input.readInt(), input.readInt(),
+                    ResolutionUnit.ENCODER[input.readByte().toInt()])
         }
+
+        @Throws(IOException::class)
+        override fun writeValue(out: DataOutputStream, value: Resolution) {
+            out.writeShort(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
+            out.writeInt(value.crossFeedResolution)
+            out.writeInt(value.feedResolution)
+            out.writeByte(value.unit.code.toByte().toInt())
+        }
+
+        override fun valid(valueTag: Tag) = Tag.resolution == valueTag
     }
 }

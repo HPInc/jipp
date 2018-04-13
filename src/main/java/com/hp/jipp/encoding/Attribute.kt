@@ -22,7 +22,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     init {
         if (!(encoder.valid(valueTag))) {
-            throw BuildError("Invalid $valueTag for ${encoder.type}")
+            throw BuildError("Invalid $valueTag for ${encoder.typeName}")
         }
     }
 

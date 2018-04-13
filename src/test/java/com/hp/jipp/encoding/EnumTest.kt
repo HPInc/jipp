@@ -55,7 +55,7 @@ class EnumTest {
     fun cover() {
         val encoder = MySample.enumEncoder
         KotlinTest.cover(encoder,
-                encoder.copy(encoder.type, encoder.map, encoder.factory),
+                encoder.copy(encoder.typeName, encoder.map, encoder.factory),
                 encoder.copy("other", encoder.map, encoder.factory))
     }
 }

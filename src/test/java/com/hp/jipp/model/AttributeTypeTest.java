@@ -76,7 +76,7 @@ public class AttributeTypeTest {
         assertEquals(0xFF, JobState.ENCODER.get(0xFF).getCode());
 
         assertEquals("PrinterState(x7)", PrinterState.ENCODER.get(7).getName());
-        assertEquals("Status(x777)", Status.ENCODER.get(0x777).getName());
+        assertEquals("Status(x777)", Status.Encoder.get(0x777).getName());
     }
 
     @Test
