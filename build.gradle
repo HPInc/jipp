@@ -2,6 +2,9 @@
 buildscript {
     ext.kotlin_version = '1.2.31'
     ext.dokka_version = '0.9.16'
+    ext.sonatypeUsername = ''
+    ext.sonatypePassword = ''
+
     repositories {
         jcenter()
         maven {
@@ -140,6 +143,7 @@ artifacts {
 }
 
 signing {
+    required { gradle.taskGraph.hasTask("publish") }
     sign configurations.archives
 }
 
