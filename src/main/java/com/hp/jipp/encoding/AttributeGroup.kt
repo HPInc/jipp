@@ -62,6 +62,13 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         printer.close()
     }
 
+    /** Write a group to the [DataOutputStream] */
+    @Throws(IOException::class)
+    fun write(stream: DataOutputStream) {
+        stream.writeByte(tag.code)
+        attributes.forEach { it.write(stream) }
+    }
+
     companion object {
         val HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP = AttributeGroup::class.java.name +
                 ".HOOK_ALLOW_BUILD_DUPLICATE_NAMES_IN_GROUP"
@@ -90,34 +97,29 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 }
             }
         }
-    }
-}
 
-/** Write a group to the [DataOutputStream] */
-@Throws(IOException::class)
-fun DataOutputStream.writeGroup(group: AttributeGroup) {
-    writeByte(group.tag.code)
-    group.attributes.forEach { writeAttribute(it) }
-}
+        /** Read a group from the [DataInputStream] */
+        @JvmStatic
+        @Throws(IOException::class)
+        fun read(input: DataInputStream, startTag: Tag, attributeTypes: Map<String, AttributeType<*>>): AttributeGroup {
+            var more = true
+            val attributes = ArrayList<Attribute<*>>()
+            val finder = AttributeGroup.finderOf(attributeTypes, AttributeGroup.ENCODERS)
 
-/** Read a group from the [DataInputStream] */
-@Throws(IOException::class)
-fun DataInputStream.readGroup(startTag: Tag, attributeTypes: Map<String, AttributeType<*>>): AttributeGroup {
-    var more = true
-    val attributes = ArrayList<Attribute<*>>()
-    val finder = AttributeGroup.finderOf(attributeTypes, AttributeGroup.ENCODERS)
-
-    while (more) {
-        mark(1)
-        val valueTag = readTag()
-        if (valueTag.isDelimiter) {
-            reset()
-            more = false
-        } else {
-            attributes.add(readAttribute(finder, valueTag))
+            while (more) {
+                input.mark(1)
+                val valueTag = Tag.read(input)
+                if (valueTag.isDelimiter) {
+                    input.reset()
+                    more = false
+                } else {
+                    attributes.add(input.readAttribute(finder, valueTag))
+                }
+            }
+            return groupOf(startTag, attributes)
         }
+
     }
-    return groupOf(startTag, attributes)
 }
 
 /** Return a new [AttributeGroup] */

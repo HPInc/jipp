@@ -8,10 +8,6 @@ import com.hp.jipp.encoding.AttributeType
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
 import com.hp.jipp.encoding.Tag
-import com.hp.jipp.encoding.readGroup
-import com.hp.jipp.encoding.readTag
-import com.hp.jipp.encoding.writeGroup
-import com.hp.jipp.encoding.writeTag
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toList
@@ -82,6 +78,16 @@ data class IppPacket constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER
                 ")"
     }
 
+    /** Write a Packet to this [DataOutputStream] as per RFC2910  */
+    @Throws(IOException::class)
+    fun write(output: DataOutputStream) {
+        output.writeShort(versionNumber)
+        output.writeShort(code)
+        output.writeInt(requestId)
+        attributeGroups.forEach { it.write(output) }
+        Tag.endOfAttributes.write(output)
+    }
+
     /** Return a pretty-printed version of this packet (including separators and line breaks) */
     fun prettyPrint(maxWidth: Int, indent: String) = PrettyPrinter(prefix(), PrettyPrinter.OBJECT, indent, maxWidth)
             .addAll(attributeGroups)
@@ -104,44 +110,35 @@ data class IppPacket constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER
             return object : Parser {
                 @Throws(IOException::class)
                 override fun parse(input: InputStream) =
-                        DataInputStream(BufferedInputStream(input)).readPacket(attributeTypeMap)
+                        readPacket(DataInputStream(BufferedInputStream(input)), attributeTypeMap)
             }
         }
 
         private val parser = IppPacket.parserOf(Types.all)
 
+        @Throws(IOException::class)
+        private fun readPacket(input: DataInputStream, attributeTypes: Map<String, AttributeType<*>>): IppPacket {
+
+            val versionNumber = input.readShort().toInt()
+            val code = input.readShort().toInt()
+            val requestId = input.readInt()
+
+            return IppPacket(versionNumber, code, requestId, { readNextGroup(input, attributeTypes) }.toList())
+        }
+
+        private fun readNextGroup(input: DataInputStream, attributeTypes: Map<String, AttributeType<*>>):
+                AttributeGroup? {
+            val tag = Tag.read(input)
+            return when (tag) {
+                Tag.endOfAttributes -> null
+                else -> {
+                    if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
+                    AttributeGroup.read(input, tag, attributeTypes)
+                }
+            }
+        }
+
         /** Parses input using the default packet parser */
         @JvmStatic fun parse(input: InputStream): IppPacket = parser.parse(input)
     }
-}
-
-@Throws(IOException::class)
-private fun DataInputStream.readPacket(attributeTypes: Map<String, AttributeType<*>>): IppPacket {
-
-    val versionNumber = readShort().toInt()
-    val code = readShort().toInt()
-    val requestId = readInt()
-
-    return IppPacket(versionNumber, code, requestId, { readNextGroup(attributeTypes) }.toList())
-}
-
-private fun DataInputStream.readNextGroup(attributeTypes: Map<String, AttributeType<*>>): AttributeGroup? {
-    val tag = readTag()
-    return when (tag) {
-        Tag.endOfAttributes -> null
-        else -> {
-            if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
-            readGroup(tag, attributeTypes)
-        }
-    }
-}
-
-/** Write a Packet to this [DataOutputStream] as per RFC2910  */
-@Throws(IOException::class)
-fun DataOutputStream.writePacket(ippPacket: IppPacket) {
-    writeShort(ippPacket.versionNumber)
-    writeShort(ippPacket.code)
-    writeInt(ippPacket.requestId)
-    ippPacket.attributeGroups.forEach(this::writeGroup)
-    writeTag(Tag.endOfAttributes)
 }

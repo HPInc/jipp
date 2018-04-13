@@ -1,7 +1,6 @@
 package com.hp.jipp.trans
 
 import com.hp.jipp.model.IppPacket
-import com.hp.jipp.model.writePacket
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -18,14 +17,6 @@ import java.net.URL
  */
 class HttpIppClientTransport : IppClientTransport() {
 
-    /** Opens a new [HttpURLConnection] for the specified URL */
-    fun openConnection(url: URL): HttpURLConnection {
-        val connection = url.openConnection() as HttpURLConnection?
-                ?: throw IOException("could not open connection")
-        connection.connectTimeout = CONNECT_TIMEOUT
-        return connection
-    }
-
     @Throws(IOException::class)
     override fun sendData(uri: URI, request: IppPacketData): IppPacketData {
         val url = URL(uri.toString().replace("^ipp".toRegex(), "http"))
@@ -40,7 +31,7 @@ class HttpIppClientTransport : IppClientTransport() {
 
         return DataOutputStream(connection.outputStream).use { output ->
             println("Writing packet")
-            output.writePacket(request.ippPacket)
+            request.ippPacket.write(output)
             println("Writing Extra Data")
             request.data?.apply {
                 copyTo(output)
@@ -58,6 +49,14 @@ class HttpIppClientTransport : IppClientTransport() {
                 IppPacketData(IppPacket.parse(it))
             }
         }
+    }
+
+    /** Opens a new [HttpURLConnection] for the specified URL */
+    private fun openConnection(url: URL): HttpURLConnection {
+        val connection = url.openConnection() as HttpURLConnection?
+                ?: throw IOException("could not open connection")
+        connection.connectTimeout = CONNECT_TIMEOUT
+        return connection
     }
 
     companion object {

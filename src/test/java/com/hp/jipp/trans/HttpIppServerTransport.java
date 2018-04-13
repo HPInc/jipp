@@ -1,7 +1,6 @@
 package com.hp.jipp.trans;
 
 import com.hp.jipp.model.IppPacket;
-import com.hp.jipp.model.IppPacketKt;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -36,7 +35,7 @@ abstract public class HttpIppServerTransport implements IppServerTransport {
                 IppPacketData data = new IppPacketData(receivePacket, inputStream);
                 IppPacketData response = HttpIppServerTransport.this.handle(exchange.getRequestURI(), data);
                 DataOutputStream output = new DataOutputStream(new BufferedOutputStream(exchange.getResponseBody()));
-                IppPacketKt.writePacket(output, response.getIppPacket());
+                response.getIppPacket().write(output);
                 InputStream extraData = response.getData();
 
                 /* If response data is present, queue that also */

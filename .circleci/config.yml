@@ -34,7 +34,7 @@ jobs:
           - v1-dependencies-
 
       # Build
-      - run: gradle dependencies build graphDeps javadoc
+      - run: gradle dependencies build graphDeps dokka
 
       # Upload coverage report
       - run: bash <(curl -s https://codecov.io/bash)

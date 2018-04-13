@@ -18,7 +18,20 @@ data class Tag(override val name: String, override val code: Int) : Enum() {
 
     override fun toString() = name
 
+    /** Write this tag to the output stream  */
+    @Throws(IOException::class)
+    fun write(out: DataOutputStream) {
+        out.writeByte(code.toByte().toInt())
+    }
+
     companion object {
+        /** Read and return a [Tag] from the input stream  */
+        @JvmStatic
+        fun read(input: DataInputStream): Tag = fromInt(input.readByte().toInt())
+
+        /** Return or create a [Tag] for the supplied code */
+        @JvmStatic
+        fun fromInt(value: Int) = Tag.codeMap[value] ?: Tag("tag(x%x)".format(value), value)
 
         // Delimiter tags
         @JvmField val operationAttributes = Tag("operation-attributes", 0x01)
@@ -57,18 +70,6 @@ data class Tag(override val name: String, override val code: Int) : Enum() {
         @JvmField val mimeMediaType = Tag("mimeMediaType", 0x49)
         @JvmField val memberAttributeName = Tag("memberAttrName", 0x4A)
 
-        internal val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
+        private val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
     }
 }
-
-/** Read and return a [Tag] from the input stream  */
-fun DataInputStream.readTag(): Tag = readByte().toInt().toTag()
-
-/** Write this tag to the output stream  */
-@Throws(IOException::class)
-fun DataOutputStream.writeTag(tag: Tag) {
-    writeByte(tag.code.toByte().toInt())
-}
-
-/** Return or create a [Tag] for the supplied code */
-fun Int.toTag() = Tag.codeMap[this] ?: Tag("tag(x%x)".format(this), this)

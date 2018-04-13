@@ -18,7 +18,6 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.encoding.TagKt;
 
 import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
@@ -108,12 +107,12 @@ public class IppPacketTest {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes),
                 groupOf(Tag.jobAttributes),
-                groupOf(TagKt.toTag((byte)0x08))); // reserved but legal
+                groupOf(Tag.fromInt((byte)0x08))); // reserved but legal
         packet = cycle(packet);
         assertEquals(3, packet.getAttributeGroups().size());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
         assertEquals(Tag.jobAttributes, packet.getAttributeGroups().get(1).getTag());
-        assertEquals(TagKt.toTag(0x08), packet.getAttributeGroups().get(2).getTag());
+        assertEquals(Tag.fromInt(0x08), packet.getAttributeGroups().get(2).getTag());
     }
 
     @Test

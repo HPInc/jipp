@@ -62,27 +62,27 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         is ByteArray -> "x" + value.toHexString()
         else -> value.toString()
     }
-}
 
-/** Write this attribute (including all of its values) to the output stream */
-@Throws(IOException::class)
-fun <T> DataOutputStream.writeAttribute(attribute: Attribute<T>) {
-    writeHeader(attribute)
-    if (attribute.values.isEmpty()) {
-        writeShort(0)
-    } else {
-        writeValue(attribute.encoder, attribute.values[0])
+    /** Write this attribute (including all of its values) to the output stream */
+    @Throws(IOException::class)
+    fun write(stream: DataOutputStream) {
+        writeHeader(stream)
+        if (values.isEmpty()) {
+            stream.writeShort(0)
+        } else {
+            stream.writeValue(encoder, values[0])
+        }
+
+        values.drop(1).forEach {
+            writeHeader(stream, name = "")
+            stream.writeValue(encoder, it)
+        }
     }
 
-    attribute.values.drop(1).forEach {
-        writeHeader(attribute, name = "")
-        writeValue(attribute.encoder, it)
+    // Write ONLY the value tag + name components of an attribute
+    @Throws(IOException::class)
+    private fun writeHeader(stream: DataOutputStream, name: String = this.name) {
+        valueTag.write(stream)
+        stream.writeString(name)
     }
-}
-
-// Write ONLY the value tag + name components of an attribute
-@Throws(IOException::class)
-private fun <T> DataOutputStream.writeHeader(attribute: Attribute<T>, name: String = attribute.name) {
-    writeTag(attribute.valueTag)
-    writeString(name)
 }
