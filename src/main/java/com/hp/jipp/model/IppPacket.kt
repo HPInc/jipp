@@ -20,12 +20,19 @@ import java.io.InputStream
 /**
  * An IPP packet as specified in RFC2910.
  */
-data class IppPacket constructor(val versionNumber: Int = DEFAULT_VERSION_NUMBER, val code: Int, val requestId: Int,
-                                 val attributeGroups: List<AttributeGroup> = listOf()) {
-
+data class IppPacket constructor(
+    val versionNumber: Int = DEFAULT_VERSION_NUMBER,
+    val code: Int,
+    val requestId: Int,
+    val attributeGroups: List<AttributeGroup> = listOf()
+) {
     @JvmOverloads
-    constructor(versionNumber: Int = DEFAULT_VERSION_NUMBER, code: Int, requestId: Int,
-                vararg groups: AttributeGroup) : this(versionNumber, code, requestId, groups.toList())
+    constructor(
+        versionNumber: Int = DEFAULT_VERSION_NUMBER,
+        code: Int,
+        requestId: Int,
+        vararg groups: AttributeGroup
+    ) : this(versionNumber, code, requestId, groups.toList())
 
     constructor(code: Code, requestId: Int, vararg groups: AttributeGroup):
             this(code = code.code, requestId = requestId, attributeGroups = groups.toList())

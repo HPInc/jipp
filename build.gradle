@@ -37,7 +37,7 @@ repositories {
     }
 }
 
-version = '0.5.0'
+version = '0.5.1'
 group = 'com.hp.jipp'
 
 targetCompatibility = 1.6
@@ -73,15 +73,15 @@ test.finalizedBy jacocoTestReport
 test {
     testLogging {
         events "failed"
-        showExceptions true
-        exceptionFormat "full"
+        showExceptions = true
+        exceptionFormat = "full"
     }
 }
 
 jacocoTestReport {
     reports {
-        xml.enabled true // coveralls plugin depends on xml format report
-        html.enabled true
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
     }
 
     afterEvaluate {
@@ -93,7 +93,7 @@ jacocoTestReport {
 }
 
 ktlint {
-    version = '0.10.0'
+    version = '0.20.0'
 }
 
 detekt {
@@ -121,6 +121,22 @@ afterEvaluate {
     check.dependsOn detektCheck
 }
 
+task sourceJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    classifier = "javadoc"
+    from dokka.outputDirectory
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
 signing {
     sign configurations.archives
 }
@@ -144,6 +160,14 @@ publishing {
                     classifier = null
                     extension = 'pom.asc'
                 }
+            }
+
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+
+            artifact(javadocJar) {
+                classifier = 'javadoc'
             }
 
             // create the signed artifacts
@@ -183,7 +207,7 @@ def customizePom(pom) {
 
         // add all items necessary for maven central publication
         root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
+            resolveStrategy = DELEGATE_FIRST
 
             description 'Parse/build IPP packets'
             name 'jipp-core'

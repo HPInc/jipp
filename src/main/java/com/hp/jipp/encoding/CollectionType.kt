@@ -67,7 +67,6 @@ open class CollectionType(override val name: String) :
                     input.readValueBytes()
                     val encoder = finder.find(memberTag, memberName)
                     builder.add(input.readAttribute(encoder, finder, memberTag, memberName))
-
                 } else {
                     throw ParseError("Bad tag in collection: $tag")
                 }

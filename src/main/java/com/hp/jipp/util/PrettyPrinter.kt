@@ -14,9 +14,12 @@ import java.util.Stack
  * @param indent a single level of indent
  * @param maxWidth maximum width of a line before forcing grouped items each onto their own line
  */
-class PrettyPrinter internal constructor(prefix: String, style: Style, private val indent: String,
-                                         private val maxWidth: Int) {
-
+class PrettyPrinter internal constructor(
+    prefix: String,
+    style: Style,
+    private val indent: String,
+    private val maxWidth: Int
+) {
     private val mGroups = Stack<Group>()
 
     init {
@@ -123,12 +126,19 @@ class PrettyPrinter internal constructor(prefix: String, style: Style, private v
         private val SILENT = Style("", "", ",", "")
 
         /** Style used for delimiting members of a pretty-printed group  */
-        class Style internal constructor(val opener: String, val closer: String,
-                                         val separator: String, val spacer: String)
+        class Style internal constructor(
+            val opener: String,
+            val closer: String,
+            val separator: String,
+            val spacer: String
+        )
 
         /** A group of objects currently being pretty-printed  */
-        internal class Group internal constructor(private val style: Style, private val prefix: String,
-                                                  private val maxWidth: Int) {
+        internal class Group internal constructor(
+            private val style: Style,
+            private val prefix: String,
+            private val maxWidth: Int
+        ) {
 
             val items = ArrayList<Any>()
 
