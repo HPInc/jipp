@@ -14,13 +14,15 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
 
     /**
      * An [Encoder] for [Enum] values
-     * @param type Human-readable type of the [Enum]
+     * @param typeName Human-readable type of the [Enum]
      * @param map predefined [Enum] instances to reuse when decoding
      * @param factory a way to create new [Enum] instances of the correct type when decoding an undefined value
      */
-    data class Encoder<T : Enum>(override val typeName: String, val map: Map<Int, T>,
-                                 val factory: (code: Int, name: String) -> T) : com.hp.jipp.encoding.Encoder<T>() {
-
+    data class Encoder<T : Enum>(
+        override val typeName: String,
+        val map: Map<Int, T>,
+        val factory: (code: Int, name: String) -> T
+    ) : com.hp.jipp.encoding.Encoder<T>() {
         constructor(name: String, enums: Collection<T>, factory: (code: Int, name: String) -> T):
                 this(name, Enum.toCodeMap(enums), factory)
 

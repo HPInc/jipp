@@ -4,9 +4,9 @@
 package com.hp.jipp.encoding
 
 /**
- * Describes a printing resolution
+ * Describes a printing resolution.
 
- * @see [RFC2911 Section 4.1.15](https://tools.ietf.org/html/rfc2911.section-4.1.15)
+ * See [RFC2911 Section 4.1.15](https://tools.ietf.org/html/rfc2911.section-4.1.15)
  */
 data class Resolution (val crossFeedResolution: Int, val feedResolution: Int, val unit: ResolutionUnit) {
 
@@ -18,4 +18,3 @@ data class Resolution (val crossFeedResolution: Int, val feedResolution: Int, va
 
     override fun toString() = "${x}x$y ${unit.name}"
 }
-

@@ -75,8 +75,10 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 CollectionType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder, OctetStringType.Encoder)
 
         /** Return a finder for the given attributeTypes and encoders */
-        @JvmStatic fun finderOf(attributeTypes: Map<String, AttributeType<*>>,
-                                encoders: List<Encoder<*>>): Encoder.Finder {
+        @JvmStatic fun finderOf(
+            attributeTypes: Map<String, AttributeType<*>>,
+            encoders: List<Encoder<*>>
+        ): Encoder.Finder {
             return object : Encoder.Finder {
                 @Throws(IOException::class)
                 override fun find(valueTag: Tag, name: String): Encoder<*> {
@@ -87,8 +89,8 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                         attributeType.encoder
                     } else {
                         // If no valid match above then try with each default encoder
-                        encoders.find { it.valid(valueTag) } ?:
-                                throw ParseError("No encoder found for $name($valueTag)")
+                        encoders.find { it.valid(valueTag) }
+                            ?: throw ParseError("No encoder found for $name($valueTag)")
                     }
                 }
             }

@@ -2,6 +2,7 @@
 [![CodeCov](https://codecov.io/github/HPInc/jipp-core/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp-core)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp-core/javadoc/index.html)
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java implementation of IPP
 
