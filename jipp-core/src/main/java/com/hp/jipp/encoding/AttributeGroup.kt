@@ -116,13 +116,15 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             }
             return groupOf(startTag, attributes)
         }
+
+        /** Return a new [AttributeGroup] */
+        @JvmStatic
+        fun groupOf(startTag: Tag, vararg attributes: Attribute<*>) =
+                AttributeGroup(startTag, attributes.toList())
+
+        /** Return a new [AttributeGroup] */
+        @JvmStatic
+        fun groupOf(startTag: Tag, attributes: List<Attribute<*>>) =
+                AttributeGroup(startTag, attributes)
     }
 }
-
-/** Return a new [AttributeGroup] */
-fun groupOf(startTag: Tag, vararg attributes: Attribute<*>) =
-        AttributeGroup(startTag, attributes.toList())
-
-/** Return a new [AttributeGroup] */
-fun groupOf(startTag: Tag, attributes: List<Attribute<*>>) =
-        AttributeGroup(startTag, attributes)

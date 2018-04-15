@@ -46,8 +46,8 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - store_artifacts:
-          path: ./build/reports
+          path: ./jipp-core/build/reports
           destination: reports
 
       - store_test_results:
-          path: ./build/test-results
+          path: ./jipp-core/build/test-results

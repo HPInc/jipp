@@ -1,0 +1,4 @@
+include ':jprint', ':jipp-core'
+
+project(':jipp-core').projectDir = new File(rootDir, 'jipp-core')
+project(':jprint').projectDir = new File(rootDir, 'sample/jprint')

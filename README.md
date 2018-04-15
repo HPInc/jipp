@@ -27,9 +27,25 @@ This library supplies a Java-compatible API but is actually implemented in [Kotl
 
 ## Usage
 
+In short:
+
 1. Add the current version of JIPP to your project
 2. Create an `IppClientTransport` or `IppServerTransport`
 3. Use the transport to create, parse and exchange `IppPacket` objects
+
+A very basic use case is demonstrated by the `jclient` sample app. To run it:
+
+```
+# build the app
+./gradlew jprint:build
+
+# unzip in the current directory
+unzip -o ./sample/jprint/build/distributions/jprint-*.zip
+
+# Use IPP to print a file to the supplied HTTP/IPP endpoint.
+# (The printer must natively support the file type.)
+jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
+```
 
 ## Dependencies
 

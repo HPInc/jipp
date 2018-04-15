@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.model.Status;
@@ -18,7 +19,6 @@ import com.hp.jipp.util.ParseError;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.model.Operation;
 
-import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
 
 import kotlin.text.Charsets;

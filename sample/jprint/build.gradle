@@ -1,0 +1,19 @@
+group 'com.hp.jipp'
+version '0.1'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+mainClassName = 'sample.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(path: ':jipp-core') // include root project
+    compile 'org.jetbrains:annotations:13.0' // for @NotNull etc
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

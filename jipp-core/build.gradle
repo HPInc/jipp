@@ -1,4 +1,3 @@
-// Global settings
 buildscript {
     ext.kotlin_version = '1.2.31'
     ext.dokka_version = '0.9.16'
@@ -6,24 +5,22 @@ buildscript {
     ext.sonatypePassword = ''
 
     repositories {
-        jcenter()
         maven {
-            url = "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
+
     dependencies {
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-        classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
-
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
+        classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:2.1.1"
         classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0.RC6-3"
     }
 }
 
 apply plugin: 'kotlin'
-apply plugin: 'idea'
 apply plugin: 'net.ltgt.apt'
 apply plugin: 'jacoco'
 apply plugin: 'org.jetbrains.dokka'
@@ -35,9 +32,13 @@ apply plugin: 'signing'
 repositories {
     mavenCentral()
     jcenter()
-    maven() {
-        url = "https://plugins.gradle.org/m2/"
-    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.15.0'
 }
 
 version = '0.5.1'
@@ -45,6 +46,12 @@ group = 'com.hp.jipp'
 
 targetCompatibility = 1.6
 sourceCompatibility = 1.6
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+compileKotlin.kotlinOptions.allWarningsAsErrors = true
 
 // This hack puts testing resource files where we can get to them
 task copyTestResources(type: Copy) {
@@ -57,23 +64,8 @@ task cleanTestResources(type: Delete) {
         include '**/*.bin'
     }
 }
+
 test.finalizedBy cleanTestResources
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-}
-
-compileKotlin.kotlinOptions.allWarningsAsErrors = true
-
-dokka {
-    outputDirectory = "$buildDir/javadoc"
-    outputFormat = "javadoc"
-    externalDocumentationLink {
-        url = new URL("http://docs.oracle.com/javase/8/docs/api/")
-    }
-}
-
-test.finalizedBy jacocoTestReport
 
 test {
     testLogging {
@@ -82,6 +74,8 @@ test {
         exceptionFormat = "full"
     }
 }
+
+test.finalizedBy jacocoTestReport
 
 jacocoTestReport {
     reports {
@@ -110,7 +104,7 @@ detekt {
 }
 
 // Graph dependencies
-task graphDeps(type: Exec) {
+task graphDeps(type: Exec, dependsOn: classes) {
     commandLine 'bin/graphDeps'
 }
 
@@ -119,9 +113,15 @@ configure(graphDeps) {
     description = "Create a dependency graph"
 }
 
-afterEvaluate {
-    graphDeps.dependsOn classes
+dokka {
+    outputDirectory = "$buildDir/javadoc"
+    outputFormat = "javadoc"
+    externalDocumentationLink {
+        url = new URL("http://docs.oracle.com/javase/8/docs/api/")
+    }
+}
 
+afterEvaluate {
     check.dependsOn ktlintCheck
     check.dependsOn detektCheck
 }
@@ -190,9 +190,9 @@ publishing {
             }
         }
     }
+
     repositories {
         maven {
-            //url "https://oss.sonatype.org/content/repositories/snapshots"
             url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             credentials {
                 username sonatypeUsername
@@ -247,7 +247,6 @@ def customizePom(pom) {
     }
 }
 
-
 model {
     tasks.generatePomFileForMavenJavaPublication {
         destination = file("$buildDir/generated-pom.xml")
@@ -260,10 +259,4 @@ model {
     tasks.publishMavenJavaPublicationToMavenLocal {
         dependsOn project.tasks.signArchives
     }
-}
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.15.0'
 }

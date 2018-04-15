@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URI;
 
-import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.assertEquals;
 
 public class ConnectionTest {

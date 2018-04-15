@@ -15,7 +15,7 @@ import java.net.URL
  *
  * It is assumed that the remote server will not deliver additional data (just an IPP packet).
  */
-class HttpIppClientTransport : IppClientTransport() {
+class HttpIppClientTransport : IppClientTransport {
 
     @Throws(IOException::class)
     override fun sendData(uri: URI, request: IppPacketData): IppPacketData {

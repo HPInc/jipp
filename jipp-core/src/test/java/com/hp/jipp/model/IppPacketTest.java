@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.encoding.Attribute;
@@ -19,7 +20,6 @@ import com.hp.jipp.encoding.OctetStringType;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
-import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
 
 import kotlin.text.Charsets;
@@ -118,7 +118,7 @@ public class IppPacketTest {
     @Test
     public void writeSingleAttributePacket() throws IOException {
         Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.charset, "attributes-charset")
-                .of("US-ASCII".getBytes(Charsets.UTF_8));
+                .of("us-ascii".getBytes(Charsets.UTF_8));
 
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, simpleAttribute));
@@ -140,7 +140,7 @@ public class IppPacketTest {
                 'c', 'h', 'a', 'r', 's', 'e', 't',
                 (byte) 0x00,
                 (byte) 0x08,
-                'U', 'S', '-', 'A', 'S', 'C', 'I', 'I',
+                'u', 's', '-', 'a', 's', 'c', 'i', 'i',
                 (byte) 0x03,
         }, toBytes(packet));
     }
@@ -167,7 +167,7 @@ public class IppPacketTest {
                 'c', 'h', 'a', 'r', 's', 'e', 't',
                 (byte) 0x00,
                 (byte) 0x08,
-                'U', 'S', '-', 'A', 'S', 'C', 'I', 'I',
+                'u', 's', '-', 'a', 's', 'c', 'i', 'i',
                 (byte) 0x03,
         };
 
@@ -178,20 +178,20 @@ public class IppPacketTest {
     @Test
     public void readSingleAttributePacket() throws IOException {
         Attribute<String> stringAttribute = new StringType(Tag.charset, "attributes-charset")
-                .of("US-ASCII");
+                .of("us-ascii");
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, stringAttribute));
         packet = cycle(packet);
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
         assertEquals(Tag.charset, readAttribute.getValueTag());
-        assertEquals("US-ASCII", readAttribute.getValue(0));
+        assertEquals("us-ascii", readAttribute.getValue(0));
     }
 
     @Test
     public void writeMultiValueAttributePacket() throws IOException {
         Attribute<String> multiValueAttribute = new StringType(Tag.charset, "attributes-charset")
-                .of("US-ASCII", "UTF-8");
+                .of("us-ascii", "utf-8");
 
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, multiValueAttribute));
@@ -213,13 +213,13 @@ public class IppPacketTest {
                 'c', 'h', 'a', 'r', 's', 'e', 't',
                 (byte) 0x00,
                 (byte) 0x08,
-                'U', 'S', '-', 'A', 'S', 'C', 'I', 'I',
+                'u', 's', '-', 'a', 's', 'c', 'i', 'i',
                 (byte) 0x47,
                 (byte) 0x00,
                 (byte) 0x00,
                 (byte) 0x00,
                 (byte) 0x05,
-                'U', 'T', 'F', '-', '8',
+                'u', 't', 'f', '-', '8',
                 (byte) 0x03,
         }, toBytes(packet));
         System.out.println(packet.toString());
@@ -228,14 +228,14 @@ public class IppPacketTest {
     @Test
     public void readMultiValueAttributePacket() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("US-ASCII", "UTF-8")));
+                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         assertEquals(Operation.getJobAttributes, packet.getOperation());
         assertEquals(777, packet.getRequestId());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Types.attributesCharset);
-        assertEquals(Arrays.asList("US-ASCII", "UTF-8"), attribute.getValues());
+        assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.getValues());
     }
 
     @Test
@@ -253,7 +253,7 @@ public class IppPacketTest {
     @Test
     public void getValue() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("US-ASCII", "UTF-8")));
+                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
@@ -263,13 +263,13 @@ public class IppPacketTest {
         assertNull(packet.getValue(Tag.operationAttributes, Types.attributesNaturalLanguage));
 
         // All good!
-        assertEquals("US-ASCII", packet.getValue(Tag.operationAttributes, Types.attributesCharset));
+        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, Types.attributesCharset));
     }
 
     @Test
     public void getValues() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("US-ASCII", "UTF-8")));
+                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
@@ -277,7 +277,7 @@ public class IppPacketTest {
                 packet.getValues(Tag.jobAttributes, Types.attributesCharset));
 
         // Wrong attr
-        assertEquals(Arrays.asList("US-ASCII", "UTF-8"),
+        assertEquals(Arrays.asList("us-ascii", "utf-8"),
                 packet.getValues(Tag.operationAttributes, Types.attributesCharset));
 
         // All good!

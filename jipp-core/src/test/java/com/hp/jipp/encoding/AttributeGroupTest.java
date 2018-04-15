@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.model.Types;
@@ -16,7 +17,6 @@ import com.hp.jipp.util.BuildError;
 import com.hp.jipp.util.KotlinTest;
 import com.hp.jipp.util.ParseError;
 
-import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
 
 public class AttributeGroupTest {

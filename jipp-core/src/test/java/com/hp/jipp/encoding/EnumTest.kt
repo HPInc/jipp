@@ -1,5 +1,6 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 import org.junit.Test
 
 import org.junit.Assert.* // ktlint-disable no-wildcard-imports

@@ -1,5 +1,6 @@
 package com.hp.jipp.model;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import org.junit.Rule;
@@ -14,7 +15,6 @@ import com.hp.jipp.encoding.ResolutionUnit;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
-import static com.hp.jipp.encoding.AttributeGroupKt.groupOf;
 import static com.hp.jipp.encoding.Cycler.*;
 
 import java.util.Arrays;
