@@ -37,7 +37,6 @@ class LangStringType(tag: Tag, override val name: String) : AttributeType<LangSt
         override fun readValue(input: DataInputStream, valueTag: Tag): LangString {
             val bytes = OctetStringType.Encoder.readValue(input, valueTag)
             val inBytes = DataInputStream(ByteArrayInputStream(bytes))
-
             val lang = inBytes.readString()
             val string = inBytes.readString()
             return LangString(string, lang)
