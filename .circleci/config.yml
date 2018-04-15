@@ -1,0 +1,53 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+      
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    branches:
+      ignore:
+        - gh-pages
+
+    steps:
+      - run: sudo apt install openjfx graphviz
+
+      # Checkout, with submodules
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.gradle" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Build
+      - run: gradle dependencies build graphDeps dokka
+
+      # Upload coverage report
+      - run: bash <(curl -s https://codecov.io/bash)
+
+      # Capture dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - store_artifacts:
+          path: ./jipp-core/build/reports
+          destination: reports
+
+      - store_test_results:
+          path: ./jipp-core/build/test-results
