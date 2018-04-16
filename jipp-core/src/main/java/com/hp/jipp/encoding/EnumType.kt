@@ -53,7 +53,7 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
         override fun valid(valueTag: Tag): Boolean = valueTag == Tag.enumValue
     }
 
-    override fun of(attribute: Attribute<*>): Attribute<T>? =
+    override fun convert(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.valueTag !== Tag.enumValue) null
         else of(attribute.values
                 .filter { it is Int }

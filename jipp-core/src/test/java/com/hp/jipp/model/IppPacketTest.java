@@ -183,7 +183,7 @@ public class IppPacketTest {
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
         assertEquals(Tag.charset, readAttribute.getValueTag());
-        assertEquals("us-ascii", readAttribute.getValue(0));
+        assertEquals("us-ascii", readAttribute.get(0));
     }
 
     @Test

@@ -39,13 +39,8 @@ abstract class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag) {
         invoke(listOf(value) + values)
     }
 
-    /** Return true if the attribute has a matching encoder */
-    fun isValid(attribute: Attribute<*>): Boolean {
-        return attribute.encoder == encoder
-    }
-
     /** If possible, convert the supplied attribute into an attribute of this type. */
-    open fun of(attribute: Attribute<*>): Attribute<T>? =
+    open fun convert(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.encoder === encoder) {
             invoke(attribute.values.map {
                 @Suppress("UNCHECKED_CAST")
@@ -54,4 +49,9 @@ abstract class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag) {
         } else {
             null
         }
+
+    /** Return true if the attribute has a matching encoder */
+    fun isValid(attribute: Attribute<*>): Boolean {
+        return attribute.encoder == encoder
+    }
 }
