@@ -49,5 +49,13 @@ jobs:
           path: ./jipp-core/build/reports
           destination: reports
 
+      - store_artifacts:
+          path: ./jipp-core/build/libs/*.jar
+          destination: jars
+
+      - store_artifacts:
+          path: ./sample/jprint/build/distributions/*.zip
+          destination: apps
+
       - store_test_results:
           path: ./jipp-core/build/test-results
