@@ -28,7 +28,7 @@ open class CollectionType(override val name: String) :
         private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").empty()
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: AttributeCollection) {
+        override fun writeValue(out: IppOutputStream, value: AttributeCollection) {
             out.writeShort(0) // Empty value
 
             for (attribute in value.attributes) {
@@ -46,7 +46,7 @@ open class CollectionType(override val name: String) :
         }
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, finder: Finder, valueTag: Tag): AttributeCollection {
+        override fun readValue(input: IppInputStream, finder: Finder, valueTag: Tag): AttributeCollection {
             input.skipValueBytes()
             val builder = ArrayList<Attribute<*>>()
 
@@ -66,7 +66,7 @@ open class CollectionType(override val name: String) :
                     // Read and throw away the blank attribute name
                     input.readValueBytes()
                     val encoder = finder.find(memberTag, memberName)
-                    builder.add(input.readAttribute(encoder, finder, memberTag, memberName))
+                    builder.add(input.readAttribute(encoder, memberTag, memberName))
                 } else {
                     throw ParseError("Bad tag in collection: $tag")
                 }

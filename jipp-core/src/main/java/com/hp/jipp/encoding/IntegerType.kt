@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for [Int] attributes. May also encode an enum type if it is not recognized. */
@@ -13,15 +11,17 @@ open class IntegerType(tag: Tag, override val name: String) : AttributeType<Int>
     constructor(name: String) : this(Tag.integerValue, name)
 
     companion object Encoder : SimpleEncoder<Int>("Integer") {
+        const val INT_LENGTH = 4
+
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag): Int {
-            input.takeLength(INT_LEN)
+        override fun readValue(input: IppInputStream, valueTag: Tag): Int {
+            input.takeLength(INT_LENGTH)
             return input.readInt()
         }
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: Int) {
-            out.writeShort(INT_LEN)
+        override fun writeValue(out: IppOutputStream, value: Int) {
+            out.writeShort(INT_LENGTH)
             out.writeInt(value)
         }
 

@@ -28,8 +28,6 @@ public class IppPacketTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-    private IppPacket.Parser parser = IppPacket.parserOf(Types.all);
-
     private IppPacket packet;
 
     @Test
@@ -171,7 +169,7 @@ public class IppPacketTest {
                 (byte) 0x03,
         };
 
-        parser.parse(new ByteArrayInputStream(bytes));
+        IppPacket.parse(new ByteArrayInputStream(bytes));
     }
 
 

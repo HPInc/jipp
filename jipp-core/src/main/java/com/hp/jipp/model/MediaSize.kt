@@ -4,13 +4,13 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.AttributeType
+import com.hp.jipp.encoding.IppInputStream
+import com.hp.jipp.encoding.IppOutputStream
 import com.hp.jipp.encoding.SimpleEncoder
 import com.hp.jipp.encoding.StringType
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.getStaticObjects
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 import java.util.regex.Pattern
 
@@ -242,13 +242,13 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
 
         @JvmField val Encoder = object : SimpleEncoder<MediaSize>("MediaSize") {
             @Throws(IOException::class)
-            override fun readValue(input: DataInputStream, valueTag: Tag): MediaSize {
+            override fun readValue(input: IppInputStream, valueTag: Tag): MediaSize {
                 val name = StringType.Encoder.readValue(input, valueTag)
                 return all[name] ?: MediaSize.of(name)
             }
 
             @Throws(IOException::class)
-            override fun writeValue(out: DataOutputStream, value: MediaSize) {
+            override fun writeValue(out: IppOutputStream, value: MediaSize) {
                 StringType.Encoder.writeValue(out, value.name)
             }
 

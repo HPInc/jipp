@@ -86,4 +86,10 @@ object Types {
     val all = Types::class.java.getStaticObjects()
             .filter { it is AttributeType<*> }
             .map { it as AttributeType<*> }
+
+    /** An object used to find encoders for all known types above */
+    @JvmField
+    val allFinder = Encoder.finderOf(Types.all.map {
+        it.name to it
+    }.toMap(), AttributeGroup.encoders)
 }

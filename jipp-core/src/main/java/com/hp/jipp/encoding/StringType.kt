@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /**
@@ -28,10 +26,10 @@ open class StringType(tag: Tag, override val name: String) : AttributeType<Strin
     companion object Encoder : SimpleEncoder<String>("String") {
         private const val TAG_MASK = 0x40
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: String) = out.writeString(value)
+        override fun writeValue(out: IppOutputStream, value: String) = out.writeString(value)
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag) = input.readString()
+        override fun readValue(input: IppInputStream, valueTag: Tag) = input.readString()
 
         override fun valid(valueTag: Tag) = valueTag.code and TAG_MASK == TAG_MASK
     }

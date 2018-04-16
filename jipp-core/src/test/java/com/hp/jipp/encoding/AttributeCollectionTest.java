@@ -44,7 +44,8 @@ public class AttributeCollectionTest {
                 (byte)0x00,
                 (byte)0x00
         };
-        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)), sFinder, Tag.beginCollection);
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), sFinder);
+        input.readAttribute(Tag.beginCollection);
     }
 
     @Test

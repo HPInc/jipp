@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 import java.net.URI
 
@@ -12,12 +10,12 @@ import java.net.URI
 open class UriType(tag: Tag, override val name: String) : AttributeType<URI>(Encoder, tag) {
     companion object Encoder : SimpleEncoder<URI>("URI") {
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: URI) {
+        override fun writeValue(out: IppOutputStream, value: URI) {
             StringType.Encoder.writeValue(out, value.toString())
         }
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag) =
+        override fun readValue(input: IppInputStream, valueTag: Tag) =
             URI.create(StringType.Encoder.readValue(input, valueTag))!!
 
         override fun valid(valueTag: Tag) = valueTag === Tag.uri

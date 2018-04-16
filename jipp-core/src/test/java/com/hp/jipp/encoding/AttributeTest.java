@@ -1,5 +1,6 @@
 package com.hp.jipp.encoding;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -106,13 +107,15 @@ public class AttributeTest {
                 1,
                 0
         };
-        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)),
-                new Encoder.Finder() {
-                    @Override
-                    public Encoder<?> find(Tag valueTag, String name) throws IOException {
-                        throw new ParseError("");
-                    }
-                }, Tag.octetString);
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), new Encoder.Finder() {
+            @Override
+            @NotNull
+            public Encoder<?> find(@NotNull Tag valueTag, @NotNull String name) throws IOException {
+                throw new ParseError("");
+            }
+        });
+
+        input.readAttribute(Tag.octetString);
     }
 
     @Test
@@ -126,7 +129,8 @@ public class AttributeTest {
                 1,
                 0
         };
-        IppEncodingsKt.readAttribute(new DataInputStream(new ByteArrayInputStream(bytes)), Cycler.sFinder, Tag.integerValue);
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), Cycler.sFinder);
+        input.readAttribute(Tag.integerValue);
     }
 
     @Test
@@ -167,8 +171,8 @@ public class AttributeTest {
                 5,
         };
 
-        Resolution resolution = ResolutionType.Encoder.readValue(
-                new DataInputStream(new ByteArrayInputStream(bytes)), Tag.resolution);
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), Types.allFinder);
+        Resolution resolution = ResolutionType.Encoder.readValue(input, Tag.resolution);
         assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
 
         KotlinTest.cover(resolution,
@@ -189,7 +193,8 @@ public class AttributeTest {
                 2,
                 0,
         };
-        IppEncodingsKt.readValueBytes(new DataInputStream(new ByteArrayInputStream(bytes)));
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), Types.allFinder);
+        input.readValueBytes();
     }
 
     @Test

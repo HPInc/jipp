@@ -3,16 +3,13 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
-
 /** Attribute type for Key/Value pairs */
 class KeyValueType(override val name: String) : AttributeType<Map<String, String>>(Encoder, Tag.octetString) {
     companion object Encoder : SimpleEncoder<Map<String, String>>("KeyValue") {
         private const val ELEMENT_SEPARATOR = ";"
         private const val PART_SEPARATOR = "="
 
-        override fun writeValue(out: DataOutputStream, value: Map<String, String>) =
+        override fun writeValue(out: IppOutputStream, value: Map<String, String>) =
                 StringType.Encoder.writeValue(out, encode(value))
 
         private fun encode(input: Map<String, String>): String {
@@ -28,7 +25,7 @@ class KeyValueType(override val name: String) : AttributeType<Map<String, String
 
         override fun valid(valueTag: Tag) = valueTag == Tag.octetString
 
-        override fun readValue(input: DataInputStream, valueTag: Tag): Map<String, String> =
+        override fun readValue(input: IppInputStream, valueTag: Tag): Map<String, String> =
                 decode(StringType.Encoder.readValue(input, valueTag))
 
         private fun decode(input: String): Map<String, String> =

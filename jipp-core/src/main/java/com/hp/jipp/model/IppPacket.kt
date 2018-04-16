@@ -5,17 +5,19 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeType
+import com.hp.jipp.encoding.Encoder
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
+import com.hp.jipp.encoding.IppInputStream
+import com.hp.jipp.encoding.IppOutputStream
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toList
 import java.io.BufferedInputStream
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * An IPP packet as specified in RFC2910.
@@ -71,13 +73,6 @@ data class IppPacket constructor(
     fun <T> getValues(groupDelimiter: Tag, attributeType: AttributeType<T>): List<T> =
         getAttributeGroup(groupDelimiter)?.getValues(attributeType) ?: emptyList()
 
-    /** Parses packets  */
-    interface Parser {
-        /** Parse a single packet out of the supplied [DataInputStream]. */
-        @Throws(IOException::class)
-        fun parse(input: InputStream): IppPacket
-    }
-
     private fun prefix(): String {
         return "IppPacket(v=x" + Integer.toHexString(versionNumber) +
                 " code=" + getCode(Code.Encoder) +
@@ -85,14 +80,15 @@ data class IppPacket constructor(
                 ")"
     }
 
-    /** Write a Packet to this [DataOutputStream] as per RFC2910  */
+    /** Write a Packet to this [OutputStream] as per RFC2910  */
     @Throws(IOException::class)
-    fun write(output: DataOutputStream) {
-        output.writeShort(versionNumber)
-        output.writeShort(code)
-        output.writeInt(requestId)
-        attributeGroups.forEach { it.write(output) }
-        Tag.endOfAttributes.write(output)
+    fun write(output: OutputStream) {
+        val ippOutput = IppOutputStream(output)
+        ippOutput.writeShort(versionNumber)
+        ippOutput.writeShort(code)
+        ippOutput.writeInt(requestId)
+        attributeGroups.forEach { it.write(ippOutput) }
+        Tag.endOfAttributes.write(ippOutput)
     }
 
     /** Return a pretty-printed version of this packet (including separators and line breaks) */
@@ -108,44 +104,32 @@ data class IppPacket constructor(
         /** Default version number to be sent in a packet (0x0101 for IPP 1.1)  */
         const val DEFAULT_VERSION_NUMBER = 0x0101
 
-        /** Return a parser with knowledge of specified attribute types  */
-        @JvmStatic fun parserOf(attributeTypes: List<AttributeType<*>>): Parser {
-            val attributeTypeMap = attributeTypes.map {
-                it.name to it
-            }.toMap()
-
-            return object : Parser {
-                @Throws(IOException::class)
-                override fun parse(input: InputStream) =
-                        readPacket(DataInputStream(BufferedInputStream(input)), attributeTypeMap)
-            }
-        }
-
-        private val parser = IppPacket.parserOf(Types.all)
-
         @Throws(IOException::class)
-        private fun readPacket(input: DataInputStream, attributeTypes: Map<String, AttributeType<*>>): IppPacket {
+        private fun readPacket(input: IppInputStream): IppPacket {
 
             val versionNumber = input.readShort().toInt()
             val code = input.readShort().toInt()
             val requestId = input.readInt()
 
-            return IppPacket(versionNumber, code, requestId, { readNextGroup(input, attributeTypes) }.toList())
+            return IppPacket(versionNumber, code, requestId, { readNextGroup(input) }.toList())
         }
 
-        private fun readNextGroup(input: DataInputStream, attributeTypes: Map<String, AttributeType<*>>):
+        private fun readNextGroup(input: IppInputStream):
                 AttributeGroup? {
             val tag = Tag.read(input)
             return when (tag) {
                 Tag.endOfAttributes -> null
                 else -> {
                     if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
-                    AttributeGroup.read(input, tag, attributeTypes)
+                    AttributeGroup.read(input, tag)
                 }
             }
         }
 
-        /** Parses input using the default packet parser */
-        @JvmStatic fun parse(input: InputStream): IppPacket = parser.parse(input)
+        @JvmStatic @JvmOverloads
+        fun parse(input: InputStream, finder: Encoder.Finder = Types.allFinder): IppPacket {
+            val ippInput = IppInputStream(input, finder)
+            return readPacket(ippInput)
+        }
     }
 }

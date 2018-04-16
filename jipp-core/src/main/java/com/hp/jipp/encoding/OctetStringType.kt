@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** An [AttributeType] for octet string values (binary data) */
@@ -12,12 +10,12 @@ class OctetStringType(tag: Tag, override val name: String) : AttributeType<ByteA
     companion object Encoder : SimpleEncoder<ByteArray>("octetString") {
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: ByteArray) {
+        override fun writeValue(out: IppOutputStream, value: ByteArray) {
             out.writeValueBytes(value)
         }
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag): ByteArray {
+        override fun readValue(input: IppInputStream, valueTag: Tag): ByteArray {
             return input.readValueBytes()
         }
 
