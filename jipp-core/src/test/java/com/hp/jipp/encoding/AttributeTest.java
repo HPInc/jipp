@@ -8,7 +8,10 @@ import org.junit.rules.ExpectedException;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
@@ -52,8 +55,19 @@ public class AttributeTest {
     public void multiOctetString() throws IOException {
         AttributeType<byte[]> stringType = new OctetStringType(Tag.nameWithoutLanguage, "name");
         Attribute<byte[]> attribute = stringType.of("value".getBytes(Charsets.UTF_8), "value2".getBytes(Charsets.UTF_8));
+        assertEquals(2, attribute.size());
         assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
         assertArrayEquals("value2".getBytes(Charsets.UTF_8), attribute.get(1));
+    }
+
+    @Test
+    public void multiOctetStringIterate() throws IOException {
+        AttributeType<byte[]> stringType = new OctetStringType(Tag.nameWithoutLanguage, "name");
+        Attribute<byte[]> attribute = stringType.of("value".getBytes(Charsets.UTF_8), "value2".getBytes(Charsets.UTF_8));
+        List<byte[]> list = new ArrayList<byte[]>(attribute);
+        assertEquals(2, list.size());
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), list.get(0));
+        assertArrayEquals("value2".getBytes(Charsets.UTF_8), list.get(1));
     }
 
     @Test
@@ -220,6 +234,5 @@ public class AttributeTest {
         KotlinTest.cover(jobName,
                 jobName.copy(jobName.component1(), jobName.component2(), jobName.component3(), jobName.component4()),
                 jobName.copy(jobName.component1(), "goodbye", jobName.component3(), jobName.component4()));
-
     }
 }
