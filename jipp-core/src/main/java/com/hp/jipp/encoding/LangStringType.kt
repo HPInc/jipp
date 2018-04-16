@@ -34,22 +34,20 @@ class LangStringType(tag: Tag, override val name: String) : AttributeType<LangSt
 
     companion object Encoder : SimpleEncoder<LangString>("LangString") {
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag): LangString {
-            val bytes = OctetStringType.Encoder.readValue(input, valueTag)
-            val inBytes = DataInputStream(ByteArrayInputStream(bytes))
-            val lang = inBytes.readString()
-            val string = inBytes.readString()
+        override fun readValue(input: IppInputStream, valueTag: Tag): LangString {
+            // Length should exactly match lang/string total length but we will discard
+            input.readShort().toInt()
+            val lang = input.readString()
+            val string = input.readString()
             return LangString(string, lang)
         }
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: LangString) {
-            val bytesOut = ByteArrayOutputStream()
-            val dataOut = DataOutputStream(bytesOut)
+        override fun writeValue(out: IppOutputStream, value: LangString) {
             value.lang ?: throw BuildError("Cannot write a LangString without a language")
-            dataOut.writeString(value.lang)
-            dataOut.writeString(value.string)
-            OctetStringType.Encoder.writeValue(out, bytesOut.toByteArray())
+            out.writeShort(out.stringLength(value.lang) + out.stringLength(value.string))
+            out.writeString(value.lang)
+            out.writeString(value.string)
         }
 
         override fun valid(valueTag: Tag): Boolean {

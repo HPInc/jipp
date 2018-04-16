@@ -4,8 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.getStaticObjects
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** An IPP enum type */
@@ -43,12 +41,12 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
             map[code] ?: factory(code, "$typeName(x${Integer.toHexString(code)})")
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, finder: Finder, valueTag: Tag): T {
+        override fun readValue(input: IppInputStream, finder: Finder, valueTag: Tag): T {
             return get(IntegerType.Encoder.readValue(input, valueTag))
         }
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: T) {
+        override fun writeValue(out: IppOutputStream, value: T) {
             IntegerType.Encoder.writeValue(out, value.code)
         }
 

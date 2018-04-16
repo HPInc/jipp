@@ -87,8 +87,8 @@ public class AttributeGroupTest {
     public void missingEncoder() throws Exception {
         // This cannot happen but if it did it would throw nicely.
         exception.expect(ParseError.class);
-        AttributeGroup.finderOf(Collections.<String, AttributeType<?>>emptyMap(),
-                Arrays.<Encoder<?>>asList())
+        Encoder.finderOf(Collections.<String, AttributeType<?>>emptyMap(),
+                Collections.<Encoder<?>>emptyList())
                 .find(Tag.nameWithLanguage, "haha");
     }
 

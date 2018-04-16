@@ -11,13 +11,13 @@ import java.io.IOException
 class BooleanType(override val name: String) : AttributeType<Boolean>(Encoder, Tag.booleanValue) {
     companion object Encoder : SimpleEncoder<Boolean>("Boolean") {
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: Boolean) {
+        override fun writeValue(out: IppOutputStream, value: Boolean) {
             out.writeShort(1)
             out.writeByte(if (value) 0x01 else 0x00)
         }
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag): Boolean {
+        override fun readValue(input: IppInputStream, valueTag: Tag): Boolean {
             input.takeLength(1)
             return input.readByte().toInt() != 0
         }

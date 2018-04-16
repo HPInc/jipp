@@ -1,5 +1,7 @@
 package com.hp.jipp.model;
 
+import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.encoding.IppOutputStream;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
 
@@ -35,14 +37,14 @@ public class MediaSizeTest {
     @Test
     public void build() throws Exception {
         MediaSize.Type mediaSupportedType = new MediaSize.Type("media-supported");
-        assertTrue(MediaSize.jisB7 == cycle(mediaSupportedType, mediaSupportedType.of(
+        assertSame(MediaSize.jisB7, cycle(mediaSupportedType, mediaSupportedType.of(
                 MediaSize.jisB7)).getValue(0));
     }
 
     @Test
     public void same() throws Exception {
         // Referential equality because this size is known
-        assertTrue(MediaSize.isoA10 == parse("iso_a10_26x37mm"));
+        assertSame(MediaSize.isoA10, parse("iso_a10_26x37mm"));
     }
 
     @Test
@@ -50,11 +52,13 @@ public class MediaSizeTest {
         assertEquals(0, parse("iso_a10_26").getHeight());
     }
 
-    private MediaSize parse(String input) throws Exception {
+    private MediaSize parse(String string) throws Exception {
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-        StringType.Encoder.writeValue(new DataOutputStream(outBytes), input);
+        IppOutputStream output = new IppOutputStream(outBytes);
 
-        return MediaSize.Encoder.readValue(new DataInputStream(new ByteArrayInputStream(outBytes.toByteArray())),
-                Tag.keyword);
+        StringType.Encoder.writeValue(output, string);
+
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(outBytes.toByteArray()), sFinder);
+        return MediaSize.Encoder.readValue(input, Tag.keyword);
     }
 }

@@ -4,8 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.getStaticObjects
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** Attribute type for attributes based on [Keyword] */
@@ -19,13 +17,13 @@ open class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override va
         private val map: Map<String, T> = all.map { it.name to it }.toMap()
 
         @Throws(IOException::class)
-        override fun readValue(input: DataInputStream, valueTag: Tag): T {
+        override fun readValue(input: IppInputStream, valueTag: Tag): T {
             val key = StringType.Encoder.readValue(input, valueTag)
             return map[key] ?: factory.of(key)
         }
 
         @Throws(IOException::class)
-        override fun writeValue(out: DataOutputStream, value: T) {
+        override fun writeValue(out: IppOutputStream, value: T) {
             StringType.Encoder.writeValue(out, value.name)
         }
 

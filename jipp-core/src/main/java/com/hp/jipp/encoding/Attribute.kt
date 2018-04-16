@@ -8,7 +8,6 @@ import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toHexString
 
-import java.io.DataOutputStream
 import java.io.IOException
 
 /**
@@ -65,7 +64,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     /** Write this attribute (including all of its values) to the output stream */
     @Throws(IOException::class)
-    fun write(stream: DataOutputStream) {
+    fun write(stream: IppOutputStream) {
         writeHeader(stream)
         if (values.isEmpty()) {
             stream.writeShort(0)
@@ -81,7 +80,7 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     // Write ONLY the value tag + name components of an attribute
     @Throws(IOException::class)
-    private fun writeHeader(stream: DataOutputStream, name: String = this.name) {
+    private fun writeHeader(stream: IppOutputStream, name: String = this.name) {
         valueTag.write(stream)
         stream.writeString(name)
     }

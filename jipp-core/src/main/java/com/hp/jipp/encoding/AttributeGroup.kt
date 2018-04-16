@@ -62,7 +62,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
 
     /** Write a group to the [DataOutputStream] */
     @Throws(IOException::class)
-    fun write(stream: DataOutputStream) {
+    fun write(stream: IppOutputStream) {
         stream.writeByte(tag.code)
         attributes.forEach { it.write(stream) }
     }
@@ -74,35 +74,12 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 IntegerType.Encoder, UriType.Encoder, StringType.Encoder, BooleanType.Encoder, LangStringType.Encoder,
                 CollectionType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder, OctetStringType.Encoder)
 
-        /** Return a finder for the given attributeTypes and encoders */
-        @JvmStatic fun finderOf(
-            attributeTypes: Map<String, AttributeType<*>>,
-            encoders: List<Encoder<*>>
-        ): Encoder.Finder {
-            return object : Encoder.Finder {
-                @Throws(IOException::class)
-                override fun find(valueTag: Tag, name: String): Encoder<*> {
-                    // Check for a matching attribute type
-                    val attributeType = attributeTypes[name]
-
-                    return if (attributeType != null && attributeType.encoder.valid(valueTag)) {
-                        attributeType.encoder
-                    } else {
-                        // If no valid match above then try with each default encoder
-                        encoders.find { it.valid(valueTag) }
-                            ?: throw ParseError("No encoder found for $name($valueTag)")
-                    }
-                }
-            }
-        }
-
         /** Read a group from the [DataInputStream] */
         @JvmStatic
         @Throws(IOException::class)
-        fun read(input: DataInputStream, startTag: Tag, attributeTypes: Map<String, AttributeType<*>>): AttributeGroup {
+        fun read(input: IppInputStream, startTag: Tag): AttributeGroup {
             var more = true
             val attributes = ArrayList<Attribute<*>>()
-            val finder = AttributeGroup.finderOf(attributeTypes, AttributeGroup.encoders)
 
             while (more) {
                 input.mark(1)
@@ -111,7 +88,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                     input.reset()
                     more = false
                 } else {
-                    attributes.add(input.readAttribute(finder, valueTag))
+                    attributes.add(input.readAttribute(valueTag))
                 }
             }
             return groupOf(startTag, attributes)
