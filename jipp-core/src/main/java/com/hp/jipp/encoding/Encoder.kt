@@ -34,8 +34,8 @@ abstract class Encoder<T> {
         /** Return a finder for the given attributeTypes and encoders */
         @JvmStatic
         fun finderOf(
-                attributeTypes: Map<String, AttributeType<*>>,
-                encoders: List<Encoder<*>>
+            attributeTypes: Map<String, AttributeType<*>>,
+            encoders: List<Encoder<*>>
         ): Encoder.Finder {
             return object : Encoder.Finder {
                 @Throws(IOException::class)

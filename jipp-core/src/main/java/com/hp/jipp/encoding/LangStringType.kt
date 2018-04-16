@@ -5,10 +5,6 @@ package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** An language-encoded string attribute type  */

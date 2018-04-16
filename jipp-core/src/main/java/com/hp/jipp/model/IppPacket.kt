@@ -14,7 +14,6 @@ import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toList
-import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream

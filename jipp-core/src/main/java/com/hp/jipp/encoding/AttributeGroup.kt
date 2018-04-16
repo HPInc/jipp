@@ -4,7 +4,6 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.BuildError
-import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 

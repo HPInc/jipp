@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /** A boolean attribute type */
