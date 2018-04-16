@@ -50,11 +50,11 @@ jobs:
           destination: reports
 
       - store_artifacts:
-          path: ./jipp-core/build/libs/*.jar
+          path: ./jipp-core/build/libs
           destination: jars
 
       - store_artifacts:
-          path: ./sample/jprint/build/distributions/*.zip
+          path: ./sample/jprint/build/distributions
           destination: apps
 
       - store_test_results:
