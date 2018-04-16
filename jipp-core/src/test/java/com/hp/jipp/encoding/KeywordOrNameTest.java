@@ -52,18 +52,18 @@ public class KeywordOrNameTest {
 
     @Test
     public void testKeyword() throws IOException {
-        assertEquals(Sample.one, Cycler.cycle(konType, konType.of(Sample.one)).getValue(0));
+        assertEquals(Sample.one, Cycler.cycle(konType, konType.of(Sample.one)).get(0));
     }
 
     @Test
     public void testName() throws IOException {
         // Wrap a non-keyword value
-        assertEquals(Sample.of("four").name, Cycler.cycle(konType, konType.of(Sample.of("four"))).getValue(0).name);
+        assertEquals(Sample.of("four").name, Cycler.cycle(konType, konType.of(Sample.of("four"))).get(0).name);
     }
 
     @Test
     public void testNameEncodedName() throws IOException {
         // Encode it as Name, which is also legal
-        assertEquals("three", Cycler.cycle(konType, nameType.of("three")).getValue(0).name);
+        assertEquals("three", Cycler.cycle(konType, nameType.of("three")).get(0).name);
     }
 }

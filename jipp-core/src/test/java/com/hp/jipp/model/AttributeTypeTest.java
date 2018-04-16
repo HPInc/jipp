@@ -81,7 +81,7 @@ public class AttributeTypeTest {
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        IntRange range = cycle(Types.copiesSupported.of(new IntRange(0, 99))).getValue(0);
+        IntRange range = cycle(Types.copiesSupported.of(new IntRange(0, 99))).get(0);
         assertEquals(0, range.getFirst());
         assertEquals(99, range.getLast());
     }
@@ -89,7 +89,7 @@ public class AttributeTypeTest {
     @Test
     public void resolution() throws Exception {
         Resolution resolution = cycle(Types.printerResolutionDefault.of(
-                new Resolution(300, 600, ResolutionUnit.dotsPerInch))).getValue(0);
+                new Resolution(300, 600, ResolutionUnit.dotsPerInch))).get(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
         assertEquals(ResolutionUnit.dotsPerInch, resolution.getUnit());

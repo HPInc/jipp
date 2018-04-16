@@ -12,7 +12,7 @@ import java.io.IOException
  */
 open class StringType(tag: Tag, override val name: String) : AttributeType<String>(Encoder, tag) {
 
-    override fun of(attribute: Attribute<*>): Attribute<String>? {
+    override fun convert(attribute: Attribute<*>): Attribute<String>? {
         val values: List<String> = attribute.values.mapNotNull {
             when (it) {
                 is String -> it

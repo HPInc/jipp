@@ -39,7 +39,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             @Suppress("UNCHECKED_CAST")
             attribute as Attribute<T>
         } else {
-            attributeType.of(attribute)
+            attributeType.convert(attribute)
         }
     }
 

@@ -38,7 +38,7 @@ public class MediaSizeTest {
     public void build() throws Exception {
         MediaSize.Type mediaSupportedType = new MediaSize.Type("media-supported");
         assertSame(MediaSize.jisB7, cycle(mediaSupportedType, mediaSupportedType.of(
-                MediaSize.jisB7)).getValue(0));
+                MediaSize.jisB7)).get(0));
     }
 
     @Test

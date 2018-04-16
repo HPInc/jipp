@@ -11,7 +11,7 @@ import java.io.IOException
 class LangStringType(tag: Tag, override val name: String) : AttributeType<LangString>(Encoder, tag) {
 
     /** Return an [Attribute] of this type */
-    override fun of(attribute: Attribute<*>): Attribute<LangString>? {
+    override fun convert(attribute: Attribute<*>): Attribute<LangString>? {
         if (!validInputTag(attribute.valueTag)) {
             return null
         }

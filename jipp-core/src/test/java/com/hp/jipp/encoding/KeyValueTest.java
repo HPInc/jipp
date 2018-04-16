@@ -19,7 +19,7 @@ public class KeyValueTest {
     public void empty() throws Exception {
         Map<String, String> value = Collections.emptyMap();
         @SuppressWarnings("unchecked") Attribute<Map<String, String>> attribute = keyValueType.of(value);
-        assertEquals(value, cycle(keyValueType, attribute).getValue(0));
+        assertEquals(value, cycle(keyValueType, attribute).get(0));
     }
 
     @Test
@@ -28,6 +28,6 @@ public class KeyValueTest {
         value.put("one", "two");
         value.put("three", "four");
         Attribute<Map<String, String>> attribute = keyValueType.of(Collections.singletonList(value));
-        assertEquals(value, cycle(keyValueType, attribute).getValue(0));
+        assertEquals(value, cycle(keyValueType, attribute).get(0));
     }
 }

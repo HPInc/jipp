@@ -39,7 +39,7 @@ class EnumTest {
     @Throws(Exception::class)
     fun custom() {
         val custom = Sample(0x77, "Sample(x77)")
-        assertEquals(custom, cycle(MySample, MySample.of(custom)).getValue(0))
+        assertEquals(custom, cycle(MySample, MySample.of(custom))[0])
     }
 
     @Test

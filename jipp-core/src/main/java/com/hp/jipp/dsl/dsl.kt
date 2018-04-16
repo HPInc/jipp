@@ -22,8 +22,8 @@ object ippPacket {
     operator fun invoke(
         operation: Operation,
         requestId: Int = DEFAULT_REQUEST_ID,
-        init: IppPacketContext.() -> Unit
-    ) = with(IppPacketContext(DEFAULT_VERSION_NUMBER, operation.code, requestId)) {
+        init: InPacket.() -> Unit
+    ) = with(InPacket(DEFAULT_VERSION_NUMBER, operation.code, requestId)) {
         init()
         build()
     }
@@ -31,8 +31,8 @@ object ippPacket {
     operator fun invoke(
         status: Status,
         requestId: Int = DEFAULT_REQUEST_ID,
-        init: IppPacketContext.() -> Unit
-    ) = with(IppPacketContext(DEFAULT_VERSION_NUMBER, status.code, requestId)) {
+        init: InPacket.() -> Unit
+    ) = with(InPacket(DEFAULT_VERSION_NUMBER, status.code, requestId)) {
         init()
         build()
     }
@@ -42,7 +42,7 @@ object ippPacket {
  * Context for building an IPP [IppPacket].
  */
 @IppDslMarker
-class IppPacketContext constructor(
+class InPacket constructor(
     var versionNumber: Int = DEFAULT_VERSION_NUMBER,
     var code: Int,
     var requestId: Int = ippPacket.DEFAULT_REQUEST_ID
@@ -55,16 +55,16 @@ class IppPacketContext constructor(
         get() = Status.Encoder[code]
 
     /** Add a new attribute group to the packet */
-    fun group(tag: Tag, init: AttributeGroupContext.() -> Unit) {
+    fun group(tag: Tag, init: InAttributeGroup.() -> Unit) {
         groups.add(group.invoke(tag, init))
     }
 
     /** Add an operation attributes group */
-    fun operationAttributes(init: AttributeGroupContext.() -> Unit) {
+    fun operationAttributes(init: InAttributeGroup.() -> Unit) {
         groups.add(group.invoke(Tag.operationAttributes, init))
     }
 
-    fun jobAttributes(init: AttributeGroupContext.() -> Unit) {
+    fun jobAttributes(init: InAttributeGroup.() -> Unit) {
         groups.add(group.invoke(Tag.jobAttributes, init))
     }
 
@@ -75,15 +75,21 @@ class IppPacketContext constructor(
 /** DSL for defining an AttributeGroup */
 @Suppress("ClassName", "ClassNaming")
 object group {
-    operator fun invoke(tag: Tag, init: AttributeGroupContext.() -> Unit): AttributeGroup {
-        val context = AttributeGroupContext(tag)
+    operator fun invoke(tag: Tag, init: InAttributeGroup.() -> Unit): AttributeGroup {
+        val context = InAttributeGroup(tag)
         context.init()
         return context.build()
     }
 }
 
+@IppDslMarker
+class InAttributeGroup internal constructor(var tag: Tag) : InAttributes() {
+    /** Build the final attribute group */
+    internal fun build(): AttributeGroup = AttributeGroup(tag, attributes.toList())
+}
+
 /** Any context which can receive attributes */
-sealed class AttributesContext {
+sealed class InAttributes {
     internal val attributes = ArrayList<Attribute<*>>()
 
     fun attr(vararg attribute: Attribute<*>) {
@@ -100,8 +106,8 @@ sealed class AttributesContext {
     }
 
     /** Add a collection */
-    fun col(collectionType: CollectionType, init: CollectionContext.() -> Unit) {
-        attr(collectionType(CollectionContext().let {
+    fun col(collectionType: CollectionType, init: InCollection.() -> Unit) {
+        attr(collectionType(InCollection().let {
             it.init()
             it.build()
         }))
@@ -109,20 +115,14 @@ sealed class AttributesContext {
 }
 
 /** Return a new Collection based on a collection type and the contents supplied in the block */
-operator fun CollectionType.invoke(init: CollectionContext.() -> Unit) =
-        this(CollectionContext().let {
+operator fun CollectionType.invoke(init: InCollection.() -> Unit) =
+        this(InCollection().let {
             it.init()
             it.build()
         })
 
 @IppDslMarker
-class AttributeGroupContext internal constructor(var tag: Tag) : AttributesContext() {
-    /** Build the final attribute group */
-    internal fun build(): AttributeGroup = AttributeGroup(tag, attributes.toList())
-}
-
-@IppDslMarker
-class CollectionContext : AttributesContext() {
+class InCollection : InAttributes() {
     /** Build the final collection */
     internal fun build(): AttributeCollection = AttributeCollection(attributes.toList())
 }

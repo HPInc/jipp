@@ -17,7 +17,7 @@ import java.io.IOException
  * @param valueTag must be valid for the attribute type, according to the encoder.
  */
 data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: Encoder<T>) :
-        PrettyPrintable {
+        AbstractList<T>(), PrettyPrintable {
 
     init {
         if (!(encoder.valid(valueTag))) {
@@ -25,10 +25,12 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         }
     }
 
-    /** Return the n'th value in this attribute, assuming it is present */
-    fun getValue(n: Int): T {
-        return values[n]
-    }
+    override fun iterator(): Iterator<T> = values.iterator()
+
+    override val size: Int
+        get() = values.size
+
+    override fun get(index: Int): T = values[index]
 
     /** Return a copy of this attribute with a different name */
     fun withName(newName: String): Attribute<T> = copy(name = newName)

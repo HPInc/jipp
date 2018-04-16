@@ -45,15 +45,15 @@ public class AttributeTest {
         attribute = cycle(attribute);
         assertEquals(Tag.octetString, attribute.getValueTag());
         assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.getValue(0));
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
     }
 
     @Test
     public void multiOctetString() throws IOException {
         AttributeType<byte[]> stringType = new OctetStringType(Tag.nameWithoutLanguage, "name");
         Attribute<byte[]> attribute = stringType.of("value".getBytes(Charsets.UTF_8), "value2".getBytes(Charsets.UTF_8));
-        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.getValue(0));
-        assertArrayEquals("value2".getBytes(Charsets.UTF_8), attribute.getValue(1));
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
+        assertArrayEquals("value2".getBytes(Charsets.UTF_8), attribute.get(1));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class AttributeTest {
 
     @Test
     public void badConversion() throws IOException {
-        assertNull(Types.jobId.of(Types.jobName.of("string")));
+        assertNull(Types.jobId.convert(Types.jobName.of("string")));
     }
 
     @Test

@@ -14,7 +14,7 @@ data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrint
     operator fun <T> get(type: AttributeType<T>): Attribute<T>? {
         return attributes
                 .firstOrNull { it.valueTag == type.tag && it.name == type.name }
-                ?.let { type.of(it) }
+                ?.let { type.convert(it) }
     }
 
     /** Return all values found from the first attribute matching the type, or an empty list if no match  */
