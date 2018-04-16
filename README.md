@@ -4,7 +4,7 @@
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp-core/javadoc/index.html)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
-# JIPP: A Java implementation of IPP
+# JIPP: A Java-compatible IPP library
 
 This project contains the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
 
