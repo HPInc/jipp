@@ -5,8 +5,6 @@ package com.hp.jipp.encoding
 
 import com.hp.jipp.util.ParseError
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.IOException
 
 /**

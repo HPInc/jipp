@@ -30,8 +30,8 @@ class IppOutputStream(outputStream: OutputStream) : DataOutputStream(outputStrea
 }
 
 class IppInputStream(
-        inputStream: InputStream,
-        private val finder: Encoder.Finder
+    inputStream: InputStream,
+    private val finder: Encoder.Finder
 ) : DataInputStream(BufferedInputStream(inputStream)) {
 
     constructor(inputStream: InputStream, attributeTypes: List<AttributeType<*>>) : this(
@@ -72,7 +72,7 @@ class IppInputStream(
         }
     }
 
-    fun <T>readAttribute(encoder: Encoder<T>, valueTag: Tag, name: String): Attribute<T> {
+    fun <T> readAttribute(encoder: Encoder<T>, valueTag: Tag, name: String): Attribute<T> {
         val all = listOf(encoder.readValue(this, finder, valueTag)) +
                 { readAdditionalValue(encoder, valueTag) }.toSequence()
         return Attribute(valueTag, name, all, encoder)
