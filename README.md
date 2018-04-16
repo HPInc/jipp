@@ -6,9 +6,12 @@
 
 # JIPP: A Java-compatible IPP library
 
-This project contains the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
+This project contains:
 
-Features:
+* `jipp-core`, the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
+* `jprint`, a sample app showing how jipp-core can be used to send a document to a printer.
+
+`jipp-core` features:
 * Supports construction of IPP servers, clients, routers, gateways, etc.
 * Common operations and attributes are defined and ready to use.
 * Can be extended to support new operations and attributes.
@@ -23,7 +26,8 @@ What could I do with this?
 * Experiment with alternative IPP transports.
 * Implement a cloud-based print server or client.
 
-This library supplies a Java-compatible API but is actually implemented in [Kotlin](https://kotlinlang.org/).
+The API is fully Java-compatible but is actually implemented in [Kotlin](https://kotlinlang.org/).
+[https://hpinc.github.io/jipp-core/javadoc/index.html](JavaDoc) is available.
 
 ## Usage
 
@@ -46,6 +50,10 @@ unzip -o ./sample/jprint/build/distributions/jprint-*.zip
 # (The printer must natively support the file type.)
 jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 ```
+
+## API Maturity
+
+As an 0.5 project, APIs may still be changed in non-backwards-compatible ways.
 
 ## Dependencies
 
