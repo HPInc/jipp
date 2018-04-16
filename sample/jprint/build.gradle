@@ -12,8 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile project(path: ':jipp-core') // include root project
-    compile 'org.jetbrains:annotations:13.0' // for @NotNull etc
+    implementation project(path: ':jipp-core')
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
