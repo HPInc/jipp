@@ -31,7 +31,7 @@ class HttpIppClientTransport : IppClientTransport {
 
         return DataOutputStream(connection.outputStream).use { output ->
             println("Writing packet")
-            request.ippPacket.write(output)
+            request.packet.write(output)
             println("Writing Extra Data")
             request.data?.apply {
                 copyTo(output)

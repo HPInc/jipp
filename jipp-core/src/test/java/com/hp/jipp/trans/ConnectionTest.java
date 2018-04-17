@@ -55,6 +55,6 @@ public class ConnectionTest {
         IppPacketData response = client.sendData(URI.create("ipp://localhost:" + port + path),
                 new IppPacketData(requestPacket, null));
 
-        assertEquals(responsePacket, response.getIppPacket());
+        assertEquals(responsePacket, response.getPacket());
     }
 }

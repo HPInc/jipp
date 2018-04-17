@@ -42,7 +42,7 @@ class Main {
         try {
             IppPacketData request = new IppPacketData(printRequest, new FileInputStream(inputFile));
             IppPacketData response = transport.sendData(uri, request);
-            System.out.println("Received: " + response.getIppPacket().prettyPrint(100, "  "));
+            System.out.println("Received: " + response.getPacket().prettyPrint(100, "  "));
         } catch (IOException e) {
             e.printStackTrace();
         }

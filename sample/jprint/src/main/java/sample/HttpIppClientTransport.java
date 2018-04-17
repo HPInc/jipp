@@ -30,7 +30,7 @@ class HttpIppClientTransport implements IppClientTransport {
 
         // Copy IppPacket to the output stream
         try (OutputStream output = connection.getOutputStream()) {
-            request.getIppPacket().write(new DataOutputStream(output));
+            request.getPacket().write(new DataOutputStream(output));
             InputStream extraData = request.getData();
             if (extraData != null) {
                 copy(extraData, output);
