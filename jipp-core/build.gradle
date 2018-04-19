@@ -38,7 +38,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.15.0'
 }
 
-version = '0.5.1'
+version = ext.jipp_version
 group = 'com.hp.jipp'
 
 targetCompatibility = 1.6
