@@ -27,8 +27,8 @@ What could I do with this?
 * Experiment with alternative IPP transports.
 * Implement a cloud-based print server or client.
 
-The API is fully Java-compatible but is actually implemented in [Kotlin](https://kotlinlang.org/).
-[https://hpinc.github.io/jipp/javadoc/index.html](JavaDoc) is available.
+The API is fully Java-compatible but is actually implemented in Kotlin.
+[JavaDoc](https://hpinc.github.io/jipp/javadoc/index.html) is available for the Java-facing API.
 
 ## Usage
 
