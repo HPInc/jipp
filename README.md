@@ -2,6 +2,7 @@
 [![CodeCov](https://codecov.io/github/HPInc/jipp/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp/javadoc/index.html)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.2.31-orange.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
@@ -34,8 +35,25 @@ The API is fully Java-compatible but is actually implemented in [Kotlin](https:/
 In short:
 
 1. Add the current version of JIPP to your project
-2. Create an `IppClientTransport` or `IppServerTransport`
-3. Use the transport to create, parse and exchange `IppPacket` objects
+```
+dependencies {
+    compile 'com.hp.jipp:jipp-core:0.5.3'
+}
+```
+2. Create an `IppClientTransport` or `IppServerTransport` (see example
+[`HttpIppClientTransport.java`](https://github.com/HPInc/jipp/blob/master/sample/jprint/src/main/java/sample/HttpIppClientTransport.java))
+3. Use the transport to send and receive `IppPacket` objects, e.g.:
+```
+URI uri = URI.create("http://192.168.1.100:631/ipp/print");
+IppPacket printRequest = new IppPacket(Operation.printJob, 123,
+        groupOf(operationAttributes,
+                attributesCharset.of("utf-8"),
+                attributesNaturalLanguage.of("en"),
+                printerUri.of(uri),
+                requestingUserName.of("user"),
+                documentFormat.of("application/octet-stream")));
+transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
+```
 
 A very basic use case is demonstrated by the `jclient` sample app. To run it:
 
