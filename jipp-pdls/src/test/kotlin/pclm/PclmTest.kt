@@ -1,9 +1,11 @@
 package pclm
 
+import util.ByteWindow
 import com.hp.jipp.doc.pclm.PclmCapabilities
 import com.hp.jipp.doc.pclm.PclmWriter
 import java.io.ByteArrayOutputStream
 import org.junit.Test
+import util.RandomDocument
 
 class PclmTest {
 

@@ -1,5 +1,6 @@
 package pclm
 
+import util.ByteWindow
 import org.hamcrest.Matchers.isOneOf
 import org.junit.Assert
 import org.junit.Assert.* // ktlint-disable no-wildcard-imports
@@ -84,7 +85,7 @@ fun ByteWindow.intersects(other: ByteWindow): Boolean {
 
 private fun Iterable<ByteWindow>.stripComments(): Iterable<ByteWindow> = filterNot { it.array[it.offset] == '%'.toByte() }
 
-/** Return an iterator that skips any ByteWindow containing a comment */
+/** Return an iterator that skips any util.ByteWindow containing a comment */
 private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
     val parent = this
     return object : Iterator<ByteWindow> {

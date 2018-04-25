@@ -13,13 +13,13 @@ import sun.nio.cs.StreamEncoder
 import kotlin.math.roundToInt
 
 /**
- * Writes a rasterizable document to PCLm page description language as specified in
- * "Wi-Fi Peer-to-Peer Services Print Technical Specification v1.1".
+ * Writes a document using PCLm page description language as specified in "Wi-Fi Peer-to-Peer
+ * Services Print Technical Specification v1.1".
  *
  * This format is a strict subset of PDF, so a PCLm file can be opened and inspected by ordinary
  * PDF viewers.
  *
- * IMPORTANT: This implementation does NOT support Duplex use cases yet.
+ * IMPORTANT: This implementation does NOT yet support Duplex use cases.
  *
  * See also: https://wwwimages2.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf
  */
