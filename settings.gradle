@@ -1,4 +1,5 @@
-include ':jprint', ':jipp-core'
+include ':jprint'
+include 'jipp-core'
+include 'jipp-pdl'
 
-project(':jipp-core').projectDir = new File(rootDir, 'jipp-core')
 project(':jprint').projectDir = new File(rootDir, 'sample/jprint')

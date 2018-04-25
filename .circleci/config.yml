@@ -29,7 +29,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "jipp-core/build.gradle" }}
+          - v1-dependencies-{{ checksum "jipp-core/build.gradle" }}-{{ checksum "jipp-pdl/build.gradle" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -43,19 +43,25 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "jipp-core/build.gradle" }}
+          key: v1-dependencies-{{ checksum "jipp-core/build.gradle" }}-{{ checksum "jipp-pdl/build.gradle" }}
 
       - store_artifacts:
           path: ./jipp-core/build/reports
-          destination: reports
+          destination: reports/jipp-core
 
       - store_artifacts:
           path: ./jipp-core/build/libs
-          destination: jars
+          destination: lib
+
+      - store_artifacts:
+          path: ./jipp-pdl/build/reports
+          destination: reports/jipp-pdl
+
+      - store_artifacts:
+          path: ./jipp-pdl/build/libs
+          destination: lib
 
       - store_artifacts:
           path: ./sample/jprint/build/distributions
-          destination: apps
+          destination: app
 
-      - store_test_results:
-          path: ./jipp-core/build/test-results

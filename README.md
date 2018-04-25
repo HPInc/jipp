@@ -10,19 +10,20 @@
 This project contains:
 
 * `jipp-core`, the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
+* `jipp-pdls`, which converts raster format docs to common page description languages (PCLm and PWG-Raster).
 * `jprint`, a sample app showing how jipp-core can be used to send a document to a printer.
 
 `jipp-core` features:
 * Supports construction of IPP servers, clients, routers, gateways, etc.
 * Common operations and attributes are defined and ready to use.
 * Can be extended to support new operations and attributes.
-* Can be used over any transport (typically HTTP)
-* Includes a pretty-printer for human-readable IPP packet display
+* Can be used over any transport (typically HTTP).
+* Includes a pretty-printer for human-readable IPP packet display.
 * Kotlin users can access a type-safe packet building [DSL](https://kotlinlang.org/docs/reference/type-safe-builders.html)
 
 What could I do with this?
 * Scan and show available printers on your network to your users.
-* Implement an Android Print Service
+* Implement an Android Print Service.
 * Test IPP clients or IPP printers in interesting ways.
 * Experiment with alternative IPP transports.
 * Implement a cloud-based print server or client.
