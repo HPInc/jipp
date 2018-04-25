@@ -1,8 +1,8 @@
 package pwg
 
-import com.hp.jipp.doc.pwg.PackBits
-import com.hp.jipp.doc.pwg.PwgCapabilities
-import com.hp.jipp.doc.pwg.PwgWriter
+import com.hp.jipp.pdl.pwg.PackBits
+import com.hp.jipp.pdl.pwg.PwgCapabilities
+import com.hp.jipp.pdl.pwg.PwgWriter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.ByteWindow

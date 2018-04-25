@@ -1,4 +1,4 @@
-package com.hp.jipp.doc
+package com.hp.jipp.pdl
 
 private const val THREE_BYTES: Int = 3
 

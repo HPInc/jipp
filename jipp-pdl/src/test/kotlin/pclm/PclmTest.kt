@@ -3,9 +3,9 @@ package pclm
 import java.io.ByteArrayOutputStream
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.hp.jipp.doc.RenderablePage
-import com.hp.jipp.doc.pclm.PclmCapabilities
-import com.hp.jipp.doc.pclm.PclmWriter
+import com.hp.jipp.pdl.RenderablePage
+import com.hp.jipp.pdl.pclm.PclmCapabilities
+import com.hp.jipp.pdl.pclm.PclmWriter
 import util.ByteWindow
 import util.RandomDocument
 

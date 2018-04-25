@@ -1,8 +1,8 @@
 package util
 
-import com.hp.jipp.doc.ColorSpace
-import com.hp.jipp.doc.RenderableDocument
-import com.hp.jipp.doc.RenderablePage
+import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.RenderableDocument
+import com.hp.jipp.pdl.RenderablePage
 import java.util.Arrays
 import java.util.Random
 

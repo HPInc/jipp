@@ -1,8 +1,8 @@
-package com.hp.jipp.doc.pwg
+package com.hp.jipp.pdl.pwg
 
-import com.hp.jipp.doc.ColorSpace
-import com.hp.jipp.doc.RenderableDocument
-import com.hp.jipp.doc.RenderablePage
+import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.RenderableDocument
+import com.hp.jipp.pdl.RenderablePage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream

@@ -1,4 +1,4 @@
-package com.hp.jipp.doc.pwg
+package com.hp.jipp.pdl.pwg
 
 import java.io.ByteArrayOutputStream
 import java.io.IOException

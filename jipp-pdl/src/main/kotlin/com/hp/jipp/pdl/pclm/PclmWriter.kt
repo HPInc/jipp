@@ -1,8 +1,8 @@
-package com.hp.jipp.doc.pclm
+package com.hp.jipp.pdl.pclm
 
-import com.hp.jipp.doc.ColorSpace
-import com.hp.jipp.doc.RenderableDocument
-import com.hp.jipp.doc.RenderablePage
+import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.RenderableDocument
+import com.hp.jipp.pdl.RenderablePage
 import java.io.ByteArrayOutputStream
 import java.io.CharArrayWriter
 import java.io.IOException

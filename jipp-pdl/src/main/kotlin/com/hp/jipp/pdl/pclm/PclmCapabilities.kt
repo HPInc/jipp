@@ -1,4 +1,4 @@
-package com.hp.jipp.doc.pclm
+package com.hp.jipp.pdl.pclm
 
 /** Capabilities of the target device that are important when rendering */
 data class PclmCapabilities(

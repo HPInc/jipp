@@ -1,6 +1,6 @@
 package pwg
 
-import com.hp.jipp.doc.pwg.PackBits
+import com.hp.jipp.pdl.pwg.PackBits
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import util.ByteWindow

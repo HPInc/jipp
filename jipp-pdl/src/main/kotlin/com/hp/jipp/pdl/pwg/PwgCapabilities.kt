@@ -1,3 +1,3 @@
-package com.hp.jipp.doc.pwg
+package com.hp.jipp.pdl.pwg
 
 data class PwgCapabilities(val color: Boolean)
