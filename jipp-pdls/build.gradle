@@ -7,10 +7,6 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(path: ':jipp-core')
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -28,7 +24,7 @@ compileTestKotlin {
 }
 
 ktlint {
-    version = '0.20.0'
+    version = ktlint_version
 }
 
 afterEvaluate {
@@ -44,7 +40,7 @@ dokka {
 }
 
 ktlint {
-    version = '0.20.0'
+    version = ktlint_version
 }
 
 task sourceJar(type: Jar) {
