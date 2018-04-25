@@ -23,8 +23,9 @@ class RandomDocument(
         override fun render(dpi: Int, yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
             if (random.nextInt() % 4 == 0) {
                 Arrays.fill(byteArray, 0xFF.toByte())
+            } else {
+                random.nextBytes(byteArray)
             }
-            random.nextBytes(byteArray)
         }
     }
 }
