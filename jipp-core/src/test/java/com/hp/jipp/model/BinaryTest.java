@@ -47,7 +47,7 @@ public class BinaryTest {
             Object printerAlert = packet.getValue(Tag.printerAttributes, Types.printerAlert);
 
             // TODO: inputTray and printerAlert can be encoded with slight differences (sometimes with
-            // terminating ;) causing a binary mismatch. Not sure how to deal with this and still have a valid test
+            // terminating ";") causing a binary mismatch. Not sure how to deal with this and still have a valid test
             if (inputTray == null && printerAlert == null) {
                 assertArrayEquals(bytes, Cycler.toBytes(packet));
             }
