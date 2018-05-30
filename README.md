@@ -38,8 +38,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.5.4'
-    compile 'com.hp.jipp:jipp-pdl:0.5.4' // Only if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.5.5'
+    compile 'com.hp.jipp:jipp-pdl:0.5.5' // Only if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -73,7 +73,7 @@ jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 
 ## API Maturity
 
-As an 0.5 project, APIs may still be changed in non-backwards-compatible ways.
+As an 0.5.x project, APIs may still be changed in non-backwards-compatible ways.
 
 ## Dependencies
 
