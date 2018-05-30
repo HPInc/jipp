@@ -11,8 +11,8 @@ interface ByteWindowIterator : Iterator<ByteWindow> {
 }
 
 /**
- * Iterates all lines (delimited by [NEWLINE]) in the window from the end of the window.
- * It is assumed that the last character in the window is a NEWLINE, terminating the final
+ * Iterates all lines (delimited by [LINE_FEED]) in the window from the end of the window.
+ * It is assumed that the last character in the window is a LINE_FEED, terminating the final
  * line in the window.
  */
 val ByteWindow.linesFromEnd get() = object : Iterable<ByteWindow> {
@@ -31,9 +31,9 @@ val ByteWindow.linesFromEnd get() = object : Iterable<ByteWindow> {
 
         private fun findPrevNewLine(): Int? {
             if (prevNewLine != null) prevNewLine
-            if (array[lineStart - 1] != NEWLINE) throw Exception("buffer not terminated with newline")
+            if (array[lineStart - 1] != LINE_FEED) throw Exception("buffer not terminated with newline")
             for (i in (lineStart - 2) downTo offset) {
-                if (array[i] == NEWLINE) {
+                if (array[i] == LINE_FEED) {
                     prevNewLine = i + 1
                     return i + 1
                 }
@@ -44,18 +44,24 @@ val ByteWindow.linesFromEnd get() = object : Iterable<ByteWindow> {
 }
 
 /**
- * Iterates all lines (delimited by [NEWLINE]) in the window from the start of the window
+ * Iterates all lines (delimited by "[LINE_FEED]" | "[CARRIAGE_RETURN]" | "[CARRIAGE_RETURN] [LINE_FEED]" ) in the window from the start of the window
  */
 val ByteWindow.lines get() = object : Iterable<ByteWindow> {
     override fun iterator() = object : ByteWindowIterator {
         override var lineStart = offset
         var nextNewline: Int? = null
+
         override fun next(): ByteWindow {
             nextNewline ?: throw Exception("EOF")
-            val length = nextNewline!! - (lineStart) + 1
-            return copy(offset = lineStart, length = length).also {
+            val lineLength = nextNewline!! - lineStart
+            return copy(offset = lineStart, length = lineLength).also {
                 nextNewline = null
-                lineStart += length
+                lineStart += lineLength + 1
+                if (lineStart < offset + length &&
+                    array[lineStart - 1] == CARRIAGE_RETURN &&
+                    array[lineStart] == LINE_FEED) {
+                    lineStart++
+                }
             }
         }
 
@@ -65,7 +71,7 @@ val ByteWindow.lines get() = object : Iterable<ByteWindow> {
             if (nextNewline != null) nextNewline
 
             for (i in lineStart until (offset + length)) {
-                if (array[i] == NEWLINE) {
+                if (array[i] == LINE_FEED || array[i] == CARRIAGE_RETURN) {
                     nextNewline = i
                     return i
                 }
@@ -83,7 +89,8 @@ fun ByteWindow.intersects(other: ByteWindow): Boolean {
     return true
 }
 
-private fun Iterable<ByteWindow>.stripComments(): Iterable<ByteWindow> = filterNot { it.array[it.offset] == '%'.toByte() }
+private fun Iterable<ByteWindow>.stripComments(): Iterable<ByteWindow> =
+    filterNot { it.array[it.offset] == '%'.toByte() }
 
 /** Return an iterator that skips any util.ByteWindow containing a comment */
 private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
@@ -100,6 +107,32 @@ private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
             while (place == null && parent.hasNext()) {
                 place = parent.next()
                 if (place?.let { it.array[it.offset] == '%'.toByte() } == true) {
+                    place = null
+                }
+            }
+            return place != null
+        }
+    }
+}
+
+private fun Iterable<ByteWindow>.stripEmpties(): Iterable<ByteWindow> =
+    filterNot { it.length == 0 }
+
+/** Return an iterator that skips any util.ByteWindow containing a comment */
+private fun Iterator<ByteWindow>.stripEmpties(): Iterator<ByteWindow> {
+    val parent = this
+    return object : Iterator<ByteWindow> {
+        var place: ByteWindow? = null
+
+        override fun next(): ByteWindow {
+            hasNext() // Make sure place is populated
+            return place!!.also { place = null }
+        }
+
+        override fun hasNext(): Boolean {
+            while (place == null && parent.hasNext()) {
+                place = parent.next()
+                if (place?.length == 0) {
                     place = null
                 }
             }
@@ -156,6 +189,7 @@ fun ByteWindow.validatePclm(): PdfStructure {
     assertEquals(length, body.length + header.length + xref.length + trailer.length)
 
     var freeObjectsCount = 0
+
     // Carve out all xrefable objects
     val xrefObjectPairs = xref.lines
             .stripComments()
@@ -163,7 +197,7 @@ fun ByteWindow.validatePclm(): PdfStructure {
             .map {
                 val fields = it.asString().trim().split(" ")
                 // Each item must be either 20 lines long or a two-value group delimiter
-                if (it.length != 20) {
+                if (it.length != 19 && it.length != 18) {
                     Assert.assertEquals("$it must be 20 bytes long or a 2-field line", 2, fields.size)
                 }
                 fields
@@ -208,10 +242,10 @@ fun ByteWindow.validatePclm(): PdfStructure {
 
     // Validate the trailer while parsing out the dictionary
     val trailerIterator = trailer.lines.stripComments().iterator()
-    assertEquals("trailer\n", trailerIterator.next().asString())
-    assertEquals("<<\n", trailerIterator.next().asString())
+    assertEquals("trailer", trailerIterator.next().asString())
+    assertEquals("<<", trailerIterator.next().asString())
     val trailerDictionary = trailerIterator.nextDictionary()
-    assertEquals("startxref\n", trailerIterator.next().asString())
+    assertEquals("startxref", trailerIterator.next().asString())
     // We already did this the hard way, but verify the offset is correct
     assertEquals(xref.offset, trailerIterator.next().asString().trim().toInt())
     assertEquals("trailer specifies incorrect number of objects in xref table",
@@ -273,40 +307,41 @@ fun validateStrip(stripObject: PclmObject) {
 fun validatePageContentStream(pageContentStream: PclmObject) =
         // Ignore all other lines, just get the image names
         pageContentStream.stream!!.lines.mapNotNull {
-            "/(\\w+) Do Q\n".toRegex().matchEntire(it.asString())?.run { groups[1]?.value }
+            "/(\\w+) Do Q".toRegex().matchEntire(it.asString())?.run { groups[1]?.value }
         }
 
 internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
     val rawIterator = lines.iterator() as ByteWindowIterator
 
-    val iterator = rawIterator.stripComments()
+    val iterator = rawIterator.stripComments().stripEmpties()
     val header = iterator.next().asString().split(" ")
+    println("Object header contains: $header")
     val objectNumber = header[0].toInt()
     Assert.assertEquals(0, header[1].toInt()) // generation # is always 0 because we don't edit PCLM
-    Assert.assertEquals("obj\n", header[2])
+    Assert.assertEquals("obj", header[2])
 
     // First element must be a dictionary
     val startDict = iterator.next()
-    Assert.assertEquals("<<\n", startDict.asString())
+    Assert.assertEquals("<<", startDict.asString())
     val dict = iterator.nextDictionary()
 
     // In PCLM objects might have a stream so check for it
     val lastLine = iterator.next().asString()
     val streamLength = dict.items.firstOrNull { it.first == "Length" }?.second
-    return if (lastLine == "stream\n" && streamLength is PclmNumber) {
+    return if (lastLine == "stream" && streamLength is PclmNumber) {
         val stream = copy(offset = rawIterator.lineStart, length = streamLength.value.toInt())
         val afterStream = drop(rawIterator.lineStart - offset + streamLength.value.toInt())
         val rawTerminal = afterStream.lines.iterator() as ByteWindowIterator
         val terminal = rawTerminal.stripComments()
         val next = terminal.next().asString()
         when (next) {
-            "\n" -> Assert.assertEquals("endstream\n", terminal.next().asString())
-            "endstream\n" -> Unit // Good
+            "" -> Assert.assertEquals("endstream", terminal.next().asString())
+            "endstream" -> Unit // Good
             else -> throw AssertionError("unrecognized object end at $next")
         }
-        Assert.assertEquals("endobj\n", terminal.next().asString())
+        Assert.assertEquals("endobj", terminal.next().asString())
         copy(length = rawTerminal.lineStart - offset) to PclmObject(objectNumber, dict, stream)
-    } else if (lastLine == "endobj\n") {
+    } else if (lastLine == "endobj") {
         copy(length = rawIterator.lineStart - offset) to PclmObject(objectNumber, dict)
     } else {
         throw AssertionError("unrecognized object end")
@@ -316,7 +351,7 @@ internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
 /** Parse and return the next dictionary. Assumes the current line already started it */
 internal fun Iterator<ByteWindow>.nextDictionary(): PclmDictionary = pclmDictionary {
     var line = next().asString()
-    while (line != ">>\n") {
+    while (line != ">>") {
         val parts = line.trim().split(" ")
         assertTrue("Dictionary line doesn't start with a name: $parts", parts[0][0] == '/')
         val key = parts[0].drop(1)

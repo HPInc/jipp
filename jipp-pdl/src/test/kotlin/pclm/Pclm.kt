@@ -70,4 +70,5 @@ data class PclmObject(
 }
 
 /** The newline character (0x0A), also known as LF (line feed) */
-const val NEWLINE = 0x0A.toByte()
+const val LINE_FEED = 0x0A.toByte()
+const val CARRIAGE_RETURN = 0x0D.toByte()

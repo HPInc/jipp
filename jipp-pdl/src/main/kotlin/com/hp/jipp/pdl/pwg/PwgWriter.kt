@@ -41,7 +41,7 @@ class PwgWriter(
         writeString("", 64) // mediaColor
         writeString("", 64) // mediaType
         writeString("", 64) // printContentOptimize
-        writeBlank(12) //reserved
+        writeBlank(12) // reserved
         writeInt(0) // cutMedia
         writeInt(0) // duplex
         writeInt(dpi) // resolutionX
