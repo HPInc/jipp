@@ -32,28 +32,50 @@ open class Operation(override val code: Int, override val name: String) : Code()
     /** The [EnumType] for [Operation] attributes. */
     class Type(name: String) : EnumType<Operation>(Encoder, name)
 
+    /** Raw [Operation] codes which may be used for direct comparisons */
+    object Code {
+        const val printJob = 0x0002
+        const val printUri = 0x0003
+        const val validateJob = 0x0004
+        const val createJob = 0x0005
+        const val sendDocument = 0x0006
+        const val sendUri = 0x0007
+        const val cancelJob = 0x0008
+        const val getJobAttributes = 0x0009
+        const val getJobs = 0x000A
+        const val getPrinterAttributes = 0x000B
+        const val holdJob = 0x000C
+        const val releaseJob = 0x000D
+        const val restartJob = 0x000E
+        const val pausePrinter = 0x0010
+        const val resumePrinter = 0x0011
+        const val purgeJobs = 0x0012
+        const val closeJob = 0x003B
+        const val identifyPrinter = 0x003C
+    }
+
     companion object {
         private val PRIME = 17
         private val BIG_PRIME = 31
 
-        @JvmField val printJob = Operation(0x0002, "Print-Job")
-        @JvmField val printUri = Operation(0x0003, "Print-URI")
-        @JvmField val validateJob = Operation(0x0004, "Validate-Job")
-        @JvmField val createJob = Operation(0x0005, "Create-Job")
-        @JvmField val sendDocument = Operation(0x0006, "Send-Document")
-        @JvmField val sendUri = Operation(0x0007, "Send-URI")
-        @JvmField val cancelJob = Operation(0x0008, "Cancel-Job")
-        @JvmField val getJobAttributes = Operation(0x0009, "Get-Job-Attributes")
-        @JvmField val getJobs = Operation(0x000A, "Get-Jobs")
-        @JvmField val getPrinterAttributes = Operation(0x000B, "Get-Printer-Attributes")
-        @JvmField val holdJob = Operation(0x000C, "Hold-Job")
-        @JvmField val releaseJob = Operation(0x000D, "Release-Job")
-        @JvmField val restartJob = Operation(0x000E, "Restart-Job")
-        @JvmField val pausePrinter = Operation(0x0010, "Pause-Printer")
-        @JvmField val resumePrinter = Operation(0x0011, "Resume-Printer")
-        @JvmField val purgeJobs = Operation(0x0012, "Purge-Jobs")
-        @JvmField val closeJob = Operation(0x003B, "Close-Job")
-        @JvmField val identifyPrinter = Operation(0x003C, "Identify-Printer")
+        @JvmField val printJob = Operation(Code.printJob, "Print-Job")
+        @JvmField val printUri = Operation(Code.printUri, "Print-URI")
+        @JvmField val validateJob = Operation(Code.validateJob, "Validate-Job")
+        @JvmField val createJob = Operation(Code.createJob, "Create-Job")
+        @JvmField val sendDocument = Operation(Code.sendDocument, "Send-Document")
+        @JvmField val sendUri = Operation(Code.sendUri, "Send-URI")
+        @JvmField val cancelJob = Operation(Code.cancelJob, "Cancel-Job")
+        @JvmField val getJobAttributes = Operation(Code.getJobAttributes, "Get-Job-Attributes")
+        @JvmField val getJobs = Operation(Code.getJobs, "Get-Jobs")
+        @JvmField val getPrinterAttributes = Operation(Code.getPrinterAttributes, "Get-Printer-Attributes")
+        @JvmField val holdJob = Operation(Code.holdJob, "Hold-Job")
+        @JvmField val releaseJob = Operation(Code.releaseJob, "Release-Job")
+        @JvmField val restartJob = Operation(Code.restartJob, "Restart-Job")
+        @JvmField val pausePrinter = Operation(Code.pausePrinter, "Pause-Printer")
+        @JvmField val resumePrinter = Operation(Code.resumePrinter, "Resume-Printer")
+        @JvmField val purgeJobs = Operation(Code.purgeJobs, "Purge-Jobs")
+        @JvmField val closeJob = Operation(Code.closeJob, "Close-Job")
+        @JvmField val identifyPrinter = Operation(Code.identifyPrinter, "Identify-Printer")
 
         /** The encoder for converting integers to Operation objects  */
         @JvmField val Encoder = EnumType.Encoder(Operation::class.java) { code, name ->

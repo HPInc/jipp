@@ -10,6 +10,8 @@ import com.hp.jipp.util.getStaticObjects
 object Types {
     @JvmField val attributesCharset = StringType(Tag.charset, "attributes-charset")
     @JvmField val attributesNaturalLanguage = StringType(Tag.naturalLanguage, "attributes-natural-language")
+    @JvmField val charsetConfigured = StringType(Tag.charset, "charset-configured")
+    @JvmField val charsetSupported = StringType(Tag.charset, "charset-supported")
     @JvmField val colorSupported = BooleanType("color-supported")
     @JvmField val copiesSupported = RangeOfIntegerType("copies-supported")
     @JvmField val detailedStatusMessage = StringType(Tag.textWithoutLanguage, "detailed-status-message")
@@ -20,6 +22,8 @@ object Types {
     @JvmField val finishings = Finishings.Type("finishings-default")
     @JvmField val finishingsDefault = Finishings.Type("finishings-default")
     @JvmField val finishingsSupported = Finishings.Type("finishings-supported")
+    @JvmField val generatedNaturalLanguageSupported = StringType(Tag.naturalLanguage,
+        "generated-natural-language-supported")
     @JvmField val identifyActionsDefault = IdentifyAction("identify-actions-default")
     @JvmField val identifyActions = IdentifyAction("identify-actions")
     @JvmField val identifyActionsSupported = IdentifyAction("identify-actions-supported")
