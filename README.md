@@ -57,7 +57,7 @@ IppPacket printRequest = new IppPacket(Operation.printJob, 123,
 transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
 ```
 
-A very basic use case is demonstrated by the `jclient` sample app. To run it:
+A very basic use case is demonstrated by the `jprint` sample app. To run it:
 
 ```
 # build the app
