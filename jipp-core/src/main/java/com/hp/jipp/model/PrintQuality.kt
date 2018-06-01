@@ -5,6 +5,7 @@ import com.hp.jipp.encoding.EnumType
 
 /** Enums defining relative print quality (RFC8011, Section 5.2.13). */
 data class PrintQuality(override val code: Int, override val name: String) : Enum() {
+
     override fun toString() = super.toString()
 
     /** An attribute type for attributes based on this enum */

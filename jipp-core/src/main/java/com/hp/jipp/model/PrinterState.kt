@@ -8,6 +8,7 @@ import com.hp.jipp.encoding.EnumType
 
 /** An enumeration of possible printer states  */
 data class PrinterState(override val code: Int, override val name: String) : Enum() {
+
     override fun toString() = super.toString()
 
     /** An attribute type for [PrinterState] objects */
