@@ -8,6 +8,7 @@ import com.hp.jipp.encoding.EnumType
 
 /** Orientations as defined in [RFC2911 Section 4.2.10](https://tools.ietf.org/html/rfc2911#section-4.2.10). */
 data class Orientation(override val code: Int, override val name: String) : Enum() {
+
     override fun toString() = super.toString()
 
     /** An attribute type for [Orientation] attributes */

@@ -11,7 +11,9 @@ import com.hp.jipp.encoding.EnumType
 
  * See [RFC2911 Section 4.3.7](https://tools.ietf.org/html/rfc2911.section-4.3.7)
  */
-data class JobState( override val code: Int, override val name: String) : Enum() {
+data class JobState(override val code: Int, override val name: String) : Enum() {
+
+    override fun toString() = super.toString()
 
     /** Return true if this state is the terminating state for a job  */
     val isFinal: Boolean

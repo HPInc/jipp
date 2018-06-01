@@ -12,7 +12,7 @@ import com.hp.jipp.encoding.EnumType
  */
 data class Operation(override val code: Int, override val name: String) : Code() {
 
-    override fun toString() = "$name($code)"
+    override fun toString() = super.toString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
