@@ -10,7 +10,7 @@ import java.io.IOException
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
  */
-data class Tag(override val name: String, override val code: Int) : Enum() {
+data class Tag(override val code: Int, override val name: String) : Enum() {
 
     /** Return true if this tag is a delimiter tag  */
     val isDelimiter: Boolean
@@ -31,44 +31,44 @@ data class Tag(override val name: String, override val code: Int) : Enum() {
 
         /** Return or create a [Tag] for the supplied code */
         @JvmStatic
-        fun fromInt(value: Int) = Tag.codeMap[value] ?: Tag("tag(x%x)".format(value), value)
+        fun fromInt(value: Int) = Tag.codeMap[value] ?: Tag(value, "tag(x%x)".format(value))
 
         // Delimiter tags
-        @JvmField val operationAttributes = Tag("operation-attributes", 0x01)
-        @JvmField val jobAttributes = Tag("job-attributes", 0x02)
-        @JvmField val endOfAttributes = Tag("end-of-attributes", 0x03)
-        @JvmField val printerAttributes = Tag("printer-attributes", 0x04)
-        @JvmField val unsupportedAttributes = Tag("unsupported-attributes", 0x05)
+        @JvmField val operationAttributes = Tag(0x01, "operation-attributes")
+        @JvmField val jobAttributes = Tag(0x02, "job-attributes")
+        @JvmField val endOfAttributes = Tag(0x03, "end-of-attributes")
+        @JvmField val printerAttributes = Tag(0x04, "printer-attributes")
+        @JvmField val unsupportedAttributes = Tag(0x05, "unsupported-attributes")
 
-        @JvmField val unsupported = Tag("unsupported", 0x10)
-        @JvmField val unknown = Tag("unknown", 0x12)
-        @JvmField val noValue = Tag("no-value", 0x13)
+        @JvmField val unsupported = Tag(0x10, "unsupported")
+        @JvmField val unknown = Tag(0x12, "unknown")
+        @JvmField val noValue = Tag(0x13, "no-value")
 
         // Integer values
-        @JvmField val integerValue = Tag("integer", 0x21)
-        @JvmField val booleanValue = Tag("boolean", 0x22)
-        @JvmField val enumValue = Tag("enum", 0x23)
+        @JvmField val integerValue = Tag(0x21, "integer")
+        @JvmField val booleanValue = Tag(0x22, "boolean")
+        @JvmField val enumValue = Tag(0x23, "enum")
 
         // Octet-string values
-        @JvmField val octetString = Tag("octetString", 0x30)
-        @JvmField val dateTime = Tag("dateTime", 0x31)
-        @JvmField val resolution = Tag("resolution", 0x32)
-        @JvmField val rangeOfInteger = Tag("rangeOfInteger", 0x33)
-        @JvmField val beginCollection = Tag("begCollection", 0x34)
-        @JvmField val textWithLanguage = Tag("textWithLanguage", 0x35)
-        @JvmField val nameWithLanguage = Tag("nameWithLanguage", 0x36)
-        @JvmField val endCollection = Tag("endCollection", 0x37)
+        @JvmField val octetString = Tag(0x30, "octetString")
+        @JvmField val dateTime = Tag(0x31, "dateTime")
+        @JvmField val resolution = Tag(0x32, "resolution")
+        @JvmField val rangeOfInteger = Tag(0x33, "rangeOfInteger")
+        @JvmField val beginCollection = Tag(0x34, "begCollection")
+        @JvmField val textWithLanguage = Tag(0x35, "textWithLanguage")
+        @JvmField val nameWithLanguage = Tag(0x36, "nameWithLanguage")
+        @JvmField val endCollection = Tag(0x37, "endCollection")
 
         // Character-string values
-        @JvmField val textWithoutLanguage = Tag("textWithoutLanguage", 0x41)
-        @JvmField val nameWithoutLanguage = Tag("nameWithoutLanguage", 0x42)
-        @JvmField val keyword = Tag("keyword", 0x44)
-        @JvmField val uri = Tag("uri", 0x45)
-        @JvmField val uriScheme = Tag("uriScheme", 0x46)
-        @JvmField val charset = Tag("charset", 0x47)
-        @JvmField val naturalLanguage = Tag("naturalLanguage", 0x48)
-        @JvmField val mimeMediaType = Tag("mimeMediaType", 0x49)
-        @JvmField val memberAttributeName = Tag("memberAttrName", 0x4A)
+        @JvmField val textWithoutLanguage = Tag(0x41, "textWithoutLanguage")
+        @JvmField val nameWithoutLanguage = Tag(0x42, "nameWithoutLanguage")
+        @JvmField val keyword = Tag(0x44, "keyword")
+        @JvmField val uri = Tag(0x45, "uri")
+        @JvmField val uriScheme = Tag(0x46, "uriScheme")
+        @JvmField val charset = Tag(0x47, "charset")
+        @JvmField val naturalLanguage = Tag(0x48, "naturalLanguage")
+        @JvmField val mimeMediaType = Tag(0x49, "mimeMediaType")
+        @JvmField val memberAttributeName = Tag(0x4A, "memberAttrName")
 
         private val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
     }

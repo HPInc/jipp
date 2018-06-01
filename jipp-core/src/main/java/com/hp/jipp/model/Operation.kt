@@ -10,8 +10,9 @@ import com.hp.jipp.encoding.EnumType
  *
  * See [RFC2911 Section 5.2.2](https://tools.ietf.org/html/rfc2911.section-5.2.2)
  */
-open class Operation(override val code: Int, override val name: String) : Code() {
-    override fun toString() = name
+data class Operation(override val code: Int, override val name: String) : Code() {
+
+    override fun toString() = "$name($code)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -32,7 +33,7 @@ open class Operation(override val code: Int, override val name: String) : Code()
     /** The [EnumType] for [Operation] attributes. */
     class Type(name: String) : EnumType<Operation>(Encoder, name)
 
-    /** Raw [Operation] codes which may be used for direct comparisons */
+    /** Raw codes which may be used for direct comparisons */
     object Code {
         const val printJob = 0x0002
         const val printUri = 0x0003

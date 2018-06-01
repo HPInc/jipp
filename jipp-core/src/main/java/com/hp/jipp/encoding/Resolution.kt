@@ -16,5 +16,5 @@ data class Resolution (val crossFeedResolution: Int, val feedResolution: Int, va
     val y: Int
         get() = feedResolution
 
-    override fun toString() = "${x}x$y ${unit.name}"
+    override fun toString() = "${x}x$y $unit"
 }
