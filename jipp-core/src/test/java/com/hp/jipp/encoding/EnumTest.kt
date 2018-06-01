@@ -7,7 +7,6 @@ import org.junit.Assert.* // ktlint-disable no-wildcard-imports
 
 import com.hp.jipp.encoding.Cycler.* // ktlint-disable no-wildcard-imports
 
-import com.hp.jipp.util.KotlinTest
 import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 
 class EnumTest {
@@ -38,7 +37,7 @@ class EnumTest {
     @Test
     @Throws(Exception::class)
     fun custom() {
-        val custom = Sample(0x77, "Sample(x77)")
+        val custom = Sample(0x77, "Unknown Sample")
         assertEquals(custom, cycle(MySample, MySample.of(custom))[0])
     }
 
@@ -47,14 +46,5 @@ class EnumTest {
     fun fetchFromGroup() {
         assertEquals(listOf(Sample.Two, Sample.Three),
                 cycle(groupOf(Tag.jobAttributes, MySample.of(Sample.Two, Sample.Three))).getValues(MySample))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun cover() {
-        val encoder = MySample.enumEncoder
-        KotlinTest.cover(encoder,
-                encoder.copy(encoder.typeName, encoder.map, encoder.factory),
-                encoder.copy("other", encoder.map, encoder.factory))
     }
 }

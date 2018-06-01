@@ -11,12 +11,17 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
         AttributeType<T>(enumEncoder, Tag.enumValue) {
 
     /**
+     * Return an attribute containing one or more [Enum] values based on integers
+     */
+    fun of(vararg values: Int): Attribute<T> = of(values.map { enumEncoder[it] })
+
+    /**
      * An [Encoder] for [Enum] values
      * @param typeName Human-readable type of the [Enum]
      * @param map predefined [Enum] instances to reuse when decoding
      * @param factory a way to create new [Enum] instances of the correct type when decoding an undefined value
      */
-    data class Encoder<T : Enum>(
+    open class Encoder<T : Enum>(
         override val typeName: String,
         val map: Map<Int, T>,
         val factory: (code: Int, name: String) -> T
@@ -37,8 +42,8 @@ open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val
                 }, factory)
 
         /** Returns a known [Enum], or creates a new instance from factory if not found  */
-        operator fun get(code: Int): T =
-            map[code] ?: factory(code, "$typeName(x${Integer.toHexString(code)})")
+        open operator fun get(code: Int): T =
+            map[code] ?: factory(code, "Unknown $typeName")
 
         @Throws(IOException::class)
         override fun readValue(input: IppInputStream, finder: Finder, valueTag: Tag): T {

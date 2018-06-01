@@ -7,6 +7,8 @@ import com.hp.jipp.util.getStaticObjects
 
 /**
  * A machine-readable integer code paired with a human-readable name.
+ *
+ * Note: native Java enums are not used because they cannot be extended at runtime to accept unrecognized values.
  */
 abstract class Enum {
 
@@ -14,13 +16,7 @@ abstract class Enum {
 
     abstract val name: String
 
-    /** A factory for objects of a Enum subclass  */
-    interface Factory<out T : Enum> {
-        /** Return a new [Enum] from a name/code pair */
-        fun of(code: Int, name: String): T
-    }
-
-    override fun toString() = name
+    override fun toString() = "$name($code)"
 
     companion object {
         /** Convert a List of T into a Map of integer codes to T, where T is a Enum subclass. */

@@ -5,15 +5,19 @@ package com.hp.jipp.encoding
 
 /** A unit of measurement used to describe resolution */
 data class ResolutionUnit(override val code: Int, override val name: String) : Enum() {
+    override fun toString() = super.toString()
 
-    override fun toString() = name
+    /** Raw codes which may be used for direct comparisons */
+    object Code {
+        const val dotsPerInch = 3
+        const val dotsPerCentimeter = 4
+    }
 
     companion object {
-        @JvmField val dotsPerInch = ResolutionUnit(3, "dpi")
+        @JvmField val dotsPerInch = ResolutionUnit(Code.dotsPerInch, "dpi")
+        @JvmField val dotsPerCentimeter = ResolutionUnit(Code.dotsPerCentimeter, "dpcm")
 
-        @JvmField val dotsPerCentimeter = ResolutionUnit(4, "dpcm")
-
-        /** The encoder for converting integers to Operation objects  */
+        /** The encoder for converting integers to this Enum object */
         @JvmField
         val Encoder = EnumType.Encoder(ResolutionUnit::class.java) { code, name ->
             ResolutionUnit(code, name)

@@ -102,7 +102,7 @@ public class AttributeTest {
                         new Operation(0x4040, "vendor-specific"))));
         // We can't know it's called "vendor-specific" after parsing, since we just made it up.
         // So expect the unrecognized format
-        assertEquals(Arrays.asList(new Operation(0x4040, "Operation(x4040)")),
+        assertEquals(Arrays.asList(new Operation(0x4040, "Unknown Operation")),
                 group.getValues(Types.operationsSupported));
     }
 
@@ -187,7 +187,7 @@ public class AttributeTest {
 
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes), Types.allFinder);
         Resolution resolution = ResolutionType.Encoder.readValue(input, Tag.resolution);
-        assertEquals("256x512 ResolutionUnit(x5)", resolution.toString());
+        assertEquals("256x512 Unknown ResolutionUnit(5)", resolution.toString());
 
         KotlinTest.cover(resolution,
                 resolution.copy(resolution.component1(), resolution.component2(), resolution.component3()),

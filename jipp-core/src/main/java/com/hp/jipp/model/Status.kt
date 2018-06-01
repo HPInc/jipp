@@ -10,9 +10,9 @@ import com.hp.jipp.encoding.EnumType
  */
 data class Status(override val code: Int, override val name: String) : Code() {
 
-    override fun toString() = name
+    override fun toString() = "$name(x${Integer.toHexString(code)})"
 
-    /** Raw [Status] codes which may be used for direct comparisons */
+    /** Raw codes which may be used for direct comparisons */
     object Code {
         const val ok = 0x0000
         const val okIgnoredOrSubstitutedAttributes = 0x0001

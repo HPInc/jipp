@@ -20,14 +20,25 @@ data class JobState( override val code: Int, override val name: String) : Enum()
     /** The attribute type for a [JobState] attribute */
     class Type(name: String) : EnumType<JobState>(Encoder, name)
 
+    /** Raw codes which may be used for direct comparisons */
+    object Code {
+        const val pending = 3
+        const val pendingHeld = 4
+        const val processing = 5
+        const val processingStopped = 6
+        const val canceled = 7
+        const val aborted = 8
+        const val completed = 9
+    }
+
     companion object {
-        @JvmField val pending = JobState(3, "pending")
-        @JvmField val pendingHeld = JobState(4, "pending-held")
-        @JvmField val processing = JobState(5, "processing")
-        @JvmField val processingStopped = JobState(6, "processing-stopped")
-        @JvmField val canceled = JobState(7, "canceled")
-        @JvmField val aborted = JobState(8, "aborted")
-        @JvmField val completed = JobState(9, "completed")
+        @JvmField val pending = JobState(Code.pending, "pending")
+        @JvmField val pendingHeld = JobState(Code.pendingHeld, "pending-held")
+        @JvmField val processing = JobState(Code.processing, "processing")
+        @JvmField val processingStopped = JobState(Code.processingStopped, "processing-stopped")
+        @JvmField val canceled = JobState(Code.canceled, "canceled")
+        @JvmField val aborted = JobState(Code.aborted, "aborted")
+        @JvmField val completed = JobState(Code.completed, "completed")
 
         @JvmField val Encoder = EnumType.Encoder(JobState::class.java) { code, name ->
             JobState(code, name)
