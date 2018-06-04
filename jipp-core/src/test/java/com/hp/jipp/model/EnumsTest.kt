@@ -26,4 +26,11 @@ class EnumsTest {
             cycle<PrintQuality>(Types.printQuality.of(PrintQuality.high)),
             Types.printQuality.of(PrintQuality.Encoder[123]))
     }
+
+    @Test
+    fun orientationTest() {
+        KotlinTest.cover(Types.orientationRequested.of(Orientation.Code.landscape),
+            cycle<Orientation>(Types.orientationRequested.of(Orientation.landscape)),
+            Types.orientationRequested.of(Orientation.Encoder[55]))
+    }
 }

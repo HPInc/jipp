@@ -4,9 +4,9 @@ import org.junit.Assert.* // ktlint-disable no-wildcard-imports
 
 class KotlinTest {
     companion object {
-        val NOT_O = Any()
         @JvmStatic fun cover(o: Any, same: Any, diff: Any) {
-            assertFalse(o == NOT_O)
+            val notObject = Any()
+            assertFalse(o == notObject)
             assertTrue(o == o)
             assertEquals(o, same)
             assertEquals(o.hashCode(), same.hashCode())
