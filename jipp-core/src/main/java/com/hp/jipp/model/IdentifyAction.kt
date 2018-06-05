@@ -9,6 +9,11 @@ import com.hp.jipp.encoding.KeywordType
 /** A keyword attribute describing the action by which a printer may identify itself. */
 class IdentifyAction(override val name: String) : Keyword() {
 
+    /** An attribute type for attributes of this type. */
+    class Type(name: String) : KeywordType<IdentifyAction>(Encoder, name)
+
+    override fun toString() = name
+
     companion object {
         @JvmField val display = IdentifyAction("display")
         @JvmField val flash = IdentifyAction("flash")
