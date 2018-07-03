@@ -66,6 +66,7 @@ object Types {
     @JvmField val outputBin = OutputBin.Type("output-bin")
     @JvmField val outputBinSupported = OutputBin.Type("output-bin-supported")
     @JvmField val printerAlert = KeyValueType("printer-alert")
+    @JvmField val printerCurrentTime = DateTimeType("printer-current-time")
     @JvmField val printerDnsSdName = StringType(Tag.nameWithoutLanguage, "printer-dns-sd-name")
     @JvmField val printerIcons = UriType(Tag.uri, "printer-icons")
     @JvmField val printerInfo = StringType(Tag.textWithoutLanguage, "printer-info")
