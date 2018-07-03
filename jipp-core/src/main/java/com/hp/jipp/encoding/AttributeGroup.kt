@@ -70,8 +70,9 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
 
         /** Default encoders available to parse incoming data  */
         @JvmField val encoders = listOf(
-                IntegerType.Encoder, UriType.Encoder, StringType.Encoder, BooleanType.Encoder, LangStringType.Encoder,
-                CollectionType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder, OctetStringType.Encoder)
+            IntegerType.Encoder, UriType.Encoder, StringType.Encoder, BooleanType.Encoder, LangStringType.Encoder,
+            CollectionType.Encoder, DateTimeType.Encoder, RangeOfIntegerType.Encoder, ResolutionType.Encoder,
+            OctetStringType.Encoder)
 
         /** Read a group from the [DataInputStream] */
         @JvmStatic

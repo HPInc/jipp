@@ -32,6 +32,9 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
 
     override fun get(index: Int): T = values[index]
 
+    /** Return the first value or null if no values */
+    val value: T? = firstOrNull()
+
     /** Return a copy of this attribute with a different name */
     fun withName(newName: String): Attribute<T> = copy(name = newName)
 
