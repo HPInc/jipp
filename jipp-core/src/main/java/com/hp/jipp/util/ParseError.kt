@@ -6,4 +6,7 @@ package com.hp.jipp.util
 import java.io.IOException
 
 /** A parsing error occurred */
-class ParseError(s: String) : IOException(s)
+class ParseError : IOException {
+    constructor(s: String) : super(s)
+    constructor(s: String, t: Throwable) : super(s, t)
+}

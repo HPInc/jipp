@@ -1,5 +1,5 @@
 allprojects {
-    ext.kotlin_version = '1.2.41'
+    ext.kotlin_version = '1.2.50'
     ext.dokka_version = '0.9.17'
     ext.ktlint_version = '0.23.1'
 

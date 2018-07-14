@@ -3,50 +3,16 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.getStaticObjects
-import java.io.IOException
-
-/** Attribute type for attributes based on [Keyword] */
-open class KeywordType<T : Keyword>(encoder: KeywordType.Encoder<T>, override val name: String) :
-        AttributeType<T>(encoder, Tag.keyword) {
-
-    /** An encoder for keyword types  */
-    class Encoder<T : Keyword>(private val factory: Keyword.Factory<T>, all: Collection<T>, name: String) :
-            SimpleEncoder<T>(name) {
-
-        private val map: Map<String, T> = all.map { it.name to it }.toMap()
-
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag): T {
-            val key = StringType.Encoder.readValue(input, valueTag)
-            return map[key] ?: factory.of(key)
-        }
-
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: T) {
-            StringType.Encoder.writeValue(out, value.name)
-        }
-
-        override fun valid(valueTag: Tag) = valueTag == Tag.keyword
-
-        val all: Collection<T>
-            get() = map.values
-    }
+/** An attribute type containing keyword values as [String]s. */
+open class KeywordType(override val name: String) : AttributeType<String> {
+    override fun coerce(value: Any) =
+        value as? String
 
     companion object {
-        /** Return a new [Encoder] for a class internally defining static [Keyword] objects */
-        fun <T : Keyword> encoderOf(cls: Class<T>, factory: Keyword.Factory<T>): KeywordType.Encoder<T> =
-                KeywordType.Encoder(factory, cls.getStaticObjects()
-                        .filter { cls.isAssignableFrom(it.javaClass) }
-                        .map {
-                            @Suppress("UNCHECKED_CAST")
-                            it as T
-                        }, cls.simpleName)
-
-        /** Return a new [Encoder] for a class internally defining static [Keyword] objects */
-        fun <T : Keyword> encoderOf(cls: Class<T>, factory: (String) -> T): KeywordType.Encoder<T> =
-                encoderOf(cls, object : Keyword.Factory<T> {
-                    override fun of(name: String): T = factory(name)
-                })
+        val codec = AttributeGroup.codec(Tag.keyword, {
+            readString()
+        }, {
+            writeString(it)
+        })
     }
 }

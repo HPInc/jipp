@@ -3,25 +3,18 @@
 
 package com.hp.jipp.encoding
 
-import java.io.IOException
+/** An attribute type containing boolean values. */
+open class BooleanType(override val name: String) : AttributeType<Boolean> {
+    override fun coerce(value: Any) =
+        value as? Boolean
 
-/** A boolean attribute type */
-class BooleanType(override val name: String) : AttributeType<Boolean>(Encoder, Tag.booleanValue) {
-    companion object Encoder : SimpleEncoder<Boolean>("Boolean") {
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: Boolean) {
-            out.writeShort(1)
-            out.writeByte(if (value) 0x01 else 0x00)
-        }
-
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag): Boolean {
-            input.takeLength(1)
-            return input.readByte().toInt() != 0
-        }
-
-        override fun valid(valueTag: Tag): Boolean {
-            return valueTag === Tag.booleanValue
-        }
+    companion object {
+        val codec = AttributeGroup.codec(Tag.booleanValue, {
+            takeLength(AttributeGroup.BYTE_LENGTH)
+            readByte() != 0.toByte()
+        }, {
+            writeShort(AttributeGroup.BYTE_LENGTH)
+            writeByte(if (it) 0x01 else 0x00)
+        })
     }
 }

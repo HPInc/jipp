@@ -3,55 +3,68 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.BuildError
-
 /**
- * Associates a specific tag and name such that an attribute can be safely created or retrieved from a group
+ * A named attribute type which may be used to construct [Attribute] objects containing values of type [T].
  */
-abstract class AttributeType<T>(val encoder: Encoder<T>, val tag: Tag) {
-    abstract val name: String
+interface AttributeType<T : Any> {
+    val name: String
 
-    init {
-        if (!encoder.valid(tag)) {
-            throw BuildError("Invalid tag $tag for encoder $encoder")
+    /** Return an attribute containing one or more values of type [T]. */
+    fun of(values: List<T>): Attribute<T> {
+        val self = this
+        return object : Attribute<T> {
+            override val name = self.name
+            override val values = values
+            override val tag: Tag? = null
+            override val type: AttributeType<T> = this@AttributeType
+            override fun toString() = "$name = $values"
+            override fun equals(other: Any?) =
+                if (other is Attribute<*>) equalTo(other) else super.equals(other)
         }
     }
 
-    /** Create an attribute of this attribute type with supplied values */
-    open operator fun invoke(values: List<T>) = Attribute(tag, name, values, encoder)
-
-    operator fun invoke(value: T, vararg values: T): Attribute<T> =
-            if (values.isEmpty()) invoke(value) else invoke(listOf(value) + values)
-
-    operator fun invoke(value: T) = invoke(listOf(value))
-
-    fun empty() = Attribute(tag, name, listOf(), encoder)
-
-    // "of()" for java uses...
-
-    open fun of(values: List<T>) = invoke(values)
-
-    fun of(values: Array<T>) = invoke(values.toList())
-
-    open fun of(value: T, vararg values: T): Attribute<T> = if (values.isEmpty()) {
-        invoke(listOf(value))
-    } else {
-        invoke(listOf(value) + values)
+    /** Return an attribute containing supplied values. */
+    fun of(value: T, vararg values: T): Attribute<T> {
+        return of(listOf(value) + values.toList())
     }
 
-    /** If possible, convert the supplied attribute into an attribute of this type. */
-    open fun convert(attribute: Attribute<*>): Attribute<T>? =
-        if (attribute.encoder === encoder) {
-            invoke(attribute.values.map {
-                @Suppress("UNCHECKED_CAST")
-                it as T
-            })
+    /** Return an empty attribute (containing no values) for this type but substituting a tag. */
+    fun empty(tag: Tag): Attribute<T> {
+        val self = this
+        return object : Attribute<T> {
+            override val name = self.name
+            override val values = emptyList<T>()
+            override val tag: Tag = tag
+            override val type: AttributeType<T> = this@AttributeType
+            override fun toString() = "$name($tag)"
+            override fun equals(other: Any?) =
+                if (other is Attribute<*>) equalTo(other) else super.equals(other)
+        }
+    }
+
+    /** Return a "no-value" attribute of this type. */
+    fun noValue() = empty(Tag.noValue)
+
+    /** Return an "unknown" attribute of this type. */
+    fun unknown() = empty(Tag.unknown)
+
+    /** Return an "unsupported" attribute of this type. */
+    fun unsupported() = empty(Tag.unsupported)
+
+    /** Coerce an attribute of a different type to this type, if possible. */
+    fun coerce(attribute: Attribute<*>): Attribute<T>? =
+        if (attribute.tag != null) {
+            // Allow coercion of empty attributes (having an out-of-band tag)
+            empty(attribute.tag!!)
         } else {
-            null
+            val coercedValues = attribute.values.mapNotNull { coerce(it) }
+            if (coercedValues.isNotEmpty()) {
+                of(coercedValues)
+            } else {
+                null
+            }
         }
 
-    /** Return true if the attribute has a matching encoder */
-    fun isValid(attribute: Attribute<*>): Boolean {
-        return attribute.encoder == encoder
-    }
+    /** Coerce a single value to this attributes type [T], if possible. */
+    fun coerce(value: Any): T?
 }

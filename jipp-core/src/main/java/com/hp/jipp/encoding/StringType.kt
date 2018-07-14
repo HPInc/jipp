@@ -3,34 +3,14 @@
 
 package com.hp.jipp.encoding
 
-import java.io.IOException
-
 /**
- * An attribute bearing a string for which language is irrelevant.
-
- * Some string types have a length-limit.
+ * A type of attribute which is most clearly represented as a string
  */
-open class StringType(tag: Tag, override val name: String) : AttributeType<String>(Encoder, tag) {
-
-    override fun convert(attribute: Attribute<*>): Attribute<String>? {
-        val values: List<String> = attribute.values.mapNotNull {
-            when (it) {
-                is String -> it
-                is LangString -> it.string
-                else -> null
-            }
+open class StringType(val tag: Tag, override val name: String) : AttributeType<String> {
+    override fun coerce(value: Any) =
+        when (value) {
+            is String -> value
+            is OtherString -> value.value
+            else -> null
         }
-        return if (values.isNotEmpty()) of(values) else null
-    }
-
-    companion object Encoder : SimpleEncoder<String>("String") {
-        private const val TAG_MASK = 0x40
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: String) = out.writeString(value)
-
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag) = input.readString()
-
-        override fun valid(valueTag: Tag) = valueTag.code and TAG_MASK == TAG_MASK
-    }
 }

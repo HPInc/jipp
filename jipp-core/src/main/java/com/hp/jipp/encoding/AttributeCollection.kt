@@ -1,24 +1,11 @@
-// Copyright 2017 HP Development Company, L.P.
-// SPDX-License-Identifier: MIT
-
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 
-/** The collection of attributes found within a [CollectionType] attribute.  */
-data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrintable {
-    constructor(vararg attributes: Attribute<*>) : this(attributes.toList())
-
-    /** Return the first attribute matching the type  */
-    operator fun <T> get(type: AttributeType<T>): Attribute<T>? {
-        return attributes
-                .firstOrNull { it.valueTag == type.tag && it.name == type.name }
-                ?.let { type.convert(it) }
-    }
-
-    /** Return all values found from the first attribute matching the type, or an empty list if no match  */
-    fun <T> values(type: AttributeType<T>): List<T> = get(type)?.values ?: listOf()
+/** Attributes found within an attribute collection. */
+interface AttributeCollection : PrettyPrintable {
+    val attributes: List<Attribute<*>>
 
     override fun print(printer: PrettyPrinter) {
         printer.open(PrettyPrinter.OBJECT)
@@ -26,5 +13,48 @@ data class AttributeCollection(val attributes: List<Attribute<*>>) : PrettyPrint
         printer.close()
     }
 
-    override fun toString() = attributes.toString()
+    abstract class Type<T : AttributeCollection>(private val converter: Converter<T>) : AttributeType<T> {
+        override fun coerce(value: Any): T? =
+            if (value is AttributeCollection) {
+                converter.convert(value.attributes.toMutableList())
+            } else {
+                null
+            }
+    }
+
+    interface Converter<T : AttributeCollection> {
+        /**
+         * Progressively convert attributes into the destination type
+         */
+        fun convert(attributes: List<Attribute<*>>): T
+
+        /**
+         * Consumes the first value of attribute [type] from [attributes], removing it and its attribute if nothing
+         * remains of it.
+         */
+        fun <T : Any> extractOne(attributes: List<Attribute<*>>, type: AttributeType<T>): T? =
+            coerced(attributes, type)?.let {
+                when (it.values.size) {
+                    0 -> null
+                    else -> it.value
+                }
+            }
+
+        /**
+         * Consumes all values of attribute [type] from [attributes], removing it if consumed.
+         */
+        fun <T : Any> extractAll(attributes: List<Attribute<*>>, type: AttributeType<T>): List<T>? =
+            coerced(attributes, type)?.let {
+                when (it.values.size) {
+                    0 -> null
+                    else -> it.values
+                }
+            }
+
+        /** Return the attribute having the same name and coerced into the given attribute type, if possible */
+        fun <T : Any> coerced(attributes: List<Attribute<*>>, type: AttributeType<T>): Attribute<T>? =
+            attributes.find { it.name == type.name }?.let {
+                type.coerce(it)
+            }
+    }
 }

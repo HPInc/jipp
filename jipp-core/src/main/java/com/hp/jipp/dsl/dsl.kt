@@ -4,10 +4,10 @@
 package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
-import com.hp.jipp.model.Operation
+import com.hp.jipp.pwg.Operation
 import com.hp.jipp.model.IppPacket
 import com.hp.jipp.model.IppPacket.Companion.DEFAULT_VERSION_NUMBER
-import com.hp.jipp.model.Status
+import com.hp.jipp.pwg.Status
 
 @DslMarker annotation class IppDslMarker
 
@@ -52,7 +52,7 @@ class InPacket constructor(
     /** Allow code to be set/get as a status */
     private var status: Status
         set(value) { code = value.code }
-        get() = Status.Encoder[code]
+        get() = Status[code]
 
     /** Add a new attribute group to the packet */
     fun group(tag: Tag, init: InAttributeGroup.() -> Unit) {
@@ -97,32 +97,28 @@ sealed class InAttributes {
     }
 
     /** Add an attribute to the group having one or more values */
-    fun <T> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
+    fun <T : Any> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
         if (values.isEmpty()) {
-            attr(attributeType.of(value))
+            // Note: must be listOf here or we end up with List<Object> during vararg conversion
+            attr(attributeType.of(listOf(value)))
         } else {
             attr(attributeType.of(listOf(value) + values.toList()))
         }
     }
 
-    /** Add a collection */
-    fun col(collectionType: CollectionType, init: InCollection.() -> Unit) {
-        attr(collectionType(InCollection().let {
-            it.init()
-            it.build()
-        }))
+    fun attr(attributeType: NameType, value: String, vararg values: String) {
+        if (values.isEmpty()) {
+            attr(attributeType.of(value))
+        } else {
+            attr(attributeType.ofStrings(listOf(value) + values.toList()))
+        }
     }
-}
 
-/** Return a new Collection based on a collection type and the contents supplied in the block */
-operator fun CollectionType.invoke(init: InCollection.() -> Unit) =
-        this(InCollection().let {
-            it.init()
-            it.build()
-        })
-
-@IppDslMarker
-class InCollection : InAttributes() {
-    /** Build the final collection */
-    internal fun build(): AttributeCollection = AttributeCollection(attributes.toList())
+    fun attr(attributeType: TextType, value: String, vararg values: String) {
+        if (values.isEmpty()) {
+            attr(attributeType.of(value))
+        } else {
+            attr(attributeType.ofStrings(listOf(value) + values.toList()))
+        }
+    }
 }
