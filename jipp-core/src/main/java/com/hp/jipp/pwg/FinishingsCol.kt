@@ -34,13 +34,13 @@ data class FinishingsCol
     val punching: Punching? = null,
     val stitching: Stitching? = null,
     val trimming: List<Trimming>? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             baling?.let { Members.baling.of(it) },
             binding?.let { Members.binding.of(it) },
             coating?.let { Members.coating.of(it) },
@@ -93,6 +93,62 @@ data class FinishingsCol
         const val trimming = "trimming"
     }
 
+    /** Builder for immutable [FinishingsCol] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: FinishingsCol) : this() {
+            baling = source.baling
+            binding = source.binding
+            coating = source.coating
+            covering = source.covering
+            finishingTemplate = source.finishingTemplate
+            folding = source.folding
+            impositionTemplate = source.impositionTemplate
+            laminating = source.laminating
+            mediaSheetsSupported = source.mediaSheetsSupported
+            mediaSize = source.mediaSize
+            mediaSizeName = source.mediaSizeName
+            punching = source.punching
+            stitching = source.stitching
+            trimming = source.trimming
+        }
+        var baling: Baling? = null
+        var binding: Binding? = null
+        var coating: Coating? = null
+        var covering: Covering? = null
+        /** May contain any keyword from [FinishingTemplate] or a name. */
+        var finishingTemplate: String? = null
+        var folding: List<Folding>? = null
+        /** May contain any keyword from [ImpositionTemplate] or a name. */
+        var impositionTemplate: String? = null
+        var laminating: Laminating? = null
+        var mediaSheetsSupported: IntRange? = null
+        var mediaSize: MediaSize? = null
+        /** May contain any keyword from [Media]. */
+        var mediaSizeName: String? = null
+        var punching: Punching? = null
+        var stitching: Stitching? = null
+        var trimming: List<Trimming>? = null
+
+        /** Return a new [FinishingsCol] object containing all values initialized in this builder. */
+        fun build() = FinishingsCol(
+            baling,
+            binding,
+            coating,
+            covering,
+            finishingTemplate,
+            folding,
+            impositionTemplate,
+            laminating,
+            mediaSheetsSupported,
+            mediaSize,
+            mediaSizeName,
+            punching,
+            stitching,
+            trimming
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<FinishingsCol> {
         override fun convert(attributes: List<Attribute<*>>): FinishingsCol =
             FinishingsCol(
@@ -110,7 +166,7 @@ data class FinishingsCol
                 extractOne(attributes, punching),
                 extractOne(attributes, stitching),
                 extractAll(attributes, trimming),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "baling" member type.
          */
@@ -182,13 +238,13 @@ data class FinishingsCol
         val balingType: String? = null,
         /** May contain any keyword from [BalingWhen]. */
         val balingWhen: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 balingType?.let { Members.balingType.of(it) },
                 balingWhen?.let { Members.balingWhen.of(it) }
             )
@@ -205,12 +261,31 @@ data class FinishingsCol
             const val balingWhen = "baling-when"
         }
 
+        /** Builder for immutable [Baling] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Baling) : this() {
+                balingType = source.balingType
+                balingWhen = source.balingWhen
+            }
+            /** May contain any keyword from [BalingType] or a name. */
+            var balingType: String? = null
+            /** May contain any keyword from [BalingWhen]. */
+            var balingWhen: String? = null
+
+            /** Return a new [Baling] object containing all values initialized in this builder. */
+            fun build() = Baling(
+                balingType,
+                balingWhen
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Baling> {
             override fun convert(attributes: List<Attribute<*>>): Baling =
                 Baling(
                     extractOne(attributes, balingType),
                     extractOne(attributes, balingWhen),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "baling-type" member type.
              * May contain any keyword from [BalingType] or a name.
@@ -234,13 +309,13 @@ data class FinishingsCol
         val bindingReferenceEdge: String? = null,
         /** May contain any keyword from [BindingType] or a name. */
         val bindingType: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 bindingReferenceEdge?.let { Members.bindingReferenceEdge.of(it) },
                 bindingType?.let { Members.bindingType.of(it) }
             )
@@ -257,12 +332,31 @@ data class FinishingsCol
             const val bindingType = "binding-type"
         }
 
+        /** Builder for immutable [Binding] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Binding) : this() {
+                bindingReferenceEdge = source.bindingReferenceEdge
+                bindingType = source.bindingType
+            }
+            /** May contain any keyword from [BindingReferenceEdge]. */
+            var bindingReferenceEdge: String? = null
+            /** May contain any keyword from [BindingType] or a name. */
+            var bindingType: String? = null
+
+            /** Return a new [Binding] object containing all values initialized in this builder. */
+            fun build() = Binding(
+                bindingReferenceEdge,
+                bindingType
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Binding> {
             override fun convert(attributes: List<Attribute<*>>): Binding =
                 Binding(
                     extractOne(attributes, bindingReferenceEdge),
                     extractOne(attributes, bindingType),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "binding-reference-edge" member type.
              * May contain any keyword from [BindingReferenceEdge].
@@ -286,13 +380,13 @@ data class FinishingsCol
         val coatingSides: String? = null,
         /** May contain any keyword from [CoatingType] or a name. */
         val coatingType: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 coatingSides?.let { Members.coatingSides.of(it) },
                 coatingType?.let { Members.coatingType.of(it) }
             )
@@ -309,12 +403,31 @@ data class FinishingsCol
             const val coatingType = "coating-type"
         }
 
+        /** Builder for immutable [Coating] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Coating) : this() {
+                coatingSides = source.coatingSides
+                coatingType = source.coatingType
+            }
+            /** May contain any keyword from [CoatingSides]. */
+            var coatingSides: String? = null
+            /** May contain any keyword from [CoatingType] or a name. */
+            var coatingType: String? = null
+
+            /** Return a new [Coating] object containing all values initialized in this builder. */
+            fun build() = Coating(
+                coatingSides,
+                coatingType
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Coating> {
             override fun convert(attributes: List<Attribute<*>>): Coating =
                 Coating(
                     extractOne(attributes, coatingSides),
                     extractOne(attributes, coatingType),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "coating-sides" member type.
              * May contain any keyword from [CoatingSides].
@@ -336,13 +449,13 @@ data class FinishingsCol
     @JvmOverloads constructor(
         /** May contain any keyword from [CoveringName] or a name. */
         val coveringName: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 coveringName?.let { Members.coveringName.of(it) }
             )
         }
@@ -356,11 +469,26 @@ data class FinishingsCol
             const val coveringName = "covering-name"
         }
 
+        /** Builder for immutable [Covering] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Covering) : this() {
+                coveringName = source.coveringName
+            }
+            /** May contain any keyword from [CoveringName] or a name. */
+            var coveringName: String? = null
+
+            /** Return a new [Covering] object containing all values initialized in this builder. */
+            fun build() = Covering(
+                coveringName
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Covering> {
             override fun convert(attributes: List<Attribute<*>>): Covering =
                 Covering(
                     extractOne(attributes, coveringName),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "covering-name" member type.
              * May contain any keyword from [CoveringName] or a name.
@@ -380,13 +508,13 @@ data class FinishingsCol
         val foldingOffset: Int? = null,
         /** May contain any keyword from [FoldingReferenceEdge]. */
         val foldingReferenceEdge: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 foldingDirection?.let { Members.foldingDirection.of(it) },
                 foldingOffset?.let { Members.foldingOffset.of(it) },
                 foldingReferenceEdge?.let { Members.foldingReferenceEdge.of(it) }
@@ -406,13 +534,35 @@ data class FinishingsCol
             const val foldingReferenceEdge = "folding-reference-edge"
         }
 
+        /** Builder for immutable [Folding] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Folding) : this() {
+                foldingDirection = source.foldingDirection
+                foldingOffset = source.foldingOffset
+                foldingReferenceEdge = source.foldingReferenceEdge
+            }
+            /** May contain any keyword from [FoldingDirection]. */
+            var foldingDirection: String? = null
+            var foldingOffset: Int? = null
+            /** May contain any keyword from [FoldingReferenceEdge]. */
+            var foldingReferenceEdge: String? = null
+
+            /** Return a new [Folding] object containing all values initialized in this builder. */
+            fun build() = Folding(
+                foldingDirection,
+                foldingOffset,
+                foldingReferenceEdge
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Folding> {
             override fun convert(attributes: List<Attribute<*>>): Folding =
                 Folding(
                     extractOne(attributes, foldingDirection),
                     extractOne(attributes, foldingOffset),
                     extractOne(attributes, foldingReferenceEdge),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "folding-direction" member type.
              * May contain any keyword from [FoldingDirection].
@@ -440,13 +590,13 @@ data class FinishingsCol
         val laminatingSides: String? = null,
         /** May contain any keyword from [LaminatingType] or a name. */
         val laminatingType: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 laminatingSides?.let { Members.laminatingSides.of(it) },
                 laminatingType?.let { Members.laminatingType.of(it) }
             )
@@ -463,12 +613,31 @@ data class FinishingsCol
             const val laminatingType = "laminating-type"
         }
 
+        /** Builder for immutable [Laminating] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Laminating) : this() {
+                laminatingSides = source.laminatingSides
+                laminatingType = source.laminatingType
+            }
+            /** May contain any keyword from [LaminatingSides]. */
+            var laminatingSides: String? = null
+            /** May contain any keyword from [LaminatingType] or a name. */
+            var laminatingType: String? = null
+
+            /** Return a new [Laminating] object containing all values initialized in this builder. */
+            fun build() = Laminating(
+                laminatingSides,
+                laminatingType
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Laminating> {
             override fun convert(attributes: List<Attribute<*>>): Laminating =
                 Laminating(
                     extractOne(attributes, laminatingSides),
                     extractOne(attributes, laminatingType),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "laminating-sides" member type.
              * May contain any keyword from [LaminatingSides].
@@ -490,13 +659,13 @@ data class FinishingsCol
     @JvmOverloads constructor(
         val xDimension: Int? = null,
         val yDimension: Int? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 xDimension?.let { Members.xDimension.of(it) },
                 yDimension?.let { Members.yDimension.of(it) }
             )
@@ -513,12 +682,29 @@ data class FinishingsCol
             const val yDimension = "y-dimension"
         }
 
+        /** Builder for immutable [MediaSize] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: MediaSize) : this() {
+                xDimension = source.xDimension
+                yDimension = source.yDimension
+            }
+            var xDimension: Int? = null
+            var yDimension: Int? = null
+
+            /** Return a new [MediaSize] object containing all values initialized in this builder. */
+            fun build() = MediaSize(
+                xDimension,
+                yDimension
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<MediaSize> {
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, yDimension),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "x-dimension" member type.
              */
@@ -540,13 +726,13 @@ data class FinishingsCol
         val punchingOffset: Int? = null,
         /** May contain any keyword from [PunchingReferenceEdge]. */
         val punchingReferenceEdge: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 punchingLocations?.let { Members.punchingLocations.of(it) },
                 punchingOffset?.let { Members.punchingOffset.of(it) },
                 punchingReferenceEdge?.let { Members.punchingReferenceEdge.of(it) }
@@ -566,13 +752,34 @@ data class FinishingsCol
             const val punchingReferenceEdge = "punching-reference-edge"
         }
 
+        /** Builder for immutable [Punching] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Punching) : this() {
+                punchingLocations = source.punchingLocations
+                punchingOffset = source.punchingOffset
+                punchingReferenceEdge = source.punchingReferenceEdge
+            }
+            var punchingLocations: List<Int>? = null
+            var punchingOffset: Int? = null
+            /** May contain any keyword from [PunchingReferenceEdge]. */
+            var punchingReferenceEdge: String? = null
+
+            /** Return a new [Punching] object containing all values initialized in this builder. */
+            fun build() = Punching(
+                punchingLocations,
+                punchingOffset,
+                punchingReferenceEdge
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Punching> {
             override fun convert(attributes: List<Attribute<*>>): Punching =
                 Punching(
                     extractAll(attributes, punchingLocations),
                     extractOne(attributes, punchingOffset),
                     extractOne(attributes, punchingReferenceEdge),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "punching-locations" member type.
              */
@@ -602,13 +809,13 @@ data class FinishingsCol
         val stitchingOffset: Int? = null,
         /** May contain any keyword from [StitchingReferenceEdge]. */
         val stitchingReferenceEdge: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 stitchingAngle?.let { Members.stitchingAngle.of(it) },
                 stitchingLocations?.let { Members.stitchingLocations.of(it) },
                 stitchingMethod?.let { Members.stitchingMethod.of(it) },
@@ -634,6 +841,34 @@ data class FinishingsCol
             const val stitchingReferenceEdge = "stitching-reference-edge"
         }
 
+        /** Builder for immutable [Stitching] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Stitching) : this() {
+                stitchingAngle = source.stitchingAngle
+                stitchingLocations = source.stitchingLocations
+                stitchingMethod = source.stitchingMethod
+                stitchingOffset = source.stitchingOffset
+                stitchingReferenceEdge = source.stitchingReferenceEdge
+            }
+            var stitchingAngle: Int? = null
+            var stitchingLocations: List<Int>? = null
+            /** May contain any keyword from [StitchingMethod]. */
+            var stitchingMethod: String? = null
+            var stitchingOffset: Int? = null
+            /** May contain any keyword from [StitchingReferenceEdge]. */
+            var stitchingReferenceEdge: String? = null
+
+            /** Return a new [Stitching] object containing all values initialized in this builder. */
+            fun build() = Stitching(
+                stitchingAngle,
+                stitchingLocations,
+                stitchingMethod,
+                stitchingOffset,
+                stitchingReferenceEdge
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Stitching> {
             override fun convert(attributes: List<Attribute<*>>): Stitching =
                 Stitching(
@@ -642,7 +877,7 @@ data class FinishingsCol
                     extractOne(attributes, stitchingMethod),
                     extractOne(attributes, stitchingOffset),
                     extractOne(attributes, stitchingReferenceEdge),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "stitching-angle" member type.
              */
@@ -681,13 +916,13 @@ data class FinishingsCol
         val trimmingType: String? = null,
         /** May contain any keyword from [TrimmingWhen]. */
         val trimmingWhen: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 trimmingOffset?.let { Members.trimmingOffset.of(it) },
                 trimmingReferenceEdge?.let { Members.trimmingReferenceEdge.of(it) },
                 trimmingType?.let { Members.trimmingType.of(it) },
@@ -710,6 +945,32 @@ data class FinishingsCol
             const val trimmingWhen = "trimming-when"
         }
 
+        /** Builder for immutable [Trimming] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: Trimming) : this() {
+                trimmingOffset = source.trimmingOffset
+                trimmingReferenceEdge = source.trimmingReferenceEdge
+                trimmingType = source.trimmingType
+                trimmingWhen = source.trimmingWhen
+            }
+            var trimmingOffset: Int? = null
+            /** May contain any keyword from [TrimmingReferenceEdge]. */
+            var trimmingReferenceEdge: String? = null
+            /** May contain any keyword from [TrimmingType] or a name. */
+            var trimmingType: String? = null
+            /** May contain any keyword from [TrimmingWhen]. */
+            var trimmingWhen: String? = null
+
+            /** Return a new [Trimming] object containing all values initialized in this builder. */
+            fun build() = Trimming(
+                trimmingOffset,
+                trimmingReferenceEdge,
+                trimmingType,
+                trimmingWhen
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<Trimming> {
             override fun convert(attributes: List<Attribute<*>>): Trimming =
                 Trimming(
@@ -717,7 +978,7 @@ data class FinishingsCol
                     extractOne(attributes, trimmingReferenceEdge),
                     extractOne(attributes, trimmingType),
                     extractOne(attributes, trimmingWhen),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "trimming-offset" member type.
              */

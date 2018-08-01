@@ -21,13 +21,13 @@ data class PrintAccuracySupported
     val xAccuracy: Int? = null,
     val yAccuracy: Int? = null,
     val zAccuracy: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             accuracyUnits?.let { Members.accuracyUnits.of(it) },
             xAccuracy?.let { Members.xAccuracy.of(it) },
             yAccuracy?.let { Members.yAccuracy.of(it) },
@@ -50,6 +50,30 @@ data class PrintAccuracySupported
         const val zAccuracy = "z-accuracy"
     }
 
+    /** Builder for immutable [PrintAccuracySupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PrintAccuracySupported) : this() {
+            accuracyUnits = source.accuracyUnits
+            xAccuracy = source.xAccuracy
+            yAccuracy = source.yAccuracy
+            zAccuracy = source.zAccuracy
+        }
+        /** May contain any keyword from [AccuracyUnit]. */
+        var accuracyUnits: String? = null
+        var xAccuracy: Int? = null
+        var yAccuracy: Int? = null
+        var zAccuracy: Int? = null
+
+        /** Return a new [PrintAccuracySupported] object containing all values initialized in this builder. */
+        fun build() = PrintAccuracySupported(
+            accuracyUnits,
+            xAccuracy,
+            yAccuracy,
+            zAccuracy
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PrintAccuracySupported> {
         override fun convert(attributes: List<Attribute<*>>): PrintAccuracySupported =
             PrintAccuracySupported(
@@ -57,7 +81,7 @@ data class PrintAccuracySupported
                 extractOne(attributes, xAccuracy),
                 extractOne(attributes, yAccuracy),
                 extractOne(attributes, zAccuracy),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "accuracy-units" member type.
          * May contain any keyword from [AccuracyUnit].

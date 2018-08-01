@@ -51,7 +51,11 @@ interface AttributeType<T : Any> {
     /** Return an "unsupported" attribute of this type. */
     fun unsupported() = empty(Tag.unsupported)
 
-    /** Coerce an attribute of a different type to this type, if possible. */
+    /**
+     * Coerce an attribute of a different type to this type, if possible.
+     * This method is used to convert received attribute data into a more
+     * convenient type.
+     */
     fun coerce(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.tag != null) {
             // Allow coercion of empty attributes (having an out-of-band tag)

@@ -20,13 +20,13 @@ data class ProofPrint
     val media: String? = null,
     val mediaCol: MediaCol? = null,
     val proofPrintCopies: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             media?.let { Members.media.of(it) },
             mediaCol?.let { Members.mediaCol.of(it) },
             proofPrintCopies?.let { Members.proofPrintCopies.of(it) }
@@ -46,13 +46,34 @@ data class ProofPrint
         const val proofPrintCopies = "proof-print-copies"
     }
 
+    /** Builder for immutable [ProofPrint] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: ProofPrint) : this() {
+            media = source.media
+            mediaCol = source.mediaCol
+            proofPrintCopies = source.proofPrintCopies
+        }
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+        var proofPrintCopies: Int? = null
+
+        /** Return a new [ProofPrint] object containing all values initialized in this builder. */
+        fun build() = ProofPrint(
+            media,
+            mediaCol,
+            proofPrintCopies
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<ProofPrint> {
         override fun convert(attributes: List<Attribute<*>>): ProofPrint =
             ProofPrint(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
                 extractOne(attributes, proofPrintCopies),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "media" member type.
          * May contain any keyword from [Media] or a name.

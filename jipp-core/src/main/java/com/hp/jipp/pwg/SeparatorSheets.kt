@@ -22,13 +22,13 @@ data class SeparatorSheets
     val mediaCol: MediaCol? = null,
     /** May contain any keyword from [SeparatorSheetsType]. */
     val separatorSheetsType: List<String>? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             media?.let { Members.media.of(it) },
             mediaCol?.let { Members.mediaCol.of(it) },
             separatorSheetsType?.let { Members.separatorSheetsType.of(it) }
@@ -48,13 +48,35 @@ data class SeparatorSheets
         const val separatorSheetsType = "separator-sheets-type"
     }
 
+    /** Builder for immutable [SeparatorSheets] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: SeparatorSheets) : this() {
+            media = source.media
+            mediaCol = source.mediaCol
+            separatorSheetsType = source.separatorSheetsType
+        }
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+        /** May contain any keyword from [SeparatorSheetsType]. */
+        var separatorSheetsType: List<String>? = null
+
+        /** Return a new [SeparatorSheets] object containing all values initialized in this builder. */
+        fun build() = SeparatorSheets(
+            media,
+            mediaCol,
+            separatorSheetsType
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<SeparatorSheets> {
         override fun convert(attributes: List<Attribute<*>>): SeparatorSheets =
             SeparatorSheets(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
                 extractAll(attributes, separatorSheetsType),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "media" member type.
          * May contain any keyword from [Media] or a name.

@@ -24,13 +24,13 @@ data class DocumentFormatDetails
     val documentSourceApplicationVersion: String? = null,
     val documentSourceOsName: String? = null,
     val documentSourceOsVersion: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             documentFormat?.let { Members.documentFormat.of(it) },
             documentFormatDeviceId?.let { Members.documentFormatDeviceId.of(it) },
             documentFormatVersion?.let { Members.documentFormatVersion.of(it) },
@@ -65,6 +65,41 @@ data class DocumentFormatDetails
         const val documentSourceOsVersion = "document-source-os-version"
     }
 
+    /** Builder for immutable [DocumentFormatDetails] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: DocumentFormatDetails) : this() {
+            documentFormat = source.documentFormat
+            documentFormatDeviceId = source.documentFormatDeviceId
+            documentFormatVersion = source.documentFormatVersion
+            documentNaturalLanguage = source.documentNaturalLanguage
+            documentSourceApplicationName = source.documentSourceApplicationName
+            documentSourceApplicationVersion = source.documentSourceApplicationVersion
+            documentSourceOsName = source.documentSourceOsName
+            documentSourceOsVersion = source.documentSourceOsVersion
+        }
+        var documentFormat: String? = null
+        var documentFormatDeviceId: String? = null
+        var documentFormatVersion: String? = null
+        var documentNaturalLanguage: List<String>? = null
+        var documentSourceApplicationName: String? = null
+        var documentSourceApplicationVersion: String? = null
+        var documentSourceOsName: String? = null
+        var documentSourceOsVersion: String? = null
+
+        /** Return a new [DocumentFormatDetails] object containing all values initialized in this builder. */
+        fun build() = DocumentFormatDetails(
+            documentFormat,
+            documentFormatDeviceId,
+            documentFormatVersion,
+            documentNaturalLanguage,
+            documentSourceApplicationName,
+            documentSourceApplicationVersion,
+            documentSourceOsName,
+            documentSourceOsVersion
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<DocumentFormatDetails> {
         override fun convert(attributes: List<Attribute<*>>): DocumentFormatDetails =
             DocumentFormatDetails(
@@ -76,7 +111,7 @@ data class DocumentFormatDetails
                 extractOne(attributes, documentSourceApplicationVersion)?.value,
                 extractOne(attributes, documentSourceOsName)?.value,
                 extractOne(attributes, documentSourceOsVersion)?.value,
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "document-format" member type.
          */

@@ -18,13 +18,13 @@ data class PrinterIccProfiles
 @JvmOverloads constructor(
     val profileName: String? = null,
     val profileUrl: java.net.URI? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             profileName?.let { Members.profileName.of(it) },
             profileUrl?.let { Members.profileUrl.of(it) }
         )
@@ -41,12 +41,29 @@ data class PrinterIccProfiles
         const val profileUrl = "profile-url"
     }
 
+    /** Builder for immutable [PrinterIccProfiles] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PrinterIccProfiles) : this() {
+            profileName = source.profileName
+            profileUrl = source.profileUrl
+        }
+        var profileName: String? = null
+        var profileUrl: java.net.URI? = null
+
+        /** Return a new [PrinterIccProfiles] object containing all values initialized in this builder. */
+        fun build() = PrinterIccProfiles(
+            profileName,
+            profileUrl
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PrinterIccProfiles> {
         override fun convert(attributes: List<Attribute<*>>): PrinterIccProfiles =
             PrinterIccProfiles(
                 extractOne(attributes, profileName)?.value,
                 extractOne(attributes, profileUrl),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "profile-name" member type.
          */

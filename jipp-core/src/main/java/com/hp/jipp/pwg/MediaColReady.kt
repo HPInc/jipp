@@ -18,13 +18,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class MediaColReady
 @JvmOverloads constructor(
     val mediaSourceProperties: MediaSourceProperties? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             mediaSourceProperties?.let { Members.mediaSourceProperties.of(it) }
         )
     }
@@ -38,11 +38,25 @@ data class MediaColReady
         const val mediaSourceProperties = "media-source-properties"
     }
 
+    /** Builder for immutable [MediaColReady] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: MediaColReady) : this() {
+            mediaSourceProperties = source.mediaSourceProperties
+        }
+        var mediaSourceProperties: MediaSourceProperties? = null
+
+        /** Return a new [MediaColReady] object containing all values initialized in this builder. */
+        fun build() = MediaColReady(
+            mediaSourceProperties
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<MediaColReady> {
         override fun convert(attributes: List<Attribute<*>>): MediaColReady =
             MediaColReady(
                 extractOne(attributes, mediaSourceProperties),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "media-source-properties" member type.
          */
@@ -58,13 +72,13 @@ data class MediaColReady
         /** May contain any keyword from [FeedOrientation]. */
         val mediaSourceFeedDirection: String? = null,
         val mediaSourceFeedOrientation: Orientation? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 mediaSourceFeedDirection?.let { Members.mediaSourceFeedDirection.of(it) },
                 mediaSourceFeedOrientation?.let { Members.mediaSourceFeedOrientation.of(it) }
             )
@@ -81,12 +95,30 @@ data class MediaColReady
             const val mediaSourceFeedOrientation = "media-source-feed-orientation"
         }
 
+        /** Builder for immutable [MediaSourceProperties] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: MediaSourceProperties) : this() {
+                mediaSourceFeedDirection = source.mediaSourceFeedDirection
+                mediaSourceFeedOrientation = source.mediaSourceFeedOrientation
+            }
+            /** May contain any keyword from [FeedOrientation]. */
+            var mediaSourceFeedDirection: String? = null
+            var mediaSourceFeedOrientation: Orientation? = null
+
+            /** Return a new [MediaSourceProperties] object containing all values initialized in this builder. */
+            fun build() = MediaSourceProperties(
+                mediaSourceFeedDirection,
+                mediaSourceFeedOrientation
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<MediaSourceProperties> {
             override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
                 MediaSourceProperties(
                     extractOne(attributes, mediaSourceFeedDirection),
                     extractOne(attributes, mediaSourceFeedOrientation),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "media-source-feed-direction" member type.
              * May contain any keyword from [FeedOrientation].

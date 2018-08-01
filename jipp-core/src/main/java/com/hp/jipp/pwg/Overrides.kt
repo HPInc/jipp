@@ -19,13 +19,13 @@ data class Overrides
     val documentCopies: List<IntRange>? = null,
     val documentNumbers: List<IntRange>? = null,
     val pages: List<IntRange>? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             documentCopies?.let { Members.documentCopies.of(it) },
             documentNumbers?.let { Members.documentNumbers.of(it) },
             pages?.let { Members.pages.of(it) }
@@ -45,13 +45,33 @@ data class Overrides
         const val pages = "pages"
     }
 
+    /** Builder for immutable [Overrides] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: Overrides) : this() {
+            documentCopies = source.documentCopies
+            documentNumbers = source.documentNumbers
+            pages = source.pages
+        }
+        var documentCopies: List<IntRange>? = null
+        var documentNumbers: List<IntRange>? = null
+        var pages: List<IntRange>? = null
+
+        /** Return a new [Overrides] object containing all values initialized in this builder. */
+        fun build() = Overrides(
+            documentCopies,
+            documentNumbers,
+            pages
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<Overrides> {
         override fun convert(attributes: List<Attribute<*>>): Overrides =
             Overrides(
                 extractAll(attributes, documentCopies),
                 extractAll(attributes, documentNumbers),
                 extractAll(attributes, pages),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "document-copies" member type.
          */

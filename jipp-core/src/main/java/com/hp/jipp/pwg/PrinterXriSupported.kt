@@ -21,13 +21,13 @@ data class PrinterXriSupported
     /** May contain any keyword from [XriSecuritySupported]. */
     val xriSecurity: String? = null,
     val xriUri: java.net.URI? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             xriAuthentication?.let { Members.xriAuthentication.of(it) },
             xriSecurity?.let { Members.xriSecurity.of(it) },
             xriUri?.let { Members.xriUri.of(it) }
@@ -47,13 +47,35 @@ data class PrinterXriSupported
         const val xriUri = "xri-uri"
     }
 
+    /** Builder for immutable [PrinterXriSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PrinterXriSupported) : this() {
+            xriAuthentication = source.xriAuthentication
+            xriSecurity = source.xriSecurity
+            xriUri = source.xriUri
+        }
+        /** May contain any keyword from [XriAuthenticationSupported]. */
+        var xriAuthentication: String? = null
+        /** May contain any keyword from [XriSecuritySupported]. */
+        var xriSecurity: String? = null
+        var xriUri: java.net.URI? = null
+
+        /** Return a new [PrinterXriSupported] object containing all values initialized in this builder. */
+        fun build() = PrinterXriSupported(
+            xriAuthentication,
+            xriSecurity,
+            xriUri
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PrinterXriSupported> {
         override fun convert(attributes: List<Attribute<*>>): PrinterXriSupported =
             PrinterXriSupported(
                 extractOne(attributes, xriAuthentication),
                 extractOne(attributes, xriSecurity),
                 extractOne(attributes, xriUri),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "xri-authentication" member type.
          * May contain any keyword from [XriAuthenticationSupported].

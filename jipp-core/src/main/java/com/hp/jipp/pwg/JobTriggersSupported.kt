@@ -18,13 +18,13 @@ data class JobTriggersSupported
 @JvmOverloads constructor(
     /** May contain any keyword from [PresetName] or a name. */
     val presetName: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             presetName?.let { Members.presetName.of(it) }
         )
     }
@@ -38,11 +38,26 @@ data class JobTriggersSupported
         const val presetName = "preset-name"
     }
 
+    /** Builder for immutable [JobTriggersSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: JobTriggersSupported) : this() {
+            presetName = source.presetName
+        }
+        /** May contain any keyword from [PresetName] or a name. */
+        var presetName: String? = null
+
+        /** Return a new [JobTriggersSupported] object containing all values initialized in this builder. */
+        fun build() = JobTriggersSupported(
+            presetName
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<JobTriggersSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobTriggersSupported =
             JobTriggersSupported(
                 extractOne(attributes, presetName),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "preset-name" member type.
          * May contain any keyword from [PresetName] or a name.

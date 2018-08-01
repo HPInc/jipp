@@ -19,13 +19,13 @@ data class PrinterVolumeSupported
     val xDimension: Int? = null,
     val yDimension: Int? = null,
     val zDimension: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             xDimension?.let { Members.xDimension.of(it) },
             yDimension?.let { Members.yDimension.of(it) },
             zDimension?.let { Members.zDimension.of(it) }
@@ -45,13 +45,33 @@ data class PrinterVolumeSupported
         const val zDimension = "z-dimension"
     }
 
+    /** Builder for immutable [PrinterVolumeSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PrinterVolumeSupported) : this() {
+            xDimension = source.xDimension
+            yDimension = source.yDimension
+            zDimension = source.zDimension
+        }
+        var xDimension: Int? = null
+        var yDimension: Int? = null
+        var zDimension: Int? = null
+
+        /** Return a new [PrinterVolumeSupported] object containing all values initialized in this builder. */
+        fun build() = PrinterVolumeSupported(
+            xDimension,
+            yDimension,
+            zDimension
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PrinterVolumeSupported> {
         override fun convert(attributes: List<Attribute<*>>): PrinterVolumeSupported =
             PrinterVolumeSupported(
                 extractOne(attributes, xDimension),
                 extractOne(attributes, yDimension),
                 extractOne(attributes, zDimension),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "x-dimension" member type.
          */

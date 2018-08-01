@@ -16,6 +16,7 @@ import com.hp.jipp.encoding.EnumType
 object Enums {
     @JvmField val all: Map<String, EnumType<out Enum>> = listOf(
         DestinationStatuses.transmissionStatus,
+        MediaCol.MediaSourceProperties.mediaSourceFeedOrientation,
         InputAttributes.inputOrientationRequested,
         MediaColReady.MediaSourceProperties.mediaSourceFeedOrientation,
         MediaColDatabase.MediaSourceProperties.mediaSourceFeedOrientation,

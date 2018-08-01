@@ -22,13 +22,13 @@ data class CoverBack
     /** May contain any keyword from [Media] or a name. */
     val media: String? = null,
     val mediaCol: MediaCol? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             coverType?.let { Members.coverType.of(it) },
             media?.let { Members.media.of(it) },
             mediaCol?.let { Members.mediaCol.of(it) }
@@ -48,13 +48,35 @@ data class CoverBack
         const val mediaCol = "media-col"
     }
 
+    /** Builder for immutable [CoverBack] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: CoverBack) : this() {
+            coverType = source.coverType
+            media = source.media
+            mediaCol = source.mediaCol
+        }
+        /** May contain any keyword from [CoverType]. */
+        var coverType: String? = null
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+
+        /** Return a new [CoverBack] object containing all values initialized in this builder. */
+        fun build() = CoverBack(
+            coverType,
+            media,
+            mediaCol
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<CoverBack> {
         override fun convert(attributes: List<Attribute<*>>): CoverBack =
             CoverBack(
                 extractOne(attributes, coverType),
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "cover-type" member type.
          * May contain any keyword from [CoverType].

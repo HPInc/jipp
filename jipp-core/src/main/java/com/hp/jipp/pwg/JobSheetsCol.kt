@@ -22,13 +22,13 @@ data class JobSheetsCol
     /** May contain any keyword from [Media] or a name. */
     val media: String? = null,
     val mediaCol: MediaCol? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             jobSheets?.let { Members.jobSheets.of(it) },
             media?.let { Members.media.of(it) },
             mediaCol?.let { Members.mediaCol.of(it) }
@@ -48,13 +48,35 @@ data class JobSheetsCol
         const val mediaCol = "media-col"
     }
 
+    /** Builder for immutable [JobSheetsCol] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: JobSheetsCol) : this() {
+            jobSheets = source.jobSheets
+            media = source.media
+            mediaCol = source.mediaCol
+        }
+        /** May contain any keyword from [JobSheet] or a name. */
+        var jobSheets: String? = null
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+
+        /** Return a new [JobSheetsCol] object containing all values initialized in this builder. */
+        fun build() = JobSheetsCol(
+            jobSheets,
+            media,
+            mediaCol
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<JobSheetsCol> {
         override fun convert(attributes: List<Attribute<*>>): JobSheetsCol =
             JobSheetsCol(
                 extractOne(attributes, jobSheets),
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "job-sheets" member type.
          * May contain any keyword from [JobSheet] or a name.

@@ -20,13 +20,13 @@ data class PrintObjects
     val objectOffset: ObjectOffset? = null,
     val objectSize: ObjectSize? = null,
     val objectUuid: java.net.URI? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             documentNumber?.let { Members.documentNumber.of(it) },
             objectOffset?.let { Members.objectOffset.of(it) },
             objectSize?.let { Members.objectSize.of(it) },
@@ -49,6 +49,29 @@ data class PrintObjects
         const val objectUuid = "object-uuid"
     }
 
+    /** Builder for immutable [PrintObjects] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PrintObjects) : this() {
+            documentNumber = source.documentNumber
+            objectOffset = source.objectOffset
+            objectSize = source.objectSize
+            objectUuid = source.objectUuid
+        }
+        var documentNumber: Int? = null
+        var objectOffset: ObjectOffset? = null
+        var objectSize: ObjectSize? = null
+        var objectUuid: java.net.URI? = null
+
+        /** Return a new [PrintObjects] object containing all values initialized in this builder. */
+        fun build() = PrintObjects(
+            documentNumber,
+            objectOffset,
+            objectSize,
+            objectUuid
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PrintObjects> {
         override fun convert(attributes: List<Attribute<*>>): PrintObjects =
             PrintObjects(
@@ -56,7 +79,7 @@ data class PrintObjects
                 extractOne(attributes, objectOffset),
                 extractOne(attributes, objectSize),
                 extractOne(attributes, objectUuid),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "document-number" member type.
          */
@@ -84,13 +107,13 @@ data class PrintObjects
         val xOffset: Int? = null,
         val yOffset: Int? = null,
         val zOffset: Int? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 xOffset?.let { Members.xOffset.of(it) },
                 yOffset?.let { Members.yOffset.of(it) },
                 zOffset?.let { Members.zOffset.of(it) }
@@ -110,13 +133,33 @@ data class PrintObjects
             const val zOffset = "z-offset"
         }
 
+        /** Builder for immutable [ObjectOffset] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: ObjectOffset) : this() {
+                xOffset = source.xOffset
+                yOffset = source.yOffset
+                zOffset = source.zOffset
+            }
+            var xOffset: Int? = null
+            var yOffset: Int? = null
+            var zOffset: Int? = null
+
+            /** Return a new [ObjectOffset] object containing all values initialized in this builder. */
+            fun build() = ObjectOffset(
+                xOffset,
+                yOffset,
+                zOffset
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<ObjectOffset> {
             override fun convert(attributes: List<Attribute<*>>): ObjectOffset =
                 ObjectOffset(
                     extractOne(attributes, xOffset),
                     extractOne(attributes, yOffset),
                     extractOne(attributes, zOffset),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "x-offset" member type.
              */
@@ -141,13 +184,13 @@ data class PrintObjects
         val xDimension: Int? = null,
         val yDimension: Int? = null,
         val zDimension: Int? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 xDimension?.let { Members.xDimension.of(it) },
                 yDimension?.let { Members.yDimension.of(it) },
                 zDimension?.let { Members.zDimension.of(it) }
@@ -167,13 +210,33 @@ data class PrintObjects
             const val zDimension = "z-dimension"
         }
 
+        /** Builder for immutable [ObjectSize] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: ObjectSize) : this() {
+                xDimension = source.xDimension
+                yDimension = source.yDimension
+                zDimension = source.zDimension
+            }
+            var xDimension: Int? = null
+            var yDimension: Int? = null
+            var zDimension: Int? = null
+
+            /** Return a new [ObjectSize] object containing all values initialized in this builder. */
+            fun build() = ObjectSize(
+                xDimension,
+                yDimension,
+                zDimension
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<ObjectSize> {
             override fun convert(attributes: List<Attribute<*>>): ObjectSize =
                 ObjectSize(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, yDimension),
                     extractOne(attributes, zDimension),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "x-dimension" member type.
              */

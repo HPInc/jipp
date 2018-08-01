@@ -35,13 +35,13 @@ data class MaterialsCol
     val materialTemperature: IntOrIntRange? = null,
     /** May contain any keyword from [MaterialType] or a name. */
     val materialType: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             materialAmount?.let { Members.materialAmount.of(it) },
             materialAmountUnits?.let { Members.materialAmountUnits.of(it) },
             materialColor?.let { Members.materialColor.of(it) },
@@ -94,6 +94,64 @@ data class MaterialsCol
         const val materialType = "material-type"
     }
 
+    /** Builder for immutable [MaterialsCol] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: MaterialsCol) : this() {
+            materialAmount = source.materialAmount
+            materialAmountUnits = source.materialAmountUnits
+            materialColor = source.materialColor
+            materialDiameter = source.materialDiameter
+            materialDiameterTolerance = source.materialDiameterTolerance
+            materialFillDensity = source.materialFillDensity
+            materialKey = source.materialKey
+            materialName = source.materialName
+            materialPurpose = source.materialPurpose
+            materialRate = source.materialRate
+            materialRateUnits = source.materialRateUnits
+            materialShellThickness = source.materialShellThickness
+            materialTemperature = source.materialTemperature
+            materialType = source.materialType
+        }
+        var materialAmount: Int? = null
+        /** May contain any keyword from [MaterialAmountUnit]. */
+        var materialAmountUnits: String? = null
+        /** May contain any keyword from [MediaColor]. */
+        var materialColor: String? = null
+        var materialDiameter: Int? = null
+        var materialDiameterTolerance: Int? = null
+        var materialFillDensity: Int? = null
+        var materialKey: String? = null
+        var materialName: String? = null
+        /** May contain any keyword from [MaterialPurpose]. */
+        var materialPurpose: List<String>? = null
+        var materialRate: Int? = null
+        /** May contain any keyword from [MaterialRateUnit]. */
+        var materialRateUnits: String? = null
+        var materialShellThickness: Int? = null
+        var materialTemperature: IntOrIntRange? = null
+        /** May contain any keyword from [MaterialType] or a name. */
+        var materialType: String? = null
+
+        /** Return a new [MaterialsCol] object containing all values initialized in this builder. */
+        fun build() = MaterialsCol(
+            materialAmount,
+            materialAmountUnits,
+            materialColor,
+            materialDiameter,
+            materialDiameterTolerance,
+            materialFillDensity,
+            materialKey,
+            materialName,
+            materialPurpose,
+            materialRate,
+            materialRateUnits,
+            materialShellThickness,
+            materialTemperature,
+            materialType
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<MaterialsCol> {
         override fun convert(attributes: List<Attribute<*>>): MaterialsCol =
             MaterialsCol(
@@ -111,7 +169,7 @@ data class MaterialsCol
                 extractOne(attributes, materialShellThickness),
                 extractOne(attributes, materialTemperature),
                 extractOne(attributes, materialType),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "material-amount" member type.
          */

@@ -18,6 +18,7 @@ open class EnumType<T : Enum>(
         when (value) {
             is UntypedEnum -> factory(value.code)
             is Enum -> factory(value.code)
+            is Int -> factory(value)
             else -> null
         }
 

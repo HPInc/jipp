@@ -22,13 +22,13 @@ data class DestinationUris
     val postDialString: String? = null,
     val preDialString: String? = null,
     val t33Subaddress: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             destinationAttributes?.let { Members.destinationAttributes.of(it) },
             destinationUri?.let { Members.destinationUri.of(it) },
             postDialString?.let { Members.postDialString.of(it) },
@@ -54,6 +54,32 @@ data class DestinationUris
         const val t33Subaddress = "t33-subaddress"
     }
 
+    /** Builder for immutable [DestinationUris] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: DestinationUris) : this() {
+            destinationAttributes = source.destinationAttributes
+            destinationUri = source.destinationUri
+            postDialString = source.postDialString
+            preDialString = source.preDialString
+            t33Subaddress = source.t33Subaddress
+        }
+        var destinationAttributes: List<UntypedCollection>? = null
+        var destinationUri: java.net.URI? = null
+        var postDialString: String? = null
+        var preDialString: String? = null
+        var t33Subaddress: Int? = null
+
+        /** Return a new [DestinationUris] object containing all values initialized in this builder. */
+        fun build() = DestinationUris(
+            destinationAttributes,
+            destinationUri,
+            postDialString,
+            preDialString,
+            t33Subaddress
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<DestinationUris> {
         override fun convert(attributes: List<Attribute<*>>): DestinationUris =
             DestinationUris(
@@ -62,7 +88,7 @@ data class DestinationUris
                 extractOne(attributes, postDialString)?.value,
                 extractOne(attributes, preDialString)?.value,
                 extractOne(attributes, t33Subaddress),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "destination-attributes" member type.
          */

@@ -32,8 +32,7 @@ class DslTest {
         }
         val cycled = cycle(packet)
 
-        // TODO: this seems really clumsy
-        assertEquals("utf-8", cycled[Tag.operationAttributes]!![Types.attributesCharset]?.value)
+        assertEquals("utf-8", cycled.getValue(Tag.operationAttributes, Types.attributesCharset))
 
 //        assertEquals(mediaSize.width, cycled.getValue(Tag.jobAttributes, Types.mediaCol)!!
 //            [Types.mediaSize]!![0][Types.xDimension]!![0])

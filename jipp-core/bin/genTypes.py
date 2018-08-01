@@ -1,4 +1,10 @@
 #!/usr/bin/python
+#
+# * Reads registrations from http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml
+# * Converts them into Kotlin files
+# * Emits warnings during conversions
+#
+
 import urllib
 from lxml import etree
 import copy
@@ -171,9 +177,7 @@ def parse_status_code(record):
 def parse_keyword(record):
     attribute = record.find('{*}attribute').text
 
-    # TODO: proof-print-supported really points to proof-print collection attrs
-    # But currently proof-print-supported gets turned into proof-print and is overwritten
-    # by collection later.
+    # XML Fix: proof-print-supported really should point to "< any proof-print member attribute name >"
 
     keyword = keywords.setdefault(attribute, { 'name': attribute, 'values': [ ], 'specs': [ ],
                                                'syntax': record.find('{*}syntax').text })
@@ -279,6 +283,7 @@ def parse_attribute(record):
     attr = collection.setdefault(attr_name, {
         'name': attr_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text, 'members': { } } )
     fix_syntax(attr)
+
 
     parse_spec(record, attr)
 
@@ -512,26 +517,38 @@ def fuzzy_get(map, name):
     return map[name]
 
 def emit_attributes(env):
-    # Emit collection types having members
+    # Pass 1: Look for collection types that have both ref and members
+    for group in attributes.values():
+        for type in group.values():
+            if 'ref_col' in type and type['ref_col'] and type['members']:
+                referent = attributes[type['ref_group']][type['ref_col']]
+                for new_member in type['members'].values():
+                    if new_member['name'] in referent['members'] and \
+                            referent['members'][new_member['name']] != new_member:
+                        warn("Collection type already has different member " + new_member['name'], referent)
+                else:
+                        referent['members'][new_member['name']] = new_member
+
+    # Pass 2: Emit collection types having members
     for group in attributes.values():
         for type in group.values():
             if type['members']:
                 emit_collection(env, type)
 
-    # Second pass for collections without members or refs:
+    # Pass 3: handle any collections without members or refs
     for group in attributes.values():
         for type in group.values():
             if type['syntax'] == 'collection':
-                find_collection_ref(group, type)
+                handle_collection_ref(group, type)
 
-    # Third pass: any collection references that have not been handled
+    # Pass 4: Warn about any collection references that have not been handled
     for key, value in pending_collections.items():
         if key not in collections:
             warn("Collection " + key + " referenced but not found", value)
         elif 'emitted' not in collections[key]:
             warn("Collection " + key + " referenced but not emitted", value)
 
-    # Emit group attributes
+    # Pass 5: Emit group attributes (now that all dependent types have been handled)
     template = env.get_template('group.kt.tmpl')
     for group_name, values in attributes.items():
         types = []
@@ -558,7 +575,7 @@ def emit_attributes(env):
 
 
 # Make sure collection type has values or at least a ref_col in it. If not, delete type from group.
-def find_collection_ref(group, type):
+def handle_collection_ref(group, type):
     if type['members'] or 'ref_col' in type:
         # It's already OK
         return
@@ -611,9 +628,9 @@ def find_collection_ref(group, type):
 
 def emit_collection(env, type):
     original_type = type
-    # TODO: What about collections that have a ref AND values? see media-col-database
     collection_template = env.get_template('collection.kt.tmpl')
     name = type['name']
+
     if name in collections:
         if collections[name]['members'] != type['members']:
             warn('Collection already exists with different members', [collections[name], type])
@@ -637,7 +654,6 @@ def emit_collection(env, type):
                 name=member['name'], collection=member, app=os.path.basename(sys.argv[0]), updated=updated,
                 specs=specs, noheader=True).replace('\n', '\n    ').strip()
 
-    # TODO: media-col-database has members AND a ref so these need to be combined
     original_type['emitted'] = True
     with open(prep_file(name), 'w') as file:
         file.write(rstrip_all(collection_template.render(
@@ -897,5 +913,5 @@ emit_code()
 if warns:
     print "WARNINGS: " + str(warns)
 else:
-    print "NO WARNINGS"
+    print "No warnings"
 

@@ -24,11 +24,4 @@ object {{ name | camel_class }}Group {
      */
     @JvmField val {{ type.name | camel_member }} = {{ type.kintro }}"{{ type.name }}")
 {%- endfor %}
-
-    /** All known attributes */
-    @JvmField
-    val all = {{ name | camel_class }}Group::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }
-

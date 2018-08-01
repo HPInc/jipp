@@ -17,13 +17,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobConstraintsSupported
 @JvmOverloads constructor(
     val resolverName: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             resolverName?.let { Members.resolverName.of(it) }
         )
     }
@@ -37,11 +37,25 @@ data class JobConstraintsSupported
         const val resolverName = "resolver-name"
     }
 
+    /** Builder for immutable [JobConstraintsSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: JobConstraintsSupported) : this() {
+            resolverName = source.resolverName
+        }
+        var resolverName: String? = null
+
+        /** Return a new [JobConstraintsSupported] object containing all values initialized in this builder. */
+        fun build() = JobConstraintsSupported(
+            resolverName
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<JobConstraintsSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobConstraintsSupported =
             JobConstraintsSupported(
                 extractOne(attributes, resolverName)?.value,
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "resolver-name" member type.
          */

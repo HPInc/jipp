@@ -19,13 +19,13 @@ data class DestinationStatuses
     val destinationUri: java.net.URI? = null,
     val imagesCompleted: Int? = null,
     val transmissionStatus: TransmissionStatus? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             destinationUri?.let { Members.destinationUri.of(it) },
             imagesCompleted?.let { Members.imagesCompleted.of(it) },
             transmissionStatus?.let { Members.transmissionStatus.of(it) }
@@ -45,13 +45,33 @@ data class DestinationStatuses
         const val transmissionStatus = "transmission-status"
     }
 
+    /** Builder for immutable [DestinationStatuses] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: DestinationStatuses) : this() {
+            destinationUri = source.destinationUri
+            imagesCompleted = source.imagesCompleted
+            transmissionStatus = source.transmissionStatus
+        }
+        var destinationUri: java.net.URI? = null
+        var imagesCompleted: Int? = null
+        var transmissionStatus: TransmissionStatus? = null
+
+        /** Return a new [DestinationStatuses] object containing all values initialized in this builder. */
+        fun build() = DestinationStatuses(
+            destinationUri,
+            imagesCompleted,
+            transmissionStatus
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<DestinationStatuses> {
         override fun convert(attributes: List<Attribute<*>>): DestinationStatuses =
             DestinationStatuses(
                 extractOne(attributes, destinationUri),
                 extractOne(attributes, imagesCompleted),
                 extractOne(attributes, transmissionStatus),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "destination-uri" member type.
          */

@@ -22,13 +22,13 @@ data class InsertSheet
     /** May contain any keyword from [Media] or a name. */
     val media: String? = null,
     val mediaCol: MediaCol? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             insertAfterPageNumber?.let { Members.insertAfterPageNumber.of(it) },
             insertCount?.let { Members.insertCount.of(it) },
             media?.let { Members.media.of(it) },
@@ -51,6 +51,30 @@ data class InsertSheet
         const val mediaCol = "media-col"
     }
 
+    /** Builder for immutable [InsertSheet] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: InsertSheet) : this() {
+            insertAfterPageNumber = source.insertAfterPageNumber
+            insertCount = source.insertCount
+            media = source.media
+            mediaCol = source.mediaCol
+        }
+        var insertAfterPageNumber: Int? = null
+        var insertCount: Int? = null
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+
+        /** Return a new [InsertSheet] object containing all values initialized in this builder. */
+        fun build() = InsertSheet(
+            insertAfterPageNumber,
+            insertCount,
+            media,
+            mediaCol
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<InsertSheet> {
         override fun convert(attributes: List<Attribute<*>>): InsertSheet =
             InsertSheet(
@@ -58,7 +82,7 @@ data class InsertSheet
                 extractOne(attributes, insertCount),
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "insert-after-page-number" member type.
          */

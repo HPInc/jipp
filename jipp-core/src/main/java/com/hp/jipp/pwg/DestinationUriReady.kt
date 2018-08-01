@@ -27,13 +27,13 @@ data class DestinationUriReady
     val destinationOauthToken: List<ByteArray>? = null,
     val destinationOauthUri: java.net.URI? = null,
     val destinationUri: java.net.URI? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             destinationAttributes?.let { Members.destinationAttributes.of(it) },
             destinationAttributesSupported?.let { Members.destinationAttributesSupported.of(it) },
             destinationInfo?.let { Members.destinationInfo.of(it) },
@@ -74,6 +74,48 @@ data class DestinationUriReady
         const val destinationUri = "destination-uri"
     }
 
+    /** Builder for immutable [DestinationUriReady] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: DestinationUriReady) : this() {
+            destinationAttributes = source.destinationAttributes
+            destinationAttributesSupported = source.destinationAttributesSupported
+            destinationInfo = source.destinationInfo
+            destinationIsDirectory = source.destinationIsDirectory
+            destinationMandatoryAccessAttributes = source.destinationMandatoryAccessAttributes
+            destinationName = source.destinationName
+            destinationOauthScope = source.destinationOauthScope
+            destinationOauthToken = source.destinationOauthToken
+            destinationOauthUri = source.destinationOauthUri
+            destinationUri = source.destinationUri
+        }
+        var destinationAttributes: List<UntypedCollection>? = null
+        var destinationAttributesSupported: List<String>? = null
+        var destinationInfo: String? = null
+        var destinationIsDirectory: Boolean? = null
+        /** May contain any keyword from [DestinationAccesses.Name]. */
+        var destinationMandatoryAccessAttributes: List<String>? = null
+        var destinationName: String? = null
+        var destinationOauthScope: List<ByteArray>? = null
+        var destinationOauthToken: List<ByteArray>? = null
+        var destinationOauthUri: java.net.URI? = null
+        var destinationUri: java.net.URI? = null
+
+        /** Return a new [DestinationUriReady] object containing all values initialized in this builder. */
+        fun build() = DestinationUriReady(
+            destinationAttributes,
+            destinationAttributesSupported,
+            destinationInfo,
+            destinationIsDirectory,
+            destinationMandatoryAccessAttributes,
+            destinationName,
+            destinationOauthScope,
+            destinationOauthToken,
+            destinationOauthUri,
+            destinationUri
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<DestinationUriReady> {
         override fun convert(attributes: List<Attribute<*>>): DestinationUriReady =
             DestinationUriReady(
@@ -87,7 +129,7 @@ data class DestinationUriReady
                 extractAll(attributes, destinationOauthToken),
                 extractOne(attributes, destinationOauthUri),
                 extractOne(attributes, destinationUri),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "destination-attributes" member type.
          */

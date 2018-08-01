@@ -19,13 +19,13 @@ data class PdlInitFile
     val pdlInitFileEntry: String? = null,
     val pdlInitFileLocation: java.net.URI? = null,
     val pdlInitFileName: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             pdlInitFileEntry?.let { Members.pdlInitFileEntry.of(it) },
             pdlInitFileLocation?.let { Members.pdlInitFileLocation.of(it) },
             pdlInitFileName?.let { Members.pdlInitFileName.of(it) }
@@ -45,13 +45,33 @@ data class PdlInitFile
         const val pdlInitFileName = "pdl-init-file-name"
     }
 
+    /** Builder for immutable [PdlInitFile] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PdlInitFile) : this() {
+            pdlInitFileEntry = source.pdlInitFileEntry
+            pdlInitFileLocation = source.pdlInitFileLocation
+            pdlInitFileName = source.pdlInitFileName
+        }
+        var pdlInitFileEntry: String? = null
+        var pdlInitFileLocation: java.net.URI? = null
+        var pdlInitFileName: String? = null
+
+        /** Return a new [PdlInitFile] object containing all values initialized in this builder. */
+        fun build() = PdlInitFile(
+            pdlInitFileEntry,
+            pdlInitFileLocation,
+            pdlInitFileName
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PdlInitFile> {
         override fun convert(attributes: List<Attribute<*>>): PdlInitFile =
             PdlInitFile(
                 extractOne(attributes, pdlInitFileEntry)?.value,
                 extractOne(attributes, pdlInitFileLocation),
                 extractOne(attributes, pdlInitFileName)?.value,
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "pdl-init-file-entry" member type.
          */

@@ -40,13 +40,13 @@ data class InputAttributes
     val inputSides: String? = null,
     /** May contain any keyword from [InputSource]. */
     val inputSource: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             inputAutoScaling?.let { Members.inputAutoScaling.of(it) },
             inputAutoSkewCorrection?.let { Members.inputAutoSkewCorrection.of(it) },
             inputBrightness?.let { Members.inputBrightness.of(it) },
@@ -111,6 +111,77 @@ data class InputAttributes
         const val inputSource = "input-source"
     }
 
+    /** Builder for immutable [InputAttributes] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: InputAttributes) : this() {
+            inputAutoScaling = source.inputAutoScaling
+            inputAutoSkewCorrection = source.inputAutoSkewCorrection
+            inputBrightness = source.inputBrightness
+            inputColorMode = source.inputColorMode
+            inputContentType = source.inputContentType
+            inputContrast = source.inputContrast
+            inputFilmScanMode = source.inputFilmScanMode
+            inputImagesToTransfer = source.inputImagesToTransfer
+            inputMedia = source.inputMedia
+            inputOrientationRequested = source.inputOrientationRequested
+            inputQuality = source.inputQuality
+            inputResolution = source.inputResolution
+            inputScalingHeight = source.inputScalingHeight
+            inputScalingWidth = source.inputScalingWidth
+            inputScanRegions = source.inputScanRegions
+            inputSharpness = source.inputSharpness
+            inputSides = source.inputSides
+            inputSource = source.inputSource
+        }
+        var inputAutoScaling: Boolean? = null
+        var inputAutoSkewCorrection: Boolean? = null
+        var inputBrightness: Int? = null
+        /** May contain any keyword from [InputColorMode]. */
+        var inputColorMode: String? = null
+        /** May contain any keyword from [InputContentType]. */
+        var inputContentType: String? = null
+        var inputContrast: Int? = null
+        /** May contain any keyword from [InputFilmScanMode]. */
+        var inputFilmScanMode: String? = null
+        var inputImagesToTransfer: Int? = null
+        /** May contain any keyword from [Media] or a name. */
+        var inputMedia: String? = null
+        var inputOrientationRequested: Orientation? = null
+        var inputQuality: PrintQuality? = null
+        var inputResolution: Resolution? = null
+        var inputScalingHeight: Int? = null
+        var inputScalingWidth: Int? = null
+        var inputScanRegions: List<InputScanRegions>? = null
+        var inputSharpness: Int? = null
+        /** May contain any keyword from [Sides]. */
+        var inputSides: String? = null
+        /** May contain any keyword from [InputSource]. */
+        var inputSource: String? = null
+
+        /** Return a new [InputAttributes] object containing all values initialized in this builder. */
+        fun build() = InputAttributes(
+            inputAutoScaling,
+            inputAutoSkewCorrection,
+            inputBrightness,
+            inputColorMode,
+            inputContentType,
+            inputContrast,
+            inputFilmScanMode,
+            inputImagesToTransfer,
+            inputMedia,
+            inputOrientationRequested,
+            inputQuality,
+            inputResolution,
+            inputScalingHeight,
+            inputScalingWidth,
+            inputScanRegions,
+            inputSharpness,
+            inputSides,
+            inputSource
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<InputAttributes> {
         override fun convert(attributes: List<Attribute<*>>): InputAttributes =
             InputAttributes(
@@ -132,7 +203,7 @@ data class InputAttributes
                 extractOne(attributes, inputSharpness),
                 extractOne(attributes, inputSides),
                 extractOne(attributes, inputSource),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "input-auto-scaling" member type.
          */
@@ -223,13 +294,13 @@ data class InputAttributes
         val xOrigin: Int? = null,
         val yDimension: Int? = null,
         val yOrigin: Int? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 xDimension?.let { Members.xDimension.of(it) },
                 xOrigin?.let { Members.xOrigin.of(it) },
                 yDimension?.let { Members.yDimension.of(it) },
@@ -252,6 +323,29 @@ data class InputAttributes
             const val yOrigin = "y-origin"
         }
 
+        /** Builder for immutable [InputScanRegions] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: InputScanRegions) : this() {
+                xDimension = source.xDimension
+                xOrigin = source.xOrigin
+                yDimension = source.yDimension
+                yOrigin = source.yOrigin
+            }
+            var xDimension: Int? = null
+            var xOrigin: Int? = null
+            var yDimension: Int? = null
+            var yOrigin: Int? = null
+
+            /** Return a new [InputScanRegions] object containing all values initialized in this builder. */
+            fun build() = InputScanRegions(
+                xDimension,
+                xOrigin,
+                yDimension,
+                yOrigin
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<InputScanRegions> {
             override fun convert(attributes: List<Attribute<*>>): InputScanRegions =
                 InputScanRegions(
@@ -259,7 +353,7 @@ data class InputAttributes
                     extractOne(attributes, xOrigin),
                     extractOne(attributes, yDimension),
                     extractOne(attributes, yOrigin),
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "x-dimension" member type.
              */

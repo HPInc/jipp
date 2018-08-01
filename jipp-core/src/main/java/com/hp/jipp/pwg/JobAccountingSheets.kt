@@ -24,13 +24,13 @@ data class JobAccountingSheets
     /** May contain any keyword from [Media] or a name. */
     val media: String? = null,
     val mediaCol: MediaCol? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             jobAccountingOutputBin?.let { Members.jobAccountingOutputBin.of(it) },
             jobAccountingSheetsType?.let { Members.jobAccountingSheetsType.of(it) },
             media?.let { Members.media.of(it) },
@@ -53,6 +53,32 @@ data class JobAccountingSheets
         const val mediaCol = "media-col"
     }
 
+    /** Builder for immutable [JobAccountingSheets] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: JobAccountingSheets) : this() {
+            jobAccountingOutputBin = source.jobAccountingOutputBin
+            jobAccountingSheetsType = source.jobAccountingSheetsType
+            media = source.media
+            mediaCol = source.mediaCol
+        }
+        /** May contain any keyword from [OutputBin] or a name. */
+        var jobAccountingOutputBin: String? = null
+        /** May contain any keyword from [JobAccountingSheetsType] or a name. */
+        var jobAccountingSheetsType: String? = null
+        /** May contain any keyword from [Media] or a name. */
+        var media: String? = null
+        var mediaCol: MediaCol? = null
+
+        /** Return a new [JobAccountingSheets] object containing all values initialized in this builder. */
+        fun build() = JobAccountingSheets(
+            jobAccountingOutputBin,
+            jobAccountingSheetsType,
+            media,
+            mediaCol
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<JobAccountingSheets> {
         override fun convert(attributes: List<Attribute<*>>): JobAccountingSheets =
             JobAccountingSheets(
@@ -60,7 +86,7 @@ data class JobAccountingSheets
                 extractOne(attributes, jobAccountingSheetsType),
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "job-accounting-output-bin" member type.
          * May contain any keyword from [OutputBin] or a name.

@@ -22,13 +22,13 @@ data class DestinationAccesses
     val accessPin: String? = null,
     val accessUserName: String? = null,
     val accessX509Certificate: List<ByteArray>? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             accessOauthToken?.let { Members.accessOauthToken.of(it) },
             accessOauthUri?.let { Members.accessOauthUri.of(it) },
             accessPassword?.let { Members.accessPassword.of(it) },
@@ -57,6 +57,35 @@ data class DestinationAccesses
         const val accessX509Certificate = "access-x509-certificate"
     }
 
+    /** Builder for immutable [DestinationAccesses] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: DestinationAccesses) : this() {
+            accessOauthToken = source.accessOauthToken
+            accessOauthUri = source.accessOauthUri
+            accessPassword = source.accessPassword
+            accessPin = source.accessPin
+            accessUserName = source.accessUserName
+            accessX509Certificate = source.accessX509Certificate
+        }
+        var accessOauthToken: List<ByteArray>? = null
+        var accessOauthUri: java.net.URI? = null
+        var accessPassword: String? = null
+        var accessPin: String? = null
+        var accessUserName: String? = null
+        var accessX509Certificate: List<ByteArray>? = null
+
+        /** Return a new [DestinationAccesses] object containing all values initialized in this builder. */
+        fun build() = DestinationAccesses(
+            accessOauthToken,
+            accessOauthUri,
+            accessPassword,
+            accessPin,
+            accessUserName,
+            accessX509Certificate
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<DestinationAccesses> {
         override fun convert(attributes: List<Attribute<*>>): DestinationAccesses =
             DestinationAccesses(
@@ -66,7 +95,7 @@ data class DestinationAccesses
                 extractOne(attributes, accessPin)?.value,
                 extractOne(attributes, accessUserName)?.value,
                 extractAll(attributes, accessX509Certificate),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "access-oauth-token" member type.
          */

@@ -20,13 +20,13 @@ data class InputScanRegionsSupported
     val xOrigin: IntRange? = null,
     val yDimension: IntRange? = null,
     val yOrigin: IntRange? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             xDimension?.let { Members.xDimension.of(it) },
             xOrigin?.let { Members.xOrigin.of(it) },
             yDimension?.let { Members.yDimension.of(it) },
@@ -49,6 +49,29 @@ data class InputScanRegionsSupported
         const val yOrigin = "y-origin"
     }
 
+    /** Builder for immutable [InputScanRegionsSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: InputScanRegionsSupported) : this() {
+            xDimension = source.xDimension
+            xOrigin = source.xOrigin
+            yDimension = source.yDimension
+            yOrigin = source.yOrigin
+        }
+        var xDimension: IntRange? = null
+        var xOrigin: IntRange? = null
+        var yDimension: IntRange? = null
+        var yOrigin: IntRange? = null
+
+        /** Return a new [InputScanRegionsSupported] object containing all values initialized in this builder. */
+        fun build() = InputScanRegionsSupported(
+            xDimension,
+            xOrigin,
+            yDimension,
+            yOrigin
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<InputScanRegionsSupported> {
         override fun convert(attributes: List<Attribute<*>>): InputScanRegionsSupported =
             InputScanRegionsSupported(
@@ -56,7 +79,7 @@ data class InputScanRegionsSupported
                 extractOne(attributes, xOrigin),
                 extractOne(attributes, yDimension),
                 extractOne(attributes, yOrigin),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "x-dimension" member type.
          */

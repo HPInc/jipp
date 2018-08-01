@@ -18,13 +18,13 @@ data class PagesCol
 @JvmOverloads constructor(
     val fullColor: Int? = null,
     val monochrome: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             fullColor?.let { Members.fullColor.of(it) },
             monochrome?.let { Members.monochrome.of(it) }
         )
@@ -41,12 +41,29 @@ data class PagesCol
         const val monochrome = "monochrome"
     }
 
+    /** Builder for immutable [PagesCol] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: PagesCol) : this() {
+            fullColor = source.fullColor
+            monochrome = source.monochrome
+        }
+        var fullColor: Int? = null
+        var monochrome: Int? = null
+
+        /** Return a new [PagesCol] object containing all values initialized in this builder. */
+        fun build() = PagesCol(
+            fullColor,
+            monochrome
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<PagesCol> {
         override fun convert(attributes: List<Attribute<*>>): PagesCol =
             PagesCol(
                 extractOne(attributes, fullColor),
                 extractOne(attributes, monochrome),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "full-color" member type.
          */

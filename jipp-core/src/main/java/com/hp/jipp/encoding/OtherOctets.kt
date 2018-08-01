@@ -8,11 +8,12 @@ import com.hp.jipp.util.toHexString
 /** An attribute value formatted as an array of octets. */
 data class OtherOctets(override val tag: Tag, override val value: ByteArray) : TaggedValue() {
     override fun equals(other: Any?): Boolean {
-        TODO("Implement")
+        if (other !is OtherOctets) return false
+        return other.tag == tag && value contentEquals other.value
     }
 
     override fun hashCode(): Int {
-        TODO("Implement")
+        return (tag.hashCode() * 31 + value.contentHashCode())
     }
 
     override fun toString() = "${value.toHexString()} ($tag)"

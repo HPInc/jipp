@@ -18,13 +18,13 @@ data class MediaSizeSupported
 @JvmOverloads constructor(
     val xDimension: IntOrIntRange? = null,
     val yDimension: IntOrIntRange? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             xDimension?.let { Members.xDimension.of(it) },
             yDimension?.let { Members.yDimension.of(it) }
         )
@@ -41,12 +41,29 @@ data class MediaSizeSupported
         const val yDimension = "y-dimension"
     }
 
+    /** Builder for immutable [MediaSizeSupported] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: MediaSizeSupported) : this() {
+            xDimension = source.xDimension
+            yDimension = source.yDimension
+        }
+        var xDimension: IntOrIntRange? = null
+        var yDimension: IntOrIntRange? = null
+
+        /** Return a new [MediaSizeSupported] object containing all values initialized in this builder. */
+        fun build() = MediaSizeSupported(
+            xDimension,
+            yDimension
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<MediaSizeSupported> {
         override fun convert(attributes: List<Attribute<*>>): MediaSizeSupported =
             MediaSizeSupported(
                 extractOne(attributes, xDimension),
                 extractOne(attributes, yDimension),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "x-dimension" member type.
          */

@@ -28,13 +28,13 @@ data class {{ collection.name | camel_class }}
 {%- endif %}
     val {{ name | camel_member }}: {%- if member.set %} List<{{ member.ktype }}>{% else %} {{ member.ktype }}{% endif %}? = null,
 {%- endfor %}
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
 {%- for name, member in collection.members | dictsort %}
             {{ name | camel_member }}?.let { Members.{{ name | camel_member }}.{%- if member.ksetof and member.set %}{{ member.ksetof }}{%- else %}of{%- endif %}(it) }{{"," if not loop.last }}
 {%- endfor %}
@@ -52,6 +52,30 @@ data class {{ collection.name | camel_class }}
         {%- endfor %}
     }
 
+    /** Builder for immutable [{{ name | camel_class }}] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: {{ name | camel_class }}) : this() {
+{%- for name, member in collection.members | dictsort %}
+            {{ name | camel_member }} = source.{{ name | camel_member }}
+{%- endfor %}
+        }
+
+{%- for name, member in collection.members | dictsort %}
+{%- if member.kdoc %}
+        /** {{ member.kdoc }} */
+{%- endif %}
+        var {{ name | camel_member }}: {%- if member.set %} List<{{ member.ktype }}>{% else %} {{ member.ktype }}{% endif %}? = null
+{%- endfor %}
+
+        /** Return a new [{{ name | camel_class }}] object containing all values initialized in this builder. */
+        fun build() = {{ name | camel_class }}(
+{%- for name, member in collection.members | dictsort %}
+            {{ name | camel_member }}{{ "," if not loop.last }}
+{%- endfor %}
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<{{ collection.name | camel_class }}> {
         override fun convert(attributes: List<Attribute<*>>): {{ collection.name | camel_class }} =
             {{ collection.name | camel_class }}(
@@ -64,7 +88,7 @@ data class {{ collection.name | camel_class }}
   {%- if member.ktype_accessor %}?.{{ member.ktype_accessor }}{%- endif %},
  {%- endif %}
 {%- endfor %}
-                _original = attributes)
+                _encoded = attributes)
 
 {%- for name, member in collection.members | dictsort %}
         /**

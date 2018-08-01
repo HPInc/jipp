@@ -24,13 +24,13 @@ data class MediaSheetsCol
     val highlightColorTwoSided: Int? = null,
     val monochrome: Int? = null,
     val monochromeTwoSided: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             blank?.let { Members.blank.of(it) },
             blankTwoSided?.let { Members.blankTwoSided.of(it) },
             fullColor?.let { Members.fullColor.of(it) },
@@ -65,6 +65,41 @@ data class MediaSheetsCol
         const val monochromeTwoSided = "monochrome-two-sided"
     }
 
+    /** Builder for immutable [MediaSheetsCol] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: MediaSheetsCol) : this() {
+            blank = source.blank
+            blankTwoSided = source.blankTwoSided
+            fullColor = source.fullColor
+            fullColorTwoSided = source.fullColorTwoSided
+            highlightColor = source.highlightColor
+            highlightColorTwoSided = source.highlightColorTwoSided
+            monochrome = source.monochrome
+            monochromeTwoSided = source.monochromeTwoSided
+        }
+        var blank: Int? = null
+        var blankTwoSided: Int? = null
+        var fullColor: Int? = null
+        var fullColorTwoSided: Int? = null
+        var highlightColor: Int? = null
+        var highlightColorTwoSided: Int? = null
+        var monochrome: Int? = null
+        var monochromeTwoSided: Int? = null
+
+        /** Return a new [MediaSheetsCol] object containing all values initialized in this builder. */
+        fun build() = MediaSheetsCol(
+            blank,
+            blankTwoSided,
+            fullColor,
+            fullColorTwoSided,
+            highlightColor,
+            highlightColorTwoSided,
+            monochrome,
+            monochromeTwoSided
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<MediaSheetsCol> {
         override fun convert(attributes: List<Attribute<*>>): MediaSheetsCol =
             MediaSheetsCol(
@@ -76,7 +111,7 @@ data class MediaSheetsCol
                 extractOne(attributes, highlightColorTwoSided),
                 extractOne(attributes, monochrome),
                 extractOne(attributes, monochromeTwoSided),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "blank" member type.
          */

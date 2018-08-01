@@ -18,13 +18,13 @@ data class OutputAttributes
 @JvmOverloads constructor(
     val noiseRemoval: Int? = null,
     val outputCompressionQualityFactor: Int? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             noiseRemoval?.let { Members.noiseRemoval.of(it) },
             outputCompressionQualityFactor?.let { Members.outputCompressionQualityFactor.of(it) }
         )
@@ -41,12 +41,29 @@ data class OutputAttributes
         const val outputCompressionQualityFactor = "output-compression-quality-factor"
     }
 
+    /** Builder for immutable [OutputAttributes] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: OutputAttributes) : this() {
+            noiseRemoval = source.noiseRemoval
+            outputCompressionQualityFactor = source.outputCompressionQualityFactor
+        }
+        var noiseRemoval: Int? = null
+        var outputCompressionQualityFactor: Int? = null
+
+        /** Return a new [OutputAttributes] object containing all values initialized in this builder. */
+        fun build() = OutputAttributes(
+            noiseRemoval,
+            outputCompressionQualityFactor
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<OutputAttributes> {
         override fun convert(attributes: List<Attribute<*>>): OutputAttributes =
             OutputAttributes(
                 extractOne(attributes, noiseRemoval),
                 extractOne(attributes, outputCompressionQualityFactor),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "noise-removal" member type.
          */

@@ -19,13 +19,13 @@ data class JobSaveDisposition
     /** May contain any keyword from [SaveDisposition]. */
     val saveDisposition: String? = null,
     val saveInfo: List<SaveInfo>? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             saveDisposition?.let { Members.saveDisposition.of(it) },
             saveInfo?.let { Members.saveInfo.of(it) }
         )
@@ -42,12 +42,30 @@ data class JobSaveDisposition
         const val saveInfo = "save-info"
     }
 
+    /** Builder for immutable [JobSaveDisposition] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: JobSaveDisposition) : this() {
+            saveDisposition = source.saveDisposition
+            saveInfo = source.saveInfo
+        }
+        /** May contain any keyword from [SaveDisposition]. */
+        var saveDisposition: String? = null
+        var saveInfo: List<SaveInfo>? = null
+
+        /** Return a new [JobSaveDisposition] object containing all values initialized in this builder. */
+        fun build() = JobSaveDisposition(
+            saveDisposition,
+            saveInfo
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<JobSaveDisposition> {
         override fun convert(attributes: List<Attribute<*>>): JobSaveDisposition =
             JobSaveDisposition(
                 extractOne(attributes, saveDisposition),
                 extractAll(attributes, saveInfo),
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "save-disposition" member type.
          * May contain any keyword from [SaveDisposition].
@@ -68,13 +86,13 @@ data class JobSaveDisposition
         val saveDocumentFormat: String? = null,
         val saveLocation: java.net.URI? = null,
         val saveName: String? = null,
-        /** Original parameters received, if any. */
-        val _original: List<Attribute<*>>? = null
+        /** Encoded form, if known. */
+        val _encoded: List<Attribute<*>>? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
         override val attributes: List<Attribute<*>> by lazy {
-            _original ?: listOfNotNull(
+            _encoded ?: listOfNotNull(
                 saveDocumentFormat?.let { Members.saveDocumentFormat.of(it) },
                 saveLocation?.let { Members.saveLocation.of(it) },
                 saveName?.let { Members.saveName.of(it) }
@@ -94,13 +112,33 @@ data class JobSaveDisposition
             const val saveName = "save-name"
         }
 
+        /** Builder for immutable [SaveInfo] objects. */
+        class Builder() {
+            /** Constructs a new [Builder] pre-initialized with values in [source]. */
+            constructor(source: SaveInfo) : this() {
+                saveDocumentFormat = source.saveDocumentFormat
+                saveLocation = source.saveLocation
+                saveName = source.saveName
+            }
+            var saveDocumentFormat: String? = null
+            var saveLocation: java.net.URI? = null
+            var saveName: String? = null
+
+            /** Return a new [SaveInfo] object containing all values initialized in this builder. */
+            fun build() = SaveInfo(
+                saveDocumentFormat,
+                saveLocation,
+                saveName
+            )
+        }
+
         companion object Members : AttributeCollection.Converter<SaveInfo> {
             override fun convert(attributes: List<Attribute<*>>): SaveInfo =
                 SaveInfo(
                     extractOne(attributes, saveDocumentFormat),
                     extractOne(attributes, saveLocation),
                     extractOne(attributes, saveName)?.value,
-                    _original = attributes)
+                    _encoded = attributes)
             /**
              * "save-document-format" member type.
              */

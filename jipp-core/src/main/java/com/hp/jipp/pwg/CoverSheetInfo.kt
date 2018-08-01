@@ -22,13 +22,13 @@ data class CoverSheetInfo
     val organizationName: String? = null,
     val subject: String? = null,
     val toName: String? = null,
-    /** Original parameters received, if any. */
-    val _original: List<Attribute<*>>? = null
+    /** Encoded form, if known. */
+    val _encoded: List<Attribute<*>>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the [_original] attribute list (if it exists). */
+    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
     override val attributes: List<Attribute<*>> by lazy {
-        _original ?: listOfNotNull(
+        _encoded ?: listOfNotNull(
             fromName?.let { Members.fromName.of(it) },
             logo?.let { Members.logo.of(it) },
             message?.let { Members.message.of(it) },
@@ -57,6 +57,35 @@ data class CoverSheetInfo
         const val toName = "to-name"
     }
 
+    /** Builder for immutable [CoverSheetInfo] objects. */
+    class Builder() {
+        /** Constructs a new [Builder] pre-initialized with values in [source]. */
+        constructor(source: CoverSheetInfo) : this() {
+            fromName = source.fromName
+            logo = source.logo
+            message = source.message
+            organizationName = source.organizationName
+            subject = source.subject
+            toName = source.toName
+        }
+        var fromName: String? = null
+        var logo: java.net.URI? = null
+        var message: String? = null
+        var organizationName: String? = null
+        var subject: String? = null
+        var toName: String? = null
+
+        /** Return a new [CoverSheetInfo] object containing all values initialized in this builder. */
+        fun build() = CoverSheetInfo(
+            fromName,
+            logo,
+            message,
+            organizationName,
+            subject,
+            toName
+        )
+    }
+
     companion object Members : AttributeCollection.Converter<CoverSheetInfo> {
         override fun convert(attributes: List<Attribute<*>>): CoverSheetInfo =
             CoverSheetInfo(
@@ -66,7 +95,7 @@ data class CoverSheetInfo
                 extractOne(attributes, organizationName)?.value,
                 extractOne(attributes, subject)?.value,
                 extractOne(attributes, toName)?.value,
-                _original = attributes)
+                _encoded = attributes)
         /**
          * "from-name" member type.
          */

@@ -31,7 +31,6 @@ public class BinaryTest {
 //    }
 //
 
-
     @Test
     public void cycleBinaries() throws IOException {
         for (File binFile : getBinFiles()) {
@@ -51,6 +50,7 @@ public class BinaryTest {
         IppOutputStream output = new IppOutputStream(bytesOut);
         packet.write(output);
         output.close();
+        // Compare input bytes to output bytes in hex string format for easy comparison
         assertEquals(toWrappedHexString(inputBytes), toWrappedHexString(bytesOut.toByteArray()));
     }
 

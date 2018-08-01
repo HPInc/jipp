@@ -231,7 +231,8 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             if (tag == Tag.enumValue) {
                 Enums.all[attributeName]?.also {
                     takeLength(AttributeGroup.INT_LENGTH)
-                    return it.factory(readInt())
+                    // Note: !! is safe because we know EnumTypes can handle Int input
+                    return it.coerce(readInt())!!
                 }
             }
 
