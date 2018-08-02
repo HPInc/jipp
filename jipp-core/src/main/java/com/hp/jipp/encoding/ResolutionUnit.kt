@@ -3,11 +3,11 @@
 
 package com.hp.jipp.encoding
 
-/** A unit of measurement used to describe resolution */
+/** A unit of measurement used to describe resolution. */
 data class ResolutionUnit(override val code: Int, override val name: String) : Enum() {
     override fun toString() = super.toString()
 
-    /** Raw codes which may be used for direct comparisons */
+    /** Raw codes which may be used for direct comparisons. */
     object Code {
         const val dotsPerInch = 3
         const val dotsPerCentimeter = 4

@@ -33,8 +33,8 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      # Build
-      - run: gradle dependencies check graphDeps dokka
+      # Build (not dokka, it takes 10 minutes and generates reams of useless warnings)
+      - run: gradle dependencies check graphDeps
 
       # Upload coverage report
       - run: bash <(curl -s https://codecov.io/bash)
