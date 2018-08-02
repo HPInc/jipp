@@ -44,6 +44,7 @@ public class KeyValueTest {
 
     @Test
     public void pairs() throws Exception {
+        @SuppressWarnings("unchecked")
         KeyValues kv = new KeyValues(new Pair<String, String>("one", "oneValue"));
         assertEquals("oneValue", kv.get("one"));
     }

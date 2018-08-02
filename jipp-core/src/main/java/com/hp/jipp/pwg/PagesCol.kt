@@ -16,22 +16,20 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class PagesCol
 @JvmOverloads constructor(
-    val fullColor: Int? = null,
-    val monochrome: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var fullColor: Int? = null,
+    var monochrome: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            fullColor?.let { Members.fullColor.of(it) },
-            monochrome?.let { Members.monochrome.of(it) }
+        listOfNotNull(
+            fullColor?.let { Types.fullColor.of(it) },
+            monochrome?.let { Types.monochrome.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PagesCol>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PagesCol>(PagesCol)
 
     /** All member names as strings. */
     object Name {
@@ -41,36 +39,18 @@ data class PagesCol
         const val monochrome = "monochrome"
     }
 
-    /** Builder for immutable [PagesCol] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PagesCol) : this() {
-            fullColor = source.fullColor
-            monochrome = source.monochrome
-        }
-        var fullColor: Int? = null
-        var monochrome: Int? = null
-
-        /** Return a new [PagesCol] object containing all values initialized in this builder. */
-        fun build() = PagesCol(
-            fullColor,
-            monochrome
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val fullColor = IntType(Name.fullColor)
+        val monochrome = IntType(Name.monochrome)
     }
 
-    companion object Members : AttributeCollection.Converter<PagesCol> {
+    /** Defines types for each member of [PagesCol] */
+    companion object : AttributeCollection.Converter<PagesCol> {
         override fun convert(attributes: List<Attribute<*>>): PagesCol =
             PagesCol(
-                extractOne(attributes, fullColor),
-                extractOne(attributes, monochrome),
-                _encoded = attributes)
-        /**
-         * "full-color" member type.
-         */
-        @JvmField val fullColor = IntType(Name.fullColor)
-        /**
-         * "monochrome" member type.
-         */
-        @JvmField val monochrome = IntType(Name.monochrome)
+                extractOne(attributes, Types.fullColor),
+                extractOne(attributes, Types.monochrome)
+            )
     }
 }

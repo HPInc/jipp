@@ -17,24 +17,22 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class ProofPrint
 @JvmOverloads constructor(
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    val proofPrintCopies: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null,
+    var proofPrintCopies: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) },
-            proofPrintCopies?.let { Members.proofPrintCopies.of(it) }
+        listOfNotNull(
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) },
+            proofPrintCopies?.let { Types.proofPrintCopies.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<ProofPrint>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<ProofPrint>(ProofPrint)
 
     /** All member names as strings. */
     object Name {
@@ -46,46 +44,20 @@ data class ProofPrint
         const val proofPrintCopies = "proof-print-copies"
     }
 
-    /** Builder for immutable [ProofPrint] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: ProofPrint) : this() {
-            media = source.media
-            mediaCol = source.mediaCol
-            proofPrintCopies = source.proofPrintCopies
-        }
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-        var proofPrintCopies: Int? = null
-
-        /** Return a new [ProofPrint] object containing all values initialized in this builder. */
-        fun build() = ProofPrint(
-            media,
-            mediaCol,
-            proofPrintCopies
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
+        val proofPrintCopies = IntType(Name.proofPrintCopies)
     }
 
-    companion object Members : AttributeCollection.Converter<ProofPrint> {
+    /** Defines types for each member of [ProofPrint] */
+    companion object : AttributeCollection.Converter<ProofPrint> {
         override fun convert(attributes: List<Attribute<*>>): ProofPrint =
             ProofPrint(
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                extractOne(attributes, proofPrintCopies),
-                _encoded = attributes)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
-        /**
-         * "proof-print-copies" member type.
-         */
-        @JvmField val proofPrintCopies = IntType(Name.proofPrintCopies)
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol),
+                extractOne(attributes, Types.proofPrintCopies)
+            )
     }
 }

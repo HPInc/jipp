@@ -16,22 +16,20 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class OutputAttributes
 @JvmOverloads constructor(
-    val noiseRemoval: Int? = null,
-    val outputCompressionQualityFactor: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var noiseRemoval: Int? = null,
+    var outputCompressionQualityFactor: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            noiseRemoval?.let { Members.noiseRemoval.of(it) },
-            outputCompressionQualityFactor?.let { Members.outputCompressionQualityFactor.of(it) }
+        listOfNotNull(
+            noiseRemoval?.let { Types.noiseRemoval.of(it) },
+            outputCompressionQualityFactor?.let { Types.outputCompressionQualityFactor.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<OutputAttributes>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<OutputAttributes>(OutputAttributes)
 
     /** All member names as strings. */
     object Name {
@@ -41,36 +39,18 @@ data class OutputAttributes
         const val outputCompressionQualityFactor = "output-compression-quality-factor"
     }
 
-    /** Builder for immutable [OutputAttributes] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: OutputAttributes) : this() {
-            noiseRemoval = source.noiseRemoval
-            outputCompressionQualityFactor = source.outputCompressionQualityFactor
-        }
-        var noiseRemoval: Int? = null
-        var outputCompressionQualityFactor: Int? = null
-
-        /** Return a new [OutputAttributes] object containing all values initialized in this builder. */
-        fun build() = OutputAttributes(
-            noiseRemoval,
-            outputCompressionQualityFactor
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val noiseRemoval = IntType(Name.noiseRemoval)
+        val outputCompressionQualityFactor = IntType(Name.outputCompressionQualityFactor)
     }
 
-    companion object Members : AttributeCollection.Converter<OutputAttributes> {
+    /** Defines types for each member of [OutputAttributes] */
+    companion object : AttributeCollection.Converter<OutputAttributes> {
         override fun convert(attributes: List<Attribute<*>>): OutputAttributes =
             OutputAttributes(
-                extractOne(attributes, noiseRemoval),
-                extractOne(attributes, outputCompressionQualityFactor),
-                _encoded = attributes)
-        /**
-         * "noise-removal" member type.
-         */
-        @JvmField val noiseRemoval = IntType(Name.noiseRemoval)
-        /**
-         * "output-compression-quality-factor" member type.
-         */
-        @JvmField val outputCompressionQualityFactor = IntType(Name.outputCompressionQualityFactor)
+                extractOne(attributes, Types.noiseRemoval),
+                extractOne(attributes, Types.outputCompressionQualityFactor)
+            )
     }
 }

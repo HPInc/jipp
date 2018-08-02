@@ -16,24 +16,22 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationStatuses
 @JvmOverloads constructor(
-    val destinationUri: java.net.URI? = null,
-    val imagesCompleted: Int? = null,
-    val transmissionStatus: TransmissionStatus? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var destinationUri: java.net.URI? = null,
+    var imagesCompleted: Int? = null,
+    var transmissionStatus: TransmissionStatus? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            destinationUri?.let { Members.destinationUri.of(it) },
-            imagesCompleted?.let { Members.imagesCompleted.of(it) },
-            transmissionStatus?.let { Members.transmissionStatus.of(it) }
+        listOfNotNull(
+            destinationUri?.let { Types.destinationUri.of(it) },
+            imagesCompleted?.let { Types.imagesCompleted.of(it) },
+            transmissionStatus?.let { Types.transmissionStatus.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationStatuses>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<DestinationStatuses>(DestinationStatuses)
 
     /** All member names as strings. */
     object Name {
@@ -45,44 +43,23 @@ data class DestinationStatuses
         const val transmissionStatus = "transmission-status"
     }
 
-    /** Builder for immutable [DestinationStatuses] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: DestinationStatuses) : this() {
-            destinationUri = source.destinationUri
-            imagesCompleted = source.imagesCompleted
-            transmissionStatus = source.transmissionStatus
-        }
-        var destinationUri: java.net.URI? = null
-        var imagesCompleted: Int? = null
-        var transmissionStatus: TransmissionStatus? = null
-
-        /** Return a new [DestinationStatuses] object containing all values initialized in this builder. */
-        fun build() = DestinationStatuses(
-            destinationUri,
-            imagesCompleted,
-            transmissionStatus
-        )
-    }
-
-    companion object Members : AttributeCollection.Converter<DestinationStatuses> {
-        override fun convert(attributes: List<Attribute<*>>): DestinationStatuses =
-            DestinationStatuses(
-                extractOne(attributes, destinationUri),
-                extractOne(attributes, imagesCompleted),
-                extractOne(attributes, transmissionStatus),
-                _encoded = attributes)
-        /**
-         * "destination-uri" member type.
-         */
-        @JvmField val destinationUri = UriType(Name.destinationUri)
-        /**
-         * "images-completed" member type.
-         */
-        @JvmField val imagesCompleted = IntType(Name.imagesCompleted)
+    /** Types for each member attribute. */
+    object Types {
+        val destinationUri = UriType(Name.destinationUri)
+        val imagesCompleted = IntType(Name.imagesCompleted)
         /**
          * "transmission-status" member type.
          */
-        @JvmField val transmissionStatus = TransmissionStatus.Type(Name.transmissionStatus)
+        val transmissionStatus = TransmissionStatus.Type(Name.transmissionStatus)
+    }
+
+    /** Defines types for each member of [DestinationStatuses] */
+    companion object : AttributeCollection.Converter<DestinationStatuses> {
+        override fun convert(attributes: List<Attribute<*>>): DestinationStatuses =
+            DestinationStatuses(
+                extractOne(attributes, Types.destinationUri),
+                extractOne(attributes, Types.imagesCompleted),
+                extractOne(attributes, Types.transmissionStatus)
+            )
     }
 }

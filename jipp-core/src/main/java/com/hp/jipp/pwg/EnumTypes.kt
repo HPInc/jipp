@@ -15,11 +15,11 @@ import com.hp.jipp.encoding.EnumType
  */
 object EnumTypes {
     @JvmField val all: Map<String, EnumType<out Enum>> = listOf(
-        DestinationStatuses.transmissionStatus,
-        MediaCol.MediaSourceProperties.mediaSourceFeedOrientation,
-        InputAttributes.inputOrientationRequested,
-        MediaColReady.MediaSourceProperties.mediaSourceFeedOrientation,
-        MediaColDatabase.MediaSourceProperties.mediaSourceFeedOrientation,
+        DestinationStatuses.Types.transmissionStatus,
+        MediaCol.MediaSourceProperties.Types.mediaSourceFeedOrientation,
+        InputAttributes.Types.inputOrientationRequested,
+        MediaColReady.MediaSourceProperties.Types.mediaSourceFeedOrientation,
+        MediaColDatabase.MediaSourceProperties.Types.mediaSourceFeedOrientation,
         DocumentStatusGroup.orientationRequestedActual,
         JobTemplateGroup.orientationRequested,
         DocumentTemplateGroup.orientationRequested,
@@ -32,7 +32,7 @@ object EnumTypes {
         JobStatusGroup.jobCollationTypeActual,
         PrinterStatusGroup.printerState,
         EventNotificationsGroup.printerState,
-        InputAttributes.inputQuality,
+        InputAttributes.Types.inputQuality,
         DocumentStatusGroup.printQualityActual,
         JobTemplateGroup.printQuality,
         DocumentTemplateGroup.printQuality,

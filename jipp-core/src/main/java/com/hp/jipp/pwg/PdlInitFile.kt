@@ -16,24 +16,22 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class PdlInitFile
 @JvmOverloads constructor(
-    val pdlInitFileEntry: String? = null,
-    val pdlInitFileLocation: java.net.URI? = null,
-    val pdlInitFileName: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var pdlInitFileEntry: String? = null,
+    var pdlInitFileLocation: java.net.URI? = null,
+    var pdlInitFileName: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            pdlInitFileEntry?.let { Members.pdlInitFileEntry.of(it) },
-            pdlInitFileLocation?.let { Members.pdlInitFileLocation.of(it) },
-            pdlInitFileName?.let { Members.pdlInitFileName.of(it) }
+        listOfNotNull(
+            pdlInitFileEntry?.let { Types.pdlInitFileEntry.of(it) },
+            pdlInitFileLocation?.let { Types.pdlInitFileLocation.of(it) },
+            pdlInitFileName?.let { Types.pdlInitFileName.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PdlInitFile>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PdlInitFile>(PdlInitFile)
 
     /** All member names as strings. */
     object Name {
@@ -45,44 +43,20 @@ data class PdlInitFile
         const val pdlInitFileName = "pdl-init-file-name"
     }
 
-    /** Builder for immutable [PdlInitFile] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PdlInitFile) : this() {
-            pdlInitFileEntry = source.pdlInitFileEntry
-            pdlInitFileLocation = source.pdlInitFileLocation
-            pdlInitFileName = source.pdlInitFileName
-        }
-        var pdlInitFileEntry: String? = null
-        var pdlInitFileLocation: java.net.URI? = null
-        var pdlInitFileName: String? = null
-
-        /** Return a new [PdlInitFile] object containing all values initialized in this builder. */
-        fun build() = PdlInitFile(
-            pdlInitFileEntry,
-            pdlInitFileLocation,
-            pdlInitFileName
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val pdlInitFileEntry = NameType(Name.pdlInitFileEntry)
+        val pdlInitFileLocation = UriType(Name.pdlInitFileLocation)
+        val pdlInitFileName = NameType(Name.pdlInitFileName)
     }
 
-    companion object Members : AttributeCollection.Converter<PdlInitFile> {
+    /** Defines types for each member of [PdlInitFile] */
+    companion object : AttributeCollection.Converter<PdlInitFile> {
         override fun convert(attributes: List<Attribute<*>>): PdlInitFile =
             PdlInitFile(
-                extractOne(attributes, pdlInitFileEntry)?.value,
-                extractOne(attributes, pdlInitFileLocation),
-                extractOne(attributes, pdlInitFileName)?.value,
-                _encoded = attributes)
-        /**
-         * "pdl-init-file-entry" member type.
-         */
-        @JvmField val pdlInitFileEntry = NameType(Name.pdlInitFileEntry)
-        /**
-         * "pdl-init-file-location" member type.
-         */
-        @JvmField val pdlInitFileLocation = UriType(Name.pdlInitFileLocation)
-        /**
-         * "pdl-init-file-name" member type.
-         */
-        @JvmField val pdlInitFileName = NameType(Name.pdlInitFileName)
+                extractOne(attributes, Types.pdlInitFileEntry)?.value,
+                extractOne(attributes, Types.pdlInitFileLocation),
+                extractOne(attributes, Types.pdlInitFileName)?.value
+            )
     }
 }

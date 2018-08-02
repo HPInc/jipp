@@ -190,6 +190,7 @@ def parse_keyword(record):
     attribute = record.find('{*}attribute').text
 
     # XML Fix: proof-print-supported really should point to "< any proof-print member attribute name >"
+    # But it's defined manually and correctly so no modification is required.
 
     keyword = keywords.setdefault(attribute, { 'name': attribute, 'values': [ ], 'specs': [ ],
                                                'syntax': record.find('{*}syntax').text })
@@ -747,7 +748,11 @@ def fix_ktypes(type, syntax, name, group_name = ''):
             if group_name:
                 if 'krefs' not in real_type:
                     real_type['krefs'] = []
-                kref = camel_class_path(group_name) + '.' + camel_member(name)
+                if group_name.endswith('-group'):
+                    kref = camel_class_path(group_name) + '.' + camel_member(name)
+                else:
+                    # These are enum types found in collections
+                    kref = camel_class_path(group_name) + '.Types.' + camel_member(name)
                 if kref not in real_type['krefs']:
                     real_type['krefs'].append(kref)
 

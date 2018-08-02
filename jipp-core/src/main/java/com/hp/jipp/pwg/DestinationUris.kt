@@ -17,28 +17,26 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationUris
 @JvmOverloads constructor(
-    val destinationAttributes: List<UntypedCollection>? = null,
-    val destinationUri: java.net.URI? = null,
-    val postDialString: String? = null,
-    val preDialString: String? = null,
-    val t33Subaddress: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var destinationAttributes: List<UntypedCollection>? = null,
+    var destinationUri: java.net.URI? = null,
+    var postDialString: String? = null,
+    var preDialString: String? = null,
+    var t33Subaddress: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            destinationAttributes?.let { Members.destinationAttributes.of(it) },
-            destinationUri?.let { Members.destinationUri.of(it) },
-            postDialString?.let { Members.postDialString.of(it) },
-            preDialString?.let { Members.preDialString.of(it) },
-            t33Subaddress?.let { Members.t33Subaddress.of(it) }
+        listOfNotNull(
+            destinationAttributes?.let { Types.destinationAttributes.of(it) },
+            destinationUri?.let { Types.destinationUri.of(it) },
+            postDialString?.let { Types.postDialString.of(it) },
+            preDialString?.let { Types.preDialString.of(it) },
+            t33Subaddress?.let { Types.t33Subaddress.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationUris>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<DestinationUris>(DestinationUris)
 
     /** All member names as strings. */
     object Name {
@@ -54,60 +52,24 @@ data class DestinationUris
         const val t33Subaddress = "t33-subaddress"
     }
 
-    /** Builder for immutable [DestinationUris] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: DestinationUris) : this() {
-            destinationAttributes = source.destinationAttributes
-            destinationUri = source.destinationUri
-            postDialString = source.postDialString
-            preDialString = source.preDialString
-            t33Subaddress = source.t33Subaddress
-        }
-        var destinationAttributes: List<UntypedCollection>? = null
-        var destinationUri: java.net.URI? = null
-        var postDialString: String? = null
-        var preDialString: String? = null
-        var t33Subaddress: Int? = null
-
-        /** Return a new [DestinationUris] object containing all values initialized in this builder. */
-        fun build() = DestinationUris(
-            destinationAttributes,
-            destinationUri,
-            postDialString,
-            preDialString,
-            t33Subaddress
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
+        val destinationUri = UriType(Name.destinationUri)
+        val postDialString = TextType(Name.postDialString)
+        val preDialString = TextType(Name.preDialString)
+        val t33Subaddress = IntType(Name.t33Subaddress)
     }
 
-    companion object Members : AttributeCollection.Converter<DestinationUris> {
+    /** Defines types for each member of [DestinationUris] */
+    companion object : AttributeCollection.Converter<DestinationUris> {
         override fun convert(attributes: List<Attribute<*>>): DestinationUris =
             DestinationUris(
-                extractAll(attributes, destinationAttributes),
-                extractOne(attributes, destinationUri),
-                extractOne(attributes, postDialString)?.value,
-                extractOne(attributes, preDialString)?.value,
-                extractOne(attributes, t33Subaddress),
-                _encoded = attributes)
-        /**
-         * "destination-attributes" member type.
-         */
-        @JvmField val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
-        /**
-         * "destination-uri" member type.
-         */
-        @JvmField val destinationUri = UriType(Name.destinationUri)
-        /**
-         * "post-dial-string" member type.
-         */
-        @JvmField val postDialString = TextType(Name.postDialString)
-        /**
-         * "pre-dial-string" member type.
-         */
-        @JvmField val preDialString = TextType(Name.preDialString)
-        /**
-         * "t33-subaddress" member type.
-         */
-        @JvmField val t33Subaddress = IntType(Name.t33Subaddress)
+                extractAll(attributes, Types.destinationAttributes),
+                extractOne(attributes, Types.destinationUri),
+                extractOne(attributes, Types.postDialString)?.value,
+                extractOne(attributes, Types.preDialString)?.value,
+                extractOne(attributes, Types.t33Subaddress)
+            )
     }
 }

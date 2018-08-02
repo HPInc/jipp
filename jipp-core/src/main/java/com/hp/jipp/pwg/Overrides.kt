@@ -16,24 +16,22 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class Overrides
 @JvmOverloads constructor(
-    val documentCopies: List<IntRange>? = null,
-    val documentNumbers: List<IntRange>? = null,
-    val pages: List<IntRange>? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var documentCopies: List<IntRange>? = null,
+    var documentNumbers: List<IntRange>? = null,
+    var pages: List<IntRange>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            documentCopies?.let { Members.documentCopies.of(it) },
-            documentNumbers?.let { Members.documentNumbers.of(it) },
-            pages?.let { Members.pages.of(it) }
+        listOfNotNull(
+            documentCopies?.let { Types.documentCopies.of(it) },
+            documentNumbers?.let { Types.documentNumbers.of(it) },
+            pages?.let { Types.pages.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<Overrides>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<Overrides>(Overrides)
 
     /** All member names as strings. */
     object Name {
@@ -45,44 +43,20 @@ data class Overrides
         const val pages = "pages"
     }
 
-    /** Builder for immutable [Overrides] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: Overrides) : this() {
-            documentCopies = source.documentCopies
-            documentNumbers = source.documentNumbers
-            pages = source.pages
-        }
-        var documentCopies: List<IntRange>? = null
-        var documentNumbers: List<IntRange>? = null
-        var pages: List<IntRange>? = null
-
-        /** Return a new [Overrides] object containing all values initialized in this builder. */
-        fun build() = Overrides(
-            documentCopies,
-            documentNumbers,
-            pages
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val documentCopies = IntRangeType(Name.documentCopies)
+        val documentNumbers = IntRangeType(Name.documentNumbers)
+        val pages = IntRangeType(Name.pages)
     }
 
-    companion object Members : AttributeCollection.Converter<Overrides> {
+    /** Defines types for each member of [Overrides] */
+    companion object : AttributeCollection.Converter<Overrides> {
         override fun convert(attributes: List<Attribute<*>>): Overrides =
             Overrides(
-                extractAll(attributes, documentCopies),
-                extractAll(attributes, documentNumbers),
-                extractAll(attributes, pages),
-                _encoded = attributes)
-        /**
-         * "document-copies" member type.
-         */
-        @JvmField val documentCopies = IntRangeType(Name.documentCopies)
-        /**
-         * "document-numbers" member type.
-         */
-        @JvmField val documentNumbers = IntRangeType(Name.documentNumbers)
-        /**
-         * "pages" member type.
-         */
-        @JvmField val pages = IntRangeType(Name.pages)
+                extractAll(attributes, Types.documentCopies),
+                extractAll(attributes, Types.documentNumbers),
+                extractAll(attributes, Types.pages)
+            )
     }
 }

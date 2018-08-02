@@ -16,34 +16,32 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class DocumentFormatDetails
 @JvmOverloads constructor(
-    val documentFormat: String? = null,
-    val documentFormatDeviceId: String? = null,
-    val documentFormatVersion: String? = null,
-    val documentNaturalLanguage: List<String>? = null,
-    val documentSourceApplicationName: String? = null,
-    val documentSourceApplicationVersion: String? = null,
-    val documentSourceOsName: String? = null,
-    val documentSourceOsVersion: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var documentFormat: String? = null,
+    var documentFormatDeviceId: String? = null,
+    var documentFormatVersion: String? = null,
+    var documentNaturalLanguage: List<String>? = null,
+    var documentSourceApplicationName: String? = null,
+    var documentSourceApplicationVersion: String? = null,
+    var documentSourceOsName: String? = null,
+    var documentSourceOsVersion: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            documentFormat?.let { Members.documentFormat.of(it) },
-            documentFormatDeviceId?.let { Members.documentFormatDeviceId.of(it) },
-            documentFormatVersion?.let { Members.documentFormatVersion.of(it) },
-            documentNaturalLanguage?.let { Members.documentNaturalLanguage.of(it) },
-            documentSourceApplicationName?.let { Members.documentSourceApplicationName.of(it) },
-            documentSourceApplicationVersion?.let { Members.documentSourceApplicationVersion.of(it) },
-            documentSourceOsName?.let { Members.documentSourceOsName.of(it) },
-            documentSourceOsVersion?.let { Members.documentSourceOsVersion.of(it) }
+        listOfNotNull(
+            documentFormat?.let { Types.documentFormat.of(it) },
+            documentFormatDeviceId?.let { Types.documentFormatDeviceId.of(it) },
+            documentFormatVersion?.let { Types.documentFormatVersion.of(it) },
+            documentNaturalLanguage?.let { Types.documentNaturalLanguage.of(it) },
+            documentSourceApplicationName?.let { Types.documentSourceApplicationName.of(it) },
+            documentSourceApplicationVersion?.let { Types.documentSourceApplicationVersion.of(it) },
+            documentSourceOsName?.let { Types.documentSourceOsName.of(it) },
+            documentSourceOsVersion?.let { Types.documentSourceOsVersion.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DocumentFormatDetails>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<DocumentFormatDetails>(DocumentFormatDetails)
 
     /** All member names as strings. */
     object Name {
@@ -65,84 +63,30 @@ data class DocumentFormatDetails
         const val documentSourceOsVersion = "document-source-os-version"
     }
 
-    /** Builder for immutable [DocumentFormatDetails] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: DocumentFormatDetails) : this() {
-            documentFormat = source.documentFormat
-            documentFormatDeviceId = source.documentFormatDeviceId
-            documentFormatVersion = source.documentFormatVersion
-            documentNaturalLanguage = source.documentNaturalLanguage
-            documentSourceApplicationName = source.documentSourceApplicationName
-            documentSourceApplicationVersion = source.documentSourceApplicationVersion
-            documentSourceOsName = source.documentSourceOsName
-            documentSourceOsVersion = source.documentSourceOsVersion
-        }
-        var documentFormat: String? = null
-        var documentFormatDeviceId: String? = null
-        var documentFormatVersion: String? = null
-        var documentNaturalLanguage: List<String>? = null
-        var documentSourceApplicationName: String? = null
-        var documentSourceApplicationVersion: String? = null
-        var documentSourceOsName: String? = null
-        var documentSourceOsVersion: String? = null
-
-        /** Return a new [DocumentFormatDetails] object containing all values initialized in this builder. */
-        fun build() = DocumentFormatDetails(
-            documentFormat,
-            documentFormatDeviceId,
-            documentFormatVersion,
-            documentNaturalLanguage,
-            documentSourceApplicationName,
-            documentSourceApplicationVersion,
-            documentSourceOsName,
-            documentSourceOsVersion
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val documentFormat = StringType(Tag.mimeMediaType, Name.documentFormat)
+        val documentFormatDeviceId = TextType(Name.documentFormatDeviceId)
+        val documentFormatVersion = TextType(Name.documentFormatVersion)
+        val documentNaturalLanguage = StringType(Tag.naturalLanguage, Name.documentNaturalLanguage)
+        val documentSourceApplicationName = NameType(Name.documentSourceApplicationName)
+        val documentSourceApplicationVersion = TextType(Name.documentSourceApplicationVersion)
+        val documentSourceOsName = NameType(Name.documentSourceOsName)
+        val documentSourceOsVersion = TextType(Name.documentSourceOsVersion)
     }
 
-    companion object Members : AttributeCollection.Converter<DocumentFormatDetails> {
+    /** Defines types for each member of [DocumentFormatDetails] */
+    companion object : AttributeCollection.Converter<DocumentFormatDetails> {
         override fun convert(attributes: List<Attribute<*>>): DocumentFormatDetails =
             DocumentFormatDetails(
-                extractOne(attributes, documentFormat),
-                extractOne(attributes, documentFormatDeviceId)?.value,
-                extractOne(attributes, documentFormatVersion)?.value,
-                extractAll(attributes, documentNaturalLanguage),
-                extractOne(attributes, documentSourceApplicationName)?.value,
-                extractOne(attributes, documentSourceApplicationVersion)?.value,
-                extractOne(attributes, documentSourceOsName)?.value,
-                extractOne(attributes, documentSourceOsVersion)?.value,
-                _encoded = attributes)
-        /**
-         * "document-format" member type.
-         */
-        @JvmField val documentFormat = StringType(Tag.mimeMediaType, Name.documentFormat)
-        /**
-         * "document-format-device-id" member type.
-         */
-        @JvmField val documentFormatDeviceId = TextType(Name.documentFormatDeviceId)
-        /**
-         * "document-format-version" member type.
-         */
-        @JvmField val documentFormatVersion = TextType(Name.documentFormatVersion)
-        /**
-         * "document-natural-language" member type.
-         */
-        @JvmField val documentNaturalLanguage = StringType(Tag.naturalLanguage, Name.documentNaturalLanguage)
-        /**
-         * "document-source-application-name" member type.
-         */
-        @JvmField val documentSourceApplicationName = NameType(Name.documentSourceApplicationName)
-        /**
-         * "document-source-application-version" member type.
-         */
-        @JvmField val documentSourceApplicationVersion = TextType(Name.documentSourceApplicationVersion)
-        /**
-         * "document-source-os-name" member type.
-         */
-        @JvmField val documentSourceOsName = NameType(Name.documentSourceOsName)
-        /**
-         * "document-source-os-version" member type.
-         */
-        @JvmField val documentSourceOsVersion = TextType(Name.documentSourceOsVersion)
+                extractOne(attributes, Types.documentFormat),
+                extractOne(attributes, Types.documentFormatDeviceId)?.value,
+                extractOne(attributes, Types.documentFormatVersion)?.value,
+                extractAll(attributes, Types.documentNaturalLanguage),
+                extractOne(attributes, Types.documentSourceApplicationName)?.value,
+                extractOne(attributes, Types.documentSourceApplicationVersion)?.value,
+                extractOne(attributes, Types.documentSourceOsName)?.value,
+                extractOne(attributes, Types.documentSourceOsVersion)?.value
+            )
     }
 }

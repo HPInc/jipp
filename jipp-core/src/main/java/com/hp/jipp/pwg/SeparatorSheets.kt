@@ -18,25 +18,23 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class SeparatorSheets
 @JvmOverloads constructor(
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
+    var media: String? = null,
+    var mediaCol: MediaCol? = null,
     /** May contain any keyword from [SeparatorSheetsType]. */
-    val separatorSheetsType: List<String>? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var separatorSheetsType: List<String>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) },
-            separatorSheetsType?.let { Members.separatorSheetsType.of(it) }
+        listOfNotNull(
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) },
+            separatorSheetsType?.let { Types.separatorSheetsType.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<SeparatorSheets>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<SeparatorSheets>(SeparatorSheets)
 
     /** All member names as strings. */
     object Name {
@@ -48,48 +46,20 @@ data class SeparatorSheets
         const val separatorSheetsType = "separator-sheets-type"
     }
 
-    /** Builder for immutable [SeparatorSheets] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: SeparatorSheets) : this() {
-            media = source.media
-            mediaCol = source.mediaCol
-            separatorSheetsType = source.separatorSheetsType
-        }
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-        /** May contain any keyword from [SeparatorSheetsType]. */
-        var separatorSheetsType: List<String>? = null
-
-        /** Return a new [SeparatorSheets] object containing all values initialized in this builder. */
-        fun build() = SeparatorSheets(
-            media,
-            mediaCol,
-            separatorSheetsType
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
+        val separatorSheetsType = KeywordType(Name.separatorSheetsType)
     }
 
-    companion object Members : AttributeCollection.Converter<SeparatorSheets> {
+    /** Defines types for each member of [SeparatorSheets] */
+    companion object : AttributeCollection.Converter<SeparatorSheets> {
         override fun convert(attributes: List<Attribute<*>>): SeparatorSheets =
             SeparatorSheets(
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                extractAll(attributes, separatorSheetsType),
-                _encoded = attributes)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
-        /**
-         * "separator-sheets-type" member type.
-         * May contain any keyword from [SeparatorSheetsType].
-         */
-        @JvmField val separatorSheetsType = KeywordType(Name.separatorSheetsType)
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol),
+                extractAll(attributes, Types.separatorSheetsType)
+            )
     }
 }

@@ -16,30 +16,28 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class CoverSheetInfo
 @JvmOverloads constructor(
-    val fromName: String? = null,
-    val logo: java.net.URI? = null,
-    val message: String? = null,
-    val organizationName: String? = null,
-    val subject: String? = null,
-    val toName: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var fromName: String? = null,
+    var logo: java.net.URI? = null,
+    var message: String? = null,
+    var organizationName: String? = null,
+    var subject: String? = null,
+    var toName: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            fromName?.let { Members.fromName.of(it) },
-            logo?.let { Members.logo.of(it) },
-            message?.let { Members.message.of(it) },
-            organizationName?.let { Members.organizationName.of(it) },
-            subject?.let { Members.subject.of(it) },
-            toName?.let { Members.toName.of(it) }
+        listOfNotNull(
+            fromName?.let { Types.fromName.of(it) },
+            logo?.let { Types.logo.of(it) },
+            message?.let { Types.message.of(it) },
+            organizationName?.let { Types.organizationName.of(it) },
+            subject?.let { Types.subject.of(it) },
+            toName?.let { Types.toName.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<CoverSheetInfo>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<CoverSheetInfo>(CoverSheetInfo)
 
     /** All member names as strings. */
     object Name {
@@ -57,68 +55,26 @@ data class CoverSheetInfo
         const val toName = "to-name"
     }
 
-    /** Builder for immutable [CoverSheetInfo] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: CoverSheetInfo) : this() {
-            fromName = source.fromName
-            logo = source.logo
-            message = source.message
-            organizationName = source.organizationName
-            subject = source.subject
-            toName = source.toName
-        }
-        var fromName: String? = null
-        var logo: java.net.URI? = null
-        var message: String? = null
-        var organizationName: String? = null
-        var subject: String? = null
-        var toName: String? = null
-
-        /** Return a new [CoverSheetInfo] object containing all values initialized in this builder. */
-        fun build() = CoverSheetInfo(
-            fromName,
-            logo,
-            message,
-            organizationName,
-            subject,
-            toName
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val fromName = TextType(Name.fromName)
+        val logo = UriType(Name.logo)
+        val message = TextType(Name.message)
+        val organizationName = TextType(Name.organizationName)
+        val subject = TextType(Name.subject)
+        val toName = TextType(Name.toName)
     }
 
-    companion object Members : AttributeCollection.Converter<CoverSheetInfo> {
+    /** Defines types for each member of [CoverSheetInfo] */
+    companion object : AttributeCollection.Converter<CoverSheetInfo> {
         override fun convert(attributes: List<Attribute<*>>): CoverSheetInfo =
             CoverSheetInfo(
-                extractOne(attributes, fromName)?.value,
-                extractOne(attributes, logo),
-                extractOne(attributes, message)?.value,
-                extractOne(attributes, organizationName)?.value,
-                extractOne(attributes, subject)?.value,
-                extractOne(attributes, toName)?.value,
-                _encoded = attributes)
-        /**
-         * "from-name" member type.
-         */
-        @JvmField val fromName = TextType(Name.fromName)
-        /**
-         * "logo" member type.
-         */
-        @JvmField val logo = UriType(Name.logo)
-        /**
-         * "message" member type.
-         */
-        @JvmField val message = TextType(Name.message)
-        /**
-         * "organization-name" member type.
-         */
-        @JvmField val organizationName = TextType(Name.organizationName)
-        /**
-         * "subject" member type.
-         */
-        @JvmField val subject = TextType(Name.subject)
-        /**
-         * "to-name" member type.
-         */
-        @JvmField val toName = TextType(Name.toName)
+                extractOne(attributes, Types.fromName)?.value,
+                extractOne(attributes, Types.logo),
+                extractOne(attributes, Types.message)?.value,
+                extractOne(attributes, Types.organizationName)?.value,
+                extractOne(attributes, Types.subject)?.value,
+                extractOne(attributes, Types.toName)?.value
+            )
     }
 }

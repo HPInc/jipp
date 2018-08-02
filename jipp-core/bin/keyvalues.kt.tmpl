@@ -8,6 +8,7 @@
 package com.hp.jipp.pwg
 
 import com.hp.jipp.encoding.* // ktlint-disable
+import com.hp.jipp.model.IppPacket
 
 /**
  * All known [KeyValueType] types, used for better decoding of [IppPacket] data.

@@ -3,7 +3,7 @@ package com.hp.jipp.encoding
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 
-/** Attributes found within an attribute collection. */
+/** An ordered collection of attributes as defined in [RFC3382](https://www.iana.org/go/rfc3382). */
 interface AttributeCollection : PrettyPrintable {
     val attributes: List<Attribute<*>>
 
@@ -13,25 +13,28 @@ interface AttributeCollection : PrettyPrintable {
         printer.close()
     }
 
+    /**
+     * An [AttributeType] for a specific [AttributeCollection] subclass.
+     *
+     * Note: subclasses may only represent recognizable data types in the type. If additional data is required,
+     * it may be necessary to extract the original attribute list using an [UntypedCollection] instance.
+     */
     abstract class Type<T : AttributeCollection>(private val converter: Converter<T>) : AttributeType<T> {
         override fun coerce(value: Any): T? =
-            if (value is AttributeCollection) {
-                converter.convert(value.attributes.toMutableList())
-            } else {
-                null
+            when (value) {
+                is AttributeCollection -> converter.convert(value.attributes)
+                else -> null
             }
     }
 
+    /** Converts a [List] of [Attribute] objects into an [AttributeCollection]. */
     interface Converter<T : AttributeCollection> {
         /**
          * Progressively convert attributes into the destination type
          */
         fun convert(attributes: List<Attribute<*>>): T
 
-        /**
-         * Consumes the first value of attribute [type] from [attributes], removing it and its attribute if nothing
-         * remains of it.
-         */
+        /** Returns the first value of attribute [type] from [attributes]. */
         fun <T : Any> extractOne(attributes: List<Attribute<*>>, type: AttributeType<T>): T? =
             coerced(attributes, type)?.let {
                 when (it.values.size) {
@@ -40,9 +43,7 @@ interface AttributeCollection : PrettyPrintable {
                 }
             }
 
-        /**
-         * Consumes all values of attribute [type] from [attributes], removing it if consumed.
-         */
+        /** Returns all values of attribute [type] from [attributes]. */
         fun <T : Any> extractAll(attributes: List<Attribute<*>>, type: AttributeType<T>): List<T>? =
             coerced(attributes, type)?.let {
                 when (it.values.size) {
@@ -51,7 +52,7 @@ interface AttributeCollection : PrettyPrintable {
                 }
             }
 
-        /** Return the attribute having the same name and coerced into the given attribute type, if possible */
+        /** Return the attribute having the same name and coerced into the given attribute type, if possible. */
         fun <T : Any> coerced(attributes: List<Attribute<*>>, type: AttributeType<T>): Attribute<T>? =
             attributes.find { it.name == type.name }?.let {
                 type.coerce(it)

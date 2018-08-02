@@ -18,25 +18,23 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobSheetsCol
 @JvmOverloads constructor(
     /** May contain any keyword from [JobSheet] or a name. */
-    val jobSheets: String? = null,
+    var jobSheets: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            jobSheets?.let { Members.jobSheets.of(it) },
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) }
+        listOfNotNull(
+            jobSheets?.let { Types.jobSheets.of(it) },
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobSheetsCol>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobSheetsCol>(JobSheetsCol)
 
     /** All member names as strings. */
     object Name {
@@ -48,48 +46,20 @@ data class JobSheetsCol
         const val mediaCol = "media-col"
     }
 
-    /** Builder for immutable [JobSheetsCol] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobSheetsCol) : this() {
-            jobSheets = source.jobSheets
-            media = source.media
-            mediaCol = source.mediaCol
-        }
-        /** May contain any keyword from [JobSheet] or a name. */
-        var jobSheets: String? = null
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-
-        /** Return a new [JobSheetsCol] object containing all values initialized in this builder. */
-        fun build() = JobSheetsCol(
-            jobSheets,
-            media,
-            mediaCol
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val jobSheets = KeywordType(Name.jobSheets)
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 
-    companion object Members : AttributeCollection.Converter<JobSheetsCol> {
+    /** Defines types for each member of [JobSheetsCol] */
+    companion object : AttributeCollection.Converter<JobSheetsCol> {
         override fun convert(attributes: List<Attribute<*>>): JobSheetsCol =
             JobSheetsCol(
-                extractOne(attributes, jobSheets),
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                _encoded = attributes)
-        /**
-         * "job-sheets" member type.
-         * May contain any keyword from [JobSheet] or a name.
-         */
-        @JvmField val jobSheets = KeywordType(Name.jobSheets)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
+                extractOne(attributes, Types.jobSheets),
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol)
+            )
     }
 }

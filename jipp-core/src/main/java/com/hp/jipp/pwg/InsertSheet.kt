@@ -17,27 +17,25 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class InsertSheet
 @JvmOverloads constructor(
-    val insertAfterPageNumber: Int? = null,
-    val insertCount: Int? = null,
+    var insertAfterPageNumber: Int? = null,
+    var insertCount: Int? = null,
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            insertAfterPageNumber?.let { Members.insertAfterPageNumber.of(it) },
-            insertCount?.let { Members.insertCount.of(it) },
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) }
+        listOfNotNull(
+            insertAfterPageNumber?.let { Types.insertAfterPageNumber.of(it) },
+            insertCount?.let { Types.insertCount.of(it) },
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<InsertSheet>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<InsertSheet>(InsertSheet)
 
     /** All member names as strings. */
     object Name {
@@ -51,54 +49,22 @@ data class InsertSheet
         const val mediaCol = "media-col"
     }
 
-    /** Builder for immutable [InsertSheet] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: InsertSheet) : this() {
-            insertAfterPageNumber = source.insertAfterPageNumber
-            insertCount = source.insertCount
-            media = source.media
-            mediaCol = source.mediaCol
-        }
-        var insertAfterPageNumber: Int? = null
-        var insertCount: Int? = null
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-
-        /** Return a new [InsertSheet] object containing all values initialized in this builder. */
-        fun build() = InsertSheet(
-            insertAfterPageNumber,
-            insertCount,
-            media,
-            mediaCol
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val insertAfterPageNumber = IntType(Name.insertAfterPageNumber)
+        val insertCount = IntType(Name.insertCount)
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 
-    companion object Members : AttributeCollection.Converter<InsertSheet> {
+    /** Defines types for each member of [InsertSheet] */
+    companion object : AttributeCollection.Converter<InsertSheet> {
         override fun convert(attributes: List<Attribute<*>>): InsertSheet =
             InsertSheet(
-                extractOne(attributes, insertAfterPageNumber),
-                extractOne(attributes, insertCount),
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                _encoded = attributes)
-        /**
-         * "insert-after-page-number" member type.
-         */
-        @JvmField val insertAfterPageNumber = IntType(Name.insertAfterPageNumber)
-        /**
-         * "insert-count" member type.
-         */
-        @JvmField val insertCount = IntType(Name.insertCount)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
+                extractOne(attributes, Types.insertAfterPageNumber),
+                extractOne(attributes, Types.insertCount),
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol)
+            )
     }
 }

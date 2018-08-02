@@ -16,51 +16,49 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class MaterialsCol
 @JvmOverloads constructor(
-    val materialAmount: Int? = null,
+    var materialAmount: Int? = null,
     /** May contain any keyword from [MaterialAmountUnit]. */
-    val materialAmountUnits: String? = null,
+    var materialAmountUnits: String? = null,
     /** May contain any keyword from [MediaColor]. */
-    val materialColor: String? = null,
-    val materialDiameter: Int? = null,
-    val materialDiameterTolerance: Int? = null,
-    val materialFillDensity: Int? = null,
-    val materialKey: String? = null,
-    val materialName: String? = null,
+    var materialColor: String? = null,
+    var materialDiameter: Int? = null,
+    var materialDiameterTolerance: Int? = null,
+    var materialFillDensity: Int? = null,
+    var materialKey: String? = null,
+    var materialName: String? = null,
     /** May contain any keyword from [MaterialPurpose]. */
-    val materialPurpose: List<String>? = null,
-    val materialRate: Int? = null,
+    var materialPurpose: List<String>? = null,
+    var materialRate: Int? = null,
     /** May contain any keyword from [MaterialRateUnit]. */
-    val materialRateUnits: String? = null,
-    val materialShellThickness: Int? = null,
-    val materialTemperature: IntOrIntRange? = null,
+    var materialRateUnits: String? = null,
+    var materialShellThickness: Int? = null,
+    var materialTemperature: IntOrIntRange? = null,
     /** May contain any keyword from [MaterialType] or a name. */
-    val materialType: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var materialType: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            materialAmount?.let { Members.materialAmount.of(it) },
-            materialAmountUnits?.let { Members.materialAmountUnits.of(it) },
-            materialColor?.let { Members.materialColor.of(it) },
-            materialDiameter?.let { Members.materialDiameter.of(it) },
-            materialDiameterTolerance?.let { Members.materialDiameterTolerance.of(it) },
-            materialFillDensity?.let { Members.materialFillDensity.of(it) },
-            materialKey?.let { Members.materialKey.of(it) },
-            materialName?.let { Members.materialName.of(it) },
-            materialPurpose?.let { Members.materialPurpose.of(it) },
-            materialRate?.let { Members.materialRate.of(it) },
-            materialRateUnits?.let { Members.materialRateUnits.of(it) },
-            materialShellThickness?.let { Members.materialShellThickness.of(it) },
-            materialTemperature?.let { Members.materialTemperature.of(it) },
-            materialType?.let { Members.materialType.of(it) }
+        listOfNotNull(
+            materialAmount?.let { Types.materialAmount.of(it) },
+            materialAmountUnits?.let { Types.materialAmountUnits.of(it) },
+            materialColor?.let { Types.materialColor.of(it) },
+            materialDiameter?.let { Types.materialDiameter.of(it) },
+            materialDiameterTolerance?.let { Types.materialDiameterTolerance.of(it) },
+            materialFillDensity?.let { Types.materialFillDensity.of(it) },
+            materialKey?.let { Types.materialKey.of(it) },
+            materialName?.let { Types.materialName.of(it) },
+            materialPurpose?.let { Types.materialPurpose.of(it) },
+            materialRate?.let { Types.materialRate.of(it) },
+            materialRateUnits?.let { Types.materialRateUnits.of(it) },
+            materialShellThickness?.let { Types.materialShellThickness.of(it) },
+            materialTemperature?.let { Types.materialTemperature.of(it) },
+            materialType?.let { Types.materialType.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MaterialsCol>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<MaterialsCol>(MaterialsCol)
 
     /** All member names as strings. */
     object Name {
@@ -94,142 +92,42 @@ data class MaterialsCol
         const val materialType = "material-type"
     }
 
-    /** Builder for immutable [MaterialsCol] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: MaterialsCol) : this() {
-            materialAmount = source.materialAmount
-            materialAmountUnits = source.materialAmountUnits
-            materialColor = source.materialColor
-            materialDiameter = source.materialDiameter
-            materialDiameterTolerance = source.materialDiameterTolerance
-            materialFillDensity = source.materialFillDensity
-            materialKey = source.materialKey
-            materialName = source.materialName
-            materialPurpose = source.materialPurpose
-            materialRate = source.materialRate
-            materialRateUnits = source.materialRateUnits
-            materialShellThickness = source.materialShellThickness
-            materialTemperature = source.materialTemperature
-            materialType = source.materialType
-        }
-        var materialAmount: Int? = null
-        /** May contain any keyword from [MaterialAmountUnit]. */
-        var materialAmountUnits: String? = null
-        /** May contain any keyword from [MediaColor]. */
-        var materialColor: String? = null
-        var materialDiameter: Int? = null
-        var materialDiameterTolerance: Int? = null
-        var materialFillDensity: Int? = null
-        var materialKey: String? = null
-        var materialName: String? = null
-        /** May contain any keyword from [MaterialPurpose]. */
-        var materialPurpose: List<String>? = null
-        var materialRate: Int? = null
-        /** May contain any keyword from [MaterialRateUnit]. */
-        var materialRateUnits: String? = null
-        var materialShellThickness: Int? = null
-        var materialTemperature: IntOrIntRange? = null
-        /** May contain any keyword from [MaterialType] or a name. */
-        var materialType: String? = null
-
-        /** Return a new [MaterialsCol] object containing all values initialized in this builder. */
-        fun build() = MaterialsCol(
-            materialAmount,
-            materialAmountUnits,
-            materialColor,
-            materialDiameter,
-            materialDiameterTolerance,
-            materialFillDensity,
-            materialKey,
-            materialName,
-            materialPurpose,
-            materialRate,
-            materialRateUnits,
-            materialShellThickness,
-            materialTemperature,
-            materialType
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val materialAmount = IntType(Name.materialAmount)
+        val materialAmountUnits = KeywordType(Name.materialAmountUnits)
+        val materialColor = KeywordType(Name.materialColor)
+        val materialDiameter = IntType(Name.materialDiameter)
+        val materialDiameterTolerance = IntType(Name.materialDiameterTolerance)
+        val materialFillDensity = IntType(Name.materialFillDensity)
+        val materialKey = KeywordType(Name.materialKey)
+        val materialName = NameType(Name.materialName)
+        val materialPurpose = KeywordType(Name.materialPurpose)
+        val materialRate = IntType(Name.materialRate)
+        val materialRateUnits = KeywordType(Name.materialRateUnits)
+        val materialShellThickness = IntType(Name.materialShellThickness)
+        val materialTemperature = IntOrIntRangeType(Name.materialTemperature)
+        val materialType = KeywordType(Name.materialType)
     }
 
-    companion object Members : AttributeCollection.Converter<MaterialsCol> {
+    /** Defines types for each member of [MaterialsCol] */
+    companion object : AttributeCollection.Converter<MaterialsCol> {
         override fun convert(attributes: List<Attribute<*>>): MaterialsCol =
             MaterialsCol(
-                extractOne(attributes, materialAmount),
-                extractOne(attributes, materialAmountUnits),
-                extractOne(attributes, materialColor),
-                extractOne(attributes, materialDiameter),
-                extractOne(attributes, materialDiameterTolerance),
-                extractOne(attributes, materialFillDensity),
-                extractOne(attributes, materialKey),
-                extractOne(attributes, materialName)?.value,
-                extractAll(attributes, materialPurpose),
-                extractOne(attributes, materialRate),
-                extractOne(attributes, materialRateUnits),
-                extractOne(attributes, materialShellThickness),
-                extractOne(attributes, materialTemperature),
-                extractOne(attributes, materialType),
-                _encoded = attributes)
-        /**
-         * "material-amount" member type.
-         */
-        @JvmField val materialAmount = IntType(Name.materialAmount)
-        /**
-         * "material-amount-units" member type.
-         * May contain any keyword from [MaterialAmountUnit].
-         */
-        @JvmField val materialAmountUnits = KeywordType(Name.materialAmountUnits)
-        /**
-         * "material-color" member type.
-         * May contain any keyword from [MediaColor].
-         */
-        @JvmField val materialColor = KeywordType(Name.materialColor)
-        /**
-         * "material-diameter" member type.
-         */
-        @JvmField val materialDiameter = IntType(Name.materialDiameter)
-        /**
-         * "material-diameter-tolerance" member type.
-         */
-        @JvmField val materialDiameterTolerance = IntType(Name.materialDiameterTolerance)
-        /**
-         * "material-fill-density" member type.
-         */
-        @JvmField val materialFillDensity = IntType(Name.materialFillDensity)
-        /**
-         * "material-key" member type.
-         */
-        @JvmField val materialKey = KeywordType(Name.materialKey)
-        /**
-         * "material-name" member type.
-         */
-        @JvmField val materialName = NameType(Name.materialName)
-        /**
-         * "material-purpose" member type.
-         * May contain any keyword from [MaterialPurpose].
-         */
-        @JvmField val materialPurpose = KeywordType(Name.materialPurpose)
-        /**
-         * "material-rate" member type.
-         */
-        @JvmField val materialRate = IntType(Name.materialRate)
-        /**
-         * "material-rate-units" member type.
-         * May contain any keyword from [MaterialRateUnit].
-         */
-        @JvmField val materialRateUnits = KeywordType(Name.materialRateUnits)
-        /**
-         * "material-shell-thickness" member type.
-         */
-        @JvmField val materialShellThickness = IntType(Name.materialShellThickness)
-        /**
-         * "material-temperature" member type.
-         */
-        @JvmField val materialTemperature = IntOrIntRangeType(Name.materialTemperature)
-        /**
-         * "material-type" member type.
-         * May contain any keyword from [MaterialType] or a name.
-         */
-        @JvmField val materialType = KeywordType(Name.materialType)
+                extractOne(attributes, Types.materialAmount),
+                extractOne(attributes, Types.materialAmountUnits),
+                extractOne(attributes, Types.materialColor),
+                extractOne(attributes, Types.materialDiameter),
+                extractOne(attributes, Types.materialDiameterTolerance),
+                extractOne(attributes, Types.materialFillDensity),
+                extractOne(attributes, Types.materialKey),
+                extractOne(attributes, Types.materialName)?.value,
+                extractAll(attributes, Types.materialPurpose),
+                extractOne(attributes, Types.materialRate),
+                extractOne(attributes, Types.materialRateUnits),
+                extractOne(attributes, Types.materialShellThickness),
+                extractOne(attributes, Types.materialTemperature),
+                extractOne(attributes, Types.materialType)
+            )
     }
 }
