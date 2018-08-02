@@ -3,47 +3,69 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toHexString
+import java.text.SimpleDateFormat
+import java.util.* // ktlint-disable
 
-import java.io.IOException
+/** Any kind of attribute, having any number of any type of values */
+interface Attribute<T : Any> : PrettyPrintable {
+    /** The name of the attribute. */
+    val name: String
 
-/**
- * An IPP attribute, composed of a one-byte "value tag" suggesting its type, a human-readable string name, and one or
- * more values according to its type.
- *
- * @param valueTag must be valid for the attribute type, according to the encoder.
- */
-data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>, val encoder: Encoder<T>) :
-        AbstractList<T>(), PrettyPrintable {
+    /** The attributes out-of-band tag (when [values] is empty). */
+    val tag: Tag?
 
-    init {
-        if (!(encoder.valid(valueTag))) {
-            throw BuildError("Invalid $valueTag for ${encoder.typeName}")
-        }
+    /** Values present with the attribute. */
+    val values: List<T>
+
+    /** First value in the attribute if present. */
+    val value: T?
+        get() = if (values.isEmpty()) null else values.first()
+
+    /** Attribute type used to encode the attribute if known */
+    val type: AttributeType<T>
+
+    /** Return true if the other attribute has the same content as this one. */
+    fun equalTo(other: Attribute<*>) =
+        other.name == name && other.tag == tag && other.values == values
+
+    /** A hash for this object useful for direct content comparisons. */
+    fun hashOf() = Objects.hash(name, tag, values)
+
+    /** Return values in string form. */
+    fun strings(): List<String> = values.map { if (it is Stringable) it.asString() else it.toString() }
+
+    /** Return a copy of this attribute having a new name */
+    fun withName(newName: String): Attribute<T> = object : Attribute<T> by this {
+        override val name = newName
     }
 
-    override fun iterator(): Iterator<T> = values.iterator()
+    /** True if the tag for this attribute is [Tag.unknown] */
+    fun isUnknown() = tag == Tag.unknown
 
-    override val size: Int
-        get() = values.size
+    /** True if the tag for this attribute is [Tag.noValue] */
+    fun isNoValue() = tag == Tag.noValue
 
-    override fun get(index: Int): T = values[index]
+    /** True if the tag for this attribute is [Tag.unsupported] */
+    fun isUnsupported() = tag == Tag.unsupported
 
-    /** Return the first value or null if no values */
-    val value: T? = firstOrNull()
-
-    /** Return a copy of this attribute with a different name */
-    fun withName(newName: String): Attribute<T> = copy(name = newName)
+    /** Convert all attribute values to their most basic string-like form */
+    private fun toStrings() =
+        values.map {
+            if (it is Stringable) {
+                it.asString()
+            } else {
+                it.toString()
+            }
+        }
 
     override fun print(printer: PrettyPrinter) {
-        val prefix = "$name($valueTag)"
-        if (values.size == 1) {
-            printer.open(PrettyPrinter.KEY_VALUE, prefix)
-        } else {
-            printer.open(PrettyPrinter.ARRAY, prefix)
+        when (values.size) {
+            0 -> printer.open(PrettyPrinter.SILENT, name)
+            1 -> printer.open(PrettyPrinter.KEY_VALUE, "$name =")
+            else -> printer.open(PrettyPrinter.ARRAY, "$name =")
         }
 
         values.forEach {
@@ -55,38 +77,17 @@ data class Attribute<T>(val valueTag: Tag, val name: String, val values: List<T>
         printer.close()
     }
 
-    override fun toString(): String {
-        val stringValues = values.map { toPrintable(it) }
-        val valueString = if (stringValues.size == 1) stringValues[0] else stringValues.toString()
-        return "$name($valueTag): $valueString"
-    }
-
-    private fun toPrintable(value: T): String = when (value) {
-        is String -> "\"$value\""
-        is ByteArray -> "x" + value.toHexString()
+    fun toPrintable(value: T): String = when (value) {
+        // Present Calendar as an ISO6801 date string
+        is Calendar -> SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").let { format ->
+            format.timeZone = value.timeZone
+            format.format(value.time)
+        }
+        is ByteArray -> "0x" + value.toHexString()
         else -> value.toString()
     }
 
-    /** Write this attribute (including all of its values) to the output stream */
-    @Throws(IOException::class)
-    fun write(stream: IppOutputStream) {
-        writeHeader(stream)
-        if (values.isEmpty()) {
-            stream.writeShort(0)
-        } else {
-            stream.writeValue(encoder, values[0])
-        }
-
-        values.drop(1).forEach {
-            writeHeader(stream, name = "")
-            stream.writeValue(encoder, it)
-        }
-    }
-
-    // Write ONLY the value tag + name components of an attribute
-    @Throws(IOException::class)
-    private fun writeHeader(stream: IppOutputStream, name: String = this.name) {
-        valueTag.write(stream)
-        stream.writeString(name)
+    class Type(override val name: String) : AttributeType<Any> {
+        override fun coerce(value: Any): Any? = value
     }
 }

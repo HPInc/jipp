@@ -122,8 +122,8 @@ class PrettyPrinter internal constructor(
         /** A style for key/value pairs e.g. "Me A/B/C". Works best when there is only one value.  */
         @JvmField val KEY_VALUE = Style(" ", "", "/", "")
 
-        // A style used internally for the root group
-        private val SILENT = Style("", "", ",", "")
+        /** A style with no indenting or separators at all */
+        @JvmField val SILENT = Style("", "", ",", "")
 
         /** Style used for delimiting members of a pretty-printed group  */
         class Style internal constructor(

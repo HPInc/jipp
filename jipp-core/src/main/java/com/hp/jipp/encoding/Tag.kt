@@ -10,11 +10,31 @@ import java.io.IOException
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
  */
+@Suppress("MagicNumber")
 data class Tag(override val code: Int, override val name: String) : Enum() {
 
     /** Return true if this tag is a delimiter tag  */
     val isDelimiter: Boolean
         get() = code in 0x01..0x0F
+
+    /** Return true if this tag is an out-of-band tag */
+    val isOutOfBand: Boolean
+        get() = code in 0x10..0x1F
+
+    val isCollection: Boolean
+        get() = this == beginCollection || this == endCollection || this == memberAttributeName
+
+    /** Return true if this tag is encoded as an integer */
+    val isInteger: Boolean
+        get() = code in 0x20..0x2F
+
+    /** Return true if this tag is encoded as an octet string */
+    val isOctetString: Boolean
+        get() = code in 0x30..0x3F
+
+    /** Return true if this tag is encoded as a character string */
+    val isCharString: Boolean
+        get() = code in 0x40..0x4F
 
     override fun toString() = name
 
@@ -40,9 +60,13 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
         @JvmField val printerAttributes = Tag(0x04, "printer-attributes")
         @JvmField val unsupportedAttributes = Tag(0x05, "unsupported-attributes")
 
+        // "Out-of-band" values
         @JvmField val unsupported = Tag(0x10, "unsupported")
         @JvmField val unknown = Tag(0x12, "unknown")
         @JvmField val noValue = Tag(0x13, "no-value")
+        @JvmField val notSettable = Tag(0x15, "not-settable")
+        @JvmField val deleteAttribute = Tag(0x16, "delete-attribute")
+        @JvmField val adminDefine = Tag(0x17, "admin-define")
 
         // Integer values
         @JvmField val integerValue = Tag(0x21, "integer")
@@ -69,6 +93,9 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
         @JvmField val naturalLanguage = Tag(0x48, "naturalLanguage")
         @JvmField val mimeMediaType = Tag(0x49, "mimeMediaType")
         @JvmField val memberAttributeName = Tag(0x4A, "memberAttrName")
+
+        /** All known [Tag] values. */
+        @JvmField val all = Enum.allFrom<Tag>(Tag::class.java)
 
         private val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
     }

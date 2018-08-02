@@ -1,5 +1,6 @@
 package com.hp.jipp.trans
 
+import com.hp.jipp.encoding.IppInputStream
 import com.hp.jipp.model.IppPacket
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -46,7 +47,7 @@ class HttpIppClientTransport : IppClientTransport {
 
             DataInputStream(ByteArrayInputStream(rxBytes.toByteArray())).use {
                 println("Parsing received data")
-                IppPacketData(IppPacket.parse(it))
+                IppPacketData(IppPacket.read(IppInputStream(it)))
             }
         }
     }

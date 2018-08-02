@@ -4,14 +4,8 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.AttributeType
-import com.hp.jipp.encoding.IppInputStream
-import com.hp.jipp.encoding.IppOutputStream
-import com.hp.jipp.encoding.SimpleEncoder
-import com.hp.jipp.encoding.StringType
-import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.getStaticObjects
 
-import java.io.IOException
 import java.util.regex.Pattern
 
 /**
@@ -23,8 +17,12 @@ import java.util.regex.Pattern
 @Suppress("LargeClass") // We just have a lot of possible fields
 data class MediaSize(val name: String, val width: Int, val height: Int) {
 
+    // TODO: When does this become encodable
     /** A media size type based solely on keyword values with width/height inferred  */
-    open class Type(override val name: String) : AttributeType<MediaSize>(Encoder, Tag.keyword)
+    open class Type(override val name: String) : AttributeType<MediaSize> {
+        override fun coerce(value: Any) =
+            value as? MediaSize
+    }
 
     override fun toString() = "MediaSize($name, ${width}x$height)"
 
@@ -238,23 +236,6 @@ data class MediaSize(val name: String, val width: Int, val height: Int) {
             val x = (java.lang.Double.parseDouble(matches.group(WIDTH_AT)) * units).toInt()
             val y = (java.lang.Double.parseDouble(matches.group(HEIGHT_AT)) * units).toInt()
             return MediaSize(name, x, y)
-        }
-
-        @JvmField val Encoder = object : SimpleEncoder<MediaSize>("MediaSize") {
-            @Throws(IOException::class)
-            override fun readValue(input: IppInputStream, valueTag: Tag): MediaSize {
-                val name = StringType.Encoder.readValue(input, valueTag)
-                return all[name] ?: MediaSize.of(name)
-            }
-
-            @Throws(IOException::class)
-            override fun writeValue(out: IppOutputStream, value: MediaSize) {
-                StringType.Encoder.writeValue(out, value.name)
-            }
-
-            override fun valid(valueTag: Tag): Boolean {
-                return Tag.keyword == valueTag || Tag.nameWithoutLanguage == valueTag
-            }
         }
     }
 }

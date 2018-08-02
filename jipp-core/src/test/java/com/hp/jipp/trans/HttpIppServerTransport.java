@@ -31,7 +31,7 @@ abstract public class HttpIppServerTransport implements IppServerTransport {
         public void handle(HttpExchange exchange) throws IOException {
             try {
                 InputStream inputStream = exchange.getRequestBody();
-                IppPacket receivePacket = IppPacket.parse(inputStream);
+                IppPacket receivePacket = IppPacket.read(inputStream);
                 IppPacketData data = new IppPacketData(receivePacket, inputStream);
                 IppPacketData response = HttpIppServerTransport.this.handle(exchange.getRequestURI(), data);
                 DataOutputStream output = new DataOutputStream(new BufferedOutputStream(exchange.getResponseBody()));

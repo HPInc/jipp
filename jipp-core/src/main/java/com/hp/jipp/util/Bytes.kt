@@ -18,3 +18,14 @@ fun Byte.toHexString(): String {
 
 /** Return a byte array in hex form */
 fun ByteArray.toHexString(): String = joinToString(separator = "") { it.toHexString() }
+
+@JvmOverloads
+@Suppress("MagicNumber")
+fun ByteArray.toWrappedHexString(chunk: Int = 32) =
+    (0..(size / chunk)).joinToString("\n") { at ->
+        copyOfRange(at * chunk, Math.min(size, (at + 1) * chunk)).let { bytes ->
+            bytes.toHexString() + " " + bytes.map {
+                if (it in 32..127) it.toChar() else '.'
+            }.joinToString("")
+        }
+    }

@@ -17,10 +17,10 @@ data class ResolutionUnit(override val code: Int, override val name: String) : E
         @JvmField val dotsPerInch = ResolutionUnit(Code.dotsPerInch, "dpi")
         @JvmField val dotsPerCentimeter = ResolutionUnit(Code.dotsPerCentimeter, "dpcm")
 
-        /** The encoder for converting integers to this Enum object */
-        @JvmField
-        val Encoder = EnumType.Encoder(ResolutionUnit::class.java) { code, name ->
-            ResolutionUnit(code, name)
-        }
+        /** All known resolution values */
+        @JvmField val all = listOf(dotsPerInch, dotsPerCentimeter).map { it.code to it }.toMap()
+
+        operator fun get(value: Int): ResolutionUnit =
+            ResolutionUnit.all[value] ?: ResolutionUnit(value, "???")
     }
 }
