@@ -30,15 +30,17 @@ public class CollectionTest {
     }
 
     @Test
-    public void finishingsOneValue() throws Exception {
-        assertEquals(finishingsCol, cycle(finishingsColActual, finishingsColActual.of(finishingsCol)).getValue());
+    public void finishings() throws Exception {
+        FinishingsCol received = cycle(finishingsColActual, finishingsColActual.of(finishingsCol)).getValue();
+        assertEquals(finishingsCol, received);
     }
 
     @Test
     public void untypedCollection() throws Exception {
-        UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
         AttributeGroup group = cycle(new AttributeGroup(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
 
+        // We can use an untypedColType to extract the full data received for the attribute
+        UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);
         for (Attribute<?> attribute : untyped.getAttributes()) {
             if (attribute.getName().equals(FinishingsCol.Name.covering)) return;
