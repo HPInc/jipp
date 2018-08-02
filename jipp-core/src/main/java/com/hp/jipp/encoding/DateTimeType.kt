@@ -3,29 +3,28 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.encoding.AttributeGroup.Companion.codec
+import com.hp.jipp.encoding.AttributeGroup.Companion.toUint
 import com.hp.jipp.util.ParseError
-import java.io.IOException
-import java.util.Calendar
-import java.util.TimeZone
+import java.util.* // ktlint-disable
 
-/**
- * An attribute type for DateAndTime octet strings as defined in [RFC2579](https://tools.ietf.org/html/rfc2579).
- */
+/** An attribute type based on [Calendar] type. */
 @Suppress("MagicNumber")
-class DateTimeType(override val name: String) : AttributeType<Calendar>(Encoder, Tag.dateTime) {
+open class DateTimeType(override val name: String) : AttributeType<Calendar> {
 
-    companion object Encoder : SimpleEncoder<Calendar>("dateTime") {
-        private const val BYTE_COUNT = 11
+    override fun coerce(value: Any) =
+        value as? Calendar
 
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag): Calendar {
-            val bytes = input.readValueBytes()
-            if (bytes.size != BYTE_COUNT) {
-                throw ParseError("Invalid byte count " + bytes.size + " for dateTime, must be " + BYTE_COUNT)
+    companion object {
+        val codec = codec<Calendar>(Tag.dateTime, {
+            val bytes = readValueBytes()
+            if (bytes.size != AttributeGroup.CALENDAR_LENGTH) {
+                throw ParseError("Invalid byte count " + bytes.size +
+                    " for dateTime, must be ${AttributeGroup.CALENDAR_LENGTH}")
             }
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar[Calendar.YEAR] = (bytes[0].toInt() shl 8) + (bytes[1].toUint())
-            calendar[Calendar.MONTH] = bytes[2].toUint()
+            calendar[Calendar.MONTH] = bytes[2].toUint() - 1
             calendar[Calendar.DAY_OF_MONTH] = bytes[3].toUint()
             calendar[Calendar.HOUR_OF_DAY] = bytes[4].toUint()
             calendar[Calendar.MINUTE] = bytes[5].toUint()
@@ -36,35 +35,27 @@ class DateTimeType(override val name: String) : AttributeType<Calendar>(Encoder,
                 bytes[9].toUint(),
                 bytes[10].toUint())
             calendar.timeZone = TimeZone.getTimeZone(zoneString)
-            return calendar
-        }
+            calendar
+        }, {
+            writeShort(AttributeGroup.CALENDAR_LENGTH)
+            writeShort(it[Calendar.YEAR])
+            writeByte(it[Calendar.MONTH] + 1)
+            writeByte(it[Calendar.DAY_OF_MONTH])
+            writeByte(it[Calendar.HOUR_OF_DAY])
+            writeByte(it[Calendar.MINUTE])
+            writeByte(it[Calendar.SECOND])
+            writeByte(it[Calendar.MILLISECOND] / 100)
 
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: Calendar) {
-            out.writeShort(BYTE_COUNT)
-            out.writeShort(value[Calendar.YEAR])
-            out.writeByte(value[Calendar.MONTH])
-            out.writeByte(value[Calendar.DAY_OF_MONTH])
-            out.writeByte(value[Calendar.HOUR_OF_DAY])
-            out.writeByte(value[Calendar.MINUTE])
-            out.writeByte(value[Calendar.SECOND])
-            out.writeByte(value[Calendar.MILLISECOND] / 100)
-
-            var zone = value.timeZone.rawOffset
-
+            var zone = it.timeZone.rawOffset
             if (zone < 0) {
-                out.writeByte('-'.toInt())
+                writeByte('-'.toInt())
                 zone = -zone
             } else {
-                out.writeByte('+'.toInt())
+                writeByte('+'.toInt())
             }
             val offsetMinutes = zone / 1000 / 60
-            out.writeByte(offsetMinutes / 60) // Hours
-            out.writeByte(offsetMinutes % 60) // Minutes only
-        }
-
-        override fun valid(valueTag: Tag) = Tag.dateTime == valueTag
-
-        private fun Byte.toUint(): Int = this.toInt() and 0xFF
+            writeByte(offsetMinutes / 60) // Hours
+            writeByte(offsetMinutes % 60) // Minutes only
+        })
     }
 }

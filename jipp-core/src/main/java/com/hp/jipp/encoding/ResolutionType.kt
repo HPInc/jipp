@@ -3,31 +3,20 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.IntegerType.Encoder.INT_LENGTH
-import java.io.IOException
+/** An attribute type containing [Resolution] values. */
+open class ResolutionType(override val name: String) : AttributeType<Resolution> {
+    override fun coerce(value: Any) =
+        value as? Resolution
 
-/** Attribute type for encoding of a [Resolution] */
-class ResolutionType(tag: Tag, override val name: String) : AttributeType<Resolution>(Encoder, tag) {
-
-    companion object Encoder : SimpleEncoder<Resolution>("resolution") {
-
-        private const val BYTE_LENGTH = 1
-
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag): Resolution {
-            input.takeLength(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
-            return Resolution(input.readInt(), input.readInt(),
-                    ResolutionUnit.Encoder[input.readByte().toInt()])
-        }
-
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: Resolution) {
-            out.writeShort(INT_LENGTH + INT_LENGTH + BYTE_LENGTH)
-            out.writeInt(value.crossFeedResolution)
-            out.writeInt(value.feedResolution)
-            out.writeByte(value.unit.code.toByte().toInt())
-        }
-
-        override fun valid(valueTag: Tag) = Tag.resolution == valueTag
+    companion object {
+        val codec = AttributeGroup.codec(Tag.resolution, {
+            takeLength(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH + AttributeGroup.BYTE_LENGTH)
+            Resolution(readInt(), readInt(), ResolutionUnit[readByte().toInt()])
+        }, {
+            writeShort(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH + AttributeGroup.BYTE_LENGTH)
+            writeInt(it.crossFeedResolution)
+            writeInt(it.feedResolution)
+            writeByte(it.unit.code.toByte().toInt())
+        })
     }
 }

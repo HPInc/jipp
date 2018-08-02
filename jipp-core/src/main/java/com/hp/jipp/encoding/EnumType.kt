@@ -3,64 +3,32 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.getStaticObjects
-import java.io.IOException
+import com.hp.jipp.encoding.AttributeGroup.Companion.codec
 
-/** An IPP enum type */
-open class EnumType<T : Enum>(val enumEncoder: EnumType.Encoder<T>, override val name: String) :
-        AttributeType<T>(enumEncoder, Tag.enumValue) {
+/** An attribute type based on [Enum] type of [T]*/
+open class EnumType<T : Enum>(
+    override val name: String,
+    val factory: (code: Int) -> T
+) : AttributeType<T> {
+    fun of(vararg values: Int) = of(values.map { factory(it) })
 
-    /**
-     * Return an attribute containing one or more [Enum] values based on integers
-     */
-    fun of(vararg values: Int): Attribute<T> = of(values.map { enumEncoder[it] })
+    override fun toString() = "EnumType($name)"
 
-    /**
-     * An [Encoder] for [Enum] values
-     * @param typeName Human-readable type of the [Enum]
-     * @param map predefined [Enum] instances to reuse when decoding
-     * @param factory a way to create new [Enum] instances of the correct type when decoding an undefined value
-     */
-    class Encoder<T : Enum>(
-        override val typeName: String,
-        val map: Map<Int, T>,
-        val factory: (code: Int, name: String) -> T
-    ) : com.hp.jipp.encoding.Encoder<T>() {
-
-        constructor(name: String, enums: Collection<T>, factory: (code: Int, name: String) -> T):
-                this(name, Enum.toCodeMap(enums), factory)
-
-        /**
-         * Construct an [EnumType] encoder for a subclass of Enum. All public static instances of the class
-         * will be included as potential values for decoding purposes.
-         */
-        constructor(cls: Class<T>, factory: (code: Int, name: String) -> T):
-            this(cls.simpleName,
-                cls.getStaticObjects().filter { cls.isAssignableFrom(it.javaClass) }.map {
-                    @Suppress("UNCHECKED_CAST")
-                    it as T
-                }, factory)
-
-        /** Returns a known [Enum], or creates a new instance from factory if not found  */
-        operator fun get(code: Int): T =
-            map[code] ?: factory(code, "Unknown $typeName")
-
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, finder: Finder, valueTag: Tag): T {
-            return get(IntegerType.readValue(input, valueTag))
+    override fun coerce(value: Any) =
+        when (value) {
+            is UntypedEnum -> factory(value.code)
+            is Enum -> factory(value.code)
+            is Int -> factory(value)
+            else -> null
         }
 
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: T) {
-            IntegerType.writeValue(out, value.code)
-        }
-
-        override fun valid(valueTag: Tag): Boolean = valueTag == Tag.enumValue
+    companion object {
+        val codec = codec<Enum>(Tag.enumValue, {
+            takeLength(AttributeGroup.INT_LENGTH)
+            UntypedEnum(readInt())
+        }, {
+            writeShort(AttributeGroup.INT_LENGTH)
+            writeInt(it.code)
+        })
     }
-
-    override fun convert(attribute: Attribute<*>): Attribute<T>? =
-        if (attribute.valueTag !== Tag.enumValue) null
-        else of(attribute.values
-                .filter { it is Int }
-                .map { enumEncoder[it as Int] })
 }

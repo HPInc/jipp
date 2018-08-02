@@ -3,77 +3,64 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.encoding.AttributeGroup.Companion.readAnyAttribute
+import com.hp.jipp.encoding.AttributeGroup.Companion.readTag
+import com.hp.jipp.encoding.AttributeGroup.Companion.writeAttribute
 import com.hp.jipp.util.ParseError
 
-import java.io.IOException
+/** An attribute type for collections of [T]. */
+open class CollectionType<T : AttributeCollection>(
+    override val name: String,
+    private val factory: (UntypedCollection) -> T
+) : AttributeType<T> {
 
-/**
- * A type for attribute collections.
-
- * See RFC3382 (https://tools.ietf.org/html/rfc3382)
- */
-open class CollectionType(override val name: String) :
-        AttributeType<AttributeCollection>(Encoder, Tag.beginCollection) {
-
-    /** Return a collection containing the supplied attributes */
-    fun of(vararg attributes: Attribute<*>) = this(AttributeCollection(attributes.toList()))
-
-    companion object Encoder : com.hp.jipp.encoding.Encoder<AttributeCollection>() {
-        override val typeName
-            get() = "Collection"
-
-        // Terminates a collection
-        private val endCollectionAttribute = OctetStringType(Tag.endCollection, "").empty()
-
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: AttributeCollection) {
-            out.writeShort(0) // Empty value
-
-            for (attribute in value.attributes) {
-                // Write a memberAttributeName attribute
-                Tag.memberAttributeName.write(out)
-                out.writeShort(0)
-                out.writeString(attribute.name)
-
-                // Write the attribute, but without its name
-                attribute.withName("").write(out)
-            }
-
-            // Terminating attribute
-            endCollectionAttribute.write(out)
+    override fun coerce(value: Any) =
+        if (value is UntypedCollection) {
+            factory(value)
+        } else {
+            null
         }
 
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, finder: Finder, valueTag: Tag): AttributeCollection {
-            input.skipValueBytes()
-            val builder = ArrayList<Attribute<*>>()
+    companion object {
 
-            // Read attribute pairs until endCollection is reached.
+        val codec = AttributeGroup.codec<AttributeCollection>(Tag.beginCollection, {
+                skipValueBytes()
+                UntypedCollection(readCollectionAttributes())
+            }, {
+                writeShort(0) // Empty value
+                for (attribute in it.attributes) {
+                    writeTag(Tag.memberAttributeName)
+                    writeShort(0)
+                    writeString(attribute.name)
+                    writeAttribute(attribute.withName(""))
+                }
+                writeAttribute(endCollectionAttribute)
+            })
+
+        private val endCollectionAttribute = EmptyAttribute("", Tag.endCollection)
+
+        private fun IppInputStream.readCollectionAttributes(): List<Attribute<Any>> {
+            val attributes = mutableListOf<Attribute<Any>>()
             while (true) {
-                val tag = Tag.read(input)
-                if (tag === Tag.endCollection) {
-                    // Skip the rest of this attr and return.
-                    input.skipValueBytes()
-                    input.skipValueBytes()
-                    break
-                } else if (tag === Tag.memberAttributeName) {
-                    input.skipValueBytes()
-                    val memberName = input.readString()
-                    val memberTag = Tag.read(input)
-
-                    // Read and throw away the blank attribute name
-                    input.readValueBytes()
-                    val encoder = finder.find(memberTag, memberName)
-                    builder.add(input.readAttribute(encoder, memberTag, memberName))
-                } else {
-                    throw ParseError("Bad tag in collection: $tag")
+                val tag = readTag()
+                when (tag) {
+                    Tag.endCollection -> {
+                        skipValueBytes()
+                        skipValueBytes()
+                        return attributes
+                    }
+                    Tag.memberAttributeName -> {
+                        skipValueBytes()
+                        val memberName = readString()
+                        val memberTag = readTag()
+                        // Read and throw away the (blank) attribute value
+                        readValueBytes()
+                        attributes.add(readAnyAttribute(memberName, memberTag))
+                    }
+                    else ->
+                        throw ParseError("Bad tag in collection: $tag")
                 }
             }
-            return AttributeCollection(builder)
-        }
-
-        override fun valid(valueTag: Tag): Boolean {
-            return valueTag === Tag.beginCollection
         }
     }
 }

@@ -42,14 +42,14 @@ public class AttributeGroupTest {
     public void multiMultiAttribute() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
                 Types.attributesCharset.of("utf-8","utf-16")));
-        assertEquals(Arrays.asList("utf-8", "utf-16"), group.getValues(Types.attributesCharset));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), group.get(Types.attributesCharset).strings());
     }
 
     @Test
     public void missingAttribute() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
                 Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
-        assertEquals(0, group.getValues(Types.attributesNaturalLanguage).size());
+        assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
     @Test
@@ -60,53 +60,46 @@ public class AttributeGroupTest {
                 Types.attributesCharset.of("utf-8"));
     }
 
-    @Test
-    public void stringFromLang() throws Exception {
-        LangStringType jobNameLang = new LangStringType(Tag.nameWithLanguage, "job-name");
-        AttributeGroup group = cycle(groupOf(Tag.jobAttributes,
-                jobNameLang.of(new LangString("my job", "fr"))));
+    // TODO: Tests for string <--> Text or Name here?
+//    @Test
+//    public void stringFromLang() throws Exception {
+//        LangStringType jobNameLang = new LangStringType(Tag.nameWithLanguage, "job-name");
+//        AttributeGroup group = cycle(groupOf(Tag.jobAttributes,
+//                jobNameLang.of(new LangString("my job", "fr"))));
+//
+//        // If I don't care about the language encoding:
+//        StringType jobName = new StringType(Tag.nameWithoutLanguage, "job-name");
+//        assertEquals("my job", group.getValues(jobName).get(0));
+//    }
+//
+//    @Test
+//    public void langFromString() throws Exception {
+//        StringType jobName = new StringType(Tag.nameWithoutLanguage, "job-name");
+//        AttributeGroup group = cycle(groupOf(Tag.jobAttributes,
+//                jobName.of("my job")));
+//
+//        // If I don't care about the language encoding:
+//        LangStringType jobNameLang = new LangStringType(Tag.nameWithLanguage, "job-name");
+//        assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
+//        assertNull(group.getValues(jobNameLang).get(0).getLang());
+//    }
 
-        // If I don't care about the language encoding:
-        StringType jobName = new StringType(Tag.nameWithoutLanguage, "job-name");
-        assertEquals("my job", group.getValues(jobName).get(0));
-    }
-
-    @Test
-    public void langFromString() throws Exception {
-        StringType jobName = new StringType(Tag.nameWithoutLanguage, "job-name");
-        AttributeGroup group = cycle(groupOf(Tag.jobAttributes,
-                jobName.of("my job")));
-
-        // If I don't care about the language encoding:
-        LangStringType jobNameLang = new LangStringType(Tag.nameWithLanguage, "job-name");
-        assertEquals("my job", group.getValues(jobNameLang).get(0).getString());
-        assertNull(group.getValues(jobNameLang).get(0).getLang());
-    }
-
-    @Test
-    public void missingEncoder() throws Exception {
-        // This cannot happen but if it did it would throw nicely.
-        exception.expect(ParseError.class);
-        Encoder.finderOf(Collections.<String, AttributeType<?>>emptyMap(),
-                Collections.<Encoder<?>>emptyList())
-                .find(Tag.nameWithLanguage, "haha");
-    }
-
-    @Test
-    public void findMediaInCollection() throws Exception {
-        CollectionType jobConstraintsSupported = new CollectionType("job-constraints-supported");
-        StringType resolverName = new StringType(Tag.nameWithoutLanguage, "resolver-name");
-
-        Attribute<AttributeCollection> jobConstraints = jobConstraintsSupported.of(
-                new AttributeCollection(
-                        resolverName.of("fullbleed-sizes"),
-                        Types.media.of(MediaSize.naLetter, MediaSize.isoA4)));
-
-        AttributeGroup group = cycle(groupOf(Tag.printerAttributes, jobConstraints));
-        System.out.println(group);
-        assertEquals(MediaSize.naLetter, group.getValue(jobConstraintsSupported).values(Types.media).get(0));
-        assertEquals(MediaSize.isoA4, group.getValue(jobConstraintsSupported).values(Types.media).get(1));
-    }
+    // Collections are different
+//    @Test
+//    public void findMediaInCollection() throws Exception {
+//        CollectionType jobConstraintsSupported = new CollectionType("job-constraints-supported");
+//        StringType resolverName = new StringType(Tag.nameWithoutLanguage, "resolver-name");
+//
+//        Attribute<AttributeCollection> jobConstraints = jobConstraintsSupported.of(
+//                new AttributeCollection(
+//                        resolverName.of("fullbleed-sizes"),
+//                        Types.media.of(MediaSize.naLetter, MediaSize.isoA4)));
+//
+//        AttributeGroup group = cycle(groupOf(Tag.printerAttributes, jobConstraints));
+//        System.out.println(group);
+//        assertEquals(MediaSize.naLetter, group.getValue(jobConstraintsSupported).values(Types.media).get(0));
+//        assertEquals(MediaSize.isoA4, group.getValue(jobConstraintsSupported).values(Types.media).get(1));
+//    }
 
     @Test
     public void cover() throws Exception {

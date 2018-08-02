@@ -1,16 +1,13 @@
 package com.hp.jipp.model;
 
+import com.hp.jipp.encoding.*;
 import org.junit.Test;
 
-import com.hp.jipp.encoding.Cycler;
-import com.hp.jipp.encoding.Tag;
-
+import static com.hp.jipp.util.BytesKt.toHexString;
+import static com.hp.jipp.util.BytesKt.toWrappedHexString;
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,42 +16,45 @@ import kotlin.io.FilesKt;
 
 public class BinaryTest {
 
-    @Test
-    public void scanNames() throws Exception {
-        for (File binFile : getBinFiles()) {
-            IppPacket packet = IppPacket.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
-            if (packet.getAttributeGroup(Tag.printerAttributes) == null) continue;
-            if (packet.getValues(Tag.printerAttributes, Types.printerInfo).isEmpty()) continue;
+//    @Test
+//    public void scanNames() throws Exception {
+//        for (File binFile : getBinFiles()) {
+//            IppPacket packet = IppPacket.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
+//            if (packet.getAttributeGroup(Tag.printerAttributes) == null) continue;
+//            if (packet.getValues(Tag.printerAttributes, Types.printerInfo).isEmpty()) continue;
+//
+//            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.printerAttributes, Types.printerInfo) +
+//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerName) +
+//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName) +
+//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerUuid));
+//        }
+//    }
+//
 
-            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.printerAttributes, Types.printerInfo) +
-                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerName) +
-                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName) +
-                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerUuid));
+    @Test
+    public void cycleBinaries() throws IOException {
+        for (File binFile : getBinFiles()) {
+            cycleBinary(binFile.getName(), FilesKt.readBytes(binFile));
         }
     }
 
-    @Test
-    public void cycleBinaries() throws Exception {
-        // For each bin file cycle and print
-        for (File binFile : getBinFiles()) {
-            byte[] bytes = FilesKt.readBytes(binFile);
-            // Parse and build each packet to ensure that we can model it perfectly in memory
-            System.out.println("\nParsing packet from " + binFile.getName());
-            IppPacket packet = IppPacket.parse(new DataInputStream(new ByteArrayInputStream(bytes)));
-            System.out.println(packet.prettyPrint(200, "  "));
+    private void cycleBinary(String fileName, byte[] inputBytes) throws IOException {
+        System.out.println("\n========= Parsing " + fileName);
+        IppInputStream input = new IppInputStream(new ByteArrayInputStream(inputBytes));
 
-            Object inputTray = packet.getValue(Tag.printerAttributes, Types.printerInputTray);
-            Object printerAlert = packet.getValue(Tag.printerAttributes, Types.printerAlert);
+        IppPacket packet = IppPacket.read(input);
+        System.out.println(fileName + packet.prettyPrint(120, "  "));
 
-            // TODO: inputTray and printerAlert can be encoded with slight differences (sometimes with
-            // terminating ";") causing a binary mismatch. Not sure how to deal with this and still have a valid test
-            if (inputTray == null && printerAlert == null) {
-                assertArrayEquals(bytes, Cycler.toBytes(packet));
-            }
-        }
+        // Now repack it and make sure the bytes are the same
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        IppOutputStream output = new IppOutputStream(bytesOut);
+        packet.write(output);
+        output.close();
+        // Compare input bytes to output bytes in hex string format for easy comparison
+        assertEquals(toWrappedHexString(inputBytes), toWrappedHexString(bytesOut.toByteArray()));
     }
 
-    private List<File> getBinFiles() throws IOException {
+    private List<File> getBinFiles() {
         File printerDir = new File(getResource("printer"));
         assertTrue(printerDir.isDirectory());
 
@@ -84,20 +84,19 @@ public class BinaryTest {
         }
     }
 
-    // Enable when necessary, we have too many test files to try this every time
-//    @Test
-//    public void speedTest() throws Exception {
-//        for (File binFile : getBinFiles()) {
-//            byte[] bytes = Bytes.read(binFile);
-//            long nanos = System.nanoTime();
-//            int reps = 100;
-//            for (int i = 0; i < reps; i++) {
-//                try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
-//                    parser.parse(in);
-//                }
-//            }
-//            System.out.println("Rx " + reps + " of " + binFile.getName() + " (" + bytes.length + " bytes): " +
-//                    ((System.nanoTime() - nanos)/1000) + "us");
-//        }
-//    }
+    @Test
+    public void speedTest() throws Exception {
+        for (File binFile : getBinFiles()) {
+            byte[] bytes = FilesKt.readBytes(binFile);
+            long nanos = System.nanoTime();
+            int reps = 50;
+            for (int i = 0; i < reps; i++) {
+                DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
+                IppPacket.read(in);
+                in.close();
+            }
+            System.out.println(((System.nanoTime() - nanos)/1000/reps) + "us for each rx of " + reps + " of " +
+                    binFile.getName() + " (" + bytes.length + " bytes): ");
+        }
+    }
 }

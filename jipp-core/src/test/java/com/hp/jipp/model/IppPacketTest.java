@@ -1,5 +1,7 @@
 package com.hp.jipp.model;
 
+import com.hp.jipp.encoding.*;
+import com.hp.jipp.pwg.Operation;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -14,15 +16,7 @@ import java.util.List;
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
-import com.hp.jipp.encoding.Attribute;
-import com.hp.jipp.encoding.AttributeGroup;
-import com.hp.jipp.encoding.OctetStringType;
-import com.hp.jipp.encoding.StringType;
-import com.hp.jipp.encoding.Tag;
-
 import static com.hp.jipp.encoding.Cycler.*;
-
-import kotlin.text.Charsets;
 
 public class IppPacketTest {
     @Rule
@@ -70,7 +64,7 @@ public class IppPacketTest {
                 (byte) 0x09,
         };
         exception.expect(EOFException.class);
-        IppPacket.parse(new ByteArrayInputStream(in));
+        IppPacket.read(new ByteArrayInputStream(in));
     }
 
     @Test
@@ -115,8 +109,8 @@ public class IppPacketTest {
 
     @Test
     public void writeSingleAttributePacket() throws IOException {
-        Attribute<byte[]> simpleAttribute = new OctetStringType(Tag.charset, "attributes-charset")
-                .of("us-ascii".getBytes(Charsets.UTF_8));
+        Attribute<String> simpleAttribute = new StringType(Tag.charset, "attributes-charset")
+                .of("us-ascii");
 
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, simpleAttribute));
@@ -169,21 +163,22 @@ public class IppPacketTest {
                 (byte) 0x03,
         };
 
-        IppPacket.parse(new ByteArrayInputStream(bytes));
+        IppPacket.read(new ByteArrayInputStream(bytes));
     }
 
 
     @Test
     public void readSingleAttributePacket() throws IOException {
-        Attribute<String> stringAttribute = new StringType(Tag.charset, "attributes-charset")
-                .of("us-ascii");
-        packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
-                groupOf(Tag.operationAttributes, stringAttribute));
-        packet = cycle(packet);
+        StringType attributesCharsetType = new StringType(Tag.charset, "attributes-charset");
+        Attribute<String> attributesCharset = attributesCharsetType.of("us-ascii");
+        IppPacket original = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
+                groupOf(Tag.operationAttributes, attributesCharset));
+        packet = cycle(original);
+
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
-        assertEquals(Tag.charset, readAttribute.getValueTag());
-        assertEquals("us-ascii", readAttribute.get(0));
+        assertEquals(new OtherString(Tag.charset, "us-ascii"), readAttribute.getValue());
+        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharsetType));
     }
 
     @Test
@@ -204,7 +199,7 @@ public class IppPacketTest {
                 (byte) 0x06,
                 (byte) 0x07,
                 (byte) 0x01,
-                (byte) 0x47,
+                (byte) 0x47, // charset tag
                 (byte) 0x00,
                 (byte) 0x12,
                 'a', 't', 't', 'r', 'i', 'b', 'u', 't', 'e', 's', '-',
@@ -233,7 +228,7 @@ public class IppPacketTest {
         assertEquals(777, packet.getRequestId());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
         Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Types.attributesCharset);
-        assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.getValues());
+        assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.strings());
     }
 
     @Test
@@ -276,7 +271,7 @@ public class IppPacketTest {
 
         // Wrong attr
         assertEquals(Arrays.asList("us-ascii", "utf-8"),
-                packet.getValues(Tag.operationAttributes, Types.attributesCharset));
+                packet.getStrings(Tag.operationAttributes, Types.attributesCharset));
 
         // All good!
         assertEquals(Collections.emptyList(),

@@ -3,21 +3,27 @@
 
 package com.hp.jipp.encoding
 
-import java.io.IOException
+import com.hp.jipp.util.ParseError
 import java.net.URI
 
-/** An [AttributeType] for [URI] attributes */
-open class UriType(tag: Tag, override val name: String) : AttributeType<URI>(Encoder, tag) {
-    companion object Encoder : SimpleEncoder<URI>("URI") {
-        @Throws(IOException::class)
-        override fun writeValue(out: IppOutputStream, value: URI) {
-            StringType.Encoder.writeValue(out, value.toString())
-        }
+/** An attribute type for `uri` attributes. */
+open class UriType(override val name: String) : AttributeType<URI> {
+    override fun coerce(value: Any) =
+        value as? URI
 
-        @Throws(IOException::class)
-        override fun readValue(input: IppInputStream, valueTag: Tag) =
-            URI.create(StringType.Encoder.readValue(input, valueTag))!!
+    override fun toString() =
+        "UriType($name)"
 
-        override fun valid(valueTag: Tag) = valueTag === Tag.uri
+    companion object {
+        val codec = AttributeGroup.codec<URI>(Tag.uri, {
+            val uriString = readString()
+            try {
+                URI.create(uriString)
+            } catch (e: IllegalArgumentException) {
+                throw ParseError("Could not parse URI $uriString", e)
+            }
+        }, {
+            writeString(it.toString())
+        })
     }
 }
