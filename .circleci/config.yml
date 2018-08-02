@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-      
+
     working_directory: ~/repo
 
     environment:
@@ -34,7 +34,7 @@ jobs:
           - v1-dependencies-
 
       # Build
-      - run: gradle dependencies build graphDeps dokka
+      - run: gradle dependencies check graphDeps dokka
 
       # Upload coverage report
       - run: bash <(curl -s https://codecov.io/bash)
