@@ -3,7 +3,7 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute collection in its raw, untyped form */
+/** An attribute collection in its raw, untyped form. */
 data class UntypedCollection(override val attributes: List<Attribute<*>>) : AttributeCollection {
     constructor(vararg attributes: Attribute<*>) : this(attributes.toList())
 

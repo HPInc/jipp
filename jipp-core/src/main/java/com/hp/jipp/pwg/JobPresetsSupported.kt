@@ -17,20 +17,18 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobPresetsSupported
 @JvmOverloads constructor(
     /** May contain any keyword from [PresetName] or a name. */
-    val presetName: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var presetName: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            presetName?.let { Members.presetName.of(it) }
+        listOfNotNull(
+            presetName?.let { Types.presetName.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobPresetsSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobPresetsSupported>(JobPresetsSupported)
 
     /** All member names as strings. */
     object Name {
@@ -38,30 +36,16 @@ data class JobPresetsSupported
         const val presetName = "preset-name"
     }
 
-    /** Builder for immutable [JobPresetsSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobPresetsSupported) : this() {
-            presetName = source.presetName
-        }
-        /** May contain any keyword from [PresetName] or a name. */
-        var presetName: String? = null
-
-        /** Return a new [JobPresetsSupported] object containing all values initialized in this builder. */
-        fun build() = JobPresetsSupported(
-            presetName
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val presetName = KeywordType(Name.presetName)
     }
 
-    companion object Members : AttributeCollection.Converter<JobPresetsSupported> {
+    /** Defines types for each member of [JobPresetsSupported] */
+    companion object : AttributeCollection.Converter<JobPresetsSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobPresetsSupported =
             JobPresetsSupported(
-                extractOne(attributes, presetName),
-                _encoded = attributes)
-        /**
-         * "preset-name" member type.
-         * May contain any keyword from [PresetName] or a name.
-         */
-        @JvmField val presetName = KeywordType(Name.presetName)
+                extractOne(attributes, Types.presetName)
+            )
     }
 }

@@ -17,25 +17,23 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class PrinterXriSupported
 @JvmOverloads constructor(
     /** May contain any keyword from [XriAuthenticationSupported]. */
-    val xriAuthentication: String? = null,
+    var xriAuthentication: String? = null,
     /** May contain any keyword from [XriSecuritySupported]. */
-    val xriSecurity: String? = null,
-    val xriUri: java.net.URI? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var xriSecurity: String? = null,
+    var xriUri: java.net.URI? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            xriAuthentication?.let { Members.xriAuthentication.of(it) },
-            xriSecurity?.let { Members.xriSecurity.of(it) },
-            xriUri?.let { Members.xriUri.of(it) }
+        listOfNotNull(
+            xriAuthentication?.let { Types.xriAuthentication.of(it) },
+            xriSecurity?.let { Types.xriSecurity.of(it) },
+            xriUri?.let { Types.xriUri.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterXriSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PrinterXriSupported>(PrinterXriSupported)
 
     /** All member names as strings. */
     object Name {
@@ -47,48 +45,20 @@ data class PrinterXriSupported
         const val xriUri = "xri-uri"
     }
 
-    /** Builder for immutable [PrinterXriSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PrinterXriSupported) : this() {
-            xriAuthentication = source.xriAuthentication
-            xriSecurity = source.xriSecurity
-            xriUri = source.xriUri
-        }
-        /** May contain any keyword from [XriAuthenticationSupported]. */
-        var xriAuthentication: String? = null
-        /** May contain any keyword from [XriSecuritySupported]. */
-        var xriSecurity: String? = null
-        var xriUri: java.net.URI? = null
-
-        /** Return a new [PrinterXriSupported] object containing all values initialized in this builder. */
-        fun build() = PrinterXriSupported(
-            xriAuthentication,
-            xriSecurity,
-            xriUri
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val xriAuthentication = KeywordType(Name.xriAuthentication)
+        val xriSecurity = KeywordType(Name.xriSecurity)
+        val xriUri = UriType(Name.xriUri)
     }
 
-    companion object Members : AttributeCollection.Converter<PrinterXriSupported> {
+    /** Defines types for each member of [PrinterXriSupported] */
+    companion object : AttributeCollection.Converter<PrinterXriSupported> {
         override fun convert(attributes: List<Attribute<*>>): PrinterXriSupported =
             PrinterXriSupported(
-                extractOne(attributes, xriAuthentication),
-                extractOne(attributes, xriSecurity),
-                extractOne(attributes, xriUri),
-                _encoded = attributes)
-        /**
-         * "xri-authentication" member type.
-         * May contain any keyword from [XriAuthenticationSupported].
-         */
-        @JvmField val xriAuthentication = KeywordType(Name.xriAuthentication)
-        /**
-         * "xri-security" member type.
-         * May contain any keyword from [XriSecuritySupported].
-         */
-        @JvmField val xriSecurity = KeywordType(Name.xriSecurity)
-        /**
-         * "xri-uri" member type.
-         */
-        @JvmField val xriUri = UriType(Name.xriUri)
+                extractOne(attributes, Types.xriAuthentication),
+                extractOne(attributes, Types.xriSecurity),
+                extractOne(attributes, Types.xriUri)
+            )
     }
 }

@@ -16,22 +16,20 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class PrinterIccProfiles
 @JvmOverloads constructor(
-    val profileName: String? = null,
-    val profileUrl: java.net.URI? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var profileName: String? = null,
+    var profileUrl: java.net.URI? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            profileName?.let { Members.profileName.of(it) },
-            profileUrl?.let { Members.profileUrl.of(it) }
+        listOfNotNull(
+            profileName?.let { Types.profileName.of(it) },
+            profileUrl?.let { Types.profileUrl.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterIccProfiles>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PrinterIccProfiles>(PrinterIccProfiles)
 
     /** All member names as strings. */
     object Name {
@@ -41,36 +39,18 @@ data class PrinterIccProfiles
         const val profileUrl = "profile-url"
     }
 
-    /** Builder for immutable [PrinterIccProfiles] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PrinterIccProfiles) : this() {
-            profileName = source.profileName
-            profileUrl = source.profileUrl
-        }
-        var profileName: String? = null
-        var profileUrl: java.net.URI? = null
-
-        /** Return a new [PrinterIccProfiles] object containing all values initialized in this builder. */
-        fun build() = PrinterIccProfiles(
-            profileName,
-            profileUrl
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val profileName = NameType(Name.profileName)
+        val profileUrl = UriType(Name.profileUrl)
     }
 
-    companion object Members : AttributeCollection.Converter<PrinterIccProfiles> {
+    /** Defines types for each member of [PrinterIccProfiles] */
+    companion object : AttributeCollection.Converter<PrinterIccProfiles> {
         override fun convert(attributes: List<Attribute<*>>): PrinterIccProfiles =
             PrinterIccProfiles(
-                extractOne(attributes, profileName)?.value,
-                extractOne(attributes, profileUrl),
-                _encoded = attributes)
-        /**
-         * "profile-name" member type.
-         */
-        @JvmField val profileName = NameType(Name.profileName)
-        /**
-         * "profile-url" member type.
-         */
-        @JvmField val profileUrl = UriType(Name.profileUrl)
+                extractOne(attributes, Types.profileName)?.value,
+                extractOne(attributes, Types.profileUrl)
+            )
     }
 }

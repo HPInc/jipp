@@ -50,6 +50,14 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             type.coerce(it)
         }
 
+    /** Return the first value of the attribute matching [type]. */
+    fun <T : Any> getValue(type: AttributeType<T>): T? =
+        get(type)?.value
+
+    /** Return all values of the attribute matching [type]. */
+    fun <T : Any> getValues(type: AttributeType<T>): List<T> =
+        get(type)?.values ?: listOf()
+
     /** Write this group to the [IppOutputStream] */
     @Throws(IOException::class)
     fun write(output: IppOutputStream) {

@@ -18,28 +18,26 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobAccountingSheets
 @JvmOverloads constructor(
     /** May contain any keyword from [OutputBin] or a name. */
-    val jobAccountingOutputBin: String? = null,
+    var jobAccountingOutputBin: String? = null,
     /** May contain any keyword from [JobAccountingSheetsType] or a name. */
-    val jobAccountingSheetsType: String? = null,
+    var jobAccountingSheetsType: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            jobAccountingOutputBin?.let { Members.jobAccountingOutputBin.of(it) },
-            jobAccountingSheetsType?.let { Members.jobAccountingSheetsType.of(it) },
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) }
+        listOfNotNull(
+            jobAccountingOutputBin?.let { Types.jobAccountingOutputBin.of(it) },
+            jobAccountingSheetsType?.let { Types.jobAccountingSheetsType.of(it) },
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobAccountingSheets>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobAccountingSheets>(JobAccountingSheets)
 
     /** All member names as strings. */
     object Name {
@@ -53,58 +51,22 @@ data class JobAccountingSheets
         const val mediaCol = "media-col"
     }
 
-    /** Builder for immutable [JobAccountingSheets] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobAccountingSheets) : this() {
-            jobAccountingOutputBin = source.jobAccountingOutputBin
-            jobAccountingSheetsType = source.jobAccountingSheetsType
-            media = source.media
-            mediaCol = source.mediaCol
-        }
-        /** May contain any keyword from [OutputBin] or a name. */
-        var jobAccountingOutputBin: String? = null
-        /** May contain any keyword from [JobAccountingSheetsType] or a name. */
-        var jobAccountingSheetsType: String? = null
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-
-        /** Return a new [JobAccountingSheets] object containing all values initialized in this builder. */
-        fun build() = JobAccountingSheets(
-            jobAccountingOutputBin,
-            jobAccountingSheetsType,
-            media,
-            mediaCol
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val jobAccountingOutputBin = KeywordType(Name.jobAccountingOutputBin)
+        val jobAccountingSheetsType = KeywordType(Name.jobAccountingSheetsType)
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 
-    companion object Members : AttributeCollection.Converter<JobAccountingSheets> {
+    /** Defines types for each member of [JobAccountingSheets] */
+    companion object : AttributeCollection.Converter<JobAccountingSheets> {
         override fun convert(attributes: List<Attribute<*>>): JobAccountingSheets =
             JobAccountingSheets(
-                extractOne(attributes, jobAccountingOutputBin),
-                extractOne(attributes, jobAccountingSheetsType),
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                _encoded = attributes)
-        /**
-         * "job-accounting-output-bin" member type.
-         * May contain any keyword from [OutputBin] or a name.
-         */
-        @JvmField val jobAccountingOutputBin = KeywordType(Name.jobAccountingOutputBin)
-        /**
-         * "job-accounting-sheets-type" member type.
-         * May contain any keyword from [JobAccountingSheetsType] or a name.
-         */
-        @JvmField val jobAccountingSheetsType = KeywordType(Name.jobAccountingSheetsType)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
+                extractOne(attributes, Types.jobAccountingOutputBin),
+                extractOne(attributes, Types.jobAccountingSheetsType),
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol)
+            )
     }
 }

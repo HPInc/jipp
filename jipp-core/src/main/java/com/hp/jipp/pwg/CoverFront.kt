@@ -18,25 +18,23 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class CoverFront
 @JvmOverloads constructor(
     /** May contain any keyword from [CoverType]. */
-    val coverType: String? = null,
+    var coverType: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            coverType?.let { Members.coverType.of(it) },
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) }
+        listOfNotNull(
+            coverType?.let { Types.coverType.of(it) },
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<CoverFront>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<CoverFront>(CoverFront)
 
     /** All member names as strings. */
     object Name {
@@ -48,48 +46,20 @@ data class CoverFront
         const val mediaCol = "media-col"
     }
 
-    /** Builder for immutable [CoverFront] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: CoverFront) : this() {
-            coverType = source.coverType
-            media = source.media
-            mediaCol = source.mediaCol
-        }
-        /** May contain any keyword from [CoverType]. */
-        var coverType: String? = null
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-
-        /** Return a new [CoverFront] object containing all values initialized in this builder. */
-        fun build() = CoverFront(
-            coverType,
-            media,
-            mediaCol
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val coverType = KeywordType(Name.coverType)
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 
-    companion object Members : AttributeCollection.Converter<CoverFront> {
+    /** Defines types for each member of [CoverFront] */
+    companion object : AttributeCollection.Converter<CoverFront> {
         override fun convert(attributes: List<Attribute<*>>): CoverFront =
             CoverFront(
-                extractOne(attributes, coverType),
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                _encoded = attributes)
-        /**
-         * "cover-type" member type.
-         * May contain any keyword from [CoverType].
-         */
-        @JvmField val coverType = KeywordType(Name.coverType)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
+                extractOne(attributes, Types.coverType),
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol)
+            )
     }
 }

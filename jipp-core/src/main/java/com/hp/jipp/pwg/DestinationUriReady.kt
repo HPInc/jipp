@@ -16,39 +16,37 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationUriReady
 @JvmOverloads constructor(
-    val destinationAttributes: List<UntypedCollection>? = null,
-    val destinationAttributesSupported: List<String>? = null,
-    val destinationInfo: String? = null,
-    val destinationIsDirectory: Boolean? = null,
+    var destinationAttributes: List<UntypedCollection>? = null,
+    var destinationAttributesSupported: List<String>? = null,
+    var destinationInfo: String? = null,
+    var destinationIsDirectory: Boolean? = null,
     /** May contain any keyword from [DestinationAccesses.Name]. */
-    val destinationMandatoryAccessAttributes: List<String>? = null,
-    val destinationName: String? = null,
-    val destinationOauthScope: List<ByteArray>? = null,
-    val destinationOauthToken: List<ByteArray>? = null,
-    val destinationOauthUri: java.net.URI? = null,
-    val destinationUri: java.net.URI? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var destinationMandatoryAccessAttributes: List<String>? = null,
+    var destinationName: String? = null,
+    var destinationOauthScope: List<ByteArray>? = null,
+    var destinationOauthToken: List<ByteArray>? = null,
+    var destinationOauthUri: java.net.URI? = null,
+    var destinationUri: java.net.URI? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            destinationAttributes?.let { Members.destinationAttributes.of(it) },
-            destinationAttributesSupported?.let { Members.destinationAttributesSupported.of(it) },
-            destinationInfo?.let { Members.destinationInfo.of(it) },
-            destinationIsDirectory?.let { Members.destinationIsDirectory.of(it) },
-            destinationMandatoryAccessAttributes?.let { Members.destinationMandatoryAccessAttributes.of(it) },
-            destinationName?.let { Members.destinationName.of(it) },
-            destinationOauthScope?.let { Members.destinationOauthScope.of(it) },
-            destinationOauthToken?.let { Members.destinationOauthToken.of(it) },
-            destinationOauthUri?.let { Members.destinationOauthUri.of(it) },
-            destinationUri?.let { Members.destinationUri.of(it) }
+        listOfNotNull(
+            destinationAttributes?.let { Types.destinationAttributes.of(it) },
+            destinationAttributesSupported?.let { Types.destinationAttributesSupported.of(it) },
+            destinationInfo?.let { Types.destinationInfo.of(it) },
+            destinationIsDirectory?.let { Types.destinationIsDirectory.of(it) },
+            destinationMandatoryAccessAttributes?.let { Types.destinationMandatoryAccessAttributes.of(it) },
+            destinationName?.let { Types.destinationName.of(it) },
+            destinationOauthScope?.let { Types.destinationOauthScope.of(it) },
+            destinationOauthToken?.let { Types.destinationOauthToken.of(it) },
+            destinationOauthUri?.let { Types.destinationOauthUri.of(it) },
+            destinationUri?.let { Types.destinationUri.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationUriReady>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<DestinationUriReady>(DestinationUriReady)
 
     /** All member names as strings. */
     object Name {
@@ -74,102 +72,34 @@ data class DestinationUriReady
         const val destinationUri = "destination-uri"
     }
 
-    /** Builder for immutable [DestinationUriReady] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: DestinationUriReady) : this() {
-            destinationAttributes = source.destinationAttributes
-            destinationAttributesSupported = source.destinationAttributesSupported
-            destinationInfo = source.destinationInfo
-            destinationIsDirectory = source.destinationIsDirectory
-            destinationMandatoryAccessAttributes = source.destinationMandatoryAccessAttributes
-            destinationName = source.destinationName
-            destinationOauthScope = source.destinationOauthScope
-            destinationOauthToken = source.destinationOauthToken
-            destinationOauthUri = source.destinationOauthUri
-            destinationUri = source.destinationUri
-        }
-        var destinationAttributes: List<UntypedCollection>? = null
-        var destinationAttributesSupported: List<String>? = null
-        var destinationInfo: String? = null
-        var destinationIsDirectory: Boolean? = null
-        /** May contain any keyword from [DestinationAccesses.Name]. */
-        var destinationMandatoryAccessAttributes: List<String>? = null
-        var destinationName: String? = null
-        var destinationOauthScope: List<ByteArray>? = null
-        var destinationOauthToken: List<ByteArray>? = null
-        var destinationOauthUri: java.net.URI? = null
-        var destinationUri: java.net.URI? = null
-
-        /** Return a new [DestinationUriReady] object containing all values initialized in this builder. */
-        fun build() = DestinationUriReady(
-            destinationAttributes,
-            destinationAttributesSupported,
-            destinationInfo,
-            destinationIsDirectory,
-            destinationMandatoryAccessAttributes,
-            destinationName,
-            destinationOauthScope,
-            destinationOauthToken,
-            destinationOauthUri,
-            destinationUri
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
+        val destinationAttributesSupported = KeywordType(Name.destinationAttributesSupported)
+        val destinationInfo = TextType(Name.destinationInfo)
+        val destinationIsDirectory = BooleanType(Name.destinationIsDirectory)
+        val destinationMandatoryAccessAttributes = KeywordType(Name.destinationMandatoryAccessAttributes)
+        val destinationName = NameType(Name.destinationName)
+        val destinationOauthScope = OctetsType(Name.destinationOauthScope)
+        val destinationOauthToken = OctetsType(Name.destinationOauthToken)
+        val destinationOauthUri = UriType(Name.destinationOauthUri)
+        val destinationUri = UriType(Name.destinationUri)
     }
 
-    companion object Members : AttributeCollection.Converter<DestinationUriReady> {
+    /** Defines types for each member of [DestinationUriReady] */
+    companion object : AttributeCollection.Converter<DestinationUriReady> {
         override fun convert(attributes: List<Attribute<*>>): DestinationUriReady =
             DestinationUriReady(
-                extractAll(attributes, destinationAttributes),
-                extractAll(attributes, destinationAttributesSupported),
-                extractOne(attributes, destinationInfo)?.value,
-                extractOne(attributes, destinationIsDirectory),
-                extractAll(attributes, destinationMandatoryAccessAttributes),
-                extractOne(attributes, destinationName)?.value,
-                extractAll(attributes, destinationOauthScope),
-                extractAll(attributes, destinationOauthToken),
-                extractOne(attributes, destinationOauthUri),
-                extractOne(attributes, destinationUri),
-                _encoded = attributes)
-        /**
-         * "destination-attributes" member type.
-         */
-        @JvmField val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
-        /**
-         * "destination-attributes-supported" member type.
-         */
-        @JvmField val destinationAttributesSupported = KeywordType(Name.destinationAttributesSupported)
-        /**
-         * "destination-info" member type.
-         */
-        @JvmField val destinationInfo = TextType(Name.destinationInfo)
-        /**
-         * "destination-is-directory" member type.
-         */
-        @JvmField val destinationIsDirectory = BooleanType(Name.destinationIsDirectory)
-        /**
-         * "destination-mandatory-access-attributes" member type.
-         * May contain any keyword from [DestinationAccesses.Name].
-         */
-        @JvmField val destinationMandatoryAccessAttributes = KeywordType(Name.destinationMandatoryAccessAttributes)
-        /**
-         * "destination-name" member type.
-         */
-        @JvmField val destinationName = NameType(Name.destinationName)
-        /**
-         * "destination-oauth-scope" member type.
-         */
-        @JvmField val destinationOauthScope = OctetsType(Name.destinationOauthScope)
-        /**
-         * "destination-oauth-token" member type.
-         */
-        @JvmField val destinationOauthToken = OctetsType(Name.destinationOauthToken)
-        /**
-         * "destination-oauth-uri" member type.
-         */
-        @JvmField val destinationOauthUri = UriType(Name.destinationOauthUri)
-        /**
-         * "destination-uri" member type.
-         */
-        @JvmField val destinationUri = UriType(Name.destinationUri)
+                extractAll(attributes, Types.destinationAttributes),
+                extractAll(attributes, Types.destinationAttributesSupported),
+                extractOne(attributes, Types.destinationInfo)?.value,
+                extractOne(attributes, Types.destinationIsDirectory),
+                extractAll(attributes, Types.destinationMandatoryAccessAttributes),
+                extractOne(attributes, Types.destinationName)?.value,
+                extractAll(attributes, Types.destinationOauthScope),
+                extractAll(attributes, Types.destinationOauthToken),
+                extractOne(attributes, Types.destinationOauthUri),
+                extractOne(attributes, Types.destinationUri)
+            )
     }
 }

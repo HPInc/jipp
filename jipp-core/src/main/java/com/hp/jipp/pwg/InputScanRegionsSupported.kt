@@ -16,26 +16,24 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class InputScanRegionsSupported
 @JvmOverloads constructor(
-    val xDimension: IntRange? = null,
-    val xOrigin: IntRange? = null,
-    val yDimension: IntRange? = null,
-    val yOrigin: IntRange? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var xDimension: IntRange? = null,
+    var xOrigin: IntRange? = null,
+    var yDimension: IntRange? = null,
+    var yOrigin: IntRange? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            xDimension?.let { Members.xDimension.of(it) },
-            xOrigin?.let { Members.xOrigin.of(it) },
-            yDimension?.let { Members.yDimension.of(it) },
-            yOrigin?.let { Members.yOrigin.of(it) }
+        listOfNotNull(
+            xDimension?.let { Types.xDimension.of(it) },
+            xOrigin?.let { Types.xOrigin.of(it) },
+            yDimension?.let { Types.yDimension.of(it) },
+            yOrigin?.let { Types.yOrigin.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<InputScanRegionsSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<InputScanRegionsSupported>(InputScanRegionsSupported)
 
     /** All member names as strings. */
     object Name {
@@ -49,52 +47,22 @@ data class InputScanRegionsSupported
         const val yOrigin = "y-origin"
     }
 
-    /** Builder for immutable [InputScanRegionsSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: InputScanRegionsSupported) : this() {
-            xDimension = source.xDimension
-            xOrigin = source.xOrigin
-            yDimension = source.yDimension
-            yOrigin = source.yOrigin
-        }
-        var xDimension: IntRange? = null
-        var xOrigin: IntRange? = null
-        var yDimension: IntRange? = null
-        var yOrigin: IntRange? = null
-
-        /** Return a new [InputScanRegionsSupported] object containing all values initialized in this builder. */
-        fun build() = InputScanRegionsSupported(
-            xDimension,
-            xOrigin,
-            yDimension,
-            yOrigin
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val xDimension = IntRangeType(Name.xDimension)
+        val xOrigin = IntRangeType(Name.xOrigin)
+        val yDimension = IntRangeType(Name.yDimension)
+        val yOrigin = IntRangeType(Name.yOrigin)
     }
 
-    companion object Members : AttributeCollection.Converter<InputScanRegionsSupported> {
+    /** Defines types for each member of [InputScanRegionsSupported] */
+    companion object : AttributeCollection.Converter<InputScanRegionsSupported> {
         override fun convert(attributes: List<Attribute<*>>): InputScanRegionsSupported =
             InputScanRegionsSupported(
-                extractOne(attributes, xDimension),
-                extractOne(attributes, xOrigin),
-                extractOne(attributes, yDimension),
-                extractOne(attributes, yOrigin),
-                _encoded = attributes)
-        /**
-         * "x-dimension" member type.
-         */
-        @JvmField val xDimension = IntRangeType(Name.xDimension)
-        /**
-         * "x-origin" member type.
-         */
-        @JvmField val xOrigin = IntRangeType(Name.xOrigin)
-        /**
-         * "y-dimension" member type.
-         */
-        @JvmField val yDimension = IntRangeType(Name.yDimension)
-        /**
-         * "y-origin" member type.
-         */
-        @JvmField val yOrigin = IntRangeType(Name.yOrigin)
+                extractOne(attributes, Types.xDimension),
+                extractOne(attributes, Types.xOrigin),
+                extractOne(attributes, Types.yDimension),
+                extractOne(attributes, Types.yOrigin)
+            )
     }
 }

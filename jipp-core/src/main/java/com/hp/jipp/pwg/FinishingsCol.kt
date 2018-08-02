@@ -17,49 +17,47 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class FinishingsCol
 @JvmOverloads constructor(
-    val baling: Baling? = null,
-    val binding: Binding? = null,
-    val coating: Coating? = null,
-    val covering: Covering? = null,
+    var baling: Baling? = null,
+    var binding: Binding? = null,
+    var coating: Coating? = null,
+    var covering: Covering? = null,
     /** May contain any keyword from [FinishingTemplate] or a name. */
-    val finishingTemplate: String? = null,
-    val folding: List<Folding>? = null,
+    var finishingTemplate: String? = null,
+    var folding: List<Folding>? = null,
     /** May contain any keyword from [ImpositionTemplate] or a name. */
-    val impositionTemplate: String? = null,
-    val laminating: Laminating? = null,
-    val mediaSheetsSupported: IntRange? = null,
-    val mediaSize: MediaSize? = null,
+    var impositionTemplate: String? = null,
+    var laminating: Laminating? = null,
+    var mediaSheetsSupported: IntRange? = null,
+    var mediaSize: MediaSize? = null,
     /** May contain any keyword from [Media]. */
-    val mediaSizeName: String? = null,
-    val punching: Punching? = null,
-    val stitching: Stitching? = null,
-    val trimming: List<Trimming>? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var mediaSizeName: String? = null,
+    var punching: Punching? = null,
+    var stitching: Stitching? = null,
+    var trimming: List<Trimming>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            baling?.let { Members.baling.of(it) },
-            binding?.let { Members.binding.of(it) },
-            coating?.let { Members.coating.of(it) },
-            covering?.let { Members.covering.of(it) },
-            finishingTemplate?.let { Members.finishingTemplate.of(it) },
-            folding?.let { Members.folding.of(it) },
-            impositionTemplate?.let { Members.impositionTemplate.of(it) },
-            laminating?.let { Members.laminating.of(it) },
-            mediaSheetsSupported?.let { Members.mediaSheetsSupported.of(it) },
-            mediaSize?.let { Members.mediaSize.of(it) },
-            mediaSizeName?.let { Members.mediaSizeName.of(it) },
-            punching?.let { Members.punching.of(it) },
-            stitching?.let { Members.stitching.of(it) },
-            trimming?.let { Members.trimming.of(it) }
+        listOfNotNull(
+            baling?.let { Types.baling.of(it) },
+            binding?.let { Types.binding.of(it) },
+            coating?.let { Types.coating.of(it) },
+            covering?.let { Types.covering.of(it) },
+            finishingTemplate?.let { Types.finishingTemplate.of(it) },
+            folding?.let { Types.folding.of(it) },
+            impositionTemplate?.let { Types.impositionTemplate.of(it) },
+            laminating?.let { Types.laminating.of(it) },
+            mediaSheetsSupported?.let { Types.mediaSheetsSupported.of(it) },
+            mediaSize?.let { Types.mediaSize.of(it) },
+            mediaSizeName?.let { Types.mediaSizeName.of(it) },
+            punching?.let { Types.punching.of(it) },
+            stitching?.let { Types.stitching.of(it) },
+            trimming?.let { Types.trimming.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<FinishingsCol>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<FinishingsCol>(FinishingsCol)
 
     /** All member names as strings. */
     object Name {
@@ -93,139 +91,43 @@ data class FinishingsCol
         const val trimming = "trimming"
     }
 
-    /** Builder for immutable [FinishingsCol] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: FinishingsCol) : this() {
-            baling = source.baling
-            binding = source.binding
-            coating = source.coating
-            covering = source.covering
-            finishingTemplate = source.finishingTemplate
-            folding = source.folding
-            impositionTemplate = source.impositionTemplate
-            laminating = source.laminating
-            mediaSheetsSupported = source.mediaSheetsSupported
-            mediaSize = source.mediaSize
-            mediaSizeName = source.mediaSizeName
-            punching = source.punching
-            stitching = source.stitching
-            trimming = source.trimming
-        }
-        var baling: Baling? = null
-        var binding: Binding? = null
-        var coating: Coating? = null
-        var covering: Covering? = null
-        /** May contain any keyword from [FinishingTemplate] or a name. */
-        var finishingTemplate: String? = null
-        var folding: List<Folding>? = null
-        /** May contain any keyword from [ImpositionTemplate] or a name. */
-        var impositionTemplate: String? = null
-        var laminating: Laminating? = null
-        var mediaSheetsSupported: IntRange? = null
-        var mediaSize: MediaSize? = null
-        /** May contain any keyword from [Media]. */
-        var mediaSizeName: String? = null
-        var punching: Punching? = null
-        var stitching: Stitching? = null
-        var trimming: List<Trimming>? = null
-
-        /** Return a new [FinishingsCol] object containing all values initialized in this builder. */
-        fun build() = FinishingsCol(
-            baling,
-            binding,
-            coating,
-            covering,
-            finishingTemplate,
-            folding,
-            impositionTemplate,
-            laminating,
-            mediaSheetsSupported,
-            mediaSize,
-            mediaSizeName,
-            punching,
-            stitching,
-            trimming
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val baling = Baling.Type(Name.baling)
+        val binding = Binding.Type(Name.binding)
+        val coating = Coating.Type(Name.coating)
+        val covering = Covering.Type(Name.covering)
+        val finishingTemplate = KeywordType(Name.finishingTemplate)
+        val folding = Folding.Type(Name.folding)
+        val impositionTemplate = KeywordType(Name.impositionTemplate)
+        val laminating = Laminating.Type(Name.laminating)
+        val mediaSheetsSupported = IntRangeType(Name.mediaSheetsSupported)
+        val mediaSize = MediaSize.Type(Name.mediaSize)
+        val mediaSizeName = KeywordType(Name.mediaSizeName)
+        val punching = Punching.Type(Name.punching)
+        val stitching = Stitching.Type(Name.stitching)
+        val trimming = Trimming.Type(Name.trimming)
     }
 
-    companion object Members : AttributeCollection.Converter<FinishingsCol> {
+    /** Defines types for each member of [FinishingsCol] */
+    companion object : AttributeCollection.Converter<FinishingsCol> {
         override fun convert(attributes: List<Attribute<*>>): FinishingsCol =
             FinishingsCol(
-                extractOne(attributes, baling),
-                extractOne(attributes, binding),
-                extractOne(attributes, coating),
-                extractOne(attributes, covering),
-                extractOne(attributes, finishingTemplate),
-                extractAll(attributes, folding),
-                extractOne(attributes, impositionTemplate),
-                extractOne(attributes, laminating),
-                extractOne(attributes, mediaSheetsSupported),
-                extractOne(attributes, mediaSize),
-                extractOne(attributes, mediaSizeName),
-                extractOne(attributes, punching),
-                extractOne(attributes, stitching),
-                extractAll(attributes, trimming),
-                _encoded = attributes)
-        /**
-         * "baling" member type.
-         */
-        @JvmField val baling = Baling.Type(Name.baling)
-        /**
-         * "binding" member type.
-         */
-        @JvmField val binding = Binding.Type(Name.binding)
-        /**
-         * "coating" member type.
-         */
-        @JvmField val coating = Coating.Type(Name.coating)
-        /**
-         * "covering" member type.
-         */
-        @JvmField val covering = Covering.Type(Name.covering)
-        /**
-         * "finishing-template" member type.
-         * May contain any keyword from [FinishingTemplate] or a name.
-         */
-        @JvmField val finishingTemplate = KeywordType(Name.finishingTemplate)
-        /**
-         * "folding" member type.
-         */
-        @JvmField val folding = Folding.Type(Name.folding)
-        /**
-         * "imposition-template" member type.
-         * May contain any keyword from [ImpositionTemplate] or a name.
-         */
-        @JvmField val impositionTemplate = KeywordType(Name.impositionTemplate)
-        /**
-         * "laminating" member type.
-         */
-        @JvmField val laminating = Laminating.Type(Name.laminating)
-        /**
-         * "media-sheets-supported" member type.
-         */
-        @JvmField val mediaSheetsSupported = IntRangeType(Name.mediaSheetsSupported)
-        /**
-         * "media-size" member type.
-         */
-        @JvmField val mediaSize = MediaSize.Type(Name.mediaSize)
-        /**
-         * "media-size-name" member type.
-         * May contain any keyword from [Media].
-         */
-        @JvmField val mediaSizeName = KeywordType(Name.mediaSizeName)
-        /**
-         * "punching" member type.
-         */
-        @JvmField val punching = Punching.Type(Name.punching)
-        /**
-         * "stitching" member type.
-         */
-        @JvmField val stitching = Stitching.Type(Name.stitching)
-        /**
-         * "trimming" member type.
-         */
-        @JvmField val trimming = Trimming.Type(Name.trimming)
+                extractOne(attributes, Types.baling),
+                extractOne(attributes, Types.binding),
+                extractOne(attributes, Types.coating),
+                extractOne(attributes, Types.covering),
+                extractOne(attributes, Types.finishingTemplate),
+                extractAll(attributes, Types.folding),
+                extractOne(attributes, Types.impositionTemplate),
+                extractOne(attributes, Types.laminating),
+                extractOne(attributes, Types.mediaSheetsSupported),
+                extractOne(attributes, Types.mediaSize),
+                extractOne(attributes, Types.mediaSizeName),
+                extractOne(attributes, Types.punching),
+                extractOne(attributes, Types.stitching),
+                extractAll(attributes, Types.trimming)
+            )
     }
 
     /**
@@ -235,23 +137,21 @@ data class FinishingsCol
     data class Baling
     @JvmOverloads constructor(
         /** May contain any keyword from [BalingType] or a name. */
-        val balingType: String? = null,
+        var balingType: String? = null,
         /** May contain any keyword from [BalingWhen]. */
-        val balingWhen: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var balingWhen: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                balingType?.let { Members.balingType.of(it) },
-                balingWhen?.let { Members.balingWhen.of(it) }
+            listOfNotNull(
+                balingType?.let { Types.balingType.of(it) },
+                balingWhen?.let { Types.balingWhen.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Baling>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Baling>(Baling)
 
         /** All member names as strings. */
         object Name {
@@ -261,41 +161,19 @@ data class FinishingsCol
             const val balingWhen = "baling-when"
         }
 
-        /** Builder for immutable [Baling] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Baling) : this() {
-                balingType = source.balingType
-                balingWhen = source.balingWhen
-            }
-            /** May contain any keyword from [BalingType] or a name. */
-            var balingType: String? = null
-            /** May contain any keyword from [BalingWhen]. */
-            var balingWhen: String? = null
-
-            /** Return a new [Baling] object containing all values initialized in this builder. */
-            fun build() = Baling(
-                balingType,
-                balingWhen
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val balingType = KeywordType(Name.balingType)
+            val balingWhen = KeywordType(Name.balingWhen)
         }
 
-        companion object Members : AttributeCollection.Converter<Baling> {
+        /** Defines types for each member of [Baling] */
+        companion object : AttributeCollection.Converter<Baling> {
             override fun convert(attributes: List<Attribute<*>>): Baling =
                 Baling(
-                    extractOne(attributes, balingType),
-                    extractOne(attributes, balingWhen),
-                    _encoded = attributes)
-            /**
-             * "baling-type" member type.
-             * May contain any keyword from [BalingType] or a name.
-             */
-            @JvmField val balingType = KeywordType(Name.balingType)
-            /**
-             * "baling-when" member type.
-             * May contain any keyword from [BalingWhen].
-             */
-            @JvmField val balingWhen = KeywordType(Name.balingWhen)
+                    extractOne(attributes, Types.balingType),
+                    extractOne(attributes, Types.balingWhen)
+                )
         }
     }
 
@@ -306,23 +184,21 @@ data class FinishingsCol
     data class Binding
     @JvmOverloads constructor(
         /** May contain any keyword from [BindingReferenceEdge]. */
-        val bindingReferenceEdge: String? = null,
+        var bindingReferenceEdge: String? = null,
         /** May contain any keyword from [BindingType] or a name. */
-        val bindingType: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var bindingType: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                bindingReferenceEdge?.let { Members.bindingReferenceEdge.of(it) },
-                bindingType?.let { Members.bindingType.of(it) }
+            listOfNotNull(
+                bindingReferenceEdge?.let { Types.bindingReferenceEdge.of(it) },
+                bindingType?.let { Types.bindingType.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Binding>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Binding>(Binding)
 
         /** All member names as strings. */
         object Name {
@@ -332,41 +208,19 @@ data class FinishingsCol
             const val bindingType = "binding-type"
         }
 
-        /** Builder for immutable [Binding] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Binding) : this() {
-                bindingReferenceEdge = source.bindingReferenceEdge
-                bindingType = source.bindingType
-            }
-            /** May contain any keyword from [BindingReferenceEdge]. */
-            var bindingReferenceEdge: String? = null
-            /** May contain any keyword from [BindingType] or a name. */
-            var bindingType: String? = null
-
-            /** Return a new [Binding] object containing all values initialized in this builder. */
-            fun build() = Binding(
-                bindingReferenceEdge,
-                bindingType
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val bindingReferenceEdge = KeywordType(Name.bindingReferenceEdge)
+            val bindingType = KeywordType(Name.bindingType)
         }
 
-        companion object Members : AttributeCollection.Converter<Binding> {
+        /** Defines types for each member of [Binding] */
+        companion object : AttributeCollection.Converter<Binding> {
             override fun convert(attributes: List<Attribute<*>>): Binding =
                 Binding(
-                    extractOne(attributes, bindingReferenceEdge),
-                    extractOne(attributes, bindingType),
-                    _encoded = attributes)
-            /**
-             * "binding-reference-edge" member type.
-             * May contain any keyword from [BindingReferenceEdge].
-             */
-            @JvmField val bindingReferenceEdge = KeywordType(Name.bindingReferenceEdge)
-            /**
-             * "binding-type" member type.
-             * May contain any keyword from [BindingType] or a name.
-             */
-            @JvmField val bindingType = KeywordType(Name.bindingType)
+                    extractOne(attributes, Types.bindingReferenceEdge),
+                    extractOne(attributes, Types.bindingType)
+                )
         }
     }
 
@@ -377,23 +231,21 @@ data class FinishingsCol
     data class Coating
     @JvmOverloads constructor(
         /** May contain any keyword from [CoatingSides]. */
-        val coatingSides: String? = null,
+        var coatingSides: String? = null,
         /** May contain any keyword from [CoatingType] or a name. */
-        val coatingType: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var coatingType: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                coatingSides?.let { Members.coatingSides.of(it) },
-                coatingType?.let { Members.coatingType.of(it) }
+            listOfNotNull(
+                coatingSides?.let { Types.coatingSides.of(it) },
+                coatingType?.let { Types.coatingType.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Coating>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Coating>(Coating)
 
         /** All member names as strings. */
         object Name {
@@ -403,41 +255,19 @@ data class FinishingsCol
             const val coatingType = "coating-type"
         }
 
-        /** Builder for immutable [Coating] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Coating) : this() {
-                coatingSides = source.coatingSides
-                coatingType = source.coatingType
-            }
-            /** May contain any keyword from [CoatingSides]. */
-            var coatingSides: String? = null
-            /** May contain any keyword from [CoatingType] or a name. */
-            var coatingType: String? = null
-
-            /** Return a new [Coating] object containing all values initialized in this builder. */
-            fun build() = Coating(
-                coatingSides,
-                coatingType
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val coatingSides = KeywordType(Name.coatingSides)
+            val coatingType = KeywordType(Name.coatingType)
         }
 
-        companion object Members : AttributeCollection.Converter<Coating> {
+        /** Defines types for each member of [Coating] */
+        companion object : AttributeCollection.Converter<Coating> {
             override fun convert(attributes: List<Attribute<*>>): Coating =
                 Coating(
-                    extractOne(attributes, coatingSides),
-                    extractOne(attributes, coatingType),
-                    _encoded = attributes)
-            /**
-             * "coating-sides" member type.
-             * May contain any keyword from [CoatingSides].
-             */
-            @JvmField val coatingSides = KeywordType(Name.coatingSides)
-            /**
-             * "coating-type" member type.
-             * May contain any keyword from [CoatingType] or a name.
-             */
-            @JvmField val coatingType = KeywordType(Name.coatingType)
+                    extractOne(attributes, Types.coatingSides),
+                    extractOne(attributes, Types.coatingType)
+                )
         }
     }
 
@@ -448,20 +278,18 @@ data class FinishingsCol
     data class Covering
     @JvmOverloads constructor(
         /** May contain any keyword from [CoveringName] or a name. */
-        val coveringName: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var coveringName: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                coveringName?.let { Members.coveringName.of(it) }
+            listOfNotNull(
+                coveringName?.let { Types.coveringName.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Covering>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Covering>(Covering)
 
         /** All member names as strings. */
         object Name {
@@ -469,31 +297,17 @@ data class FinishingsCol
             const val coveringName = "covering-name"
         }
 
-        /** Builder for immutable [Covering] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Covering) : this() {
-                coveringName = source.coveringName
-            }
-            /** May contain any keyword from [CoveringName] or a name. */
-            var coveringName: String? = null
-
-            /** Return a new [Covering] object containing all values initialized in this builder. */
-            fun build() = Covering(
-                coveringName
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val coveringName = KeywordType(Name.coveringName)
         }
 
-        companion object Members : AttributeCollection.Converter<Covering> {
+        /** Defines types for each member of [Covering] */
+        companion object : AttributeCollection.Converter<Covering> {
             override fun convert(attributes: List<Attribute<*>>): Covering =
                 Covering(
-                    extractOne(attributes, coveringName),
-                    _encoded = attributes)
-            /**
-             * "covering-name" member type.
-             * May contain any keyword from [CoveringName] or a name.
-             */
-            @JvmField val coveringName = KeywordType(Name.coveringName)
+                    extractOne(attributes, Types.coveringName)
+                )
         }
     }
 
@@ -504,25 +318,23 @@ data class FinishingsCol
     data class Folding
     @JvmOverloads constructor(
         /** May contain any keyword from [FoldingDirection]. */
-        val foldingDirection: String? = null,
-        val foldingOffset: Int? = null,
+        var foldingDirection: String? = null,
+        var foldingOffset: Int? = null,
         /** May contain any keyword from [FoldingReferenceEdge]. */
-        val foldingReferenceEdge: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var foldingReferenceEdge: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                foldingDirection?.let { Members.foldingDirection.of(it) },
-                foldingOffset?.let { Members.foldingOffset.of(it) },
-                foldingReferenceEdge?.let { Members.foldingReferenceEdge.of(it) }
+            listOfNotNull(
+                foldingDirection?.let { Types.foldingDirection.of(it) },
+                foldingOffset?.let { Types.foldingOffset.of(it) },
+                foldingReferenceEdge?.let { Types.foldingReferenceEdge.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Folding>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Folding>(Folding)
 
         /** All member names as strings. */
         object Name {
@@ -534,49 +346,21 @@ data class FinishingsCol
             const val foldingReferenceEdge = "folding-reference-edge"
         }
 
-        /** Builder for immutable [Folding] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Folding) : this() {
-                foldingDirection = source.foldingDirection
-                foldingOffset = source.foldingOffset
-                foldingReferenceEdge = source.foldingReferenceEdge
-            }
-            /** May contain any keyword from [FoldingDirection]. */
-            var foldingDirection: String? = null
-            var foldingOffset: Int? = null
-            /** May contain any keyword from [FoldingReferenceEdge]. */
-            var foldingReferenceEdge: String? = null
-
-            /** Return a new [Folding] object containing all values initialized in this builder. */
-            fun build() = Folding(
-                foldingDirection,
-                foldingOffset,
-                foldingReferenceEdge
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val foldingDirection = KeywordType(Name.foldingDirection)
+            val foldingOffset = IntType(Name.foldingOffset)
+            val foldingReferenceEdge = KeywordType(Name.foldingReferenceEdge)
         }
 
-        companion object Members : AttributeCollection.Converter<Folding> {
+        /** Defines types for each member of [Folding] */
+        companion object : AttributeCollection.Converter<Folding> {
             override fun convert(attributes: List<Attribute<*>>): Folding =
                 Folding(
-                    extractOne(attributes, foldingDirection),
-                    extractOne(attributes, foldingOffset),
-                    extractOne(attributes, foldingReferenceEdge),
-                    _encoded = attributes)
-            /**
-             * "folding-direction" member type.
-             * May contain any keyword from [FoldingDirection].
-             */
-            @JvmField val foldingDirection = KeywordType(Name.foldingDirection)
-            /**
-             * "folding-offset" member type.
-             */
-            @JvmField val foldingOffset = IntType(Name.foldingOffset)
-            /**
-             * "folding-reference-edge" member type.
-             * May contain any keyword from [FoldingReferenceEdge].
-             */
-            @JvmField val foldingReferenceEdge = KeywordType(Name.foldingReferenceEdge)
+                    extractOne(attributes, Types.foldingDirection),
+                    extractOne(attributes, Types.foldingOffset),
+                    extractOne(attributes, Types.foldingReferenceEdge)
+                )
         }
     }
 
@@ -587,23 +371,21 @@ data class FinishingsCol
     data class Laminating
     @JvmOverloads constructor(
         /** May contain any keyword from [LaminatingSides]. */
-        val laminatingSides: String? = null,
+        var laminatingSides: String? = null,
         /** May contain any keyword from [LaminatingType] or a name. */
-        val laminatingType: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var laminatingType: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                laminatingSides?.let { Members.laminatingSides.of(it) },
-                laminatingType?.let { Members.laminatingType.of(it) }
+            listOfNotNull(
+                laminatingSides?.let { Types.laminatingSides.of(it) },
+                laminatingType?.let { Types.laminatingType.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Laminating>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Laminating>(Laminating)
 
         /** All member names as strings. */
         object Name {
@@ -613,41 +395,19 @@ data class FinishingsCol
             const val laminatingType = "laminating-type"
         }
 
-        /** Builder for immutable [Laminating] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Laminating) : this() {
-                laminatingSides = source.laminatingSides
-                laminatingType = source.laminatingType
-            }
-            /** May contain any keyword from [LaminatingSides]. */
-            var laminatingSides: String? = null
-            /** May contain any keyword from [LaminatingType] or a name. */
-            var laminatingType: String? = null
-
-            /** Return a new [Laminating] object containing all values initialized in this builder. */
-            fun build() = Laminating(
-                laminatingSides,
-                laminatingType
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val laminatingSides = KeywordType(Name.laminatingSides)
+            val laminatingType = KeywordType(Name.laminatingType)
         }
 
-        companion object Members : AttributeCollection.Converter<Laminating> {
+        /** Defines types for each member of [Laminating] */
+        companion object : AttributeCollection.Converter<Laminating> {
             override fun convert(attributes: List<Attribute<*>>): Laminating =
                 Laminating(
-                    extractOne(attributes, laminatingSides),
-                    extractOne(attributes, laminatingType),
-                    _encoded = attributes)
-            /**
-             * "laminating-sides" member type.
-             * May contain any keyword from [LaminatingSides].
-             */
-            @JvmField val laminatingSides = KeywordType(Name.laminatingSides)
-            /**
-             * "laminating-type" member type.
-             * May contain any keyword from [LaminatingType] or a name.
-             */
-            @JvmField val laminatingType = KeywordType(Name.laminatingType)
+                    extractOne(attributes, Types.laminatingSides),
+                    extractOne(attributes, Types.laminatingType)
+                )
         }
     }
 
@@ -657,22 +417,20 @@ data class FinishingsCol
     @Suppress("RedundantCompanionReference", "unused")
     data class MediaSize
     @JvmOverloads constructor(
-        val xDimension: Int? = null,
-        val yDimension: Int? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var xDimension: Int? = null,
+        var yDimension: Int? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                xDimension?.let { Members.xDimension.of(it) },
-                yDimension?.let { Members.yDimension.of(it) }
+            listOfNotNull(
+                xDimension?.let { Types.xDimension.of(it) },
+                yDimension?.let { Types.yDimension.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<MediaSize>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<MediaSize>(MediaSize)
 
         /** All member names as strings. */
         object Name {
@@ -682,37 +440,19 @@ data class FinishingsCol
             const val yDimension = "y-dimension"
         }
 
-        /** Builder for immutable [MediaSize] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: MediaSize) : this() {
-                xDimension = source.xDimension
-                yDimension = source.yDimension
-            }
-            var xDimension: Int? = null
-            var yDimension: Int? = null
-
-            /** Return a new [MediaSize] object containing all values initialized in this builder. */
-            fun build() = MediaSize(
-                xDimension,
-                yDimension
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val xDimension = IntType(Name.xDimension)
+            val yDimension = IntType(Name.yDimension)
         }
 
-        companion object Members : AttributeCollection.Converter<MediaSize> {
+        /** Defines types for each member of [MediaSize] */
+        companion object : AttributeCollection.Converter<MediaSize> {
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
-                    extractOne(attributes, xDimension),
-                    extractOne(attributes, yDimension),
-                    _encoded = attributes)
-            /**
-             * "x-dimension" member type.
-             */
-            @JvmField val xDimension = IntType(Name.xDimension)
-            /**
-             * "y-dimension" member type.
-             */
-            @JvmField val yDimension = IntType(Name.yDimension)
+                    extractOne(attributes, Types.xDimension),
+                    extractOne(attributes, Types.yDimension)
+                )
         }
     }
 
@@ -722,25 +462,23 @@ data class FinishingsCol
     @Suppress("RedundantCompanionReference", "unused")
     data class Punching
     @JvmOverloads constructor(
-        val punchingLocations: List<Int>? = null,
-        val punchingOffset: Int? = null,
+        var punchingLocations: List<Int>? = null,
+        var punchingOffset: Int? = null,
         /** May contain any keyword from [PunchingReferenceEdge]. */
-        val punchingReferenceEdge: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var punchingReferenceEdge: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                punchingLocations?.let { Members.punchingLocations.of(it) },
-                punchingOffset?.let { Members.punchingOffset.of(it) },
-                punchingReferenceEdge?.let { Members.punchingReferenceEdge.of(it) }
+            listOfNotNull(
+                punchingLocations?.let { Types.punchingLocations.of(it) },
+                punchingOffset?.let { Types.punchingOffset.of(it) },
+                punchingReferenceEdge?.let { Types.punchingReferenceEdge.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Punching>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Punching>(Punching)
 
         /** All member names as strings. */
         object Name {
@@ -752,47 +490,21 @@ data class FinishingsCol
             const val punchingReferenceEdge = "punching-reference-edge"
         }
 
-        /** Builder for immutable [Punching] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Punching) : this() {
-                punchingLocations = source.punchingLocations
-                punchingOffset = source.punchingOffset
-                punchingReferenceEdge = source.punchingReferenceEdge
-            }
-            var punchingLocations: List<Int>? = null
-            var punchingOffset: Int? = null
-            /** May contain any keyword from [PunchingReferenceEdge]. */
-            var punchingReferenceEdge: String? = null
-
-            /** Return a new [Punching] object containing all values initialized in this builder. */
-            fun build() = Punching(
-                punchingLocations,
-                punchingOffset,
-                punchingReferenceEdge
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val punchingLocations = IntType(Name.punchingLocations)
+            val punchingOffset = IntType(Name.punchingOffset)
+            val punchingReferenceEdge = KeywordType(Name.punchingReferenceEdge)
         }
 
-        companion object Members : AttributeCollection.Converter<Punching> {
+        /** Defines types for each member of [Punching] */
+        companion object : AttributeCollection.Converter<Punching> {
             override fun convert(attributes: List<Attribute<*>>): Punching =
                 Punching(
-                    extractAll(attributes, punchingLocations),
-                    extractOne(attributes, punchingOffset),
-                    extractOne(attributes, punchingReferenceEdge),
-                    _encoded = attributes)
-            /**
-             * "punching-locations" member type.
-             */
-            @JvmField val punchingLocations = IntType(Name.punchingLocations)
-            /**
-             * "punching-offset" member type.
-             */
-            @JvmField val punchingOffset = IntType(Name.punchingOffset)
-            /**
-             * "punching-reference-edge" member type.
-             * May contain any keyword from [PunchingReferenceEdge].
-             */
-            @JvmField val punchingReferenceEdge = KeywordType(Name.punchingReferenceEdge)
+                    extractAll(attributes, Types.punchingLocations),
+                    extractOne(attributes, Types.punchingOffset),
+                    extractOne(attributes, Types.punchingReferenceEdge)
+                )
         }
     }
 
@@ -802,30 +514,28 @@ data class FinishingsCol
     @Suppress("RedundantCompanionReference", "unused")
     data class Stitching
     @JvmOverloads constructor(
-        val stitchingAngle: Int? = null,
-        val stitchingLocations: List<Int>? = null,
+        var stitchingAngle: Int? = null,
+        var stitchingLocations: List<Int>? = null,
         /** May contain any keyword from [StitchingMethod]. */
-        val stitchingMethod: String? = null,
-        val stitchingOffset: Int? = null,
+        var stitchingMethod: String? = null,
+        var stitchingOffset: Int? = null,
         /** May contain any keyword from [StitchingReferenceEdge]. */
-        val stitchingReferenceEdge: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var stitchingReferenceEdge: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                stitchingAngle?.let { Members.stitchingAngle.of(it) },
-                stitchingLocations?.let { Members.stitchingLocations.of(it) },
-                stitchingMethod?.let { Members.stitchingMethod.of(it) },
-                stitchingOffset?.let { Members.stitchingOffset.of(it) },
-                stitchingReferenceEdge?.let { Members.stitchingReferenceEdge.of(it) }
+            listOfNotNull(
+                stitchingAngle?.let { Types.stitchingAngle.of(it) },
+                stitchingLocations?.let { Types.stitchingLocations.of(it) },
+                stitchingMethod?.let { Types.stitchingMethod.of(it) },
+                stitchingOffset?.let { Types.stitchingOffset.of(it) },
+                stitchingReferenceEdge?.let { Types.stitchingReferenceEdge.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Stitching>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Stitching>(Stitching)
 
         /** All member names as strings. */
         object Name {
@@ -841,65 +551,25 @@ data class FinishingsCol
             const val stitchingReferenceEdge = "stitching-reference-edge"
         }
 
-        /** Builder for immutable [Stitching] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Stitching) : this() {
-                stitchingAngle = source.stitchingAngle
-                stitchingLocations = source.stitchingLocations
-                stitchingMethod = source.stitchingMethod
-                stitchingOffset = source.stitchingOffset
-                stitchingReferenceEdge = source.stitchingReferenceEdge
-            }
-            var stitchingAngle: Int? = null
-            var stitchingLocations: List<Int>? = null
-            /** May contain any keyword from [StitchingMethod]. */
-            var stitchingMethod: String? = null
-            var stitchingOffset: Int? = null
-            /** May contain any keyword from [StitchingReferenceEdge]. */
-            var stitchingReferenceEdge: String? = null
-
-            /** Return a new [Stitching] object containing all values initialized in this builder. */
-            fun build() = Stitching(
-                stitchingAngle,
-                stitchingLocations,
-                stitchingMethod,
-                stitchingOffset,
-                stitchingReferenceEdge
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val stitchingAngle = IntType(Name.stitchingAngle)
+            val stitchingLocations = IntType(Name.stitchingLocations)
+            val stitchingMethod = KeywordType(Name.stitchingMethod)
+            val stitchingOffset = IntType(Name.stitchingOffset)
+            val stitchingReferenceEdge = KeywordType(Name.stitchingReferenceEdge)
         }
 
-        companion object Members : AttributeCollection.Converter<Stitching> {
+        /** Defines types for each member of [Stitching] */
+        companion object : AttributeCollection.Converter<Stitching> {
             override fun convert(attributes: List<Attribute<*>>): Stitching =
                 Stitching(
-                    extractOne(attributes, stitchingAngle),
-                    extractAll(attributes, stitchingLocations),
-                    extractOne(attributes, stitchingMethod),
-                    extractOne(attributes, stitchingOffset),
-                    extractOne(attributes, stitchingReferenceEdge),
-                    _encoded = attributes)
-            /**
-             * "stitching-angle" member type.
-             */
-            @JvmField val stitchingAngle = IntType(Name.stitchingAngle)
-            /**
-             * "stitching-locations" member type.
-             */
-            @JvmField val stitchingLocations = IntType(Name.stitchingLocations)
-            /**
-             * "stitching-method" member type.
-             * May contain any keyword from [StitchingMethod].
-             */
-            @JvmField val stitchingMethod = KeywordType(Name.stitchingMethod)
-            /**
-             * "stitching-offset" member type.
-             */
-            @JvmField val stitchingOffset = IntType(Name.stitchingOffset)
-            /**
-             * "stitching-reference-edge" member type.
-             * May contain any keyword from [StitchingReferenceEdge].
-             */
-            @JvmField val stitchingReferenceEdge = KeywordType(Name.stitchingReferenceEdge)
+                    extractOne(attributes, Types.stitchingAngle),
+                    extractAll(attributes, Types.stitchingLocations),
+                    extractOne(attributes, Types.stitchingMethod),
+                    extractOne(attributes, Types.stitchingOffset),
+                    extractOne(attributes, Types.stitchingReferenceEdge)
+                )
         }
     }
 
@@ -909,29 +579,27 @@ data class FinishingsCol
     @Suppress("RedundantCompanionReference", "unused")
     data class Trimming
     @JvmOverloads constructor(
-        val trimmingOffset: Int? = null,
+        var trimmingOffset: Int? = null,
         /** May contain any keyword from [TrimmingReferenceEdge]. */
-        val trimmingReferenceEdge: String? = null,
+        var trimmingReferenceEdge: String? = null,
         /** May contain any keyword from [TrimmingType] or a name. */
-        val trimmingType: String? = null,
+        var trimmingType: String? = null,
         /** May contain any keyword from [TrimmingWhen]. */
-        val trimmingWhen: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var trimmingWhen: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                trimmingOffset?.let { Members.trimmingOffset.of(it) },
-                trimmingReferenceEdge?.let { Members.trimmingReferenceEdge.of(it) },
-                trimmingType?.let { Members.trimmingType.of(it) },
-                trimmingWhen?.let { Members.trimmingWhen.of(it) }
+            listOfNotNull(
+                trimmingOffset?.let { Types.trimmingOffset.of(it) },
+                trimmingReferenceEdge?.let { Types.trimmingReferenceEdge.of(it) },
+                trimmingType?.let { Types.trimmingType.of(it) },
+                trimmingWhen?.let { Types.trimmingWhen.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Trimming>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<Trimming>(Trimming)
 
         /** All member names as strings. */
         object Name {
@@ -945,59 +613,23 @@ data class FinishingsCol
             const val trimmingWhen = "trimming-when"
         }
 
-        /** Builder for immutable [Trimming] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: Trimming) : this() {
-                trimmingOffset = source.trimmingOffset
-                trimmingReferenceEdge = source.trimmingReferenceEdge
-                trimmingType = source.trimmingType
-                trimmingWhen = source.trimmingWhen
-            }
-            var trimmingOffset: Int? = null
-            /** May contain any keyword from [TrimmingReferenceEdge]. */
-            var trimmingReferenceEdge: String? = null
-            /** May contain any keyword from [TrimmingType] or a name. */
-            var trimmingType: String? = null
-            /** May contain any keyword from [TrimmingWhen]. */
-            var trimmingWhen: String? = null
-
-            /** Return a new [Trimming] object containing all values initialized in this builder. */
-            fun build() = Trimming(
-                trimmingOffset,
-                trimmingReferenceEdge,
-                trimmingType,
-                trimmingWhen
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val trimmingOffset = IntType(Name.trimmingOffset)
+            val trimmingReferenceEdge = KeywordType(Name.trimmingReferenceEdge)
+            val trimmingType = KeywordType(Name.trimmingType)
+            val trimmingWhen = KeywordType(Name.trimmingWhen)
         }
 
-        companion object Members : AttributeCollection.Converter<Trimming> {
+        /** Defines types for each member of [Trimming] */
+        companion object : AttributeCollection.Converter<Trimming> {
             override fun convert(attributes: List<Attribute<*>>): Trimming =
                 Trimming(
-                    extractOne(attributes, trimmingOffset),
-                    extractOne(attributes, trimmingReferenceEdge),
-                    extractOne(attributes, trimmingType),
-                    extractOne(attributes, trimmingWhen),
-                    _encoded = attributes)
-            /**
-             * "trimming-offset" member type.
-             */
-            @JvmField val trimmingOffset = IntType(Name.trimmingOffset)
-            /**
-             * "trimming-reference-edge" member type.
-             * May contain any keyword from [TrimmingReferenceEdge].
-             */
-            @JvmField val trimmingReferenceEdge = KeywordType(Name.trimmingReferenceEdge)
-            /**
-             * "trimming-type" member type.
-             * May contain any keyword from [TrimmingType] or a name.
-             */
-            @JvmField val trimmingType = KeywordType(Name.trimmingType)
-            /**
-             * "trimming-when" member type.
-             * May contain any keyword from [TrimmingWhen].
-             */
-            @JvmField val trimmingWhen = KeywordType(Name.trimmingWhen)
+                    extractOne(attributes, Types.trimmingOffset),
+                    extractOne(attributes, Types.trimmingReferenceEdge),
+                    extractOne(attributes, Types.trimmingType),
+                    extractOne(attributes, Types.trimmingWhen)
+                )
         }
     }
 }

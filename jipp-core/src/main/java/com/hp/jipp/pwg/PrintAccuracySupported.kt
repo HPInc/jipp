@@ -17,26 +17,24 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class PrintAccuracySupported
 @JvmOverloads constructor(
     /** May contain any keyword from [AccuracyUnit]. */
-    val accuracyUnits: String? = null,
-    val xAccuracy: Int? = null,
-    val yAccuracy: Int? = null,
-    val zAccuracy: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var accuracyUnits: String? = null,
+    var xAccuracy: Int? = null,
+    var yAccuracy: Int? = null,
+    var zAccuracy: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            accuracyUnits?.let { Members.accuracyUnits.of(it) },
-            xAccuracy?.let { Members.xAccuracy.of(it) },
-            yAccuracy?.let { Members.yAccuracy.of(it) },
-            zAccuracy?.let { Members.zAccuracy.of(it) }
+        listOfNotNull(
+            accuracyUnits?.let { Types.accuracyUnits.of(it) },
+            xAccuracy?.let { Types.xAccuracy.of(it) },
+            yAccuracy?.let { Types.yAccuracy.of(it) },
+            zAccuracy?.let { Types.zAccuracy.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrintAccuracySupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PrintAccuracySupported>(PrintAccuracySupported)
 
     /** All member names as strings. */
     object Name {
@@ -50,54 +48,22 @@ data class PrintAccuracySupported
         const val zAccuracy = "z-accuracy"
     }
 
-    /** Builder for immutable [PrintAccuracySupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PrintAccuracySupported) : this() {
-            accuracyUnits = source.accuracyUnits
-            xAccuracy = source.xAccuracy
-            yAccuracy = source.yAccuracy
-            zAccuracy = source.zAccuracy
-        }
-        /** May contain any keyword from [AccuracyUnit]. */
-        var accuracyUnits: String? = null
-        var xAccuracy: Int? = null
-        var yAccuracy: Int? = null
-        var zAccuracy: Int? = null
-
-        /** Return a new [PrintAccuracySupported] object containing all values initialized in this builder. */
-        fun build() = PrintAccuracySupported(
-            accuracyUnits,
-            xAccuracy,
-            yAccuracy,
-            zAccuracy
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val accuracyUnits = KeywordType(Name.accuracyUnits)
+        val xAccuracy = IntType(Name.xAccuracy)
+        val yAccuracy = IntType(Name.yAccuracy)
+        val zAccuracy = IntType(Name.zAccuracy)
     }
 
-    companion object Members : AttributeCollection.Converter<PrintAccuracySupported> {
+    /** Defines types for each member of [PrintAccuracySupported] */
+    companion object : AttributeCollection.Converter<PrintAccuracySupported> {
         override fun convert(attributes: List<Attribute<*>>): PrintAccuracySupported =
             PrintAccuracySupported(
-                extractOne(attributes, accuracyUnits),
-                extractOne(attributes, xAccuracy),
-                extractOne(attributes, yAccuracy),
-                extractOne(attributes, zAccuracy),
-                _encoded = attributes)
-        /**
-         * "accuracy-units" member type.
-         * May contain any keyword from [AccuracyUnit].
-         */
-        @JvmField val accuracyUnits = KeywordType(Name.accuracyUnits)
-        /**
-         * "x-accuracy" member type.
-         */
-        @JvmField val xAccuracy = IntType(Name.xAccuracy)
-        /**
-         * "y-accuracy" member type.
-         */
-        @JvmField val yAccuracy = IntType(Name.yAccuracy)
-        /**
-         * "z-accuracy" member type.
-         */
-        @JvmField val zAccuracy = IntType(Name.zAccuracy)
+                extractOne(attributes, Types.accuracyUnits),
+                extractOne(attributes, Types.xAccuracy),
+                extractOne(attributes, Types.yAccuracy),
+                extractOne(attributes, Types.zAccuracy)
+            )
     }
 }

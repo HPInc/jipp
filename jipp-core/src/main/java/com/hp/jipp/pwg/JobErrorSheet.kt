@@ -17,28 +17,26 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobErrorSheet
 @JvmOverloads constructor(
     /** May contain any keyword from [JobErrorSheetType] or a name. */
-    val jobErrorSheetType: String? = null,
+    var jobErrorSheetType: String? = null,
     /** May contain any keyword from [JobErrorSheetWhen]. */
-    val jobErrorSheetWhen: String? = null,
+    var jobErrorSheetWhen: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    val media: String? = null,
-    val mediaCol: MediaCol? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var media: String? = null,
+    var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            jobErrorSheetType?.let { Members.jobErrorSheetType.of(it) },
-            jobErrorSheetWhen?.let { Members.jobErrorSheetWhen.of(it) },
-            media?.let { Members.media.of(it) },
-            mediaCol?.let { Members.mediaCol.of(it) }
+        listOfNotNull(
+            jobErrorSheetType?.let { Types.jobErrorSheetType.of(it) },
+            jobErrorSheetWhen?.let { Types.jobErrorSheetWhen.of(it) },
+            media?.let { Types.media.of(it) },
+            mediaCol?.let { Types.mediaCol.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobErrorSheet>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobErrorSheet>(JobErrorSheet)
 
     /** All member names as strings. */
     object Name {
@@ -52,58 +50,22 @@ data class JobErrorSheet
         const val mediaCol = "media-col"
     }
 
-    /** Builder for immutable [JobErrorSheet] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobErrorSheet) : this() {
-            jobErrorSheetType = source.jobErrorSheetType
-            jobErrorSheetWhen = source.jobErrorSheetWhen
-            media = source.media
-            mediaCol = source.mediaCol
-        }
-        /** May contain any keyword from [JobErrorSheetType] or a name. */
-        var jobErrorSheetType: String? = null
-        /** May contain any keyword from [JobErrorSheetWhen]. */
-        var jobErrorSheetWhen: String? = null
-        /** May contain any keyword from [Media] or a name. */
-        var media: String? = null
-        var mediaCol: MediaCol? = null
-
-        /** Return a new [JobErrorSheet] object containing all values initialized in this builder. */
-        fun build() = JobErrorSheet(
-            jobErrorSheetType,
-            jobErrorSheetWhen,
-            media,
-            mediaCol
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val jobErrorSheetType = KeywordType(Name.jobErrorSheetType)
+        val jobErrorSheetWhen = KeywordType(Name.jobErrorSheetWhen)
+        val media = KeywordType(Name.media)
+        val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 
-    companion object Members : AttributeCollection.Converter<JobErrorSheet> {
+    /** Defines types for each member of [JobErrorSheet] */
+    companion object : AttributeCollection.Converter<JobErrorSheet> {
         override fun convert(attributes: List<Attribute<*>>): JobErrorSheet =
             JobErrorSheet(
-                extractOne(attributes, jobErrorSheetType),
-                extractOne(attributes, jobErrorSheetWhen),
-                extractOne(attributes, media),
-                extractOne(attributes, mediaCol),
-                _encoded = attributes)
-        /**
-         * "job-error-sheet-type" member type.
-         * May contain any keyword from [JobErrorSheetType] or a name.
-         */
-        @JvmField val jobErrorSheetType = KeywordType(Name.jobErrorSheetType)
-        /**
-         * "job-error-sheet-when" member type.
-         * May contain any keyword from [JobErrorSheetWhen].
-         */
-        @JvmField val jobErrorSheetWhen = KeywordType(Name.jobErrorSheetWhen)
-        /**
-         * "media" member type.
-         * May contain any keyword from [Media] or a name.
-         */
-        @JvmField val media = KeywordType(Name.media)
-        /**
-         * "media-col" member type.
-         */
-        @JvmField val mediaCol = MediaCol.Type(Name.mediaCol)
+                extractOne(attributes, Types.jobErrorSheetType),
+                extractOne(attributes, Types.jobErrorSheetWhen),
+                extractOne(attributes, Types.media),
+                extractOne(attributes, Types.mediaCol)
+            )
     }
 }

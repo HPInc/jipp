@@ -16,24 +16,22 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class PrinterVolumeSupported
 @JvmOverloads constructor(
-    val xDimension: Int? = null,
-    val yDimension: Int? = null,
-    val zDimension: Int? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var xDimension: Int? = null,
+    var yDimension: Int? = null,
+    var zDimension: Int? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            xDimension?.let { Members.xDimension.of(it) },
-            yDimension?.let { Members.yDimension.of(it) },
-            zDimension?.let { Members.zDimension.of(it) }
+        listOfNotNull(
+            xDimension?.let { Types.xDimension.of(it) },
+            yDimension?.let { Types.yDimension.of(it) },
+            zDimension?.let { Types.zDimension.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterVolumeSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PrinterVolumeSupported>(PrinterVolumeSupported)
 
     /** All member names as strings. */
     object Name {
@@ -45,44 +43,20 @@ data class PrinterVolumeSupported
         const val zDimension = "z-dimension"
     }
 
-    /** Builder for immutable [PrinterVolumeSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PrinterVolumeSupported) : this() {
-            xDimension = source.xDimension
-            yDimension = source.yDimension
-            zDimension = source.zDimension
-        }
-        var xDimension: Int? = null
-        var yDimension: Int? = null
-        var zDimension: Int? = null
-
-        /** Return a new [PrinterVolumeSupported] object containing all values initialized in this builder. */
-        fun build() = PrinterVolumeSupported(
-            xDimension,
-            yDimension,
-            zDimension
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val xDimension = IntType(Name.xDimension)
+        val yDimension = IntType(Name.yDimension)
+        val zDimension = IntType(Name.zDimension)
     }
 
-    companion object Members : AttributeCollection.Converter<PrinterVolumeSupported> {
+    /** Defines types for each member of [PrinterVolumeSupported] */
+    companion object : AttributeCollection.Converter<PrinterVolumeSupported> {
         override fun convert(attributes: List<Attribute<*>>): PrinterVolumeSupported =
             PrinterVolumeSupported(
-                extractOne(attributes, xDimension),
-                extractOne(attributes, yDimension),
-                extractOne(attributes, zDimension),
-                _encoded = attributes)
-        /**
-         * "x-dimension" member type.
-         */
-        @JvmField val xDimension = IntType(Name.xDimension)
-        /**
-         * "y-dimension" member type.
-         */
-        @JvmField val yDimension = IntType(Name.yDimension)
-        /**
-         * "z-dimension" member type.
-         */
-        @JvmField val zDimension = IntType(Name.zDimension)
+                extractOne(attributes, Types.xDimension),
+                extractOne(attributes, Types.yDimension),
+                extractOne(attributes, Types.zDimension)
+            )
     }
 }

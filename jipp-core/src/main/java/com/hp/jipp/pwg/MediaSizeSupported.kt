@@ -16,22 +16,20 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class MediaSizeSupported
 @JvmOverloads constructor(
-    val xDimension: IntOrIntRange? = null,
-    val yDimension: IntOrIntRange? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var xDimension: IntOrIntRange? = null,
+    var yDimension: IntOrIntRange? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            xDimension?.let { Members.xDimension.of(it) },
-            yDimension?.let { Members.yDimension.of(it) }
+        listOfNotNull(
+            xDimension?.let { Types.xDimension.of(it) },
+            yDimension?.let { Types.yDimension.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MediaSizeSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<MediaSizeSupported>(MediaSizeSupported)
 
     /** All member names as strings. */
     object Name {
@@ -41,36 +39,18 @@ data class MediaSizeSupported
         const val yDimension = "y-dimension"
     }
 
-    /** Builder for immutable [MediaSizeSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: MediaSizeSupported) : this() {
-            xDimension = source.xDimension
-            yDimension = source.yDimension
-        }
-        var xDimension: IntOrIntRange? = null
-        var yDimension: IntOrIntRange? = null
-
-        /** Return a new [MediaSizeSupported] object containing all values initialized in this builder. */
-        fun build() = MediaSizeSupported(
-            xDimension,
-            yDimension
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val xDimension = IntOrIntRangeType(Name.xDimension)
+        val yDimension = IntOrIntRangeType(Name.yDimension)
     }
 
-    companion object Members : AttributeCollection.Converter<MediaSizeSupported> {
+    /** Defines types for each member of [MediaSizeSupported] */
+    companion object : AttributeCollection.Converter<MediaSizeSupported> {
         override fun convert(attributes: List<Attribute<*>>): MediaSizeSupported =
             MediaSizeSupported(
-                extractOne(attributes, xDimension),
-                extractOne(attributes, yDimension),
-                _encoded = attributes)
-        /**
-         * "x-dimension" member type.
-         */
-        @JvmField val xDimension = IntOrIntRangeType(Name.xDimension)
-        /**
-         * "y-dimension" member type.
-         */
-        @JvmField val yDimension = IntOrIntRangeType(Name.yDimension)
+                extractOne(attributes, Types.xDimension),
+                extractOne(attributes, Types.yDimension)
+            )
     }
 }

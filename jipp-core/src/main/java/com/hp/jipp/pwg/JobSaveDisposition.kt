@@ -17,22 +17,20 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobSaveDisposition
 @JvmOverloads constructor(
     /** May contain any keyword from [SaveDisposition]. */
-    val saveDisposition: String? = null,
-    val saveInfo: List<SaveInfo>? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var saveDisposition: String? = null,
+    var saveInfo: List<SaveInfo>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            saveDisposition?.let { Members.saveDisposition.of(it) },
-            saveInfo?.let { Members.saveInfo.of(it) }
+        listOfNotNull(
+            saveDisposition?.let { Types.saveDisposition.of(it) },
+            saveInfo?.let { Types.saveInfo.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobSaveDisposition>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobSaveDisposition>(JobSaveDisposition)
 
     /** All member names as strings. */
     object Name {
@@ -42,39 +40,19 @@ data class JobSaveDisposition
         const val saveInfo = "save-info"
     }
 
-    /** Builder for immutable [JobSaveDisposition] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobSaveDisposition) : this() {
-            saveDisposition = source.saveDisposition
-            saveInfo = source.saveInfo
-        }
-        /** May contain any keyword from [SaveDisposition]. */
-        var saveDisposition: String? = null
-        var saveInfo: List<SaveInfo>? = null
-
-        /** Return a new [JobSaveDisposition] object containing all values initialized in this builder. */
-        fun build() = JobSaveDisposition(
-            saveDisposition,
-            saveInfo
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val saveDisposition = KeywordType(Name.saveDisposition)
+        val saveInfo = SaveInfo.Type(Name.saveInfo)
     }
 
-    companion object Members : AttributeCollection.Converter<JobSaveDisposition> {
+    /** Defines types for each member of [JobSaveDisposition] */
+    companion object : AttributeCollection.Converter<JobSaveDisposition> {
         override fun convert(attributes: List<Attribute<*>>): JobSaveDisposition =
             JobSaveDisposition(
-                extractOne(attributes, saveDisposition),
-                extractAll(attributes, saveInfo),
-                _encoded = attributes)
-        /**
-         * "save-disposition" member type.
-         * May contain any keyword from [SaveDisposition].
-         */
-        @JvmField val saveDisposition = KeywordType(Name.saveDisposition)
-        /**
-         * "save-info" member type.
-         */
-        @JvmField val saveInfo = SaveInfo.Type(Name.saveInfo)
+                extractOne(attributes, Types.saveDisposition),
+                extractAll(attributes, Types.saveInfo)
+            )
     }
 
     /**
@@ -83,24 +61,22 @@ data class JobSaveDisposition
     @Suppress("RedundantCompanionReference", "unused")
     data class SaveInfo
     @JvmOverloads constructor(
-        val saveDocumentFormat: String? = null,
-        val saveLocation: java.net.URI? = null,
-        val saveName: String? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var saveDocumentFormat: String? = null,
+        var saveLocation: java.net.URI? = null,
+        var saveName: String? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                saveDocumentFormat?.let { Members.saveDocumentFormat.of(it) },
-                saveLocation?.let { Members.saveLocation.of(it) },
-                saveName?.let { Members.saveName.of(it) }
+            listOfNotNull(
+                saveDocumentFormat?.let { Types.saveDocumentFormat.of(it) },
+                saveLocation?.let { Types.saveLocation.of(it) },
+                saveName?.let { Types.saveName.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<SaveInfo>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<SaveInfo>(SaveInfo)
 
         /** All member names as strings. */
         object Name {
@@ -112,45 +88,21 @@ data class JobSaveDisposition
             const val saveName = "save-name"
         }
 
-        /** Builder for immutable [SaveInfo] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: SaveInfo) : this() {
-                saveDocumentFormat = source.saveDocumentFormat
-                saveLocation = source.saveLocation
-                saveName = source.saveName
-            }
-            var saveDocumentFormat: String? = null
-            var saveLocation: java.net.URI? = null
-            var saveName: String? = null
-
-            /** Return a new [SaveInfo] object containing all values initialized in this builder. */
-            fun build() = SaveInfo(
-                saveDocumentFormat,
-                saveLocation,
-                saveName
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val saveDocumentFormat = StringType(Tag.mimeMediaType, Name.saveDocumentFormat)
+            val saveLocation = UriType(Name.saveLocation)
+            val saveName = NameType(Name.saveName)
         }
 
-        companion object Members : AttributeCollection.Converter<SaveInfo> {
+        /** Defines types for each member of [SaveInfo] */
+        companion object : AttributeCollection.Converter<SaveInfo> {
             override fun convert(attributes: List<Attribute<*>>): SaveInfo =
                 SaveInfo(
-                    extractOne(attributes, saveDocumentFormat),
-                    extractOne(attributes, saveLocation),
-                    extractOne(attributes, saveName)?.value,
-                    _encoded = attributes)
-            /**
-             * "save-document-format" member type.
-             */
-            @JvmField val saveDocumentFormat = StringType(Tag.mimeMediaType, Name.saveDocumentFormat)
-            /**
-             * "save-location" member type.
-             */
-            @JvmField val saveLocation = UriType(Name.saveLocation)
-            /**
-             * "save-name" member type.
-             */
-            @JvmField val saveName = NameType(Name.saveName)
+                    extractOne(attributes, Types.saveDocumentFormat),
+                    extractOne(attributes, Types.saveLocation),
+                    extractOne(attributes, Types.saveName)?.value
+                )
         }
     }
 }

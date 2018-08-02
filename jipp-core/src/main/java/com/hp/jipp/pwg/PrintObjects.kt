@@ -16,26 +16,24 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class PrintObjects
 @JvmOverloads constructor(
-    val documentNumber: Int? = null,
-    val objectOffset: ObjectOffset? = null,
-    val objectSize: ObjectSize? = null,
-    val objectUuid: java.net.URI? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var documentNumber: Int? = null,
+    var objectOffset: ObjectOffset? = null,
+    var objectSize: ObjectSize? = null,
+    var objectUuid: java.net.URI? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            documentNumber?.let { Members.documentNumber.of(it) },
-            objectOffset?.let { Members.objectOffset.of(it) },
-            objectSize?.let { Members.objectSize.of(it) },
-            objectUuid?.let { Members.objectUuid.of(it) }
+        listOfNotNull(
+            documentNumber?.let { Types.documentNumber.of(it) },
+            objectOffset?.let { Types.objectOffset.of(it) },
+            objectSize?.let { Types.objectSize.of(it) },
+            objectUuid?.let { Types.objectUuid.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrintObjects>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<PrintObjects>(PrintObjects)
 
     /** All member names as strings. */
     object Name {
@@ -49,53 +47,23 @@ data class PrintObjects
         const val objectUuid = "object-uuid"
     }
 
-    /** Builder for immutable [PrintObjects] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: PrintObjects) : this() {
-            documentNumber = source.documentNumber
-            objectOffset = source.objectOffset
-            objectSize = source.objectSize
-            objectUuid = source.objectUuid
-        }
-        var documentNumber: Int? = null
-        var objectOffset: ObjectOffset? = null
-        var objectSize: ObjectSize? = null
-        var objectUuid: java.net.URI? = null
-
-        /** Return a new [PrintObjects] object containing all values initialized in this builder. */
-        fun build() = PrintObjects(
-            documentNumber,
-            objectOffset,
-            objectSize,
-            objectUuid
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val documentNumber = IntType(Name.documentNumber)
+        val objectOffset = ObjectOffset.Type(Name.objectOffset)
+        val objectSize = ObjectSize.Type(Name.objectSize)
+        val objectUuid = UriType(Name.objectUuid)
     }
 
-    companion object Members : AttributeCollection.Converter<PrintObjects> {
+    /** Defines types for each member of [PrintObjects] */
+    companion object : AttributeCollection.Converter<PrintObjects> {
         override fun convert(attributes: List<Attribute<*>>): PrintObjects =
             PrintObjects(
-                extractOne(attributes, documentNumber),
-                extractOne(attributes, objectOffset),
-                extractOne(attributes, objectSize),
-                extractOne(attributes, objectUuid),
-                _encoded = attributes)
-        /**
-         * "document-number" member type.
-         */
-        @JvmField val documentNumber = IntType(Name.documentNumber)
-        /**
-         * "object-offset" member type.
-         */
-        @JvmField val objectOffset = ObjectOffset.Type(Name.objectOffset)
-        /**
-         * "object-size" member type.
-         */
-        @JvmField val objectSize = ObjectSize.Type(Name.objectSize)
-        /**
-         * "object-uuid" member type.
-         */
-        @JvmField val objectUuid = UriType(Name.objectUuid)
+                extractOne(attributes, Types.documentNumber),
+                extractOne(attributes, Types.objectOffset),
+                extractOne(attributes, Types.objectSize),
+                extractOne(attributes, Types.objectUuid)
+            )
     }
 
     /**
@@ -104,24 +72,22 @@ data class PrintObjects
     @Suppress("RedundantCompanionReference", "unused")
     data class ObjectOffset
     @JvmOverloads constructor(
-        val xOffset: Int? = null,
-        val yOffset: Int? = null,
-        val zOffset: Int? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var xOffset: Int? = null,
+        var yOffset: Int? = null,
+        var zOffset: Int? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                xOffset?.let { Members.xOffset.of(it) },
-                yOffset?.let { Members.yOffset.of(it) },
-                zOffset?.let { Members.zOffset.of(it) }
+            listOfNotNull(
+                xOffset?.let { Types.xOffset.of(it) },
+                yOffset?.let { Types.yOffset.of(it) },
+                zOffset?.let { Types.zOffset.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<ObjectOffset>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<ObjectOffset>(ObjectOffset)
 
         /** All member names as strings. */
         object Name {
@@ -133,45 +99,21 @@ data class PrintObjects
             const val zOffset = "z-offset"
         }
 
-        /** Builder for immutable [ObjectOffset] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: ObjectOffset) : this() {
-                xOffset = source.xOffset
-                yOffset = source.yOffset
-                zOffset = source.zOffset
-            }
-            var xOffset: Int? = null
-            var yOffset: Int? = null
-            var zOffset: Int? = null
-
-            /** Return a new [ObjectOffset] object containing all values initialized in this builder. */
-            fun build() = ObjectOffset(
-                xOffset,
-                yOffset,
-                zOffset
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val xOffset = IntType(Name.xOffset)
+            val yOffset = IntType(Name.yOffset)
+            val zOffset = IntType(Name.zOffset)
         }
 
-        companion object Members : AttributeCollection.Converter<ObjectOffset> {
+        /** Defines types for each member of [ObjectOffset] */
+        companion object : AttributeCollection.Converter<ObjectOffset> {
             override fun convert(attributes: List<Attribute<*>>): ObjectOffset =
                 ObjectOffset(
-                    extractOne(attributes, xOffset),
-                    extractOne(attributes, yOffset),
-                    extractOne(attributes, zOffset),
-                    _encoded = attributes)
-            /**
-             * "x-offset" member type.
-             */
-            @JvmField val xOffset = IntType(Name.xOffset)
-            /**
-             * "y-offset" member type.
-             */
-            @JvmField val yOffset = IntType(Name.yOffset)
-            /**
-             * "z-offset" member type.
-             */
-            @JvmField val zOffset = IntType(Name.zOffset)
+                    extractOne(attributes, Types.xOffset),
+                    extractOne(attributes, Types.yOffset),
+                    extractOne(attributes, Types.zOffset)
+                )
         }
     }
 
@@ -181,24 +123,22 @@ data class PrintObjects
     @Suppress("RedundantCompanionReference", "unused")
     data class ObjectSize
     @JvmOverloads constructor(
-        val xDimension: Int? = null,
-        val yDimension: Int? = null,
-        val zDimension: Int? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var xDimension: Int? = null,
+        var yDimension: Int? = null,
+        var zDimension: Int? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                xDimension?.let { Members.xDimension.of(it) },
-                yDimension?.let { Members.yDimension.of(it) },
-                zDimension?.let { Members.zDimension.of(it) }
+            listOfNotNull(
+                xDimension?.let { Types.xDimension.of(it) },
+                yDimension?.let { Types.yDimension.of(it) },
+                zDimension?.let { Types.zDimension.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<ObjectSize>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<ObjectSize>(ObjectSize)
 
         /** All member names as strings. */
         object Name {
@@ -210,45 +150,21 @@ data class PrintObjects
             const val zDimension = "z-dimension"
         }
 
-        /** Builder for immutable [ObjectSize] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: ObjectSize) : this() {
-                xDimension = source.xDimension
-                yDimension = source.yDimension
-                zDimension = source.zDimension
-            }
-            var xDimension: Int? = null
-            var yDimension: Int? = null
-            var zDimension: Int? = null
-
-            /** Return a new [ObjectSize] object containing all values initialized in this builder. */
-            fun build() = ObjectSize(
-                xDimension,
-                yDimension,
-                zDimension
-            )
+        /** Types for each member attribute. */
+        object Types {
+            val xDimension = IntType(Name.xDimension)
+            val yDimension = IntType(Name.yDimension)
+            val zDimension = IntType(Name.zDimension)
         }
 
-        companion object Members : AttributeCollection.Converter<ObjectSize> {
+        /** Defines types for each member of [ObjectSize] */
+        companion object : AttributeCollection.Converter<ObjectSize> {
             override fun convert(attributes: List<Attribute<*>>): ObjectSize =
                 ObjectSize(
-                    extractOne(attributes, xDimension),
-                    extractOne(attributes, yDimension),
-                    extractOne(attributes, zDimension),
-                    _encoded = attributes)
-            /**
-             * "x-dimension" member type.
-             */
-            @JvmField val xDimension = IntType(Name.xDimension)
-            /**
-             * "y-dimension" member type.
-             */
-            @JvmField val yDimension = IntType(Name.yDimension)
-            /**
-             * "z-dimension" member type.
-             */
-            @JvmField val zDimension = IntType(Name.zDimension)
+                    extractOne(attributes, Types.xDimension),
+                    extractOne(attributes, Types.yDimension),
+                    extractOne(attributes, Types.zDimension)
+                )
         }
     }
 }

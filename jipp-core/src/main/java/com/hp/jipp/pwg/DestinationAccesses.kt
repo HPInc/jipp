@@ -16,30 +16,28 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationAccesses
 @JvmOverloads constructor(
-    val accessOauthToken: List<ByteArray>? = null,
-    val accessOauthUri: java.net.URI? = null,
-    val accessPassword: String? = null,
-    val accessPin: String? = null,
-    val accessUserName: String? = null,
-    val accessX509Certificate: List<ByteArray>? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var accessOauthToken: List<ByteArray>? = null,
+    var accessOauthUri: java.net.URI? = null,
+    var accessPassword: String? = null,
+    var accessPin: String? = null,
+    var accessUserName: String? = null,
+    var accessX509Certificate: List<ByteArray>? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            accessOauthToken?.let { Members.accessOauthToken.of(it) },
-            accessOauthUri?.let { Members.accessOauthUri.of(it) },
-            accessPassword?.let { Members.accessPassword.of(it) },
-            accessPin?.let { Members.accessPin.of(it) },
-            accessUserName?.let { Members.accessUserName.of(it) },
-            accessX509Certificate?.let { Members.accessX509Certificate.of(it) }
+        listOfNotNull(
+            accessOauthToken?.let { Types.accessOauthToken.of(it) },
+            accessOauthUri?.let { Types.accessOauthUri.of(it) },
+            accessPassword?.let { Types.accessPassword.of(it) },
+            accessPin?.let { Types.accessPin.of(it) },
+            accessUserName?.let { Types.accessUserName.of(it) },
+            accessX509Certificate?.let { Types.accessX509Certificate.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationAccesses>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<DestinationAccesses>(DestinationAccesses)
 
     /** All member names as strings. */
     object Name {
@@ -57,68 +55,26 @@ data class DestinationAccesses
         const val accessX509Certificate = "access-x509-certificate"
     }
 
-    /** Builder for immutable [DestinationAccesses] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: DestinationAccesses) : this() {
-            accessOauthToken = source.accessOauthToken
-            accessOauthUri = source.accessOauthUri
-            accessPassword = source.accessPassword
-            accessPin = source.accessPin
-            accessUserName = source.accessUserName
-            accessX509Certificate = source.accessX509Certificate
-        }
-        var accessOauthToken: List<ByteArray>? = null
-        var accessOauthUri: java.net.URI? = null
-        var accessPassword: String? = null
-        var accessPin: String? = null
-        var accessUserName: String? = null
-        var accessX509Certificate: List<ByteArray>? = null
-
-        /** Return a new [DestinationAccesses] object containing all values initialized in this builder. */
-        fun build() = DestinationAccesses(
-            accessOauthToken,
-            accessOauthUri,
-            accessPassword,
-            accessPin,
-            accessUserName,
-            accessX509Certificate
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val accessOauthToken = OctetsType(Name.accessOauthToken)
+        val accessOauthUri = UriType(Name.accessOauthUri)
+        val accessPassword = TextType(Name.accessPassword)
+        val accessPin = TextType(Name.accessPin)
+        val accessUserName = TextType(Name.accessUserName)
+        val accessX509Certificate = OctetsType(Name.accessX509Certificate)
     }
 
-    companion object Members : AttributeCollection.Converter<DestinationAccesses> {
+    /** Defines types for each member of [DestinationAccesses] */
+    companion object : AttributeCollection.Converter<DestinationAccesses> {
         override fun convert(attributes: List<Attribute<*>>): DestinationAccesses =
             DestinationAccesses(
-                extractAll(attributes, accessOauthToken),
-                extractOne(attributes, accessOauthUri),
-                extractOne(attributes, accessPassword)?.value,
-                extractOne(attributes, accessPin)?.value,
-                extractOne(attributes, accessUserName)?.value,
-                extractAll(attributes, accessX509Certificate),
-                _encoded = attributes)
-        /**
-         * "access-oauth-token" member type.
-         */
-        @JvmField val accessOauthToken = OctetsType(Name.accessOauthToken)
-        /**
-         * "access-oauth-uri" member type.
-         */
-        @JvmField val accessOauthUri = UriType(Name.accessOauthUri)
-        /**
-         * "access-password" member type.
-         */
-        @JvmField val accessPassword = TextType(Name.accessPassword)
-        /**
-         * "access-pin" member type.
-         */
-        @JvmField val accessPin = TextType(Name.accessPin)
-        /**
-         * "access-user-name" member type.
-         */
-        @JvmField val accessUserName = TextType(Name.accessUserName)
-        /**
-         * "access-x509-certificate" member type.
-         */
-        @JvmField val accessX509Certificate = OctetsType(Name.accessX509Certificate)
+                extractAll(attributes, Types.accessOauthToken),
+                extractOne(attributes, Types.accessOauthUri),
+                extractOne(attributes, Types.accessPassword)?.value,
+                extractOne(attributes, Types.accessPin)?.value,
+                extractOne(attributes, Types.accessUserName)?.value,
+                extractAll(attributes, Types.accessX509Certificate)
+            )
     }
 }

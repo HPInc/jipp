@@ -17,20 +17,18 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class MediaColDatabase
 @JvmOverloads constructor(
-    val mediaSourceProperties: MediaSourceProperties? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var mediaSourceProperties: MediaSourceProperties? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            mediaSourceProperties?.let { Members.mediaSourceProperties.of(it) }
+        listOfNotNull(
+            mediaSourceProperties?.let { Types.mediaSourceProperties.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MediaColDatabase>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<MediaColDatabase>(MediaColDatabase)
 
     /** All member names as strings. */
     object Name {
@@ -38,29 +36,17 @@ data class MediaColDatabase
         const val mediaSourceProperties = "media-source-properties"
     }
 
-    /** Builder for immutable [MediaColDatabase] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: MediaColDatabase) : this() {
-            mediaSourceProperties = source.mediaSourceProperties
-        }
-        var mediaSourceProperties: MediaSourceProperties? = null
-
-        /** Return a new [MediaColDatabase] object containing all values initialized in this builder. */
-        fun build() = MediaColDatabase(
-            mediaSourceProperties
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val mediaSourceProperties = MediaSourceProperties.Type(Name.mediaSourceProperties)
     }
 
-    companion object Members : AttributeCollection.Converter<MediaColDatabase> {
+    /** Defines types for each member of [MediaColDatabase] */
+    companion object : AttributeCollection.Converter<MediaColDatabase> {
         override fun convert(attributes: List<Attribute<*>>): MediaColDatabase =
             MediaColDatabase(
-                extractOne(attributes, mediaSourceProperties),
-                _encoded = attributes)
-        /**
-         * "media-source-properties" member type.
-         */
-        @JvmField val mediaSourceProperties = MediaSourceProperties.Type(Name.mediaSourceProperties)
+                extractOne(attributes, Types.mediaSourceProperties)
+            )
     }
 
     /**
@@ -70,22 +56,20 @@ data class MediaColDatabase
     data class MediaSourceProperties
     @JvmOverloads constructor(
         /** May contain any keyword from [FeedOrientation]. */
-        val mediaSourceFeedDirection: String? = null,
-        val mediaSourceFeedOrientation: Orientation? = null,
-        /** Encoded form, if known. */
-        val _encoded: List<Attribute<*>>? = null
+        var mediaSourceFeedDirection: String? = null,
+        var mediaSourceFeedOrientation: Orientation? = null
     ) : AttributeCollection {
 
-        /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+        /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
-            _encoded ?: listOfNotNull(
-                mediaSourceFeedDirection?.let { Members.mediaSourceFeedDirection.of(it) },
-                mediaSourceFeedOrientation?.let { Members.mediaSourceFeedOrientation.of(it) }
+            listOfNotNull(
+                mediaSourceFeedDirection?.let { Types.mediaSourceFeedDirection.of(it) },
+                mediaSourceFeedOrientation?.let { Types.mediaSourceFeedOrientation.of(it) }
             )
         }
 
         /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<MediaSourceProperties>(Members)
+        class Type(override val name: String) : AttributeCollection.Type<MediaSourceProperties>(MediaSourceProperties)
 
         /** All member names as strings. */
         object Name {
@@ -95,39 +79,22 @@ data class MediaColDatabase
             const val mediaSourceFeedOrientation = "media-source-feed-orientation"
         }
 
-        /** Builder for immutable [MediaSourceProperties] objects. */
-        class Builder() {
-            /** Constructs a new [Builder] pre-initialized with values in [source]. */
-            constructor(source: MediaSourceProperties) : this() {
-                mediaSourceFeedDirection = source.mediaSourceFeedDirection
-                mediaSourceFeedOrientation = source.mediaSourceFeedOrientation
-            }
-            /** May contain any keyword from [FeedOrientation]. */
-            var mediaSourceFeedDirection: String? = null
-            var mediaSourceFeedOrientation: Orientation? = null
-
-            /** Return a new [MediaSourceProperties] object containing all values initialized in this builder. */
-            fun build() = MediaSourceProperties(
-                mediaSourceFeedDirection,
-                mediaSourceFeedOrientation
-            )
-        }
-
-        companion object Members : AttributeCollection.Converter<MediaSourceProperties> {
-            override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
-                MediaSourceProperties(
-                    extractOne(attributes, mediaSourceFeedDirection),
-                    extractOne(attributes, mediaSourceFeedOrientation),
-                    _encoded = attributes)
-            /**
-             * "media-source-feed-direction" member type.
-             * May contain any keyword from [FeedOrientation].
-             */
-            @JvmField val mediaSourceFeedDirection = KeywordType(Name.mediaSourceFeedDirection)
+        /** Types for each member attribute. */
+        object Types {
+            val mediaSourceFeedDirection = KeywordType(Name.mediaSourceFeedDirection)
             /**
              * "media-source-feed-orientation" member type.
              */
-            @JvmField val mediaSourceFeedOrientation = Orientation.Type(Name.mediaSourceFeedOrientation)
+            val mediaSourceFeedOrientation = Orientation.Type(Name.mediaSourceFeedOrientation)
+        }
+
+        /** Defines types for each member of [MediaSourceProperties] */
+        companion object : AttributeCollection.Converter<MediaSourceProperties> {
+            override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
+                MediaSourceProperties(
+                    extractOne(attributes, Types.mediaSourceFeedDirection),
+                    extractOne(attributes, Types.mediaSourceFeedOrientation)
+                )
         }
     }
 }

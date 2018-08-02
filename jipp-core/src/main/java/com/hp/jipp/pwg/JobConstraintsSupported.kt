@@ -16,20 +16,18 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class JobConstraintsSupported
 @JvmOverloads constructor(
-    val resolverName: String? = null,
-    /** Encoded form, if known. */
-    val _encoded: List<Attribute<*>>? = null
+    var resolverName: String? = null
 ) : AttributeCollection {
 
-    /** Produce an attribute list from members, or return the original [_encoded] attribute list if present. */
+    /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
-        _encoded ?: listOfNotNull(
-            resolverName?.let { Members.resolverName.of(it) }
+        listOfNotNull(
+            resolverName?.let { Types.resolverName.of(it) }
         )
     }
 
     /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobConstraintsSupported>(Members)
+    class Type(override val name: String) : AttributeCollection.Type<JobConstraintsSupported>(JobConstraintsSupported)
 
     /** All member names as strings. */
     object Name {
@@ -37,28 +35,16 @@ data class JobConstraintsSupported
         const val resolverName = "resolver-name"
     }
 
-    /** Builder for immutable [JobConstraintsSupported] objects. */
-    class Builder() {
-        /** Constructs a new [Builder] pre-initialized with values in [source]. */
-        constructor(source: JobConstraintsSupported) : this() {
-            resolverName = source.resolverName
-        }
-        var resolverName: String? = null
-
-        /** Return a new [JobConstraintsSupported] object containing all values initialized in this builder. */
-        fun build() = JobConstraintsSupported(
-            resolverName
-        )
+    /** Types for each member attribute. */
+    object Types {
+        val resolverName = NameType(Name.resolverName)
     }
 
-    companion object Members : AttributeCollection.Converter<JobConstraintsSupported> {
+    /** Defines types for each member of [JobConstraintsSupported] */
+    companion object : AttributeCollection.Converter<JobConstraintsSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobConstraintsSupported =
             JobConstraintsSupported(
-                extractOne(attributes, resolverName)?.value,
-                _encoded = attributes)
-        /**
-         * "resolver-name" member type.
-         */
-        @JvmField val resolverName = NameType(Name.resolverName)
+                extractOne(attributes, Types.resolverName)?.value
+            )
     }
 }
