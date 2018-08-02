@@ -541,10 +541,4 @@ object JobTemplateGroup {
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val ySide2ImageShift = IntType("y-side2-image-shift")
-
-    /** All known attributes */
-    @JvmField
-    val all = JobTemplateGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

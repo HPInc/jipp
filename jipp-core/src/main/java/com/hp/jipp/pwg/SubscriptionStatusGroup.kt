@@ -74,10 +74,4 @@ object SubscriptionStatusGroup {
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val notifySubscriptionUuid = UriType("notify-subscription-uuid")
-
-    /** All known attributes */
-    @JvmField
-    val all = SubscriptionStatusGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

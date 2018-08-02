@@ -68,10 +68,4 @@ object DocumentDescriptionGroup {
      * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
      */
     @JvmField val pagesCol = PagesCol.Type("pages-col")
-
-    /** All known attributes */
-    @JvmField
-    val all = DocumentDescriptionGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

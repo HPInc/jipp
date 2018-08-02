@@ -70,10 +70,4 @@ object JobDescriptionGroup {
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobSavePrinterMakeAndModel = TextType("job-save-printer-make-and-model")
-
-    /** All known attributes */
-    @JvmField
-    val all = JobDescriptionGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

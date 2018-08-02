@@ -131,10 +131,4 @@ object EventNotificationsGroup {
      * [RFC3996](http://www.iana.org/go/rfc3996).
      */
     @JvmField val printerUpTime = IntType("printer-up-time")
-
-    /** All known attributes */
-    @JvmField
-    val all = EventNotificationsGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

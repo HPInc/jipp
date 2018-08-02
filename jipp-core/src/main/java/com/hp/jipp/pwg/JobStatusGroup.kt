@@ -771,10 +771,4 @@ object JobStatusGroup {
      * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      */
     @JvmField val ySide2ImageShiftActual = IntType("y-side2-image-shift-actual")
-
-    /** All known attributes */
-    @JvmField
-    val all = JobStatusGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

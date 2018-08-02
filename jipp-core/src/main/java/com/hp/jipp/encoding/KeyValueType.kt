@@ -3,45 +3,55 @@
 
 package com.hp.jipp.encoding
 
-// TODO: Coercive type for Key/Value pairs
-//    /** Attribute type for Key/Value pairs */
-//    class KeyValueType(override val name: String) : AttributeType<Map<String, String>>(Encoder, Tag.octetString) {
-//        companion object Encoder : SimpleEncoder<Map<String, String>>("KeyValue") {
-//            private const val ELEMENT_SEPARATOR = ";"
-//            private const val PART_SEPARATOR = "="
-//
-//            override fun writeValue(out: IppOutputStream, value: Map<String, String>) =
-//                    StringType.Encoder.writeValue(out, encode(value))
-//
-//            private fun encode(input: Map<String, String>): String {
-//                val out = StringBuilder()
-//                input.forEach {
-//                    out.append(it.key)
-//                    out.append(PART_SEPARATOR)
-//                    out.append(it.value)
-//                    out.append(ELEMENT_SEPARATOR)
-//                }
-//                return out.toString()
-//            }
-//
-//            override fun valid(valueTag: Tag) = valueTag == Tag.octetString
-//
-//            override fun readValue(input: IppInputStream, valueTag: Tag): Map<String, String> =
-//                    decode(StringType.Encoder.readValue(input, valueTag))
-//
-//            private fun decode(input: String): Map<String, String> =
-//                    input.split(ELEMENT_SEPARATOR)
-//                            .map { it.split(PART_SEPARATOR) }
-//                            .filter { it.size == 2 && it[0].isNotEmpty() && it[1].isNotEmpty() }
-//                            .map { it[0] to it[1] }
-//                            .toMap()
-//        }
-//
-//        // Include these to overrides allow java to see the correct types instead of Map<String, ? extends String>
-//        override fun of(value: Map<String, String>, vararg values: Map<String, String>): Attribute<Map<String, String>> =
-//                super.invoke(listOf(value) + values.toList())
-//
-//        @Suppress("RedundantOverride")
-//        override fun of(values: List<Map<String, String>>): Attribute<Map<String, String>> =
-//                super.of(values)
-//    }
+/** A key-value map where keys and values are both strings. */
+data class KeyValues(
+    /** Pairs of key/values. */
+    val pairs: List<Pair<String, String>> = listOf(),
+    /**
+     * The original string representation, if known. If present this exact string will be written instead of
+     * the contents [pairs].
+     */
+    val _encoded: String? = null
+) : List<Pair<String, String>> by pairs {
+    constructor(map: Map<String, String>) : this(map.toList())
+    constructor(vararg keyValues: String) : this(keyValues.toList().zipWithNext())
+
+    val map: Map<String, String> by lazy {
+        pairs.toMap()
+    }
+
+    companion object {
+        const val ELEMENT_SEPARATOR = ";"
+        const val PART_SEPARATOR = "="
+        val codec = AttributeGroup.codec(Tag.octetString, {
+            parse(readString())
+        }, {
+            // Write the original string, or fall back to pairs if _encoded is not present
+            writeString(it._encoded ?: it.combine())
+        })
+
+        fun parse(combined: String) =
+            KeyValues(combined.split(ELEMENT_SEPARATOR)
+                .map { it.split(PART_SEPARATOR) }
+                .filter { it.size == 2 && it[0].isNotEmpty() && it[1].isNotEmpty() }
+                .map { it[0] to it[1] }, combined)
+    }
+
+    fun combine() =
+        pairs.joinToString(ELEMENT_SEPARATOR) { "${it.first}$PART_SEPARATOR${it.second}" }
+
+    override fun toString() = "{${combine()}}"
+}
+
+/** Represents an attribute type encoded in key-value pairs. */
+class KeyValueType(override val name: String) : AttributeType<KeyValues> {
+    override fun coerce(value: Any): KeyValues? =
+        when (value) {
+            is ByteArray -> KeyValues.parse(String(value))
+            else -> null
+        }
+
+    fun of(vararg keyValues: String) =
+        of(KeyValues(keyValues.toList().zipWithNext()))
+
+}

@@ -457,10 +457,4 @@ object OperationGroup {
      * May contain any keyword from [WhichJobs].
      */
     @JvmField val whichJobs = KeywordType("which-jobs")
-
-    /** All known attributes */
-    @JvmField
-    val all = OperationGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

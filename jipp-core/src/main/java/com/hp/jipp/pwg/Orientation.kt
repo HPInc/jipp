@@ -8,7 +8,7 @@
 package com.hp.jipp.pwg
 
 import com.hp.jipp.encoding.* // ktlint-disable
-import com.hp.jipp.encoding.Enum
+import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "orientation-requested" enum as defined in:

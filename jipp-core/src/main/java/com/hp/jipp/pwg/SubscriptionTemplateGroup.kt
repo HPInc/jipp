@@ -76,10 +76,4 @@ object SubscriptionTemplateGroup {
      * [RFC3995](http://www.iana.org/go/rfc3995).
      */
     @JvmField val notifyUserData = OctetsType("notify-user-data")
-
-    /** All known attributes */
-    @JvmField
-    val all = SubscriptionTemplateGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

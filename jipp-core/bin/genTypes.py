@@ -17,6 +17,7 @@ from jinja2 import Environment, FileSystemLoader # pip install Jinja2
 # Global data
 specs = { }
 enums = { }
+key_values = { }
 keywords = { }
 attributes = { }
 collections = { }
@@ -29,6 +30,10 @@ pp = pprint.PrettyPrinter(indent=2)
 # Some enums/keywords have a plural 's' on the end, which we remove for clarity.
 # Types ending with these words are not plural for our purposes and should keep their s:
 nonplurals = [ 'sides', 'status', 'print-supports', 'details', 'which-jobs' ]
+
+# XML Fix: there's no tag for keyValue sadly. So we'll fake it, knowing which ones are better expressed this way.
+# TODO: Find the rest of these
+key_value_type_names = [ 'printer-alert' ]
 
 def warn(output, object = None):
     global warns
@@ -548,6 +553,7 @@ def emit_attributes(env):
         elif 'emitted' not in collections[key]:
             warn("Collection " + key + " referenced but not emitted", value)
 
+
     # Pass 5: Emit group attributes (now that all dependent types have been handled)
     template = env.get_template('group.kt.tmpl')
     for group_name, values in attributes.items():
@@ -738,8 +744,14 @@ def fix_ktypes(type, syntax, name, group_name = ''):
                 if kref not in real_type['krefs']:
                     real_type['krefs'].append(kref)
 
+    if name in key_value_type_names:
+        # Catch this before octetString
+        intro = "KeyValueType("
+        syntax = "keyValue"
+        type['kref'] = camel_class_path(group_name) + '.' + camel_member(name)
+        key_values[name] = type
 
-# Look for other known references
+    # Look for other known references
     if re.search('^uri(\([0-9]+\))?$', syntax):
         intro = "UriType("
         type['ktype'] = "java.net.URI"
@@ -829,10 +841,15 @@ def emit_code():
 
     emit_attributes(env)
 
-    enum_template = env.get_template('enums.kt.tmpl')
-    with open(prep_file('Enums'), 'w') as file:
-        file.write(rstrip_all(enum_template.render(
+    with open(prep_file('Enum-Types'), 'w') as file:
+        file.write(rstrip_all(env.get_template('enums.kt.tmpl').render(
             enums=[kref for enum in enums.values() if 'krefs' in enum for kref in enum['krefs'] ],
+            app=os.path.basename(sys.argv[0]),
+            updated=updated)))
+
+    with open(prep_file('Key-Value-Types'), 'w') as file:
+        file.write(rstrip_all(env.get_template('keyvalues.kt.tmpl').render(
+            types=key_values.values(),
             app=os.path.basename(sys.argv[0]),
             updated=updated)))
 

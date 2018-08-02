@@ -57,7 +57,7 @@ object PrinterStatusGroup {
      * "printer-alert" as defined in:
      * [PWG5100.9](http://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf).
      */
-    @JvmField val printerAlert = OctetsType("printer-alert")
+    @JvmField val printerAlert = KeyValueType("printer-alert")
 
     /**
      * "printer-alert-description" as defined in:
@@ -254,10 +254,4 @@ object PrinterStatusGroup {
      * [RFC3380](http://www.iana.org/go/rfc3380).
      */
     @JvmField val xriUriSchemeSupported = StringType(Tag.uriScheme, "xri-uri-scheme-supported")
-
-    /** All known attributes */
-    @JvmField
-    val all = PrinterStatusGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

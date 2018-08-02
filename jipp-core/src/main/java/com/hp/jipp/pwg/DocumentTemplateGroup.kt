@@ -301,10 +301,4 @@ object DocumentTemplateGroup {
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val ySide2ImageShift = IntType("y-side2-image-shift")
-
-    /** All known attributes */
-    @JvmField
-    val all = DocumentTemplateGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

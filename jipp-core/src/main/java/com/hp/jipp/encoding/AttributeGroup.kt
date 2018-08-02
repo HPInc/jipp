@@ -3,7 +3,8 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.pwg.Enums
+import com.hp.jipp.pwg.EnumTypes
+import com.hp.jipp.pwg.KeyValueTypes
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
@@ -95,6 +96,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 TextType.codec,
                 NameType.codec,
                 OctetsType.codec,
+                KeyValues.codec,
                 codec({ it.isOctetString || it.isInteger }, { tag ->
                     // Used when we don't know how to interpret the content. Even with integers,
                     // we don't know whether to expect a short or byte or int or whatever.
@@ -229,10 +231,14 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         private fun <T : Any> IppInputStream.readValue(codec: Codec<T>, tag: Tag, attributeName: String): Any {
             // Apply a special case for enum values which we can match with all known [Enums]
             if (tag == Tag.enumValue) {
-                Enums.all[attributeName]?.also {
+                EnumTypes.all[attributeName]?.also {
                     takeLength(AttributeGroup.INT_LENGTH)
                     // Note: !! is safe because we know EnumTypes can handle Int input
                     return it.coerce(readInt())!!
+                }
+            } else if (tag == Tag.octetString) {
+                KeyValueTypes.all[attributeName]?.also {
+                    return KeyValues.codec.readValue(this, tag)
                 }
             }
 

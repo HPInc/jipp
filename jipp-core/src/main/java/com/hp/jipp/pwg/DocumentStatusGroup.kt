@@ -616,10 +616,4 @@ object DocumentStatusGroup {
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val ySide2ImageShiftActual = IntType("y-side2-image-shift-actual")
-
-    /** All known attributes */
-    @JvmField
-    val all = DocumentStatusGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }

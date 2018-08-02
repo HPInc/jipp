@@ -7,16 +7,15 @@
 
 package com.hp.jipp.pwg
 
-import com.hp.jipp.encoding.Enum
-import com.hp.jipp.encoding.EnumType
+import com.hp.jipp.encoding.* // ktlint-disable
 
 /**
- * All known [Enum] types, used for better decoding of [IppPacket] data.
+ * All known [KeyValueType] types, used for better decoding of [IppPacket] data.
  */
-object EnumTypes {
-    @JvmField val all: Map<String, EnumType<out Enum>> = listOf(
-{%- for enum in enums %}
-        {{ enum }}{{ "," if not loop.last }}
+object KeyValueTypes {
+    @JvmField val all: Map<String, KeyValueType> = listOf(
+{%- for type in types %}
+        {{ type.kref }}{{ "," if not loop.last }}
 {%- endfor %}
     ).map { it.name to it }.toMap()
 }

@@ -13,7 +13,7 @@ import com.hp.jipp.encoding.EnumType
 /**
  * All known [Enum] types, used for better decoding of [IppPacket] data.
  */
-object Enums {
+object EnumTypes {
     @JvmField val all: Map<String, EnumType<out Enum>> = listOf(
         DestinationStatuses.transmissionStatus,
         MediaCol.MediaSourceProperties.mediaSourceFeedOrientation,

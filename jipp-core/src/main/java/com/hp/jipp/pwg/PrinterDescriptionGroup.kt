@@ -2322,10 +2322,4 @@ object PrinterDescriptionGroup {
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val ySide2ImageShiftSupported = IntRangeType("y-side2-image-shift-supported")
-
-    /** All known attributes */
-    @JvmField
-    val all = PrinterDescriptionGroup::class.java.getStaticObjects()
-            .filter { it is AttributeType<*> }
-            .map { it as AttributeType<*> }
 }
