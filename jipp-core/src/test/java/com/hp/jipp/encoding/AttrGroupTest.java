@@ -18,19 +18,19 @@ public class AttrGroupTest {
     }
 
     @Test public void intAttr() throws IOException {
-        cycle(new AnyAttribute("integer", Arrays.asList(5)));
+        cycle(new UnknownAttribute("integer", Arrays.asList(5)));
     }
 
     @Test public void boolAttr() throws IOException {
-        cycle(new AnyAttribute("boolean", Arrays.asList(true)));
+        cycle(new UnknownAttribute("boolean", Arrays.asList(true)));
     }
 
     @Test public void enumAttr() throws IOException {
-        cycle(new AnyAttribute("enum", Arrays.asList(new UntypedEnum(5))));
+        cycle(new UnknownAttribute("enum", Arrays.asList(new UntypedEnum(5))));
     }
 
     @Test public void multiTypeAttr() throws IOException {
-        cycle(new AnyAttribute("multi", Arrays.asList(new UntypedEnum(5), true)));
+        cycle(new UnknownAttribute("multi", Arrays.asList(new UntypedEnum(5), true)));
     }
 
     @Test public void emptyAttr() throws IOException {
@@ -38,7 +38,7 @@ public class AttrGroupTest {
     }
 
     @Test public void coerceAttr() {
-        AnyAttribute intAttr = new AnyAttribute("document-state", new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6));
+        UnknownAttribute intAttr = new UnknownAttribute("document-state", new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6));
         DocumentState.Type documentStateType = new DocumentState.Type("document-state");
         assertEquals(Arrays.asList(
                 DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
@@ -46,7 +46,7 @@ public class AttrGroupTest {
     }
 
     @Test public void groupExtract() {
-        AttributeType<Object> untypedDocumentState = new AnyAttribute.Type("document-state");
+        AttributeType<Object> untypedDocumentState = new UnknownAttribute.Type("document-state");
 
 
         AttributeGroup group = new AttributeGroup(Tag.operationAttributes,

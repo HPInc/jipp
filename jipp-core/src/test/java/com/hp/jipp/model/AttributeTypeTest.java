@@ -4,10 +4,7 @@ import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.encoding.*;
-import com.hp.jipp.pwg.JobState;
-import com.hp.jipp.pwg.Operation;
-import com.hp.jipp.pwg.PrinterState;
-import com.hp.jipp.pwg.Status;
+import com.hp.jipp.pwg.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -97,5 +94,19 @@ public class AttributeTypeTest {
         assertEquals(0, attribute.size());
         assertEquals(Tag.unsupported, attribute.getTag());
         assertTrue(attribute.isUnsupported());
+    }
+
+    @Test
+    public void intOrRangeType() throws Exception {
+        Attribute<?> attribute = cycle(
+                PrinterDescriptionGroup.stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
+        // We get the raw types here because we didn't use the type to cycle
+        assertEquals(Arrays.asList(5, new IntRange(7, 10)), attribute);
+
+        Attribute<?> attribute2 = cycle(PrinterDescriptionGroup.stitchingOffsetSupported,
+                PrinterDescriptionGroup.stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
+        assertEquals(new IntOrIntRange(5), attribute2.get(0));
+        assertEquals(new IntOrIntRange(7, 10), attribute2.get(1));
+        assertEquals(Arrays.asList(new IntOrIntRange(5), new IntOrIntRange(7, 10)), attribute2);
     }
 }
