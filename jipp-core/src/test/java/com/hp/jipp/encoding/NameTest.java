@@ -48,8 +48,8 @@ public class NameTest {
         Attribute<Name> jobNameAttr = jobNameType.of(new Name("my job"));
         assertEquals(Tag.nameWithoutLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
-        assertEquals("my job", result.getValues().get(0).getValue());
-        assertNull(result.getValues().get(0).getLang());
+        assertEquals("my job", result.get(0).getValue());
+        assertNull(result.get(0).getLang());
     }
 
     @Test
@@ -57,8 +57,8 @@ public class NameTest {
         Attribute<Name> jobNameAttr = jobNameType.of("my job");
         assertEquals(Tag.nameWithoutLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
-        assertEquals("my job", result.getValues().get(0).getValue());
-        assertNull(result.getValues().get(0).getLang());
+        assertEquals("my job", result.get(0).getValue());
+        assertNull(result.get(0).getLang());
     }
 
     @Test
@@ -66,8 +66,8 @@ public class NameTest {
         Attribute<Name> jobNameAttr = jobNameType.of(new Name("my job", "en"));
         assertEquals(Tag.nameWithLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
-        assertEquals("my job", result.getValues().get(0).getValue());
-        assertEquals("en", result.getValues().get(0).getLang());
+        assertEquals("my job", result.getValue().getValue());
+        assertEquals("en", result.getValue().getLang());
     }
 
     @Test

@@ -26,12 +26,12 @@ public class CollectionTest {
     @Test
     public void finishingsEmpty() throws Exception {
         FinishingsCol empty = new FinishingsCol();
-        assertEquals(empty, cycle(finishingsColActual, finishingsColActual.of(empty)).getValue());
+        assertEquals(empty, cycle(finishingsColActual, finishingsColActual.of(empty)).get(0));
     }
 
     @Test
     public void finishings() throws Exception {
-        FinishingsCol received = cycle(finishingsColActual, finishingsColActual.of(finishingsCol)).getValue();
+        FinishingsCol received = cycle(finishingsColActual, finishingsColActual.of(finishingsCol)).get(0);
         assertEquals(finishingsCol, received);
     }
 

@@ -37,18 +37,18 @@ interface AttributeCollection : PrettyPrintable {
         /** Returns the first value of attribute [type] from [attributes]. */
         fun <T : Any> extractOne(attributes: List<Attribute<*>>, type: AttributeType<T>): T? =
             coerced(attributes, type)?.let {
-                when (it.values.size) {
+                when (it.size) {
                     0 -> null
-                    else -> it.value
+                    else -> it[0]
                 }
             }
 
         /** Returns all values of attribute [type] from [attributes]. */
         fun <T : Any> extractAll(attributes: List<Attribute<*>>, type: AttributeType<T>): List<T>? =
             coerced(attributes, type)?.let {
-                when (it.values.size) {
+                when (it.size) {
                     0 -> null
-                    else -> it.values
+                    else -> it
                 }
             }
 

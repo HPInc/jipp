@@ -27,7 +27,7 @@ class EnumTest {
     @Test
     @Throws(Exception::class)
     fun sample() {
-        assertEquals(listOf(Sample.One), cycle(MySample, MySample.of(Sample.One)).values)
+        assertEquals(listOf(Sample.One), cycle(MySample, MySample.of(Sample.One)))
         assertThat(Enum.allFrom(Sample::class.java), hasItems(Sample.One, Sample.Two, Sample.Three))
     }
 
@@ -35,13 +35,13 @@ class EnumTest {
     @Throws(Exception::class)
     fun custom() {
         val custom = Sample(0x77, "???")
-        assertEquals(custom, cycle(MySample, MySample.of(custom)).value)
+        assertEquals(custom, cycle(MySample, MySample.of(custom)).getValue())
     }
 
     @Test
     @Throws(Exception::class)
     fun fetchFromGroup() {
         assertEquals(listOf(Sample.Two, Sample.Three),
-                cycle(AttributeGroup(Tag.jobAttributes, MySample.of(Sample.Two, Sample.Three)))[MySample]?.values)
+                cycle(AttributeGroup(Tag.jobAttributes, MySample.of(Sample.Two, Sample.Three)))[MySample])
     }
 }

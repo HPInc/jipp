@@ -26,8 +26,8 @@ public class IntRangeTypeTest {
         Attribute<IntRange> ranges = cycle(rangeType, rangeType.of(new IntRange(0, 100), new IntRange(90, 1000)));
         assertEquals(0, ranges.getValue().getStart().intValue());
         assertEquals(100, ranges.getValue().getEndInclusive().intValue());
-        assertEquals(90, ranges.getValues().get(1).getStart().intValue());
-        assertEquals(1000, ranges.getValues().get(1).getEndInclusive().intValue());
+        assertEquals(90, ranges.get(1).getStart().intValue());
+        assertEquals(1000, ranges.get(1).getEndInclusive().intValue());
     }
 
     @Test
@@ -41,6 +41,6 @@ public class IntRangeTypeTest {
     public void rangeOrIntMixed() throws IOException {
         // It's legal to include both types, so coerce them to ranges
         Attribute<IntOrIntRange> ranges = rangeOrIntType.of(new IntOrIntRange(5), new IntOrIntRange(5, 6));
-        assertTrue(ranges.getValues().get(0).getSimpleInt());
+        assertTrue(ranges.get(0).getSimpleInt());
     }
 }
