@@ -7,7 +7,7 @@
 
 package com.hp.jipp.pwg
 
-import com.hp.jipp.encoding.* // ktlint-disable
+import com.hp.jipp.encoding.KeyValueType
 import com.hp.jipp.model.IppPacket
 
 /**

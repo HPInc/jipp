@@ -232,6 +232,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             } ?: throw ParseError("No codec found for tag $initTag")
         }
 
+        @Suppress("ReturnCount")
         private fun <T : Any> IppInputStream.readValue(codec: Codec<T>, tag: Tag, attributeName: String): Any {
             // Apply a special case for enum values which we can match with all known [Enums]
             if (tag == Tag.enumValue) {

@@ -1,26 +1,14 @@
 package com.hp.jipp.encoding;
 
-import org.jetbrains.annotations.NotNull;
+import com.hp.jipp.pwg.OperationGroup;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
-import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
-
-import com.hp.jipp.pwg.Status;
-import com.hp.jipp.util.BuildError;
-import com.hp.jipp.util.KotlinTest;
-import com.hp.jipp.util.ParseError;
-import com.hp.jipp.model.Types;
-import com.hp.jipp.pwg.Operation;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
@@ -32,9 +20,9 @@ public class AttributeTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void octetString() throws IOException {
+    public void octetString() throws Exception {
         AttributeType<byte[]> octetsType = new OctetsType("name");
-        Attribute<byte[]> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
+        Attribute<?> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
         assertArrayEquals(new byte[] {
                 (byte)0x30, // octetString
                 (byte)0x00,
@@ -44,14 +32,14 @@ public class AttributeTest {
                 (byte)0x05,
                 'v', 'a', 'l', 'u', 'e'
         }, toBytes(attribute));
-        attribute = (Attribute<byte[]>) cycle(attribute).get(0);
+        attribute = cycle(attribute).get(0);
         assertNull(attribute.getTag());
         assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), (byte[]) attribute.get(0));
     }
 
     @Test
-    public void otherOctet() throws IOException {
+    public void parseOtherOctet() throws Exception {
         byte[] bytes = new byte[] {
                 (byte)0x39, // Reserved octetString type
                 (byte)0x00,
@@ -72,6 +60,13 @@ public class AttributeTest {
         assertTrue(attribute.getValue().toString().contains("tag(x39)"));
     }
 
+    @Test
+    public void equality() throws Exception {
+        Attribute<String> stringAttr = OperationGroup.attributesCharset.of("one", "two", "three");
+        // equals must be symmetric:
+        assertEquals(Arrays.asList("one", "two", "three"), stringAttr);
+        assertEquals(stringAttr, Arrays.asList("one", "two", "three"));
+    }
 //
 //    @Test
 //    public void multiOctetString() throws IOException {
