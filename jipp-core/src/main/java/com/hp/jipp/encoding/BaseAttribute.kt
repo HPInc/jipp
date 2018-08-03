@@ -39,9 +39,10 @@ open class BaseAttribute<T : Any>(
         "$name($tag)"
     }
 
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
-            other === this -> true
+    override fun equals(other: Any?) =
+        if (other === this) {
+            true
+        } else when (other) {
             is Attribute<*> ->
                 // When comparing an attribute, evaluate its name and tag in addition to values
                 other.name == name && other.tag == tag && values == other
@@ -50,7 +51,6 @@ open class BaseAttribute<T : Any>(
                 values == other
             else -> false
         }
-    }
 
     override fun hashCode(): Int {
         // We do not consider name/tag when hashing because equals==true must also result in equal hashes

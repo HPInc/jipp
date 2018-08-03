@@ -62,11 +62,18 @@ public class AttributeTest {
 
     @Test
     public void equality() throws Exception {
-        Attribute<String> stringAttr = OperationGroup.attributesCharset.of("one", "two", "three");
-        // equals must be symmetric:
-        assertEquals(Arrays.asList("one", "two", "three"), stringAttr);
-        assertEquals(stringAttr, Arrays.asList("one", "two", "three"));
-        assertEquals(Arrays.asList("one", "two", "three").hashCode(), stringAttr.hashCode());
+        Attribute<String> charsetAttr = OperationGroup.attributesCharset.of("one", "two", "three");
+        Attribute<String> charsetAttr2 = OperationGroup.attributesCharset.of("one", "two", "three");
+        assertEquals(charsetAttr, charsetAttr2);
+
+        // Different metadata means different object:
+        Attribute<String> natLangAttr = OperationGroup.attributesNaturalLanguage.of("one", "two", "three");
+        assertNotEquals(charsetAttr, natLangAttr);
+
+        // equals must be symmetric with equivalent List
+        assertEquals(Arrays.asList("one", "two", "three"), charsetAttr);
+        assertEquals(charsetAttr, Arrays.asList("one", "two", "three"));
+        assertEquals(Arrays.asList("one", "two", "three").hashCode(), charsetAttr.hashCode());
     }
 
     //
