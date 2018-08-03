@@ -53,13 +53,7 @@ open class BaseAttribute<T : Any>(
     }
 
     override fun hashCode(): Int {
-        var code = values.hashCode()
-        code = HASH_PRIME * code + name.hashCode()
-        code = HASH_PRIME * code + (tag?.hashCode() ?: 0)
-        return code
-    }
-
-    companion object {
-        private const val HASH_PRIME = 31
+        // We do not consider name/tag when hashing because equals==true must also result in equal hashes
+        return values.hashCode()
     }
 }

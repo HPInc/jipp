@@ -66,6 +66,7 @@ public class AttributeTest {
         // equals must be symmetric:
         assertEquals(Arrays.asList("one", "two", "three"), stringAttr);
         assertEquals(stringAttr, Arrays.asList("one", "two", "three"));
+        assertEquals(Arrays.asList("one", "two", "three").hashCode(), stringAttr.hashCode());
     }
 //
 //    @Test
