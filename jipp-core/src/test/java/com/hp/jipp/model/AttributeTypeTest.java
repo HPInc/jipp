@@ -53,12 +53,12 @@ public class AttributeTypeTest {
                         Operation.createJob)));
         System.out.println(group);
         assertEquals(Arrays.asList(Operation.cancelJob, Operation.createJob),
-                group.get(Types.operationsSupported).getValues());
+                group.get(Types.operationsSupported));
     }
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        IntRange range = cycle(Types.copiesSupported, Types.copiesSupported.of(new IntRange(0, 99))).getValue();
+        IntRange range = cycle(Types.copiesSupported, Types.copiesSupported.of(new IntRange(0, 99))).get(0);
         assertEquals(0, range.getFirst());
         assertEquals(99, range.getLast());
     }
@@ -66,7 +66,7 @@ public class AttributeTypeTest {
     @Test
     public void resolution() throws Exception {
         Resolution resolution = cycle(Types.printerResolutionDefault, Types.printerResolutionDefault.of(
-                new Resolution(300, 600, ResolutionUnit.dotsPerInch))).getValue();
+                new Resolution(300, 600, ResolutionUnit.dotsPerInch))).get(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
         assertEquals(ResolutionUnit.dotsPerInch, resolution.getUnit());
@@ -76,7 +76,7 @@ public class AttributeTypeTest {
     public void unknown() throws Exception {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.unknown());
-        assertEquals(0, attribute.getValues().size());
+        assertEquals(0, attribute.size());
         assertEquals(Tag.unknown, attribute.getTag());
         assertTrue(attribute.isUnknown());
     }
@@ -85,7 +85,7 @@ public class AttributeTypeTest {
     public void noValue() throws Exception {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.noValue());
-        assertEquals(0, attribute.getValues().size());
+        assertEquals(0, attribute.size());
         assertEquals(Tag.noValue, attribute.getTag());
         assertTrue(attribute.isNoValue());
     }
@@ -94,9 +94,8 @@ public class AttributeTypeTest {
     public void unsupported() throws Exception {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.unsupported());
-        assertEquals(0, attribute.getValues().size());
+        assertEquals(0, attribute.size());
         assertEquals(Tag.unsupported, attribute.getTag());
         assertTrue(attribute.isUnsupported());
     }
-
 }

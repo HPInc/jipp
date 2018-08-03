@@ -56,13 +56,13 @@ data class IppPacket constructor(
 
     /** Return all values found within the specified group and having the same attribute type */
     fun <T : Any> getValues(groupDelimiter: Tag, type: AttributeType<T>): List<T> =
-        this[groupDelimiter]?.get(type)?.values ?: listOf()
+        this[groupDelimiter]?.get(type) ?: listOf()
 
     fun <T : Any> getStrings(groupDelimiter: Tag, type: AttributeType<T>): List<String> =
         this[groupDelimiter]?.get(type)?.strings() ?: listOf()
 
     fun <T : Any> getValue(groupDelimiter: Tag, type: AttributeType<T>): T? =
-        this[groupDelimiter]?.get(type)?.value
+        this[groupDelimiter]?.get(type)?.get(0)
 
     /** Make a copy of this packet but replace with the supplied attribute groups */
     fun withAttributeGroups(attributeGroups: List<AttributeGroup>): IppPacket =

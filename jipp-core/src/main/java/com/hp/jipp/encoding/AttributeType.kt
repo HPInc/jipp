@@ -12,15 +12,7 @@ interface AttributeType<T : Any> {
     /** Return an attribute containing one or more values of type [T]. */
     fun of(values: List<T>): Attribute<T> {
         val self = this
-        return object : Attribute<T> {
-            override val name = self.name
-            override val values = values
-            override val tag: Tag? = null
-            override val type: AttributeType<T> = this@AttributeType
-            override fun toString() = "$name = $values"
-            override fun equals(other: Any?) =
-                if (other is Attribute<*>) equalTo(other) else super.equals(other)
-        }
+        return BaseAttribute(self.name, this, values)
     }
 
     /** Return an attribute containing supplied values. */
@@ -29,17 +21,12 @@ interface AttributeType<T : Any> {
     }
 
     /** Return an empty attribute (containing no values) for this type but substituting a tag. */
-    fun empty(tag: Tag): Attribute<T> {
+    fun empty(
+        /** Out-of-bound tag */
+        tag: Tag
+    ): Attribute<T> {
         val self = this
-        return object : Attribute<T> {
-            override val name = self.name
-            override val values = emptyList<T>()
-            override val tag: Tag = tag
-            override val type: AttributeType<T> = this@AttributeType
-            override fun toString() = "$name($tag)"
-            override fun equals(other: Any?) =
-                if (other is Attribute<*>) equalTo(other) else super.equals(other)
-        }
+        return BaseAttribute(self.name, this@AttributeType, tag)
     }
 
     /** Return a "no-value" attribute of this type. */
@@ -61,7 +48,7 @@ interface AttributeType<T : Any> {
             // Allow coercion of empty attributes (having an out-of-band tag)
             empty(attribute.tag!!)
         } else {
-            val coercedValues = attribute.values.mapNotNull { coerce(it) }
+            val coercedValues = attribute.mapNotNull { coerce(it) }
             if (coercedValues.isNotEmpty()) {
                 of(coercedValues)
             } else {

@@ -42,7 +42,7 @@ public class AttrGroupTest {
         DocumentState.Type documentStateType = new DocumentState.Type("document-state");
         assertEquals(Arrays.asList(
                 DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
-        ), documentStateType.coerce(intAttr).getValues());
+        ), documentStateType.coerce(intAttr));
     }
 
     @Test public void groupExtract() {
@@ -56,6 +56,6 @@ public class AttrGroupTest {
 
         assertEquals(Arrays.asList(
                 DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
-        ), group.get(documentStateType).getValues());
+        ), group.get(documentStateType));
     }
 }

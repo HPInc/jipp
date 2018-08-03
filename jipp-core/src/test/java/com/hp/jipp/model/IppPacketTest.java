@@ -177,7 +177,7 @@ public class IppPacketTest {
 
         Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
         assertEquals("attributes-charset", readAttribute.getName());
-        assertEquals(new OtherString(Tag.charset, "us-ascii"), readAttribute.getValue());
+        assertEquals(new OtherString(Tag.charset, "us-ascii"), readAttribute.get(0));
         assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharsetType));
     }
 
@@ -283,6 +283,7 @@ public class IppPacketTest {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.printerAttributes, Types.operationsSupported.of(Operation.createJob)));
         packet = cycle(packet);
+        System.out.println(packet.toString());
         assertTrue(packet.toString().contains(Operation.createJob.getName()));
     }
 }

@@ -27,29 +27,51 @@ import static com.hp.jipp.encoding.Cycler.*;
 import kotlin.text.Charsets;
 
 public class AttributeTest {
-    // TODO: These are different; recast
-//
-//    @Rule
-//    public final ExpectedException exception = ExpectedException.none();
-//
-//    @Test
-//    public void octetString() throws IOException {
-//        AttributeType<byte[]> octetStringType = new OctetStringType(Tag.octetString, "name");
-//        Attribute<byte[]> attribute = octetStringType.of("value".getBytes(Charsets.UTF_8));
-//        assertArrayEquals(new byte[] {
-//                (byte)0x30, // octetString
-//                (byte)0x00,
-//                (byte)0x04,
-//                'n', 'a', 'm', 'e',
-//                (byte)0x00,
-//                (byte)0x05,
-//                'v', 'a', 'l', 'u', 'e'
-//        }, toBytes(attribute));
-//        attribute = cycle(attribute);
-//        assertEquals(Tag.octetString, attribute.getValueTag());
-//        assertEquals("name", attribute.getName());
-//        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
-//    }
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void octetString() throws IOException {
+        AttributeType<byte[]> octetsType = new OctetsType("name");
+        Attribute<byte[]> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
+        assertArrayEquals(new byte[] {
+                (byte)0x30, // octetString
+                (byte)0x00,
+                (byte)0x04,
+                'n', 'a', 'm', 'e',
+                (byte)0x00,
+                (byte)0x05,
+                'v', 'a', 'l', 'u', 'e'
+        }, toBytes(attribute));
+        attribute = (Attribute<byte[]>) cycle(attribute).get(0);
+        assertNull(attribute.getTag());
+        assertEquals("name", attribute.getName());
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
+    }
+
+    @Test
+    public void otherOctet() throws IOException {
+        byte[] bytes = new byte[] {
+                (byte)0x39, // Reserved octetString type
+                (byte)0x00,
+                (byte)0x04,
+                'n', 'a', 'm', 'e',
+                (byte)0x00,
+                (byte)0x05,
+                'v', 'a', 'l', 'u', 'e'
+        };
+        Attribute<?> attribute = AttributeGroup.Companion.readNextAttribute(new IppInputStream(new ByteArrayInputStream(bytes)));
+        assertEquals("name", attribute.getName());
+        OtherOctets expected = new OtherOctets(Tag.fromInt(0x39), "value".getBytes(Charsets.UTF_8));
+        assertEquals(OtherOctets.class, attribute.getValue().getClass());
+        assertArrayEquals("value".getBytes(Charsets.UTF_8), ((OtherOctets)attribute.getValue()).getValue());
+        assertEquals(expected, attribute.getValue());
+        assertEquals(expected.hashCode(), attribute.getValue().hashCode());
+        assertTrue(attribute.getValue().toString().contains("76616c7565"));
+        assertTrue(attribute.getValue().toString().contains("tag(x39)"));
+    }
+
 //
 //    @Test
 //    public void multiOctetString() throws IOException {

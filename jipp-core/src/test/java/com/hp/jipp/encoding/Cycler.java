@@ -1,3 +1,4 @@
+
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.IppPacket;
@@ -6,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 
@@ -15,8 +17,9 @@ public class Cycler {
         return cycle(groupOf(Tag.printerAttributes, attribute)).get(type);
     }
 
-    public static AttributeGroup cycle(Attribute<?>... attribute) throws IOException {
-        return cycle(new AttributeGroup(Tag.printerAttributes, Arrays.asList(attribute)));
+    public static List<Attribute<?>> cycle(Attribute<?>... attribute) throws IOException {
+        return cycle(new AttributeGroup(Tag.printerAttributes, Arrays.asList(attribute)))
+                .getAttributes();
     }
 
     /** Write group to a byte stream and then read it back and assert that the contents are identical */
@@ -45,6 +48,13 @@ public class Cycler {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         IppOutputStream out = new IppOutputStream(bytesOut);
         packet.write(out);
+        return bytesOut.toByteArray();
+    }
+
+    public static byte[] toBytes(Attribute<?> attribute) throws IOException {
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        IppOutputStream out = new IppOutputStream(bytesOut);
+        AttributeGroup.Companion.writeAttribute(out, attribute);
         return bytesOut.toByteArray();
     }
 }

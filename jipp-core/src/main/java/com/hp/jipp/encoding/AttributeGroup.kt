@@ -50,13 +50,9 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             type.coerce(it)
         }
 
-    /** Return the first value of the attribute matching [type]. */
+    /** Return the first value of an attribute matching [type]. */
     fun <T : Any> getValue(type: AttributeType<T>): T? =
-        get(type)?.value
-
-    /** Return all values of the attribute matching [type]. */
-    fun <T : Any> getValues(type: AttributeType<T>): List<T> =
-        get(type)?.values ?: listOf()
+        get(type)?.get(0)
 
     /** Write this group to the [IppOutputStream] */
     @Throws(IOException::class)
@@ -199,7 +195,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
             AttributeGroup(groupTag, { input.readNextAttribute() }.repeatUntilNull().toList())
 
         /** Read the next attribute if present */
-        private fun IppInputStream.readNextAttribute(): Attribute<Any>? =
+        fun IppInputStream.readNextAttribute(): Attribute<Any>? =
             if (available() == 0) {
                 null
             } else {
@@ -282,7 +278,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 writeShort(0) // 0 value length = no values
             } ?: run {
                 var nameToWrite = attribute.name
-                attribute.values.forEach { value ->
+                attribute.forEach { value ->
                     val encoder = clsToCodec[value.javaClass]
                         ?: codecs.firstOrNull { it.cls.isAssignableFrom(value.javaClass) }
                         ?: throw BuildError("Cannot handle $value: ${value.javaClass}")
