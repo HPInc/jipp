@@ -40,16 +40,6 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
     /** Returns the first value in the attribute if present. */
     fun getValue(): T?
 
-    /** Convert all attribute values to their most basic string-like form */
-    private fun toStrings() =
-        map {
-            if (it is Stringable) {
-                it.asString()
-            } else {
-                it.toString()
-            }
-        }
-
     override fun print(printer: PrettyPrinter) {
         when (size) {
             0 -> printer.open(PrettyPrinter.SILENT, name)

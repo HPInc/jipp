@@ -22,7 +22,7 @@ public class AttributeTest {
     @Test
     public void octetString() throws Exception {
         AttributeType<byte[]> octetsType = new OctetsType("name");
-        Attribute<?> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
+        Attribute<byte[]> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
         assertArrayEquals(new byte[] {
                 (byte)0x30, // octetString
                 (byte)0x00,
@@ -32,7 +32,7 @@ public class AttributeTest {
                 (byte)0x05,
                 'v', 'a', 'l', 'u', 'e'
         }, toBytes(attribute));
-        attribute = cycle(attribute).get(0);
+        attribute = cycle(attribute);
         assertNull(attribute.getTag());
         assertEquals("name", attribute.getName());
         assertArrayEquals("value".getBytes(Charsets.UTF_8), (byte[]) attribute.get(0));
@@ -68,7 +68,8 @@ public class AttributeTest {
         assertEquals(stringAttr, Arrays.asList("one", "two", "three"));
         assertEquals(Arrays.asList("one", "two", "three").hashCode(), stringAttr.hashCode());
     }
-//
+
+    //
 //    @Test
 //    public void multiOctetString() throws IOException {
 //        AttributeType<byte[]> stringType = new OctetStringType(Tag.nameWithoutLanguage, "name");

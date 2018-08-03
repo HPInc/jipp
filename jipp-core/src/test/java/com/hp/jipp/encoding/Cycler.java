@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
@@ -17,9 +18,10 @@ public class Cycler {
         return cycle(groupOf(Tag.printerAttributes, attribute)).get(type);
     }
 
-    public static List<Attribute<?>> cycle(Attribute<?>... attribute) throws IOException {
-        return cycle(new AttributeGroup(Tag.printerAttributes, Arrays.asList(attribute)))
-                .getAttributes();
+    @SuppressWarnings("unchecked")
+    public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
+        return (Attribute<T>) cycle(new AttributeGroup(Tag.printerAttributes, Collections.singletonList(attribute)))
+                .getAttributes().get(0);
     }
 
     /** Write group to a byte stream and then read it back and assert that the contents are identical */

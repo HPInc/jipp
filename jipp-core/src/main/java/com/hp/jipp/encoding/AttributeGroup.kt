@@ -228,7 +228,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
                 val values = listOf(readValue(it, initTag, attributeName)) + {
                     readNextValue(attributeName)
                 }.repeatUntilNull()
-                AnyAttribute(attributeName, values)
+                UnknownAttribute(attributeName, values)
             } ?: throw ParseError("No codec found for tag $initTag")
         }
 

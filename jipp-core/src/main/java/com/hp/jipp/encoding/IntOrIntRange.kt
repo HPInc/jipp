@@ -4,7 +4,7 @@
 package com.hp.jipp.encoding
 
 /** An int or range of int */
-class IntOrIntRange private constructor(
+data class IntOrIntRange constructor(
     val start: Int,
     val endInclusive: Int,
     /** If true, this data was originally intended as a single integer, and [start] == [endInclusive] */
