@@ -13,8 +13,12 @@ data class OtherOctets(override val tag: Tag, override val value: ByteArray) : T
     }
 
     override fun hashCode(): Int {
-        return (tag.hashCode() * 31 + value.contentHashCode())
+        return (tag.hashCode() * HASH_PRIME + value.contentHashCode())
     }
 
     override fun toString() = "${value.toHexString()} ($tag)"
+
+    companion object {
+        private const val HASH_PRIME = 31
+    }
 }

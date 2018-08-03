@@ -3,14 +3,13 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.toHexString
 import java.text.SimpleDateFormat
 import java.util.* // ktlint-disable
 
-/** Any kind of attribute, having any number of any type of values */
+/** Any kind of attribute, having any number of any type of values. */
 interface Attribute<T : Any> : PrettyPrintable, List<T> {
     /** The name of the attribute. */
     val name: String
@@ -79,46 +78,5 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
 
     class Type(override val name: String) : AttributeType<Any> {
         override fun coerce(value: Any): Any? = value
-    }
-}
-
-
-open class BaseAttribute<T: Any>(
-    override val name: String,
-    override val type: AttributeType<T>,
-    final override val tag: Tag?,
-    val values: List<T>
-) : Attribute<T>, List<T> by values {
-
-    constructor(name: String, type: AttributeType<T>, values: List<T>) : this(name, type, null, values)
-
-    constructor(name: String, type: AttributeType<T>, tag: Tag) : this(name, type, tag, emptyList())
-
-    init {
-        if (values.isEmpty() && (tag == null || (!tag.isOutOfBand && !tag.isCollection))) {
-            throw BuildError("Attribute must have values or an out-of-band tag")
-        }
-    }
-
-    override fun getValue(): T? = if (values.isEmpty()) null else values[0]
-
-    override fun toString() = if (tag == null) {
-        "$name = $values"
-    } else {
-        "$name($tag)"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other !is Attribute<*>) return false
-        // Attribute equality only occurs with respect to its name, tag, and value content
-        return other.name == name && other.tag == tag && values == other
-    }
-
-    override fun hashCode(): Int {
-        var code = values.hashCode()
-        code = 31 * code + name.hashCode()
-        code = 31 * code + (tag?.hashCode() ?: 0)
-        return code
     }
 }
