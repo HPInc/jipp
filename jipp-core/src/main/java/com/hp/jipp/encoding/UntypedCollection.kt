@@ -11,7 +11,6 @@ package com.hp.jipp.encoding
  * when extracted from an [AttributeGroup].
  */
 data class UntypedCollection(override val attributes: List<Attribute<*>>) : AttributeCollection {
-
     /** An [AttributeType] for [UntypedCollection] values */
     class Type(override val name: String) : AttributeType<UntypedCollection> {
         override fun coerce(value: Any) =

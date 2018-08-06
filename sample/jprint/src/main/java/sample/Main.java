@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Tag.*;
-import static com.hp.jipp.model.Types.*;
+import static com.hp.jipp.pwg.OperationGroup.*;
 
 class Main {
     public static void main(String[] args) throws IOException {

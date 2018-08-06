@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.pwg.JobStatusGroup;
+import com.hp.jipp.util.KotlinTest;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -62,5 +63,11 @@ public class TextTest {
     public void failCoerce() {
         KeywordType wrongType = new KeywordType("job-name");
         assertNull(groupOf(Tag.jobAttributes, wrongType.of("utf-8")).get(jobTextType));
+    }
+
+    @Test
+    public void cover() {
+        Text hi = new Text("hi");
+        KotlinTest.cover(hi, hi.copy("hi", null), new Text("hola", "sp"));
     }
 }

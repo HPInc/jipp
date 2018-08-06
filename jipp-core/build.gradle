@@ -57,7 +57,8 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ['**/AutoValue_**'])
+                    exclude: ['**/AutoValue_**',
+                              '**/pwg/**'])
         })
     }
 }

@@ -21,14 +21,8 @@ class IntOrIntRangeType(
     /** Return an attribute containing the supplied integer value(s) */
     fun of(vararg integers: Int) = ofIntegers(integers.toList())
 
-    /** Return an attribute containing the supplied integer value(s) */
-    operator fun invoke(vararg integers: Int) = ofIntegers(integers.toList())
-
     /** Return an attribute containing the supplied range(s) */
     fun ofRanges(ranges: List<IntRange>) = of(ranges.map { IntOrIntRange(it) })
-
-    /** Return an attribute containing the supplied range(s) */
-    operator fun invoke(vararg ranges: IntRange) = ofRanges(ranges.toList())
 
     /** Return an attribute containing the supplied range(s) */
     fun of(vararg ranges: IntRange) = ofRanges(ranges.toList())
