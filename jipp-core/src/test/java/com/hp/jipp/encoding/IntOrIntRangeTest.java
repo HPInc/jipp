@@ -1,18 +1,17 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.util.KotlinTest;
 import kotlin.ranges.IntRange;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static com.hp.jipp.encoding.Cycler.cycle;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class IntOrIntRangeTypeTest {
-    IntRangeType rangeType = new IntRangeType("range-only");
-    IntOrIntRangeType rangeOrIntType = new IntOrIntRangeType("range-or-int");
+public class IntOrIntRangeTest {
+    private IntRangeType rangeType = new IntRangeType("range-only");
+    private IntOrIntRangeType rangeOrIntType = new IntOrIntRangeType("range-or-int");
 
     @Test
     public void simpleRange() throws IOException {
@@ -41,5 +40,25 @@ public class IntOrIntRangeTypeTest {
     public void rangeOrIntMixed() throws IOException {
         Attribute<IntOrIntRange> ranges = rangeOrIntType.of(new IntOrIntRange(5), new IntOrIntRange(5, 6));
         assertEquals(5, ranges.get(0).getStart());
+    }
+
+    @Test
+    public void range() throws Exception {
+        IntOrIntRange range = new IntOrIntRange(5, 6);
+        assertEquals(new IntRange(5, 6), range.getValue());
+    }
+
+    @Test
+    public void cover() throws Exception {
+        KotlinTest.cover(new IntOrIntRange(5), new IntOrIntRange(5), new IntOrIntRange(5, 6));
+    }
+
+    @Test
+    public void equality() throws Exception {
+        IntOrIntRange value = new IntOrIntRange(5);
+        assertEquals(value, value);
+        assertEquals(new IntOrIntRange(5), value);
+        assertNotEquals(new IntOrIntRange(6), value);
+        assertNotEquals(5, value);
     }
 }

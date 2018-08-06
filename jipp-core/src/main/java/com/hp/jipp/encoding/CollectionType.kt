@@ -32,7 +32,8 @@ open class CollectionType<T : AttributeCollection>(
                     writeTag(Tag.memberAttributeName)
                     writeShort(0)
                     writeString(attribute.name)
-                    writeAttribute(attribute.withName(""))
+                    /** Write the attribute with a blank name */
+                    writeAttribute(attribute, name = "")
                 }
                 writeAttribute(endCollectionAttribute)
             })

@@ -1,28 +1,45 @@
 package com.hp.jipp.encoding;
 
-import org.junit.Rule;
+import com.hp.jipp.pwg.DocumentState;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.model.Types;
-import com.hp.jipp.model.MediaSize;
 import com.hp.jipp.util.BuildError;
-import com.hp.jipp.util.KotlinTest;
-import com.hp.jipp.util.ParseError;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
 public class AttributeGroupTest {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
+    @Test public void emptyGroup() throws IOException {
+        cycle(new AttributeGroup(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList()));
+    }
+
+    @Test public void emptyGroupOf() throws IOException {
+        assertEquals(0, cycle(groupOf(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList())).size());
+    }
+
+    @Test public void groupExtract() {
+        AttributeType<Object> untypedDocumentStateType = new UnknownAttribute.Type("document-state");
+
+        AttributeGroup group = new AttributeGroup(Tag.operationAttributes,
+                untypedDocumentStateType.of(new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6)));
+
+        DocumentState.Type documentStateType = new DocumentState.Type("document-state");
+
+        assertEquals(Arrays.asList(
+                DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
+        ), group.get(documentStateType));
+    }
 
     @Test
     public void multiAttribute() throws Exception {
@@ -52,12 +69,62 @@ public class AttributeGroupTest {
         assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
-    @Test
+    @Test(expected = BuildError.class)
     public void duplicateName() throws Exception {
-        exception.expect(BuildError.class);
         groupOf(Tag.operationAttributes,
                 Types.attributesCharset.of("utf-8"),
                 Types.attributesCharset.of("utf-8"));
+    }
+
+    @Test(expected = BuildError.class)
+    public void badDelimiter() throws Exception {
+        AttributeGroup group = new AttributeGroup(Tag.adminDefine);
+    }
+
+    @Test
+    public void get() throws Exception {
+        AttributeGroup group = groupOf(Tag.operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16"));
+        // Get by attribute type
+        assertEquals(Types.attributesCharset.of("utf-8","utf-16"), group.get(Types.attributesCharset));
+        // Get by attribute name (in some cases this will not be as well typed, e.g. collections)
+        assertEquals(Types.attributesCharset.of("utf-8","utf-16"), group.get(Types.attributesCharset.getName()));
+        assertNull(group.get(Types.printerName));
+    }
+
+    @Test
+    public void unknownAttribute() throws Exception {
+        UnknownAttribute attr = new UnknownAttribute("vendor-state",
+                new UntypedEnum(3),
+                new OtherOctets(Tag.fromInt(0x39), new byte[] { 0x01 }));
+        AttributeGroup group = cycle(groupOf(Tag.operationAttributes, attr));
+        assertEquals(attr, group.get("vendor-state"));
+    }
+
+    @Test
+    public void cover() throws Exception {
+        coverList(groupOf(Tag.operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16")),
+                Types.attributesCharset.of("utf-8","utf-16"),
+                Types.attributesCharset.of("utf-8"));
+    }
+
+    @Test
+    public void equality() throws Exception {
+        AttributeGroup group = groupOf(Tag.operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16"));
+        List<Attribute<String>> attributes = Collections.singletonList(Types.attributesCharset.of("utf-8", "utf-16"));
+        assertNotEquals(group, 5);
+        assertEquals(group, group);
+        assertEquals(attributes, group);
+        //noinspection AssertEqualsBetweenInconvertibleTypes
+        assertEquals(group, attributes);
+        assertNotEquals(group, Collections.singletonList(Types.attributesCharset.of("utf-8")));
+        assertNotEquals(group, groupOf(Tag.operationAttributes,
+                Collections.singletonList(Types.attributesCharset.of("utf-8"))));
+        assertNotEquals(group, groupOf(Tag.printerAttributes,
+                Types.attributesCharset.of("utf-8","utf-16")));
+        assertEquals(attributes.hashCode(), group.hashCode());
     }
 
     // TODO: Tests for string <--> Text or Name here?
@@ -101,11 +168,11 @@ public class AttributeGroupTest {
 //        assertEquals(MediaSize.isoA4, group.getValue(jobConstraintsSupported).values(Types.media).get(1));
 //    }
 
-    @Test
-    public void cover() throws Exception {
-        AttributeGroup group = groupOf(Tag.operationAttributes);
-        KotlinTest.cover(group,
-                group.copy(group.component1(), group.component2()),
-                group.copy(group.component1(), Collections.singletonList(Types.jobName.of("name"))));
-    }
+//    @Test
+//    public void cover() throws Exception {
+//        AttributeGroup group = groupOf(Tag.operationAttributes);
+//        KotlinTest.cover(group,
+//                group.copy(group.component1(), group.component2()),
+//                group.copy(group.component1(), Collections.singletonList(Types.jobName.of("name"))));
+//    }
 }

@@ -16,7 +16,10 @@ import java.util.* // ktlint-disable
 /**
  * A tagged group of attributes.
  */
-data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : PrettyPrintable {
+class AttributeGroup(
+    val tag: Tag,
+    private val attributes: List<Attribute<*>>
+) : PrettyPrintable, List<Attribute<*>> by attributes {
 
     constructor(tag: Tag, vararg attribute: Attribute<*>) : this(tag, attribute.toList())
 
@@ -58,13 +61,29 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
     @Throws(IOException::class)
     fun write(output: IppOutputStream) {
         output.writeByte(tag.code)
-        attributes.forEach { output.writeAttribute(it) }
+        forEach { output.writeAttribute(it) }
     }
 
     override fun print(printer: PrettyPrinter) {
         printer.open(PrettyPrinter.OBJECT, tag.toString())
-        printer.addAll(attributes)
+        printer.addAll(this)
         printer.close()
+    }
+
+    override fun equals(other: Any?) =
+        if (this === other) true else when (other) {
+            is AttributeGroup -> other.tag == tag && other.attributes == attributes
+            is List<*> -> attributes == other
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        // Note: tag is not included because we might need to hash this with other List objects
+        return attributes.hashCode()
+    }
+
+    override fun toString(): String {
+        return "AttributeGroup($tag, $attributes)"
     }
 
     companion object {
@@ -146,7 +165,7 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
 
         fun Byte.toUint(): Int = this.toInt() and BYTE_MASK
 
-        /** Construct a codec handling values encoded by any number of [Tag]s. */
+        /** Construct a codec handling [TaggedValue] values, covering any number of [Tag] input values. */
         inline fun <reified T : TaggedValue> codec(
             crossinline handlesTagFunc: (Tag) -> Boolean,
             crossinline readAttrFunc: IppInputStream.(startTag: Tag) -> T,
@@ -271,14 +290,14 @@ data class AttributeGroup(val tag: Tag, val attributes: List<Attribute<*>>) : Pr
         }
 
         /** Write the attribute to this stream. */
-        fun IppOutputStream.writeAttribute(attribute: Attribute<*>) {
+        fun IppOutputStream.writeAttribute(attribute: Attribute<*>, name: String = attribute.name) {
             attribute.tag?.also {
                 // Write the out-of-band tag
                 writeTag(it)
-                writeString(attribute.name)
+                writeString(name)
                 writeShort(0) // 0 value length = no values
             } ?: run {
-                var nameToWrite = attribute.name
+                var nameToWrite = name
                 attribute.forEach { value ->
                     val encoder = clsToCodec[value.javaClass]
                         ?: codecs.firstOrNull { it.cls.isAssignableFrom(value.javaClass) }
