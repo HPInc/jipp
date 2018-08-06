@@ -22,10 +22,12 @@ class KeyValues(
     /** Each key/value pair is supplied as a pair of arguments, e.g. `("key1", "value1", "key2", "value2")`. */
     constructor(vararg keyValues: String) : this(fromPairs(keyValues))
 
-    override fun equals(other: Any?) = when (other) {
-        is KeyValues -> pairs == other.pairs
-        else -> false
-    }
+    override fun equals(other: Any?) =
+        if (this === other) true else when (other) {
+            is KeyValues -> pairs == other.pairs
+            is Map<*, *> -> other == this // Fall back to other's equals implementation
+            else -> false
+        }
 
     override fun hashCode() = pairs.hashCode()
 

@@ -175,7 +175,7 @@ public class IppPacketTest {
                 groupOf(Tag.operationAttributes, attributesCharset));
         packet = cycle(original);
 
-        Attribute readAttribute = packet.getAttributeGroups().get(0).getAttributes().get(0);
+        Attribute readAttribute = packet.getAttributeGroups().get(0).get(0);
         assertEquals("attributes-charset", readAttribute.getName());
         assertEquals(new OtherString(Tag.charset, "us-ascii"), readAttribute.get(0));
         assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharsetType));

@@ -8,14 +8,19 @@ import com.hp.jipp.util.BuildError
 /** Overridable implementation for any subclass of [Attribute]. */
 open class BaseAttribute<T : Any>(
     override val name: String,
-    override val type: AttributeType<T>,
+    override val type: AttributeType<T>?,
     final override val tag: Tag?,
-    val values: List<T>
+    private val values: List<T>
 ) : Attribute<T>, List<T> by values {
 
+    /** Construct an attribute for a specific attribute type containing certain values */
     constructor(name: String, type: AttributeType<T>, values: List<T>) : this(name, type, null, values)
 
+    /** Construct an empty (no-value) attribute for a specific attribute type */
     constructor(name: String, type: AttributeType<T>, tag: Tag) : this(name, type, tag, emptyList())
+
+    /** Construct an attribute containing certain values, without knowing the attribute type */
+    constructor(name: String, values: List<T>) : this(name, null, null, values)
 
     init {
         if (values.isEmpty() && !tagAllowsEmpty(tag)) {

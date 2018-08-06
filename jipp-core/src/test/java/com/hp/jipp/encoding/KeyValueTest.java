@@ -6,11 +6,13 @@ package com.hp.jipp.encoding;
 import kotlin.Pair;
 import org.junit.Test;
 
+import java.util.*;
+import java.util.function.BiFunction;
+
 import static org.junit.Assert.*;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
-import java.util.*;
 
 public class KeyValueTest {
 
@@ -63,5 +65,83 @@ public class KeyValueTest {
         assertEquals(new KeyValues("key5", "value5"), keyValueType.coerce("key5=value5;"));
         assertEquals(new KeyValues("key5", "value5"), keyValueType.coerce("key5=value5;".getBytes()));
         assertNull(keyValueType.coerce(5));
+    }
+
+    @Test
+    public void equality() throws Exception {
+        KeyValues kv = new KeyValues("one", "oneValue", "two", "twoValue");
+        assertNotEquals(kv, 5);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("one", "oneValue");
+        map.put("two", "twoValue");
+        assertEquals(kv, map);
+    }
+
+    @Test
+    public void mapMethods() throws Exception {
+        KeyValues kv = new KeyValues("key5", "value5", "key1", "value1");
+        assertEquals(kv, kv);
+        assertTrue(kv.containsKey("key1"));
+        assertTrue(kv.containsValue("value1"));
+        assertEquals("value5", kv.get("key5"));
+        assertEquals(2, kv.size());
+        assertEquals(kv.hashCode(), new KeyValues("key5", "value5", "key1", "value1").hashCode());
+        assertFalse(kv.isEmpty());
+        Map<String, String> map = new HashMap<String, String>(kv);
+        assertEquals(map, kv);
+        assertEquals(kv, map);
+        assertNotEquals(5, kv);
+        assertEquals(map.hashCode(), kv.hashCode());
+        assertEquals(new HashSet<String>(Arrays.asList("key1", "key5")), kv.keySet());
+        assertTrue(kv.getValues().containsAll(Arrays.asList("value1", "value5")));
+        coverUnmodifiableMap(kv);
+    }
+
+    private void coverUnmodifiableMap(Map<String, String> map) {
+        try {
+            map.clear();
+            fail("clear() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.remove("");
+            fail("remove() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.remove("", "");
+            fail("remove() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.put("", "");
+            fail("put() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+
+        try {
+            map.putIfAbsent("", "");
+            fail("putIfAbsent() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.putAll(new HashMap<>());
+            fail("putAll() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.replace("one", "two");
+            fail("replace() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.replace("one", "two", "three");
+            fail("replace() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
+
+        try {
+            map.replaceAll((s, s2) -> "");
+            fail("replaceAll() didn't throw");
+        } catch (UnsupportedOperationException ignored) { }
     }
 }

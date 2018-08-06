@@ -1,12 +1,16 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.pwg.DocumentState;
 import com.hp.jipp.pwg.OperationGroup;
+import com.hp.jipp.util.BuildError;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -18,6 +22,34 @@ public class AttributeTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
+    @Test public void intAttr() throws IOException {
+        cycle(new UnknownAttribute("integer", Arrays.asList(5)));
+    }
+
+    @Test public void boolAttr() throws IOException {
+        cycle(new UnknownAttribute("boolean", Arrays.asList(true)));
+    }
+
+    @Test public void enumAttr() throws IOException {
+        cycle(new UnknownAttribute("enum", Arrays.asList(new UntypedEnum(5))));
+    }
+
+    @Test public void multiTypeAttr() throws IOException {
+        cycle(new UnknownAttribute("multi", Arrays.asList(new UntypedEnum(5), true)));
+    }
+
+    @Test public void emptyAttr() throws IOException {
+        cycle(new EmptyAttribute("out-of-band", Tag.unknown));
+    }
+
+    @Test public void coerceAttr() {
+        UnknownAttribute intAttr = new UnknownAttribute("document-state", new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6));
+        DocumentState.Type documentStateType = new DocumentState.Type("document-state");
+        assertEquals(Arrays.asList(
+                DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
+        ), documentStateType.coerce(intAttr));
+    }
 
     @Test
     public void octetString() throws Exception {
@@ -64,7 +96,11 @@ public class AttributeTest {
     public void equality() throws Exception {
         Attribute<String> charsetAttr = OperationGroup.attributesCharset.of("one", "two", "three");
         Attribute<String> charsetAttr2 = OperationGroup.attributesCharset.of("one", "two", "three");
+        assertEquals(charsetAttr, charsetAttr);
         assertEquals(charsetAttr, charsetAttr2);
+        assertNotEquals(charsetAttr, 5);
+        assertNotEquals(charsetAttr, OperationGroup.attributesCharset.empty(Tag.unsupported));
+        assertNotEquals(charsetAttr, OperationGroup.attributesNaturalLanguage.of("one", "two", "three"));
 
         // Different metadata means different object:
         Attribute<String> natLangAttr = OperationGroup.attributesNaturalLanguage.of("one", "two", "three");
@@ -74,6 +110,34 @@ public class AttributeTest {
         assertEquals(Arrays.asList("one", "two", "three"), charsetAttr);
         assertEquals(charsetAttr, Arrays.asList("one", "two", "three"));
         assertEquals(Arrays.asList("one", "two", "three").hashCode(), charsetAttr.hashCode());
+    }
+
+    @Test
+    public void collectionOperations() {
+        Attribute<String> attr = OperationGroup.attributesCharset.of("one", "two", "three");
+        coverList(attr, "one", "four");
+    }
+
+    @Test
+    public void empty() {
+        Attribute<String> empty = OperationGroup.attributesCharset.empty(Tag.unsupported);
+        assertEquals("attributes-charset(unsupported)", empty.toString());
+        assertNull(empty.getValue());
+    }
+
+    @Test
+    public void failEmpty() {
+        try {
+            OperationGroup.attributesCharset.empty(Tag.octetString);
+            fail("Didn't throw build error");
+        } catch (BuildError ignored) {
+        }
+
+        try {
+            new BaseAttribute<String>("name", null, null, Collections.<String>emptyList());
+            fail("Didn't throw build error");
+        } catch (BuildError ignored) {
+        }
     }
 
     //
