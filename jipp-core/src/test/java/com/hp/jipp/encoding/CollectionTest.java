@@ -4,9 +4,11 @@ import com.hp.jipp.pwg.CoveringName;
 import com.hp.jipp.pwg.FinishingsCol;
 import com.hp.jipp.pwg.FoldingDirection;
 import com.hp.jipp.pwg.FoldingReferenceEdge;
+import com.hp.jipp.util.KotlinTest;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static com.hp.jipp.pwg.DocumentStatusGroup.finishingsColActual;
@@ -46,5 +48,14 @@ public class CollectionTest {
             if (attribute.getName().equals(FinishingsCol.Name.covering)) return;
         }
         fail("No covering attribute found");
+    }
+
+    @Test
+    public void untypedCover() throws Exception {
+        AttributeGroup group = cycle(new AttributeGroup(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
+        // We can use an untypedColType to extract the full data received for the attribute
+        UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
+        UntypedCollection untyped = group.getValue(untypedColType);
+        KotlinTest.cover(untyped, untyped.copy(untyped.getAttributes()), untyped.copy(Collections.emptyList()));
     }
 }

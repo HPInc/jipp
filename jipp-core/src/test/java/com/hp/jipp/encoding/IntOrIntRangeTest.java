@@ -5,7 +5,9 @@ import kotlin.ranges.IntRange;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static org.junit.Assert.*;
 
@@ -60,5 +62,17 @@ public class IntOrIntRangeTest {
         assertEquals(new IntOrIntRange(5), value);
         assertNotEquals(new IntOrIntRange(6), value);
         assertNotEquals(5, value);
+    }
+
+    @Test
+    public void of() throws Exception {
+        assertEquals(rangeOrIntType.of(new IntRange(1, 2), new IntRange(3, 4)),
+                rangeOrIntType.ofRanges(Arrays.asList(new IntRange(1, 2), new IntRange(3, 4))));
+    }
+
+    @Test
+    public void failCoerce() {
+        KeywordType wrongType = new KeywordType("range-or-int");
+        assertNull(groupOf(Tag.jobAttributes, wrongType.of("utf-8")).get(rangeOrIntType));
     }
 }

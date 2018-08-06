@@ -2,6 +2,8 @@ package com.hp.jipp.model;
 
 import com.hp.jipp.encoding.*;
 import com.hp.jipp.pwg.Operation;
+import com.hp.jipp.pwg.OperationGroup;
+import com.hp.jipp.pwg.PrinterDescriptionGroup;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -221,13 +223,13 @@ public class IppPacketTest {
     @Test
     public void readMultiValueAttributePacket() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         assertEquals(Operation.getJobAttributes, packet.getOperation());
         assertEquals(777, packet.getRequestId());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
-        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Types.attributesCharset);
+        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(OperationGroup.attributesCharset);
         assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.strings());
     }
 
@@ -246,42 +248,42 @@ public class IppPacketTest {
     @Test
     public void getValue() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
-        assertNull(packet.getValue(Tag.jobAttributes, Types.attributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.jobAttributes, OperationGroup.attributesNaturalLanguage));
 
         // Wrong attr
-        assertNull(packet.getValue(Tag.operationAttributes, Types.attributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.operationAttributes, OperationGroup.attributesNaturalLanguage));
 
         // All good!
-        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, Types.attributesCharset));
+        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, OperationGroup.attributesCharset));
     }
 
     @Test
     public void getValues() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, Types.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.jobAttributes, Types.attributesCharset));
+                packet.getValues(Tag.jobAttributes, OperationGroup.attributesCharset));
 
         // Wrong attr
         assertEquals(Arrays.asList("us-ascii", "utf-8"),
-                packet.getStrings(Tag.operationAttributes, Types.attributesCharset));
+                packet.getStrings(Tag.operationAttributes, OperationGroup.attributesCharset));
 
         // All good!
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.operationAttributes, Types.attributesNaturalLanguage));
+                packet.getValues(Tag.operationAttributes, OperationGroup.attributesNaturalLanguage));
     }
 
     @Test
     public void printCorrectly() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
-                groupOf(Tag.printerAttributes, Types.operationsSupported.of(Operation.createJob)));
+                groupOf(Tag.printerAttributes, PrinterDescriptionGroup.operationsSupported.of(Operation.createJob)));
         packet = cycle(packet);
         System.out.println(packet.toString());
         assertTrue(packet.toString().contains(Operation.createJob.getName()));

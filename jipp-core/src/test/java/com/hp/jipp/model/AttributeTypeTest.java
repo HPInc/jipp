@@ -23,16 +23,16 @@ public class AttributeTypeTest {
 
     @Test
     public void naturalLanguage() throws Exception {
-        Attribute<String> attribute = cycle(Types.attributesNaturalLanguage,
-                Types.attributesNaturalLanguage.of("en"));
+        Attribute<String> attribute = cycle(OperationGroup.attributesNaturalLanguage,
+                OperationGroup.attributesNaturalLanguage.of("en"));
         assertEquals(Collections.singletonList("en"), attribute.strings());
     }
 
     @Test
     public void naturalLanguageFromGroup() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
-                Types.attributesNaturalLanguage.of("en")));
-        Attribute<String> attribute = group.get(Types.attributesNaturalLanguage);
+                OperationGroup.attributesNaturalLanguage.of("en")));
+        Attribute<String> attribute = group.get(OperationGroup.attributesNaturalLanguage);
         assertEquals(Collections.singletonList("en"), attribute.strings());
     }
 
@@ -40,29 +40,29 @@ public class AttributeTypeTest {
     public void ignoreBadNameNaturalLanguage() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
                 new StringType(Tag.naturalLanguage, "attributes-NATURAL-language").of("en")));
-        assertNull(group.get(Types.attributesNaturalLanguage));
+        assertNull(group.get(OperationGroup.attributesNaturalLanguage));
     }
 
     @Test
     public void enumAttributeType() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.printerAttributes,
-                Types.operationsSupported.of(Operation.cancelJob,
+                PrinterDescriptionGroup.operationsSupported.of(Operation.cancelJob,
                         Operation.createJob)));
         System.out.println(group);
         assertEquals(Arrays.asList(Operation.cancelJob, Operation.createJob),
-                group.get(Types.operationsSupported));
+                group.get(PrinterDescriptionGroup.operationsSupported));
     }
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        IntRange range = cycle(Types.copiesSupported, Types.copiesSupported.of(new IntRange(0, 99))).get(0);
+        IntRange range = cycle(PrinterDescriptionGroup.copiesSupported, PrinterDescriptionGroup.copiesSupported.of(new IntRange(0, 99))).get(0);
         assertEquals(0, range.getFirst());
         assertEquals(99, range.getLast());
     }
 
     @Test
     public void resolution() throws Exception {
-        Resolution resolution = cycle(Types.printerResolutionDefault, Types.printerResolutionDefault.of(
+        Resolution resolution = cycle(PrinterDescriptionGroup.printerResolutionDefault, PrinterDescriptionGroup.printerResolutionDefault.of(
                 new Resolution(300, 600, ResolutionUnit.dotsPerInch))).get(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
