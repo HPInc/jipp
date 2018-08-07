@@ -7,19 +7,19 @@
 
 package com.hp.jipp.pwg
 
-import com.hp.jipp.encoding.KeyValueType
+import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 
 /**
  * All known [KeyValueType] types, used for better decoding of [IppPacket] data.
  */
 object KeyValueTypes {
     @JvmField val all: Map<String, KeyValueType> = listOf(
-        PrinterStatusGroup.printerOutputTray,
-        OperationGroup.documentMetadata,
-        PrinterStatusGroup.printerFinisherSupplies,
-        PrinterStatusGroup.printerAlert,
-        PrinterStatusGroup.printerSupply,
-        PrinterStatusGroup.printerFinisher,
-        PrinterStatusGroup.printerInputTray
+        Types.printerOutputTray,
+        Types.documentMetadata,
+        Types.printerFinisherSupplies,
+        Types.printerAlert,
+        Types.printerSupply,
+        Types.printerFinisher,
+        Types.printerInputTray
     ).map { it.name to it }.toMap()
 }

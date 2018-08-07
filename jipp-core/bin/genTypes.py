@@ -297,7 +297,6 @@ def parse_attribute(record):
         'name': attr_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text, 'members': { } } )
     fix_syntax(attr)
 
-
     parse_spec(record, attr)
 
     member_name = record.find('{*}member_attribute')
@@ -561,41 +560,66 @@ def emit_attributes(env):
         elif 'emitted' not in collections[key]:
             warn("Collection " + key + " referenced but not emitted", value)
 
-    # Not a pass: warn about groups that contain something having same name but different content
+    # Pass 5: Make sure types have consistent definitions
     types = { }
     for group_name, values in attributes.items():
         for name, type in values.items():
             if name in types:
-                if types[name] != type:
-                    warn("Type repeated with differences", [types[name], type])
-                else:
-                    types[name] = type
+                # Update the old type with new data or warn
+                old_type = types[name]
+                if type['syntax'] == 'collection' and old_type['name'] == type['name']:
+                    old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
+                    type = None
+                elif set([type['syntax'], old_type['syntax']]) == set(['name', 'keyword | name']):
+                    old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
+                    old_type['syntax'] = 'keyword | name'
+                    type = None
+                elif set([type['syntax'], old_type['syntax']]) == set(['uri', 'uri(45)']):
+                    old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
+                    old_type['syntax'] = 'uri'
+                    type = None
+                elif set([type['syntax'], old_type['syntax']]) == set(['integer', 'integer(1:MAX)']):
+                    old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
+                    old_type['syntax'] = 'integer'
+                    type = None
+                elif no_specs(old_type) != no_specs(type):
+                    warn("Type repeated with differences in " + group_name, [types[name], type])
+                    type = None
 
-    # Pass 5: Emit group attributes (now that all dependent types have been handled)
-    template = env.get_template('group.kt.tmpl')
-    for group_name, values in attributes.items():
-        types = []
-        for typeName, desc in sorted(values.items(), key=lambda (k, v): k):
-            type = copy.deepcopy(desc)
-            fix_ktypes(type, type['syntax'], type['name'], group_name + "-group")
-            if 'kintro' not in type:
-                # fix_ktypes already warns
-                continue
+            if type:
+                types[name] = type
+                # type = copy.deepcopy(type)
+                # fix_ktypes(type, type['syntax'], type['name'], group_name + "-group")
+                # if 'kintro' not in type:
+                #     # fix_ktypes already warns
+                #     continue
 
-            # Fix members
-            for member in type['members'].values():
-                fix_member(member, '')
+    # Pass 6: Emit all types into a single huge class
+    template = env.get_template('types.kt.tmpl')
+    type_list = []
+    for typeName, type in sorted(types.items(), key=lambda (k, v): k):
+        fix_ktypes(type, type['syntax'], type['name'], 'types')
+        if 'kintro' not in type:
+            # fix_ktypes already warns
+            continue
 
-            types.append(type)
+        # Fix members
+        for member in type['members'].values():
+            fix_member(member, '')
 
-        with open(prep_file(group_name + '-group'), 'w') as file:
-            file.write(rstrip_all(template.render(
-                name=group_name,
-                types=types,
-                app=os.path.basename(sys.argv[0]),
-                updated=updated,
-                specs=specs)))
+        type_list.append(type)
 
+    with open(prep_file('types'), 'w') as file:
+        file.write(rstrip_all(template.render(
+            types=type_list,
+            app=os.path.basename(sys.argv[0]),
+            updated=updated,
+            specs=specs)))
+
+def no_specs(type):
+    type = copy.deepcopy(type)
+    del type['specs']
+    return type
 
 # Make sure collection type has values or at least a ref_col in it. If not, delete type from group.
 def handle_collection_ref(group, type):
@@ -757,8 +781,8 @@ def fix_ktypes(type, syntax, name, group_name = ''):
             if group_name:
                 if 'krefs' not in real_type:
                     real_type['krefs'] = []
-                if group_name.endswith('-group'):
-                    kref = camel_class_path(group_name) + '.' + camel_member(name)
+                if group_name == 'types':
+                    kref = 'Types.' + camel_member(name)
                 else:
                     # These are enum types found in collections
                     kref = camel_class_path(group_name) + '.Types.' + camel_member(name)
