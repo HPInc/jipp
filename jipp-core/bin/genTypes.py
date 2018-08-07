@@ -561,6 +561,15 @@ def emit_attributes(env):
         elif 'emitted' not in collections[key]:
             warn("Collection " + key + " referenced but not emitted", value)
 
+    # Not a pass: warn about groups that contain something having same name but different content
+    types = { }
+    for group_name, values in attributes.items():
+        for name, type in values.items():
+            if name in types:
+                if types[name] != type:
+                    warn("Type repeated with differences", [types[name], type])
+                else:
+                    types[name] = type
 
     # Pass 5: Emit group attributes (now that all dependent types have been handled)
     template = env.get_template('group.kt.tmpl')
