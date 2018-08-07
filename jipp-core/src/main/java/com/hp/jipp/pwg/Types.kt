@@ -10,2312 +10,3835 @@ package com.hp.jipp.pwg
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 
 /**
- * Attribute types for the Printer Description group.
+ * All attribute types.
  */
-object PrinterDescriptionGroup {
-
+object Types {
     /**
      * "accuracy-units-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [AccuracyUnit].
      */
     @JvmField val accuracyUnitsSupported = KeywordType("accuracy-units-supported")
-
+    /**
+     * "attributes-charset" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val attributesCharset = StringType(Tag.charset, "attributes-charset")
+    /**
+     * "attributes-natural-language" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val attributesNaturalLanguage = StringType(Tag.naturalLanguage, "attributes-natural-language")
     /**
      * "baling-type-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [BalingType] or a name.
      */
     @JvmField val balingTypeSupported = KeywordType("baling-type-supported")
-
     /**
      * "baling-when-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [BalingWhen].
      */
     @JvmField val balingWhenSupported = KeywordType("baling-when-supported")
-
     /**
      * "binding-reference-edge-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [BindingReferenceEdge].
      */
     @JvmField val bindingReferenceEdgeSupported = KeywordType("binding-reference-edge-supported")
-
     /**
      * "binding-type-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [BindingType].
      */
     @JvmField val bindingTypeSupported = KeywordType("binding-type-supported")
-
+    /**
+     * "charge-info-message" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     */
+    @JvmField val chargeInfoMessage = TextType("charge-info-message")
     /**
      * "charset-configured" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val charsetConfigured = StringType(Tag.charset, "charset-configured")
-
     /**
      * "charset-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val charsetSupported = StringType(Tag.charset, "charset-supported")
-
     /**
      * "coating-sides-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [CoatingSides].
      */
     @JvmField val coatingSidesSupported = KeywordType("coating-sides-supported")
-
     /**
      * "coating-type-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [CoatingType] or a name.
      */
     @JvmField val coatingTypeSupported = KeywordType("coating-type-supported")
-
     /**
      * "color-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val colorSupported = BooleanType("color-supported")
-
+    /**
+     * "compression" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [Compression].
+     */
+    @JvmField val compression = KeywordType("compression")
+    /**
+     * "compression-accepted" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     * May contain any keyword from [Compression].
+     */
+    @JvmField val compressionAccepted = KeywordType("compression-accepted")
+    /**
+     * "compression-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [Compression].
+     */
+    @JvmField val compressionSupplied = KeywordType("compression-supplied")
     /**
      * "compression-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Compression].
      */
     @JvmField val compressionSupported = KeywordType("compression-supported")
-
+    /**
+     * "confirmation-sheet-print" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val confirmationSheetPrint = BooleanType("confirmation-sheet-print")
     /**
      * "confirmation-sheet-print-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val confirmationSheetPrintDefault = BooleanType("confirmation-sheet-print-default")
-
+    /**
+     * "copies" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val copies = IntType("copies")
+    /**
+     * "copies-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val copiesActual = IntType("copies-actual")
     /**
      * "copies-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val copiesDefault = IntType("copies-default")
-
     /**
      * "copies-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val copiesSupported = IntRangeType("copies-supported")
-
+    /**
+     * "cover-back" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val coverBack = CoverBack.Type("cover-back")
+    /**
+     * "cover-back-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val coverBackActual = CoverBack.Type("cover-back-actual")
     /**
      * "cover-back-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val coverBackDefault = CoverBack.Type("cover-back-default")
-
     /**
      * "cover-back-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [CoverBackSupported].
      */
     @JvmField val coverBackSupported = KeywordType("cover-back-supported")
-
+    /**
+     * "cover-front" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val coverFront = CoverFront.Type("cover-front")
+    /**
+     * "cover-front-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val coverFrontActual = CoverFront.Type("cover-front-actual")
     /**
      * "cover-front-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val coverFrontDefault = CoverFront.Type("cover-front-default")
-
     /**
      * "cover-front-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [CoverBackSupported].
      */
     @JvmField val coverFrontSupported = KeywordType("cover-front-supported")
-
+    /**
+     * "cover-sheet-info" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val coverSheetInfo = CoverSheetInfo.Type("cover-sheet-info")
     /**
      * "cover-sheet-info-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val coverSheetInfoDefault = CoverSheetInfo.Type("cover-sheet-info-default")
-
     /**
      * "cover-sheet-info-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [CoverSheetInfoSupported].
      */
     @JvmField val coverSheetInfoSupported = KeywordType("cover-sheet-info-supported")
-
     /**
      * "covering-name-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [CoveringName] or a name.
      */
     @JvmField val coveringNameSupported = KeywordType("covering-name-supported")
-
+    /**
+     * "current-page-order" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     * May contain any keyword from [PageOrderReceived].
+     */
+    @JvmField val currentPageOrder = KeywordType("current-page-order")
+    /**
+     * "date-time-at-completed" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val dateTimeAtCompleted = DateTimeType("date-time-at-completed")
+    /**
+     * "date-time-at-creation" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val dateTimeAtCreation = DateTimeType("date-time-at-creation")
+    /**
+     * "date-time-at-processing" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val dateTimeAtProcessing = DateTimeType("date-time-at-processing")
+    /**
+     * "destination-accesses" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val destinationAccesses = DestinationAccesses.Type("destination-accesses")
     /**
      * "destination-accesses-supported" as defined in:
      * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
      * May contain any keyword from [DestinationAccesses.Name].
      */
     @JvmField val destinationAccessesSupported = KeywordType("destination-accesses-supported")
-
+    /**
+     * "destination-statuses" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val destinationStatuses = DestinationStatuses.Type("destination-statuses")
     /**
      * "destination-uri-ready" as defined in:
      * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
      */
     @JvmField val destinationUriReady = DestinationUriReady.Type("destination-uri-ready")
-
     /**
      * "destination-uri-schemes-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val destinationUriSchemesSupported = StringType(Tag.uriScheme, "destination-uri-schemes-supported")
-
+    /**
+     * "destination-uris" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf),
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val destinationUris = DestinationUris.Type("destination-uris")
     /**
      * "destination-uris-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [DestinationUris.Name].
      */
     @JvmField val destinationUrisSupported = KeywordType("destination-uris-supported")
-
+    /**
+     * "detailed-status-message" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val detailedStatusMessage = TextType("detailed-status-message")
+    /**
+     * "detailed-status-messages" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val detailedStatusMessages = TextType("detailed-status-messages")
+    /**
+     * "device-service-count" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val deviceServiceCount = IntType("device-service-count")
+    /**
+     * "device-uuid" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val deviceUuid = UriType("device-uuid")
+    /**
+     * "document-access" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val documentAccess = DocumentAccess.Type("document-access")
+    /**
+     * "document-access-error" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentAccessError = TextType("document-access-error")
+    /**
+     * "document-access-errors" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentAccessErrors = TextType("document-access-errors")
     /**
      * "document-access-supported" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      * May contain any keyword from [DocumentAccess.Name].
      */
     @JvmField val documentAccessSupported = KeywordType("document-access-supported")
-
+    /**
+     * "document-charset" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentCharset = StringType(Tag.charset, "document-charset")
     /**
      * "document-charset-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentCharsetDefault = StringType(Tag.charset, "document-charset-default")
-
+    /**
+     * "document-charset-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentCharsetSupplied = StringType(Tag.charset, "document-charset-supplied")
     /**
      * "document-charset-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentCharsetSupported = StringType(Tag.charset, "document-charset-supported")
-
     /**
      * "document-creation-attributes-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val documentCreationAttributesSupported = KeywordType("document-creation-attributes-supported")
-
+    /**
+     * "document-data-get-interval" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val documentDataGetInterval = IntType("document-data-get-interval")
+    /**
+     * "document-data-wait" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val documentDataWait = BooleanType("document-data-wait")
+    /**
+     * "document-digital-signature" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [DocumentDigitalSignature].
+     */
+    @JvmField val documentDigitalSignature = KeywordType("document-digital-signature")
     /**
      * "document-digital-signature-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      * May contain any keyword from [DocumentDigitalSignature].
      */
     @JvmField val documentDigitalSignatureDefault = KeywordType("document-digital-signature-default")
-
+    /**
+     * "document-digital-signature-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [DocumentDigitalSignature].
+     */
+    @JvmField val documentDigitalSignatureSupplied = KeywordType("document-digital-signature-supplied")
     /**
      * "document-digital-signature-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      * May contain any keyword from [DocumentDigitalSignature].
      */
     @JvmField val documentDigitalSignatureSupported = KeywordType("document-digital-signature-supported")
-
+    /**
+     * "document-format" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentFormat = StringType(Tag.mimeMediaType, "document-format")
+    /**
+     * "document-format-accepted" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val documentFormatAccepted = StringType(Tag.mimeMediaType, "document-format-accepted")
     /**
      * "document-format-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val documentFormatDefault = StringType(Tag.mimeMediaType, "document-format-default")
-
+    /**
+     * "document-format-details" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentFormatDetails = DocumentFormatDetails.Type("document-format-details")
     /**
      * "document-format-details-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentFormatDetailsDefault = DocumentFormatDetails.Type("document-format-details-default")
-
+    /**
+     * "document-format-details-detected" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentFormatDetailsDetected = DocumentFormatDetails.Type("document-format-details-detected")
+    /**
+     * "document-format-details-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentFormatDetailsSupplied = DocumentFormatDetails.Type("document-format-details-supplied")
     /**
      * "document-format-details-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      * May contain any keyword from [DocumentFormatDetailsSupported].
      */
     @JvmField val documentFormatDetailsSupported = KeywordType("document-format-details-supported")
-
+    /**
+     * "document-format-detected" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentFormatDetected = StringType(Tag.mimeMediaType, "document-format-detected")
+    /**
+     * "document-format-ready" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val documentFormatReady = StringType(Tag.mimeMediaType, "document-format-ready")
+    /**
+     * "document-format-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentFormatSupplied = StringType(Tag.mimeMediaType, "document-format-supplied")
     /**
      * "document-format-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val documentFormatSupported = StringType(Tag.mimeMediaType, "document-format-supported")
-
+    /**
+     * "document-format-varying-attributes" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     * May contain any keyword from [DocumentFormatVaryingAttribute].
+     */
+    @JvmField val documentFormatVaryingAttributes = KeywordType("document-format-varying-attributes")
+    /**
+     * "document-format-version" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentFormatVersion = TextType("document-format-version")
     /**
      * "document-format-version-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentFormatVersionDefault = TextType("document-format-version-default")
-
+    /**
+     * "document-format-version-detected" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentFormatVersionDetected = TextType("document-format-version-detected")
+    /**
+     * "document-format-version-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentFormatVersionSupplied = TextType("document-format-version-supplied")
     /**
      * "document-format-version-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentFormatVersionSupported = TextType("document-format-version-supported")
-
+    /**
+     * "document-job-id" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentJobId = IntType("document-job-id")
+    /**
+     * "document-job-uri" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentJobUri = UriType("document-job-uri")
+    /**
+     * "document-message" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentMessage = TextType("document-message")
+    /**
+     * "document-message-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentMessageSupplied = TextType("document-message-supplied")
+    /**
+     * "document-metadata" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val documentMetadata = KeyValueType("document-metadata")
+    /**
+     * "document-name" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentName = NameType("document-name")
+    /**
+     * "document-name-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentNameSupplied = NameType("document-name-supplied")
+    /**
+     * "document-natural-language" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentNaturalLanguage = StringType(Tag.naturalLanguage, "document-natural-language")
     /**
      * "document-natural-language-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentNaturalLanguageDefault = StringType(Tag.naturalLanguage, "document-natural-language-default")
-
+    /**
+     * "document-natural-language-supplied" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val documentNaturalLanguageSupplied = StringType(Tag.naturalLanguage, "document-natural-language-supplied")
     /**
      * "document-natural-language-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val documentNaturalLanguageSupported = StringType(Tag.naturalLanguage, "document-natural-language-supported")
-
+    /**
+     * "document-number" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentNumber = IntType("document-number")
+    /**
+     * "document-password" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val documentPassword = OctetsType("document-password")
     /**
      * "document-password-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val documentPasswordSupported = IntType("document-password-supported")
-
+    /**
+     * "document-preprocessed" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val documentPreprocessed = BooleanType("document-preprocessed")
+    /**
+     * "document-printer-uri" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentPrinterUri = UriType("document-printer-uri")
+    /**
+     * "document-state" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentState = DocumentState.Type("document-state")
+    /**
+     * "document-state-message" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentStateMessage = TextType("document-state-message")
+    /**
+     * "document-state-reasons" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [DocumentStateReason].
+     */
+    @JvmField val documentStateReasons = KeywordType("document-state-reasons")
+    /**
+     * "document-uri" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val documentUri = UriType("document-uri")
+    /**
+     * "document-uuid" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val documentUuid = UriType("document-uuid")
+    /**
+     * "errors-count" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val errorsCount = IntType("errors-count")
+    /**
+     * "feed-orientation" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [FeedOrientation].
+     */
+    @JvmField val feedOrientation = KeywordType("feed-orientation")
     /**
      * "feed-orientation-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [FeedOrientation].
      */
     @JvmField val feedOrientationDefault = KeywordType("feed-orientation-default")
-
     /**
      * "feed-orientation-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [FeedOrientation].
      */
     @JvmField val feedOrientationSupported = KeywordType("feed-orientation-supported")
-
     /**
      * "fetch-document-attributes-supported" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      */
     @JvmField val fetchDocumentAttributesSupported = KeywordType("fetch-document-attributes-supported")
-
+    /**
+     * "fetch-status-code" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val fetchStatusCode = Status.Type("fetch-status-code")
+    /**
+     * "fetch-status-message" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val fetchStatusMessage = TextType("fetch-status-message")
     /**
      * "finishing-template-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val finishingTemplateSupported = NameType("finishing-template-supported")
-
+    /**
+     * "finishings" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val finishings = Finishing.Type("finishings")
+    /**
+     * "finishings-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val finishingsActual = Finishing.Type("finishings-actual")
+    /**
+     * "finishings-col" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf),
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val finishingsCol = FinishingsCol.Type("finishings-col")
+    /**
+     * "finishings-col-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val finishingsColActual = FinishingsCol.Type("finishings-col-actual")
     /**
      * "finishings-col-database" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val finishingsColDatabase = FinishingsCol.Type("finishings-col-database")
-
     /**
      * "finishings-col-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val finishingsColDefault = FinishingsCol.Type("finishings-col-default")
-
     /**
      * "finishings-col-ready" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val finishingsColReady = FinishingsCol.Type("finishings-col-ready")
-
     /**
      * "finishings-col-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [FinishingsColSupported].
      */
     @JvmField val finishingsColSupported = KeywordType("finishings-col-supported")
-
     /**
      * "finishings-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val finishingsDefault = Finishing.Type("finishings-default")
-
     /**
      * "finishings-ready" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val finishingsReady = Finishing.Type("finishings-ready")
-
     /**
      * "finishings-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val finishingsSupported = Finishing.Type("finishings-supported")
-
+    /**
+     * "first-index" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val firstIndex = IntType("first-index")
     /**
      * "folding-direction-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [FoldingDirection].
      */
     @JvmField val foldingDirectionSupported = KeywordType("folding-direction-supported")
-
     /**
      * "folding-offset-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val foldingOffsetSupported = IntOrIntRangeType("folding-offset-supported")
-
     /**
      * "folding-reference-edge-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [FoldingReferenceEdge].
      */
     @JvmField val foldingReferenceEdgeSupported = KeywordType("folding-reference-edge-supported")
-
+    /**
+     * "font-name-requested" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val fontNameRequested = NameType("font-name-requested")
     /**
      * "font-name-requested-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val fontNameRequestedDefault = NameType("font-name-requested-default")
-
     /**
      * "font-name-requested-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val fontNameRequestedSupported = NameType("font-name-requested-supported")
-
+    /**
+     * "font-size-requested" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val fontSizeRequested = IntType("font-size-requested")
     /**
      * "font-size-requested-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val fontSizeRequestedDefault = IntType("font-size-requested-default")
-
     /**
      * "font-size-requested-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val fontSizeRequestedSupported = IntRangeType("font-size-requested-supported")
-
+    /**
+     * "force-front-side" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val forceFrontSide = IntType("force-front-side")
+    /**
+     * "force-front-side-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val forceFrontSideActual = IntType("force-front-side-actual")
     /**
      * "from-name-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val fromNameSupported = IntType("from-name-supported")
-
     /**
      * "generated-natural-language-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val generatedNaturalLanguageSupported = StringType(Tag.naturalLanguage, "generated-natural-language-supported")
-
+    /**
+     * "identify-actions" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     * May contain any keyword from [IdentifyAction].
+     */
+    @JvmField val identifyActions = KeywordType("identify-actions")
     /**
      * "identify-actions-default" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [IdentifyAction].
      */
     @JvmField val identifyActionsDefault = KeywordType("identify-actions-default")
-
     /**
      * "identify-actions-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [IdentifyAction].
      */
     @JvmField val identifyActionsSupported = KeywordType("identify-actions-supported")
-
+    /**
+     * "imposition-template" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [ImpositionTemplate] or a name.
+     */
+    @JvmField val impositionTemplate = KeywordType("imposition-template")
+    /**
+     * "imposition-template-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [ImpositionTemplate] or a name.
+     */
+    @JvmField val impositionTemplateActual = KeywordType("imposition-template-actual")
     /**
      * "imposition-template-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
     @JvmField val impositionTemplateDefault = KeywordType("imposition-template-default")
-
     /**
      * "imposition-template-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
     @JvmField val impositionTemplateSupported = KeywordType("imposition-template-supported")
-
+    /**
+     * "impressions" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val impressions = IntType("impressions")
+    /**
+     * "impressions-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val impressionsCol = ImpressionsCol.Type("impressions-col")
+    /**
+     * "impressions-completed" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val impressionsCompleted = IntType("impressions-completed")
+    /**
+     * "impressions-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val impressionsCompletedCol = ImpressionsCol.Type("impressions-completed-col")
+    /**
+     * "impressions-completed-current-copy" as defined in:
+     * [RFC3381](http://www.iana.org/go/rfc3381).
+     */
+    @JvmField val impressionsCompletedCurrentCopy = IntType("impressions-completed-current-copy")
+    /**
+     * "input-attributes" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val inputAttributes = InputAttributes.Type("input-attributes")
+    /**
+     * "input-attributes-actual" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val inputAttributesActual = InputAttributes.Type("input-attributes-actual")
     /**
      * "input-attributes-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val inputAttributesDefault = InputAttributes.Type("input-attributes-default")
-
     /**
      * "input-attributes-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [InputAttributes.Name].
      */
     @JvmField val inputAttributesSupported = KeywordType("input-attributes-supported")
-
     /**
      * "input-color-mode-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [InputColorMode].
      */
     @JvmField val inputColorModeSupported = KeywordType("input-color-mode-supported")
-
     /**
      * "input-content-type-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [InputContentType].
      */
     @JvmField val inputContentTypeSupported = KeywordType("input-content-type-supported")
-
     /**
      * "input-film-scan-mode-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [InputFilmScanMode].
      */
     @JvmField val inputFilmScanModeSupported = KeywordType("input-film-scan-mode-supported")
-
     /**
      * "input-media-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [Media] or a name.
      */
     @JvmField val inputMediaSupported = KeywordType("input-media-supported")
-
     /**
      * "input-orientation-requested-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val inputOrientationRequestedSupported = Orientation.Type("input-orientation-requested-supported")
-
     /**
      * "input-quality-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val inputQualitySupported = PrintQuality.Type("input-quality-supported")
-
     /**
      * "input-resolution-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val inputResolutionSupported = ResolutionType("input-resolution-supported")
-
     /**
      * "input-scan-regions-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val inputScanRegionsSupported = InputScanRegionsSupported.Type("input-scan-regions-supported")
-
     /**
      * "input-sides-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [Sides].
      */
     @JvmField val inputSidesSupported = KeywordType("input-sides-supported")
-
     /**
      * "input-source-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      * May contain any keyword from [InputSource].
      */
     @JvmField val inputSourceSupported = KeywordType("input-source-supported")
-
     /**
      * "insert-after-page-number-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val insertAfterPageNumberSupported = IntRangeType("insert-after-page-number-supported")
-
     /**
      * "insert-count-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val insertCountSupported = IntRangeType("insert-count-supported")
-
+    /**
+     * "insert-sheet" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val insertSheet = InsertSheet.Type("insert-sheet")
+    /**
+     * "insert-sheet-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val insertSheetActual = InsertSheet.Type("insert-sheet-actual")
     /**
      * "insert-sheet-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val insertSheetDefault = InsertSheet.Type("insert-sheet-default")
-
     /**
      * "insert-sheet-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [InsertSheet.Name].
      */
     @JvmField val insertSheetSupported = KeywordType("insert-sheet-supported")
-
+    /**
+     * "ipp-attribute-fidelity" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val ippAttributeFidelity = BooleanType("ipp-attribute-fidelity")
     /**
      * "ipp-features-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [IppFeaturesSupported].
      */
     @JvmField val ippFeaturesSupported = KeywordType("ipp-features-supported")
-
     /**
      * "ipp-versions-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [IppVersionsSupported].
      */
     @JvmField val ippVersionsSupported = KeywordType("ipp-versions-supported")
-
     /**
      * "ippget-event-life" as defined in:
      * [RFC3996](http://www.iana.org/go/rfc3996).
      */
     @JvmField val ippgetEventLife = IntType("ippget-event-life")
-
+    /**
+     * "job-account-id" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     */
+    @JvmField val jobAccountId = NameType("job-account-id")
+    /**
+     * "job-account-id-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobAccountIdActual = NameType("job-account-id-actual")
     /**
      * "job-account-id-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobAccountIdDefault = NameType("job-account-id-default")
-
     /**
      * "job-account-id-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobAccountIdSupported = BooleanType("job-account-id-supported")
-
+    /**
+     * "job-account-type" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     * May contain any keyword from [JobAccountType] or a name.
+     */
+    @JvmField val jobAccountType = KeywordType("job-account-type")
+    /**
+     * "job-account-type-actual" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     * May contain any keyword from [JobAccountType] or a name.
+     */
+    @JvmField val jobAccountTypeActual = KeywordType("job-account-type-actual")
     /**
      * "job-account-type-default" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
     @JvmField val jobAccountTypeDefault = KeywordType("job-account-type-default")
-
     /**
      * "job-account-type-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
     @JvmField val jobAccountTypeSupported = KeywordType("job-account-type-supported")
-
+    /**
+     * "job-accounting-sheets" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobAccountingSheets = JobAccountingSheets.Type("job-accounting-sheets")
+    /**
+     * "job-accounting-sheets-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobAccountingSheetsActual = JobAccountingSheets.Type("job-accounting-sheets-actual")
     /**
      * "job-accounting-sheets-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobAccountingSheetsDefault = JobAccountingSheets.Type("job-accounting-sheets-default")
-
     /**
      * "job-accounting-sheets-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [JobAccountingSheets.Name].
      */
     @JvmField val jobAccountingSheetsSupported = KeywordType("job-accounting-sheets-supported")
-
+    /**
+     * "job-accounting-user-id" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     */
+    @JvmField val jobAccountingUserId = NameType("job-accounting-user-id")
+    /**
+     * "job-accounting-user-id-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobAccountingUserIdActual = NameType("job-accounting-user-id-actual")
     /**
      * "job-accounting-user-id-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobAccountingUserIdDefault = NameType("job-accounting-user-id-default")
-
     /**
      * "job-accounting-user-id-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobAccountingUserIdSupported = BooleanType("job-accounting-user-id-supported")
-
+    /**
+     * "job-attribute-fidelity" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val jobAttributeFidelity = BooleanType("job-attribute-fidelity")
+    /**
+     * "job-authorization-uri" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     */
+    @JvmField val jobAuthorizationUri = UriType("job-authorization-uri")
     /**
      * "job-authorization-uri-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val jobAuthorizationUriSupported = BooleanType("job-authorization-uri-supported")
-
+    /**
+     * "job-charge-info" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     */
+    @JvmField val jobChargeInfo = TextType("job-charge-info")
+    /**
+     * "job-collation-type" as defined in:
+     * [RFC3381](http://www.iana.org/go/rfc3381).
+     */
+    @JvmField val jobCollationType = JobCollationType.Type("job-collation-type")
+    /**
+     * "job-collation-type-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCollationTypeActual = JobCollationType.Type("job-collation-type-actual")
     /**
      * "job-constraints-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val jobConstraintsSupported = JobConstraintsSupported.Type("job-constraints-supported")
-
+    /**
+     * "job-copies" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCopies = IntType("job-copies")
+    /**
+     * "job-copies-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCopiesActual = IntType("job-copies-actual")
     /**
      * "job-copies-default" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobCopiesDefault = IntType("job-copies-default")
-
     /**
      * "job-copies-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobCopiesSupported = IntRangeType("job-copies-supported")
-
+    /**
+     * "job-cover-back" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCoverBack = CoverBack.Type("job-cover-back")
+    /**
+     * "job-cover-back-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCoverBackActual = CoverBack.Type("job-cover-back-actual")
     /**
      * "job-cover-back-default" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobCoverBackDefault = CoverBack.Type("job-cover-back-default")
-
     /**
      * "job-cover-back-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      * May contain any keyword from [CoverBackSupported].
      */
     @JvmField val jobCoverBackSupported = KeywordType("job-cover-back-supported")
-
+    /**
+     * "job-cover-front" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCoverFront = CoverFront.Type("job-cover-front")
+    /**
+     * "job-cover-front-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobCoverFrontActual = CoverFront.Type("job-cover-front-actual")
     /**
      * "job-cover-front-default" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobCoverFrontDefault = CoverFront.Type("job-cover-front-default")
-
     /**
      * "job-cover-front-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      * May contain any keyword from [CoverBackSupported].
      */
     @JvmField val jobCoverFrontSupported = KeywordType("job-cover-front-supported")
-
     /**
      * "job-creation-attributes-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobCreationAttributesSupported = KeywordType("job-creation-attributes-supported")
-
+    /**
+     * "job-delay-output-until" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     * May contain any keyword from [JobDelayOutputUntil] or a name.
+     */
+    @JvmField val jobDelayOutputUntil = KeywordType("job-delay-output-until")
     /**
      * "job-delay-output-until-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobDelayOutputUntil] or a name.
      */
     @JvmField val jobDelayOutputUntilDefault = KeywordType("job-delay-output-until-default")
-
     /**
      * "job-delay-output-until-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobDelayOutputUntil] or a name.
      */
     @JvmField val jobDelayOutputUntilSupported = KeywordType("job-delay-output-until-supported")
-
+    /**
+     * "job-delay-output-until-time" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobDelayOutputUntilTime = DateTimeType("job-delay-output-until-time")
     /**
      * "job-delay-output-until-time-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobDelayOutputUntilTimeSupported = IntRangeType("job-delay-output-until-time-supported")
-
     /**
      * "job-destination-spooling-supported" as defined in:
      * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
      * May contain any keyword from [JobDestinationSpoolingSupported].
      */
     @JvmField val jobDestinationSpoolingSupported = KeywordType("job-destination-spooling-supported")
-
+    /**
+     * "job-detailed-status-messages" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobDetailedStatusMessages = TextType("job-detailed-status-messages")
+    /**
+     * "job-document-access-errors" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobDocumentAccessErrors = TextType("job-document-access-errors")
+    /**
+     * "job-error-action" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     * May contain any keyword from [JobErrorAction].
+     */
+    @JvmField val jobErrorAction = KeywordType("job-error-action")
     /**
      * "job-error-action-default" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [JobErrorAction].
      */
     @JvmField val jobErrorActionDefault = KeywordType("job-error-action-default")
-
     /**
      * "job-error-action-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [JobErrorAction].
      */
     @JvmField val jobErrorActionSupported = KeywordType("job-error-action-supported")
-
+    /**
+     * "job-error-sheet" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     */
+    @JvmField val jobErrorSheet = JobErrorSheet.Type("job-error-sheet")
+    /**
+     * "job-error-sheet-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobErrorSheetActual = JobErrorSheet.Type("job-error-sheet-actual")
     /**
      * "job-error-sheet-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobErrorSheetDefault = JobErrorSheet.Type("job-error-sheet-default")
-
     /**
      * "job-error-sheet-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [JobErrorSheet.Name].
      */
     @JvmField val jobErrorSheetSupported = KeywordType("job-error-sheet-supported")
-
+    /**
+     * "job-finishings" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobFinishings = Finishing.Type("job-finishings")
+    /**
+     * "job-finishings-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobFinishingsActual = Finishing.Type("job-finishings-actual")
+    /**
+     * "job-finishings-col" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobFinishingsCol = FinishingsCol.Type("job-finishings-col")
+    /**
+     * "job-finishings-col-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val jobFinishingsColActual = MediaCol.Type("job-finishings-col-actual")
     /**
      * "job-finishings-col-default" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobFinishingsColDefault = FinishingsCol.Type("job-finishings-col-default")
-
     /**
      * "job-finishings-col-ready" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val jobFinishingsColReady = FinishingsCol.Type("job-finishings-col-ready")
-
     /**
      * "job-finishings-col-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      * May contain any keyword from [FinishingsColSupported].
      */
     @JvmField val jobFinishingsColSupported = KeywordType("job-finishings-col-supported")
-
     /**
      * "job-finishings-default" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobFinishingsDefault = Finishing.Type("job-finishings-default")
-
     /**
      * "job-finishings-ready" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val jobFinishingsReady = Finishing.Type("job-finishings-ready")
-
     /**
      * "job-finishings-supported" as defined in:
      * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      */
     @JvmField val jobFinishingsSupported = Finishing.Type("job-finishings-supported")
-
+    /**
+     * "job-hold-until" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [JobHoldUntil] or a name.
+     */
+    @JvmField val jobHoldUntil = KeywordType("job-hold-until")
+    /**
+     * "job-hold-until-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [JobHoldUntil] or a name.
+     */
+    @JvmField val jobHoldUntilActual = KeywordType("job-hold-until-actual")
     /**
      * "job-hold-until-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
     @JvmField val jobHoldUntilDefault = KeywordType("job-hold-until-default")
-
     /**
      * "job-hold-until-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
     @JvmField val jobHoldUntilSupported = KeywordType("job-hold-until-supported")
-
+    /**
+     * "job-hold-until-time" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobHoldUntilTime = DateTimeType("job-hold-until-time")
     /**
      * "job-hold-until-time-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobHoldUntilTimeSupported = IntRangeType("job-hold-until-time-supported")
-
+    /**
+     * "job-id" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobId = IntType("job-id")
+    /**
+     * "job-ids" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobIds = IntType("job-ids")
     /**
      * "job-ids-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobIdsSupported = BooleanType("job-ids-supported")
-
+    /**
+     * "job-impressions" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobImpressions = IntType("job-impressions")
+    /**
+     * "job-impressions-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobImpressionsCol = JobImpressionsCol.Type("job-impressions-col")
+    /**
+     * "job-impressions-completed" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val jobImpressionsCompleted = IntType("job-impressions-completed")
+    /**
+     * "job-impressions-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobImpressionsCompletedCol = JobImpressionsCol.Type("job-impressions-completed-col")
+    /**
+     * "job-impressions-estimated" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     */
+    @JvmField val jobImpressionsEstimated = IntType("job-impressions-estimated")
     /**
      * "job-impressions-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobImpressionsSupported = IntRangeType("job-impressions-supported")
-
+    /**
+     * "job-k-octets" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobKOctets = IntType("job-k-octets")
+    /**
+     * "job-k-octets-processed" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobKOctetsProcessed = IntType("job-k-octets-processed")
     /**
      * "job-k-octets-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobKOctetsSupported = IntRangeType("job-k-octets-supported")
-
+    /**
+     * "job-mandatory-attributes" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * Legal values include all attribute names found in [JobTemplateGroup].
+     */
+    @JvmField val jobMandatoryAttributes = KeywordType("job-mandatory-attributes")
+    /**
+     * "job-media-sheets" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobMediaSheets = IntType("job-media-sheets")
+    /**
+     * "job-media-sheets-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobMediaSheetsCol = JobMediaSheetsCol.Type("job-media-sheets-col")
+    /**
+     * "job-media-sheets-completed" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobMediaSheetsCompleted = IntType("job-media-sheets-completed")
+    /**
+     * "job-media-sheets-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobMediaSheetsCompletedCol = JobMediaSheetsCol.Type("job-media-sheets-completed-col")
     /**
      * "job-media-sheets-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobMediaSheetsSupported = IntRangeType("job-media-sheets-supported")
-
+    /**
+     * "job-message-from-operator" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     */
+    @JvmField val jobMessageFromOperator = TextType("job-message-from-operator")
+    /**
+     * "job-message-to-operator" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     */
+    @JvmField val jobMessageToOperator = TextType("job-message-to-operator")
+    /**
+     * "job-message-to-operator-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobMessageToOperatorActual = TextType("job-message-to-operator-actual")
     /**
      * "job-message-to-operator-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobMessageToOperatorDefault = TextType("job-message-to-operator-default")
-
     /**
      * "job-message-to-operator-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobMessageToOperatorSupported = BooleanType("job-message-to-operator-supported")
-
+    /**
+     * "job-more-info" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobMoreInfo = UriType("job-more-info")
+    /**
+     * "job-name" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobName = NameType("job-name")
+    /**
+     * "job-originating-user-name" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobOriginatingUserName = NameType("job-originating-user-name")
+    /**
+     * "job-originating-user-uri" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val jobOriginatingUserUri = UriType("job-originating-user-uri")
+    /**
+     * "job-pages" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val jobPages = IntType("job-pages")
+    /**
+     * "job-pages-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobPagesCol = JobPagesCol.Type("job-pages-col")
+    /**
+     * "job-pages-completed" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val jobPagesCompleted = IntType("job-pages-completed")
+    /**
+     * "job-pages-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val jobPagesCompletedCol = JobPagesCol.Type("job-pages-completed-col")
+    /**
+     * "job-pages-completed-current-copy" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val jobPagesCompletedCurrentCopy = IntType("job-pages-completed-current-copy")
+    /**
+     * "job-pages-per-set" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
+     */
+    @JvmField val jobPagesPerSet = IntType("job-pages-per-set")
     /**
      * "job-pages-per-set-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val jobPagesPerSetSupported = BooleanType("job-pages-per-set-supported")
-
+    /**
+     * "job-password" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobPassword = OctetsType("job-password")
+    /**
+     * "job-password-encryption" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     * May contain any keyword from [JobPasswordEncryption] or a name.
+     */
+    @JvmField val jobPasswordEncryption = KeywordType("job-password-encryption")
     /**
      * "job-password-encryption-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobPasswordEncryption] or a name.
      */
     @JvmField val jobPasswordEncryptionSupported = KeywordType("job-password-encryption-supported")
-
     /**
      * "job-password-length-supported" as defined in:
      * [IPPWG20160229-1](http://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
      */
     @JvmField val jobPasswordLengthSupported = IntRangeType("job-password-length-supported")
-
     /**
      * "job-password-repertoire-configured" as defined in:
      * [IPPWG20160229-1](http://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
      * May contain any keyword from [JobPasswordRepertoireSupported] or a name.
      */
     @JvmField val jobPasswordRepertoireConfigured = KeywordType("job-password-repertoire-configured")
-
     /**
      * "job-password-repertoire-supported" as defined in:
      * [IPPWG20160229-1](http://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
      * May contain any keyword from [JobPasswordRepertoireSupported] or a name.
      */
     @JvmField val jobPasswordRepertoireSupported = KeywordType("job-password-repertoire-supported")
-
     /**
      * "job-password-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobPasswordSupported = IntType("job-password-supported")
-
+    /**
+     * "job-phone-number" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobPhoneNumber = UriType("job-phone-number")
     /**
      * "job-phone-number-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobPhoneNumberDefault = UriType("job-phone-number-default")
-
     /**
      * "job-phone-number-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobPhoneNumberSupported = BooleanType("job-phone-number-supported")
-
     /**
      * "job-presets-supported" as defined in:
      * [IPPPRESET](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ipppreset-20171214.pdf).
      */
     @JvmField val jobPresetsSupported = JobPresetsSupported.Type("job-presets-supported")
-
+    /**
+     * "job-printer-up-time" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobPrinterUpTime = IntType("job-printer-up-time")
+    /**
+     * "job-printer-uri" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobPrinterUri = UriType("job-printer-uri")
+    /**
+     * "job-priority" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobPriority = IntType("job-priority")
+    /**
+     * "job-priority-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobPriorityActual = IntType("job-priority-actual")
     /**
      * "job-priority-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobPriorityDefault = IntType("job-priority-default")
-
     /**
      * "job-priority-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobPrioritySupported = IntType("job-priority-supported")
-
+    /**
+     * "job-recipient-name" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobRecipientName = NameType("job-recipient-name")
     /**
      * "job-recipient-name-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobRecipientNameDefault = NameType("job-recipient-name-default")
-
     /**
      * "job-recipient-name-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val jobRecipientNameSupported = BooleanType("job-recipient-name-supported")
-
     /**
      * "job-resolvers-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val jobResolversSupported = JobResolversSupported.Type("job-resolvers-supported")
-
+    /**
+     * "job-save-disposition" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobSaveDisposition = JobSaveDisposition.Type("job-save-disposition")
+    /**
+     * "job-save-printer-make-and-model" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val jobSavePrinterMakeAndModel = TextType("job-save-printer-make-and-model")
+    /**
+     * "job-settable-attributes-supported" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     * May contain any keyword from [JobSettableAttributesSupported].
+     */
+    @JvmField val jobSettableAttributesSupported = KeywordType("job-settable-attributes-supported")
+    /**
+     * "job-sheet-message" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     */
+    @JvmField val jobSheetMessage = TextType("job-sheet-message")
+    /**
+     * "job-sheet-message-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobSheetMessageActual = TextType("job-sheet-message-actual")
     /**
      * "job-sheet-message-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobSheetMessageDefault = TextType("job-sheet-message-default")
-
     /**
      * "job-sheet-message-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobSheetMessageSupported = BooleanType("job-sheet-message-supported")
-
+    /**
+     * "job-sheets" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [JobSheet] or a name.
+     */
+    @JvmField val jobSheets = KeywordType("job-sheets")
+    /**
+     * "job-sheets-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [JobSheet] or a name.
+     */
+    @JvmField val jobSheetsActual = KeywordType("job-sheets-actual")
+    /**
+     * "job-sheets-col" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobSheetsCol = JobSheetsCol.Type("job-sheets-col")
+    /**
+     * "job-sheets-col-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val jobSheetsColActual = JobSheetsCol.Type("job-sheets-col-actual")
     /**
      * "job-sheets-col-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val jobSheetsColDefault = JobSheetsCol.Type("job-sheets-col-default")
-
     /**
      * "job-sheets-col-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [JobSheetsCol.Name].
      */
     @JvmField val jobSheetsColSupported = KeywordType("job-sheets-col-supported")
-
     /**
      * "job-sheets-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobSheet] or a name.
      */
     @JvmField val jobSheetsDefault = KeywordType("job-sheets-default")
-
     /**
      * "job-sheets-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobSheet] or a name.
      */
     @JvmField val jobSheetsSupported = KeywordType("job-sheets-supported")
-
     /**
      * "job-spooling-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobSpoolingSupported].
      */
     @JvmField val jobSpoolingSupported = KeywordType("job-spooling-supported")
-
+    /**
+     * "job-state" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobState = JobState.Type("job-state")
+    /**
+     * "job-state-message" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobStateMessage = TextType("job-state-message")
+    /**
+     * "job-state-reasons" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [JobStateReason].
+     */
+    @JvmField val jobStateReasons = KeywordType("job-state-reasons")
     /**
      * "job-triggers-supported" as defined in:
      * [IPPPRESET](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ipppreset-20171214.pdf).
      */
     @JvmField val jobTriggersSupported = JobTriggersSupported.Type("job-triggers-supported")
-
+    /**
+     * "job-uri" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobUri = UriType("job-uri")
+    /**
+     * "job-uuid" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val jobUuid = UriType("job-uuid")
     /**
      * "jpeg-features-supported" as defined in:
      * [APPLE20151021](http://www.pwg.org/pipermail/ipp/2015/018634.html).
      * May contain any keyword from [JpegFeaturesSupported].
      */
     @JvmField val jpegFeaturesSupported = KeywordType("jpeg-features-supported")
-
     /**
      * "jpeg-k-octets-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val jpegKOctetsSupported = IntRangeType("jpeg-k-octets-supported")
-
     /**
      * "jpeg-x-dimension-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val jpegXDimensionSupported = IntRangeType("jpeg-x-dimension-supported")
-
     /**
      * "jpeg-y-dimension-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val jpegYDimensionSupported = IntRangeType("jpeg-y-dimension-supported")
-
+    /**
+     * "k-octets" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val kOctets = IntType("k-octets")
+    /**
+     * "k-octets-processed" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val kOctetsProcessed = IntType("k-octets-processed")
     /**
      * "laminating-sides-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [LaminatingSides].
      */
     @JvmField val laminatingSidesSupported = KeywordType("laminating-sides-supported")
-
     /**
      * "laminating-type-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [LaminatingType] or a name.
      */
     @JvmField val laminatingTypeSupported = KeywordType("laminating-type-supported")
-
+    /**
+     * "last-document" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val lastDocument = BooleanType("last-document")
+    /**
+     * "limit" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val limit = IntType("limit")
     /**
      * "logo-uri-formats-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val logoUriFormatsSupported = StringType(Tag.mimeMediaType, "logo-uri-formats-supported")
-
     /**
      * "logo-uri-schemes-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val logoUriSchemesSupported = StringType(Tag.uriScheme, "logo-uri-schemes-supported")
-
     /**
      * "material-amount-units-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MaterialAmountUnit].
      */
     @JvmField val materialAmountUnitsSupported = KeywordType("material-amount-units-supported")
-
     /**
      * "material-diameter-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialDiameterSupported = IntOrIntRangeType("material-diameter-supported")
-
     /**
      * "material-purpose-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MaterialPurpose].
      */
     @JvmField val materialPurposeSupported = KeywordType("material-purpose-supported")
-
     /**
      * "material-rate-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialRateSupported = IntOrIntRangeType("material-rate-supported")
-
     /**
      * "material-rate-units-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MaterialRateUnit].
      */
     @JvmField val materialRateUnitsSupported = KeywordType("material-rate-units-supported")
-
     /**
      * "material-shell-thickness-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialShellThicknessSupported = IntOrIntRangeType("material-shell-thickness-supported")
-
     /**
      * "material-temperature-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialTemperatureSupported = IntOrIntRangeType("material-temperature-supported")
-
     /**
      * "material-type-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MaterialType].
      */
     @JvmField val materialTypeSupported = KeywordType("material-type-supported")
-
+    /**
+     * "materials-col" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val materialsCol = MaterialsCol.Type("materials-col")
+    /**
+     * "materials-col-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val materialsColActual = MaterialsCol.Type("materials-col-actual")
     /**
      * "materials-col-database" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialsColDatabase = MaterialsCol.Type("materials-col-database")
-
     /**
      * "materials-col-default" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialsColDefault = MaterialsCol.Type("materials-col-default")
-
     /**
      * "materials-col-ready" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val materialsColReady = MaterialsCol.Type("materials-col-ready")
-
     /**
      * "materials-col-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MaterialsCol.Name].
      */
     @JvmField val materialsColSupported = KeywordType("materials-col-supported")
-
     /**
      * "max-materials-col-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val maxMaterialsColSupported = IntType("max-materials-col-supported")
-
     /**
      * "max-save-info-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val maxSaveInfoSupported = IntType("max-save-info-supported")
-
     /**
      * "max-stitching-locations-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val maxStitchingLocationsSupported = IntType("max-stitching-locations-supported")
-
+    /**
+     * "media" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [Media] or a name.
+     */
+    @JvmField val media = KeywordType("media")
+    /**
+     * "media-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [Media] or a name.
+     */
+    @JvmField val mediaActual = KeywordType("media-actual")
     /**
      * "media-back-coating-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaBackCoating] or a name.
      */
     @JvmField val mediaBackCoatingSupported = KeywordType("media-back-coating-supported")
-
     /**
      * "media-bottom-margin-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val mediaBottomMarginSupported = IntType("media-bottom-margin-supported")
-
+    /**
+     * "media-col" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf),
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf),
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val mediaCol = MediaCol.Type("media-col")
+    /**
+     * "media-col-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val mediaColActual = MediaCol.Type("media-col-actual")
     /**
      * "media-col-database" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf),
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val mediaColDatabase = MediaCol.Type("media-col-database")
-
     /**
      * "media-col-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaColDefault = MediaCol.Type("media-col-default")
-
     /**
      * "media-col-ready" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf),
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaColReady = MediaCol.Type("media-col-ready")
-
     /**
      * "media-col-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaColSupported].
      */
     @JvmField val mediaColSupported = KeywordType("media-col-supported")
-
     /**
      * "media-color-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaColor] or a name.
      */
     @JvmField val mediaColorSupported = KeywordType("media-color-supported")
-
     /**
      * "media-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Media] or a name.
      */
     @JvmField val mediaDefault = KeywordType("media-default")
-
     /**
      * "media-front-coating-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaBackCoating] or a name.
      */
     @JvmField val mediaFrontCoatingSupported = KeywordType("media-front-coating-supported")
-
     /**
      * "media-grain-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [MediaGrain] or a name.
      */
     @JvmField val mediaGrainSupported = KeywordType("media-grain-supported")
-
     /**
      * "media-hole-count-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaHoleCountSupported = IntRangeType("media-hole-count-supported")
-
     /**
      * "media-info-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaInfoSupported = BooleanType("media-info-supported")
-
+    /**
+     * "media-input-tray-check" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [Media] or a name.
+     */
+    @JvmField val mediaInputTrayCheck = KeywordType("media-input-tray-check")
+    /**
+     * "media-input-tray-check-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [Media] or a name.
+     */
+    @JvmField val mediaInputTrayCheckActual = KeywordType("media-input-tray-check-actual")
     /**
      * "media-key-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [Media] or a name.
      */
     @JvmField val mediaKeySupported = KeywordType("media-key-supported")
-
     /**
      * "media-left-margin-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val mediaLeftMarginSupported = IntType("media-left-margin-supported")
-
     /**
      * "media-order-count-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaOrderCountSupported = IntRangeType("media-order-count-supported")
-
     /**
      * "media-pre-printed-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaPrePrinted] or a name.
      */
     @JvmField val mediaPrePrintedSupported = KeywordType("media-pre-printed-supported")
-
     /**
      * "media-ready" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Media] or a name.
      */
     @JvmField val mediaReady = KeywordType("media-ready")
-
     /**
      * "media-recycled-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaRecycled] or a name.
      */
     @JvmField val mediaRecycledSupported = KeywordType("media-recycled-supported")
-
     /**
      * "media-right-margin-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val mediaRightMarginSupported = IntType("media-right-margin-supported")
-
+    /**
+     * "media-sheets" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val mediaSheets = IntType("media-sheets")
+    /**
+     * "media-sheets-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val mediaSheetsCol = MediaSheetsCol.Type("media-sheets-col")
+    /**
+     * "media-sheets-completed" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val mediaSheetsCompleted = IntType("media-sheets-completed")
+    /**
+     * "media-sheets-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val mediaSheetsCompletedCol = MediaSheetsCol.Type("media-sheets-completed-col")
     /**
      * "media-size-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaSizeSupported = MediaSizeSupported.Type("media-size-supported")
-
     /**
      * "media-source-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [MediaSource] or a name.
      */
     @JvmField val mediaSourceSupported = KeywordType("media-source-supported")
-
     /**
      * "media-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Media] or a name.
      */
     @JvmField val mediaSupported = KeywordType("media-supported")
-
     /**
      * "media-thickness-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val mediaThicknessSupported = IntRangeType("media-thickness-supported")
-
     /**
      * "media-tooth-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [MediaTooth] or a name.
      */
     @JvmField val mediaToothSupported = KeywordType("media-tooth-supported")
-
     /**
      * "media-top-margin-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val mediaTopMarginSupported = IntType("media-top-margin-supported")
-
     /**
      * "media-type-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaType] or a name.
      */
     @JvmField val mediaTypeSupported = KeywordType("media-type-supported")
-
     /**
      * "media-weight-metric-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val mediaWeightMetricSupported = IntRangeType("media-weight-metric-supported")
-
+    /**
+     * "message" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val message = TextType("message")
     /**
      * "message-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val messageSupported = IntType("message-supported")
-
+    /**
+     * "more-info" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val moreInfo = UriType("more-info")
     /**
      * "multiple-destination-uris-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val multipleDestinationUrisSupported = BooleanType("multiple-destination-uris-supported")
-
+    /**
+     * "multiple-document-handling" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [MultipleDocumentHandling].
+     */
+    @JvmField val multipleDocumentHandling = KeywordType("multiple-document-handling")
+    /**
+     * "multiple-document-handling-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [MultipleDocumentHandling].
+     */
+    @JvmField val multipleDocumentHandlingActual = KeywordType("multiple-document-handling-actual")
     /**
      * "multiple-document-handling-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [MultipleDocumentHandling].
      */
     @JvmField val multipleDocumentHandlingDefault = KeywordType("multiple-document-handling-default")
-
     /**
      * "multiple-document-handling-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [MultipleDocumentHandling].
      */
     @JvmField val multipleDocumentHandlingSupported = KeywordType("multiple-document-handling-supported")
-
     /**
      * "multiple-document-jobs-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val multipleDocumentJobsSupported = BooleanType("multiple-document-jobs-supported")
-
+    /**
+     * "multiple-object-handling" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [MultipleObjectHandling].
+     */
+    @JvmField val multipleObjectHandling = KeywordType("multiple-object-handling")
+    /**
+     * "multiple-object-handling-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [MultipleObjectHandling].
+     */
+    @JvmField val multipleObjectHandlingActual = KeywordType("multiple-object-handling-actual")
     /**
      * "multiple-object-handling-default" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MultipleObjectHandling].
      */
     @JvmField val multipleObjectHandlingDefault = KeywordType("multiple-object-handling-default")
-
     /**
      * "multiple-object-handling-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [MultipleObjectHandling].
      */
     @JvmField val multipleObjectHandlingSupported = KeywordType("multiple-object-handling-supported")
-
     /**
      * "multiple-operation-time-out" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val multipleOperationTimeOut = IntType("multiple-operation-time-out")
-
     /**
      * "multiple-operation-time-out-action" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [MultipleOperationTimeOutAction].
      */
     @JvmField val multipleOperationTimeOutAction = KeywordType("multiple-operation-time-out-action")
-
+    /**
+     * "my-jobs" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val myJobs = BooleanType("my-jobs")
     /**
      * "natural-language-configured" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val naturalLanguageConfigured = StringType(Tag.naturalLanguage, "natural-language-configured")
-
+    /**
+     * "notify-attributes" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyAttributes = KeywordType("notify-attributes")
     /**
      * "notify-attributes-supported" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      */
     @JvmField val notifyAttributesSupported = KeywordType("notify-attributes-supported")
-
+    /**
+     * "notify-charset" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifyCharset = StringType(Tag.charset, "notify-charset")
+    /**
+     * "notify-events" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     * May contain any keyword from [NotifyEvent].
+     */
+    @JvmField val notifyEvents = KeywordType("notify-events")
     /**
      * "notify-events-default" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      * May contain any keyword from [NotifyEvent].
      */
     @JvmField val notifyEventsDefault = KeywordType("notify-events-default")
-
     /**
      * "notify-events-supported" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      * May contain any keyword from [NotifyEvent].
      */
     @JvmField val notifyEventsSupported = KeywordType("notify-events-supported")
-
+    /**
+     * "notify-get-interval" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifyGetInterval = IntType("notify-get-interval")
+    /**
+     * "notify-job-id" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyJobId = IntType("notify-job-id")
+    /**
+     * "notify-lease-duration" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyLeaseDuration = IntType("notify-lease-duration")
     /**
      * "notify-lease-duration-default" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      */
     @JvmField val notifyLeaseDurationDefault = IntType("notify-lease-duration-default")
-
     /**
      * "notify-lease-duration-supported" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      */
     @JvmField val notifyLeaseDurationSupported = IntOrIntRangeType("notify-lease-duration-supported")
-
+    /**
+     * "notify-lease-expiration-time" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyLeaseExpirationTime = IntType("notify-lease-expiration-time")
+    /**
+     * "notify-max-events-supported" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyMaxEventsSupported = IntType("notify-max-events-supported")
+    /**
+     * "notify-natural-language" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifyNaturalLanguage = StringType(Tag.naturalLanguage, "notify-natural-language")
+    /**
+     * "notify-printer-up-time" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyPrinterUpTime = IntType("notify-printer-up-time")
+    /**
+     * "notify-printer-uri" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyPrinterUri = UriType("notify-printer-uri")
+    /**
+     * "notify-pull-method" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     * May contain any keyword from [NotifyPullMethod].
+     */
+    @JvmField val notifyPullMethod = KeywordType("notify-pull-method")
     /**
      * "notify-pull-method-supported" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      * May contain any keyword from [NotifyPullMethod].
      */
     @JvmField val notifyPullMethodSupported = KeywordType("notify-pull-method-supported")
-
+    /**
+     * "notify-recipient-uri" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyRecipientUri = UriType("notify-recipient-uri")
     /**
      * "notify-schemes-supported" as defined in:
      * [RFC3995](http://www.iana.org/go/rfc3995).
      */
     @JvmField val notifySchemesSupported = StringType(Tag.uriScheme, "notify-schemes-supported")
-
+    /**
+     * "notify-sequence-number" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifySequenceNumber = IntType("notify-sequence-number")
+    /**
+     * "notify-sequence-numbers" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifySequenceNumbers = IntType("notify-sequence-numbers")
+    /**
+     * "notify-status-code" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyStatusCode = Status.Type("notify-status-code")
+    /**
+     * "notify-subscribed-event" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     * May contain any keyword from [NotifyEvent].
+     */
+    @JvmField val notifySubscribedEvent = KeywordType("notify-subscribed-event")
+    /**
+     * "notify-subscriber-user-name" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifySubscriberUserName = NameType("notify-subscriber-user-name")
+    /**
+     * "notify-subscriber-user-uri" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val notifySubscriberUserUri = UriType("notify-subscriber-user-uri")
+    /**
+     * "notify-subscription-id" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifySubscriptionId = IntType("notify-subscription-id")
+    /**
+     * "notify-subscription-ids" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifySubscriptionIds = IntType("notify-subscription-ids")
+    /**
+     * "notify-subscription-uuid" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val notifySubscriptionUuid = UriType("notify-subscription-uuid")
+    /**
+     * "notify-text" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyText = TextType("notify-text")
+    /**
+     * "notify-time-interval" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val notifyTimeInterval = IntType("notify-time-interval")
+    /**
+     * "notify-user-data" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifyUserData = OctetsType("notify-user-data")
+    /**
+     * "notify-wait" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val notifyWait = BooleanType("notify-wait")
+    /**
+     * "number-of-documents" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val numberOfDocuments = IntType("number-of-documents")
+    /**
+     * "number-of-intervening-jobs" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val numberOfInterveningJobs = IntType("number-of-intervening-jobs")
+    /**
+     * "number-of-retries" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val numberOfRetries = IntType("number-of-retries")
     /**
      * "number-of-retries-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val numberOfRetriesDefault = IntType("number-of-retries-default")
-
     /**
      * "number-of-retries-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val numberOfRetriesSupported = IntRangeType("number-of-retries-supported")
-
+    /**
+     * "number-up" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val numberUp = IntType("number-up")
+    /**
+     * "number-up-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val numberUpActual = IntType("number-up-actual")
     /**
      * "number-up-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val numberUpDefault = IntType("number-up-default")
-
     /**
      * "number-up-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val numberUpSupported = IntOrIntRangeType("number-up-supported")
-
     /**
      * "oauth-authorization-server-uri" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      */
     @JvmField val oauthAuthorizationServerUri = UriType("oauth-authorization-server-uri")
-
     /**
      * "operations-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val operationsSupported = Operation.Type("operations-supported")
-
     /**
      * "organization-name-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val organizationNameSupported = IntType("organization-name-supported")
-
+    /**
+     * "orientation-requested" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val orientationRequested = Orientation.Type("orientation-requested")
+    /**
+     * "orientation-requested-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val orientationRequestedActual = Orientation.Type("orientation-requested-actual")
     /**
      * "orientation-requested-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val orientationRequestedDefault = Orientation.Type("orientation-requested-default")
-
     /**
      * "orientation-requested-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val orientationRequestedSupported = Orientation.Type("orientation-requested-supported")
-
+    /**
+     * "original-requesting-user-name" as defined in:
+     * [RFC3998](http://www.iana.org/go/rfc3998).
+     */
+    @JvmField val originalRequestingUserName = NameType("original-requesting-user-name")
+    /**
+     * "output-attributes" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val outputAttributes = OutputAttributes.Type("output-attributes")
+    /**
+     * "output-attributes-actual" as defined in:
+     * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
+     */
+    @JvmField val outputAttributesActual = OutputAttributes.Type("output-attributes-actual")
     /**
      * "output-attributes-default" as defined in:
      * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
      */
     @JvmField val outputAttributesDefault = OutputAttributes.Type("output-attributes-default")
-
     /**
      * "output-attributes-supported" as defined in:
      * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf).
      * May contain any keyword from [OutputAttributes.Name].
      */
     @JvmField val outputAttributesSupported = KeywordType("output-attributes-supported")
-
+    /**
+     * "output-bin" as defined in:
+     * [PWG5100.2](http://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
+     * May contain any keyword from [OutputBin] or a name.
+     */
+    @JvmField val outputBin = KeywordType("output-bin")
+    /**
+     * "output-bin-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [OutputBin] or a name.
+     */
+    @JvmField val outputBinActual = KeywordType("output-bin-actual")
     /**
      * "output-bin-default" as defined in:
      * [PWG5100.2](http://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
     @JvmField val outputBinDefault = KeywordType("output-bin-default")
-
     /**
      * "output-bin-supported" as defined in:
      * [PWG5100.2](http://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
     @JvmField val outputBinSupported = KeywordType("output-bin-supported")
-
+    /**
+     * "output-device" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val outputDevice = NameType("output-device")
+    /**
+     * "output-device-actual" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val outputDeviceActual = NameType("output-device-actual")
+    /**
+     * "output-device-assigned" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val outputDeviceAssigned = NameType("output-device-assigned")
+    /**
+     * "output-device-document-state" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceDocumentState = DocumentState.Type("output-device-document-state")
+    /**
+     * "output-device-document-state-message" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceDocumentStateMessage = TextType("output-device-document-state-message")
+    /**
+     * "output-device-document-state-reasons" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     * May contain any keyword from [DocumentStateReason].
+     */
+    @JvmField val outputDeviceDocumentStateReasons = KeywordType("output-device-document-state-reasons")
+    /**
+     * "output-device-job-state" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceJobState = JobState.Type("output-device-job-state")
+    /**
+     * "output-device-job-state-message" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceJobStateMessage = TextType("output-device-job-state-message")
+    /**
+     * "output-device-job-state-reasons" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     * May contain any keyword from [JobStateReason].
+     */
+    @JvmField val outputDeviceJobStateReasons = KeywordType("output-device-job-state-reasons")
+    /**
+     * "output-device-job-states" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceJobStates = JobState.Type("output-device-job-states")
     /**
      * "output-device-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      */
     @JvmField val outputDeviceSupported = NameType("output-device-supported")
-
+    /**
+     * "output-device-uuid" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceUuid = UriType("output-device-uuid")
+    /**
+     * "output-device-uuid-assigned" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val outputDeviceUuidAssigned = UriType("output-device-uuid-assigned")
     /**
      * "output-device-uuid-supported" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      */
     @JvmField val outputDeviceUuidSupported = UriType("output-device-uuid-supported")
-
+    /**
+     * "overrides" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.6](http://ftp.pwg.org/pub/pwg/candidates/cs-ipppageoverride10-20031031-5100.6.pdf).
+     */
+    @JvmField val overrides = Overrides.Type("overrides")
+    /**
+     * "overrides-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.6](http://ftp.pwg.org/pub/pwg/candidates/cs-ipppageoverride10-20031031-5100.6.pdf).
+     */
+    @JvmField val overridesActual = Overrides.Type("overrides-actual")
     /**
      * "overrides-supported" as defined in:
      * [PWG5100.6](http://ftp.pwg.org/pub/pwg/candidates/cs-ipppageoverride10-20031031-5100.6.pdf).
      * May contain any keyword from [Overrides.Name].
      */
     @JvmField val overridesSupported = KeywordType("overrides-supported")
-
+    /**
+     * "page-delivery" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [PageDelivery].
+     */
+    @JvmField val pageDelivery = KeywordType("page-delivery")
+    /**
+     * "page-delivery-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [PageDelivery].
+     */
+    @JvmField val pageDeliveryActual = KeywordType("page-delivery-actual")
     /**
      * "page-delivery-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PageDelivery].
      */
     @JvmField val pageDeliveryDefault = KeywordType("page-delivery-default")
-
     /**
      * "page-delivery-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PageDelivery].
      */
     @JvmField val pageDeliverySupported = KeywordType("page-delivery-supported")
-
+    /**
+     * "page-order-received" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [PageOrderReceived].
+     */
+    @JvmField val pageOrderReceived = KeywordType("page-order-received")
+    /**
+     * "page-order-received-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [PageOrderReceived].
+     */
+    @JvmField val pageOrderReceivedActual = KeywordType("page-order-received-actual")
     /**
      * "page-order-received-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PageOrderReceived].
      */
     @JvmField val pageOrderReceivedDefault = KeywordType("page-order-received-default")
-
     /**
      * "page-order-received-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PageOrderReceived].
      */
     @JvmField val pageOrderReceivedSupported = KeywordType("page-order-received-supported")
-
+    /**
+     * "page-ranges" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val pageRanges = IntRangeType("page-ranges")
+    /**
+     * "page-ranges-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val pageRangesActual = IntRangeType("page-ranges-actual")
     /**
      * "page-ranges-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val pageRangesSupported = BooleanType("page-ranges-supported")
-
+    /**
+     * "pages" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pages = IntType("pages")
+    /**
+     * "pages-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val pagesCol = PagesCol.Type("pages-col")
+    /**
+     * "pages-completed" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pagesCompleted = IntType("pages-completed")
+    /**
+     * "pages-completed-col" as defined in:
+     * [APRIL2015F2F](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20150429.pdf).
+     */
+    @JvmField val pagesCompletedCol = PagesCol.Type("pages-completed-col")
+    /**
+     * "pages-completed-current-copy" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pagesCompletedCurrentCopy = IntType("pages-completed-current-copy")
+    /**
+     * "pages-per-minute" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val pagesPerMinute = IntType("pages-per-minute")
+    /**
+     * "pages-per-minute-color" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val pagesPerMinuteColor = IntType("pages-per-minute-color")
+    /**
+     * "pages-per-subset" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pagesPerSubset = IntType("pages-per-subset")
     /**
      * "pages-per-subset-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val pagesPerSubsetSupported = BooleanType("pages-per-subset-supported")
-
     /**
      * "parent-printers-supported" as defined in:
      * [RFC3998](http://www.iana.org/go/rfc3998).
      */
     @JvmField val parentPrintersSupported = UriType("parent-printers-supported")
-
     /**
      * "pdf-features-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PdfFeaturesSupported].
      */
     @JvmField val pdfFeaturesSupported = KeywordType("pdf-features-supported")
-
     /**
      * "pdf-k-octets-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val pdfKOctetsSupported = IntRangeType("pdf-k-octets-supported")
-
     /**
      * "pdf-versions-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [PdfVersionsSupported].
      */
     @JvmField val pdfVersionsSupported = KeywordType("pdf-versions-supported")
-
+    /**
+     * "pdl-init-file" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val pdlInitFile = PdlInitFile.Type("pdl-init-file")
     /**
      * "pdl-init-file-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val pdlInitFileDefault = PdlInitFile.Type("pdl-init-file-default")
-
     /**
      * "pdl-init-file-entry-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val pdlInitFileEntrySupported = NameType("pdl-init-file-entry-supported")
-
     /**
      * "pdl-init-file-location-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val pdlInitFileLocationSupported = UriType("pdl-init-file-location-supported")
-
     /**
      * "pdl-init-file-name-subdirectory-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val pdlInitFileNameSubdirectorySupported = BooleanType("pdl-init-file-name-subdirectory-supported")
-
     /**
      * "pdl-init-file-name-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val pdlInitFileNameSupported = NameType("pdl-init-file-name-supported")
-
     /**
      * "pdl-init-file-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [PdlInitFileSupported].
      */
     @JvmField val pdlInitFileSupported = KeywordType("pdl-init-file-supported")
-
     /**
      * "pdl-override-guaranteed-supported" as defined in:
      * [IPPWG20151019](http://www.pwg.org/archives/ipp/2015/018629.html).
      * Legal values include all attribute names found in [JobTemplateGroup].
      */
     @JvmField val pdlOverrideGuaranteedSupported = KeywordType("pdl-override-guaranteed-supported")
-
     /**
      * "pdl-override-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [PdlOverrideSupported].
      */
     @JvmField val pdlOverrideSupported = KeywordType("pdl-override-supported")
-
     /**
      * "platform-shape" as defined in:
      * [APPLE20170629](http://www.pwg.org/pipermail/ipp/2017/019246.html).
      * May contain any keyword from [PlatformShape].
      */
     @JvmField val platformShape = KeywordType("platform-shape")
-
+    /**
+     * "platform-temperature" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val platformTemperature = IntType("platform-temperature")
+    /**
+     * "platform-temperature-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val platformTemperatureActual = IntType("platform-temperature-actual")
     /**
      * "platform-temperature-default" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val platformTemperatureDefault = IntType("platform-temperature-default")
-
     /**
      * "platform-temperature-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val platformTemperatureSupported = IntOrIntRangeType("platform-temperature-supported")
-
+    /**
+     * "preferred-attributes" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val preferredAttributes = UntypedCollection.Type("preferred-attributes")
     /**
      * "preferred-attributes-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val preferredAttributesSupported = BooleanType("preferred-attributes-supported")
-
+    /**
+     * "presentation-direction-number-up" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [PresentationDirectionNumberUp].
+     */
+    @JvmField val presentationDirectionNumberUp = KeywordType("presentation-direction-number-up")
+    /**
+     * "presentation-direction-number-up-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [PresentationDirectionNumberUp].
+     */
+    @JvmField val presentationDirectionNumberUpActual = KeywordType("presentation-direction-number-up-actual")
     /**
      * "presentation-direction-number-up-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PresentationDirectionNumberUp].
      */
     @JvmField val presentationDirectionNumberUpDefault = KeywordType("presentation-direction-number-up-default")
-
     /**
      * "presentation-direction-number-up-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [PresentationDirectionNumberUp].
      */
     @JvmField val presentationDirectionNumberUpSupported = KeywordType("presentation-direction-number-up-supported")
-
+    /**
+     * "print-accuracy" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val printAccuracy = PrintAccuracy.Type("print-accuracy")
+    /**
+     * "print-accuracy-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val printAccuracyActual = PrintAccuracy.Type("print-accuracy-actual")
     /**
      * "print-accuracy-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val printAccuracySupported = PrintAccuracySupported.Type("print-accuracy-supported")
-
+    /**
+     * "print-base" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [PrintBase].
+     */
+    @JvmField val printBase = KeywordType("print-base")
+    /**
+     * "print-base-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [PrintBase].
+     */
+    @JvmField val printBaseActual = KeywordType("print-base-actual")
     /**
      * "print-base-default" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PrintBase].
      */
     @JvmField val printBaseDefault = KeywordType("print-base-default")
-
     /**
      * "print-base-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PrintBase].
      */
     @JvmField val printBaseSupported = KeywordType("print-base-supported")
-
+    /**
+     * "print-color-mode" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     * May contain any keyword from [PrintColorMode].
+     */
+    @JvmField val printColorMode = KeywordType("print-color-mode")
+    /**
+     * "print-color-mode-actual" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     * May contain any keyword from [PrintColorMode].
+     */
+    @JvmField val printColorModeActual = KeywordType("print-color-mode-actual")
     /**
      * "print-color-mode-default" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [PrintColorMode].
      */
     @JvmField val printColorModeDefault = KeywordType("print-color-mode-default")
-
     /**
      * "print-color-mode-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [PrintColorMode].
      */
     @JvmField val printColorModeSupported = KeywordType("print-color-mode-supported")
-
+    /**
+     * "print-content-optimize" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [PrintContentOptimize].
+     */
+    @JvmField val printContentOptimize = KeywordType("print-content-optimize")
+    /**
+     * "print-content-optimize-actual" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [PrintContentOptimize].
+     */
+    @JvmField val printContentOptimizeActual = KeywordType("print-content-optimize-actual")
     /**
      * "print-content-optimize-default" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      * May contain any keyword from [PrintContentOptimize].
      */
     @JvmField val printContentOptimizeDefault = KeywordType("print-content-optimize-default")
-
     /**
      * "print-content-optimize-supported" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
      * May contain any keyword from [PrintContentOptimize].
      */
     @JvmField val printContentOptimizeSupported = KeywordType("print-content-optimize-supported")
-
+    /**
+     * "print-objects" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val printObjects = PrintObjects.Type("print-objects")
+    /**
+     * "print-objects-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     */
+    @JvmField val printObjectsActual = PrintObjects.Type("print-objects-actual")
     /**
      * "print-objects-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PrintObjects.Name].
      */
     @JvmField val printObjectsSupported = KeywordType("print-objects-supported")
-
+    /**
+     * "print-quality" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val printQuality = PrintQuality.Type("print-quality")
+    /**
+     * "print-quality-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val printQualityActual = PrintQuality.Type("print-quality-actual")
     /**
      * "print-quality-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printQualityDefault = PrintQuality.Type("print-quality-default")
-
     /**
      * "print-quality-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printQualitySupported = PrintQuality.Type("print-quality-supported")
-
+    /**
+     * "print-rendering-intent" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     * May contain any keyword from [PrintRenderingIntent].
+     */
+    @JvmField val printRenderingIntent = KeywordType("print-rendering-intent")
+    /**
+     * "print-rendering-intent-actual" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     * May contain any keyword from [PrintRenderingIntent].
+     */
+    @JvmField val printRenderingIntentActual = KeywordType("print-rendering-intent-actual")
     /**
      * "print-rendering-intent-default" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [PrintRenderingIntent].
      */
     @JvmField val printRenderingIntentDefault = KeywordType("print-rendering-intent-default")
-
     /**
      * "print-rendering-intent-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [PrintRenderingIntent].
      */
     @JvmField val printRenderingIntentSupported = KeywordType("print-rendering-intent-supported")
-
+    /**
+     * "print-scaling" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     * May contain any keyword from [PrintScaling].
+     */
+    @JvmField val printScaling = KeywordType("print-scaling")
     /**
      * "print-scaling-default" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [PrintScaling].
      */
     @JvmField val printScalingDefault = KeywordType("print-scaling-default")
-
     /**
      * "print-scaling-supported" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [PrintScaling].
      */
     @JvmField val printScalingSupported = KeywordType("print-scaling-supported")
-
+    /**
+     * "print-supports" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [PrintSupports].
+     */
+    @JvmField val printSupports = KeywordType("print-supports")
+    /**
+     * "print-supports-actual" as defined in:
+     * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
+     * May contain any keyword from [PrintSupports].
+     */
+    @JvmField val printSupportsActual = KeywordType("print-supports-actual")
     /**
      * "print-supports-default" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PrintSupports].
      */
     @JvmField val printSupportsDefault = KeywordType("print-supports-default")
-
     /**
      * "print-supports-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      * May contain any keyword from [PrintSupports].
      */
     @JvmField val printSupportsSupported = KeywordType("print-supports-supported")
-
+    /**
+     * "printer-alert" as defined in:
+     * [PWG5100.9](http://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf).
+     */
+    @JvmField val printerAlert = KeyValueType("printer-alert")
+    /**
+     * "printer-alert-description" as defined in:
+     * [PWG5100.9](http://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf).
+     */
+    @JvmField val printerAlertDescription = TextType("printer-alert-description")
     /**
      * "printer-camera-image-uri" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val printerCameraImageUri = UriType("printer-camera-image-uri")
-
     /**
      * "printer-charge-info" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerChargeInfo = TextType("printer-charge-info")
-
     /**
      * "printer-charge-info-uri" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerChargeInfoUri = UriType("printer-charge-info-uri")
-
+    /**
+     * "printer-config-change-date-time" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerConfigChangeDateTime = DateTimeType("printer-config-change-date-time")
+    /**
+     * "printer-config-change-time" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerConfigChangeTime = IntType("printer-config-change-time")
     /**
      * "printer-current-time" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerCurrentTime = DateTimeType("printer-current-time")
-
+    /**
+     * "printer-detailed-status-messages" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val printerDetailedStatusMessages = TextType("printer-detailed-status-messages")
     /**
      * "printer-device-id" as defined in:
      * [PWG5107.2](http://ftp.pwg.org/pub/pwg/candidates/cs-pmp1284cmdset10-20100531-5107.2.pdf).
      */
     @JvmField val printerDeviceId = TextType("printer-device-id")
-
     /**
      * "printer-dns-sd-name" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      */
     @JvmField val printerDnsSdName = NameType("printer-dns-sd-name")
-
     /**
      * "printer-driver-installer" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerDriverInstaller = UriType("printer-driver-installer")
-
     /**
      * "printer-fax-log-uri" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val printerFaxLogUri = UriType("printer-fax-log-uri")
-
     /**
      * "printer-fax-modem-info" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val printerFaxModemInfo = TextType("printer-fax-modem-info")
-
     /**
      * "printer-fax-modem-name" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val printerFaxModemName = NameType("printer-fax-modem-name")
-
     /**
      * "printer-fax-modem-number" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val printerFaxModemNumber = UriType("printer-fax-modem-number")
-
+    /**
+     * "printer-finisher" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
+     */
+    @JvmField val printerFinisher = KeyValueType("printer-finisher")
+    /**
+     * "printer-finisher-description" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
+     */
+    @JvmField val printerFinisherDescription = TextType("printer-finisher-description")
+    /**
+     * "printer-finisher-supplies" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
+     */
+    @JvmField val printerFinisherSupplies = KeyValueType("printer-finisher-supplies")
+    /**
+     * "printer-finisher-supplies-description" as defined in:
+     * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
+     */
+    @JvmField val printerFinisherSuppliesDescription = TextType("printer-finisher-supplies-description")
     /**
      * "printer-geo-location" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerGeoLocation = UriType("printer-geo-location")
-
     /**
      * "printer-get-attributes-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerGetAttributesSupported = KeywordType("printer-get-attributes-supported")
-
     /**
      * "printer-icc-profiles" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerIccProfiles = PrinterIccProfiles.Type("printer-icc-profiles")
-
     /**
      * "printer-icons" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerIcons = UriType("printer-icons")
-
     /**
      * "printer-info" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerInfo = TextType("printer-info")
-
+    /**
+     * "printer-input-tray" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerInputTray = KeyValueType("printer-input-tray")
+    /**
+     * "printer-is-accepting-jobs" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val printerIsAcceptingJobs = BooleanType("printer-is-accepting-jobs")
     /**
      * "printer-kind" as defined in:
      * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [PrinterKind].
      */
     @JvmField val printerKind = KeywordType("printer-kind")
-
     /**
      * "printer-location" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerLocation = TextType("printer-location")
-
     /**
      * "printer-make-and-model" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerMakeAndModel = TextType("printer-make-and-model")
-
     /**
      * "printer-mandatory-job-attributes" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerMandatoryJobAttributes = KeywordType("printer-mandatory-job-attributes")
-
+    /**
+     * "printer-message-date-time" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     */
+    @JvmField val printerMessageDateTime = DateTimeType("printer-message-date-time")
+    /**
+     * "printer-message-from-operator" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     */
+    @JvmField val printerMessageFromOperator = TextType("printer-message-from-operator")
+    /**
+     * "printer-message-time" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     */
+    @JvmField val printerMessageTime = IntType("printer-message-time")
+    /**
+     * "printer-more-info" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val printerMoreInfo = UriType("printer-more-info")
     /**
      * "printer-more-info-manufacturer" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerMoreInfoManufacturer = UriType("printer-more-info-manufacturer")
-
     /**
      * "printer-name" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerName = NameType("printer-name")
-
     /**
      * "printer-organization" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerOrganization = TextType("printer-organization")
-
     /**
      * "printer-organizational-unit" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerOrganizationalUnit = TextType("printer-organizational-unit")
-
+    /**
+     * "printer-output-tray" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerOutputTray = KeyValueType("printer-output-tray")
+    /**
+     * "printer-resolution" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val printerResolution = ResolutionType("printer-resolution")
+    /**
+     * "printer-resolution-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val printerResolutionActual = ResolutionType("printer-resolution-actual")
     /**
      * "printer-resolution-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerResolutionDefault = ResolutionType("printer-resolution-default")
-
     /**
      * "printer-resolution-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val printerResolutionSupported = ResolutionType("printer-resolution-supported")
-
+    /**
+     * "printer-settable-attributes-supported" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     * May contain any keyword from [PrinterSettableAttributesSupported].
+     */
+    @JvmField val printerSettableAttributesSupported = KeywordType("printer-settable-attributes-supported")
+    /**
+     * "printer-state" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val printerState = PrinterState.Type("printer-state")
+    /**
+     * "printer-state-change-date-time" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val printerStateChangeDateTime = DateTimeType("printer-state-change-date-time")
+    /**
+     * "printer-state-change-time" as defined in:
+     * [RFC3995](http://www.iana.org/go/rfc3995).
+     */
+    @JvmField val printerStateChangeTime = IntType("printer-state-change-time")
+    /**
+     * "printer-state-message" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val printerStateMessage = TextType("printer-state-message")
+    /**
+     * "printer-state-reasons" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     * May contain any keyword from [PrinterStateReason].
+     */
+    @JvmField val printerStateReasons = KeywordType("printer-state-reasons")
     /**
      * "printer-static-resource-directory-uri" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      */
     @JvmField val printerStaticResourceDirectoryUri = UriType("printer-static-resource-directory-uri")
-
+    /**
+     * "printer-static-resource-k-octets-free" as defined in:
+     * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val printerStaticResourceKOctetsFree = IntType("printer-static-resource-k-octets-free")
     /**
      * "printer-static-resource-k-octets-supported" as defined in:
      * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
      */
     @JvmField val printerStaticResourceKOctetsSupported = IntType("printer-static-resource-k-octets-supported")
-
     /**
      * "printer-strings-languages-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerStringsLanguagesSupported = StringType(Tag.naturalLanguage, "printer-strings-languages-supported")
-
     /**
      * "printer-strings-uri" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val printerStringsUri = UriType("printer-strings-uri")
-
+    /**
+     * "printer-supply" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerSupply = KeyValueType("printer-supply")
+    /**
+     * "printer-supply-description" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerSupplyDescription = TextType("printer-supply-description")
+    /**
+     * "printer-supply-info-uri" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerSupplyInfoUri = UriType("printer-supply-info-uri")
+    /**
+     * "printer-up-time" as defined in:
+     * [RFC3996](http://www.iana.org/go/rfc3996).
+     */
+    @JvmField val printerUpTime = IntType("printer-up-time")
+    /**
+     * "printer-uri" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val printerUri = UriType("printer-uri")
+    /**
+     * "printer-uri-supported" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val printerUriSupported = UriType("printer-uri-supported")
+    /**
+     * "printer-uuid" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val printerUuid = UriType("printer-uuid")
     /**
      * "printer-volume-supported" as defined in:
      * [PWG5100.21](http://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d10-20170210-5100.21.pdf).
      */
     @JvmField val printerVolumeSupported = PrinterVolumeSupported.Type("printer-volume-supported")
-
     /**
      * "printer-xri-supported" as defined in:
      * [RFC3380](http://www.iana.org/go/rfc3380).
      */
     @JvmField val printerXriSupported = PrinterXriSupported.Type("printer-xri-supported")
-
+    /**
+     * "profile-uri-actual" as defined in:
+     * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
+     */
+    @JvmField val profileUriActual = UriType("profile-uri-actual")
+    /**
+     * "proof-print" as defined in:
+     * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
+     */
+    @JvmField val proofPrint = ProofPrint.Type("proof-print")
     /**
      * "proof-print-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val proofPrintDefault = ProofPrint.Type("proof-print-default")
-
     /**
      * "proof-print-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [ProofPrintSupported].
      */
     @JvmField val proofPrintSupported = KeywordType("proof-print-supported")
-
     /**
      * "punching-hole-diameter-configured" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val punchingHoleDiameterConfigured = IntType("punching-hole-diameter-configured")
-
     /**
      * "punching-locations-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val punchingLocationsSupported = IntOrIntRangeType("punching-locations-supported")
-
     /**
      * "punching-offset-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val punchingOffsetSupported = IntOrIntRangeType("punching-offset-supported")
-
     /**
      * "punching-reference-edge-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [PunchingReferenceEdge].
      */
     @JvmField val punchingReferenceEdgeSupported = KeywordType("punching-reference-edge-supported")
-
     /**
      * "pwg-raster-document-resolution-supported" as defined in:
      * [PWG5102.4](http://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf).
      */
     @JvmField val pwgRasterDocumentResolutionSupported = ResolutionType("pwg-raster-document-resolution-supported")
-
     /**
      * "pwg-raster-document-sheet-back" as defined in:
      * [PWG5102.4](http://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf).
      * May contain any keyword from [PwgRasterDocumentSheetBack].
      */
     @JvmField val pwgRasterDocumentSheetBack = KeywordType("pwg-raster-document-sheet-back")
-
     /**
      * "pwg-raster-document-type-supported" as defined in:
      * [PWG5102.4](http://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf).
      * May contain any keyword from [PwgRasterDocumentTypeSupported].
      */
     @JvmField val pwgRasterDocumentTypeSupported = KeywordType("pwg-raster-document-type-supported")
-
+    /**
+     * "queued-job-count" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val queuedJobCount = IntType("queued-job-count")
     /**
      * "reference-uri-schemes-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val referenceUriSchemesSupported = StringType(Tag.uriScheme, "reference-uri-schemes-supported")
-
     /**
      * "repertoire-supported" as defined in:
      * [PWG5101.2](http://ftp.pwg.org/pub/pwg/candidates/cs-crrepsup10-20040201-5101.2.pdf).
      */
     @JvmField val repertoireSupported = KeywordType("repertoire-supported")
-
+    /**
+     * "requested-attributes" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [RequestedAttribute].
+     */
+    @JvmField val requestedAttributes = KeywordType("requested-attributes")
+    /**
+     * "requesting-user-name" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val requestingUserName = NameType("requesting-user-name")
+    /**
+     * "requesting-user-uri" as defined in:
+     * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val requestingUserUri = UriType("requesting-user-uri")
     /**
      * "requesting-user-uri-supported" as defined in:
      * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
     @JvmField val requestingUserUriSupported = BooleanType("requesting-user-uri-supported")
-
+    /**
+     * "retry-interval" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val retryInterval = IntType("retry-interval")
     /**
      * "retry-interval-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val retryIntervalDefault = IntType("retry-interval-default")
-
     /**
      * "retry-interval-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val retryIntervalSupported = IntRangeType("retry-interval-supported")
-
+    /**
+     * "retry-time-out" as defined in:
+     * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     */
+    @JvmField val retryTimeOut = IntType("retry-time-out")
     /**
      * "retry-time-out-default" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val retryTimeOutDefault = IntType("retry-time-out-default")
-
     /**
      * "retry-time-out-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val retryTimeOutSupported = IntRangeType("retry-time-out-supported")
-
     /**
      * "save-disposition-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [SaveDisposition].
      */
     @JvmField val saveDispositionSupported = KeywordType("save-disposition-supported")
-
     /**
      * "save-document-format-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveDocumentFormatDefault = StringType(Tag.mimeMediaType, "save-document-format-default")
-
     /**
      * "save-document-format-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveDocumentFormatSupported = StringType(Tag.mimeMediaType, "save-document-format-supported")
-
     /**
      * "save-location-default" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveLocationDefault = UriType("save-location-default")
-
     /**
      * "save-location-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveLocationSupported = UriType("save-location-supported")
-
     /**
      * "save-name-subdirectory-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveNameSubdirectorySupported = BooleanType("save-name-subdirectory-supported")
-
     /**
      * "save-name-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
     @JvmField val saveNameSupported = BooleanType("save-name-supported")
-
+    /**
+     * "separator-sheets" as defined in:
+     * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val separatorSheets = SeparatorSheets.Type("separator-sheets")
+    /**
+     * "separator-sheets-actual" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val separatorSheetsActual = SeparatorSheets.Type("separator-sheets-actual")
     /**
      * "separator-sheets-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val separatorSheetsDefault = SeparatorSheets.Type("separator-sheets-default")
-
     /**
      * "separator-sheets-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [SeparatorSheets.Name].
      */
     @JvmField val separatorSheetsSupported = KeywordType("separator-sheets-supported")
-
+    /**
+     * "sheet-collate" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [SheetCollate].
+     */
+    @JvmField val sheetCollate = KeywordType("sheet-collate")
+    /**
+     * "sheet-collate-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [SheetCollate].
+     */
+    @JvmField val sheetCollateActual = KeywordType("sheet-collate-actual")
     /**
      * "sheet-collate-default" as defined in:
      * [RFC3381](http://www.iana.org/go/rfc3381).
      * May contain any keyword from [SheetCollate].
      */
     @JvmField val sheetCollateDefault = KeywordType("sheet-collate-default")
-
     /**
      * "sheet-collate-supported" as defined in:
      * [RFC3381](http://www.iana.org/go/rfc3381).
      * May contain any keyword from [SheetCollate].
      */
     @JvmField val sheetCollateSupported = KeywordType("sheet-collate-supported")
-
+    /**
+     * "sheet-completed-copy-number" as defined in:
+     * [RFC3381](http://www.iana.org/go/rfc3381).
+     */
+    @JvmField val sheetCompletedCopyNumber = IntType("sheet-completed-copy-number")
+    /**
+     * "sheet-completed-document-number" as defined in:
+     * [RFC3381](http://www.iana.org/go/rfc3381).
+     */
+    @JvmField val sheetCompletedDocumentNumber = IntType("sheet-completed-document-number")
+    /**
+     * "sides" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [Sides].
+     */
+    @JvmField val sides = KeywordType("sides")
+    /**
+     * "sides-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [Sides].
+     */
+    @JvmField val sidesActual = KeywordType("sides-actual")
     /**
      * "sides-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Sides].
      */
     @JvmField val sidesDefault = KeywordType("sides-default")
-
     /**
      * "sides-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Sides].
      */
     @JvmField val sidesSupported = KeywordType("sides-supported")
-
+    /**
+     * "status-message" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val statusMessage = TextType("status-message")
     /**
      * "stitching-angle-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val stitchingAngleSupported = IntOrIntRangeType("stitching-angle-supported")
-
     /**
      * "stitching-locations-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val stitchingLocationsSupported = IntOrIntRangeType("stitching-locations-supported")
-
     /**
      * "stitching-method-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [StitchingMethod].
      */
     @JvmField val stitchingMethodSupported = KeywordType("stitching-method-supported")
-
     /**
      * "stitching-offset-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val stitchingOffsetSupported = IntOrIntRangeType("stitching-offset-supported")
-
     /**
      * "stitching-reference-edge-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [StitchingReferenceEdge].
      */
     @JvmField val stitchingReferenceEdgeSupported = KeywordType("stitching-reference-edge-supported")
-
     /**
      * "subject-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val subjectSupported = IntType("subject-supported")
-
     /**
      * "subordinate-printers-supported" as defined in:
      * [RFC3998](http://www.iana.org/go/rfc3998).
      */
     @JvmField val subordinatePrintersSupported = UriType("subordinate-printers-supported")
-
+    /**
+     * "time-at-completed" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val timeAtCompleted = IntType("time-at-completed")
+    /**
+     * "time-at-creation" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val timeAtCreation = IntType("time-at-creation")
+    /**
+     * "time-at-processing" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val timeAtProcessing = IntType("time-at-processing")
     /**
      * "to-name-supported" as defined in:
      * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
      */
     @JvmField val toNameSupported = IntType("to-name-supported")
-
     /**
      * "trimming-offset-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val trimmingOffsetSupported = IntOrIntRangeType("trimming-offset-supported")
-
     /**
      * "trimming-reference-edge-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [TrimmingReferenceEdge].
      */
     @JvmField val trimmingReferenceEdgeSupported = KeywordType("trimming-reference-edge-supported")
-
     /**
      * "trimming-type-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [TrimmingType].
      */
     @JvmField val trimmingTypeSupported = KeywordType("trimming-type-supported")
-
     /**
      * "trimming-when-supported" as defined in:
      * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [TrimmingWhen].
      */
     @JvmField val trimmingWhenSupported = KeywordType("trimming-when-supported")
-
     /**
      * "uri-authentication-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [UriAuthenticationSupported].
      */
     @JvmField val uriAuthenticationSupported = KeywordType("uri-authentication-supported")
-
     /**
      * "uri-security-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [UriSecuritySupported].
      */
     @JvmField val uriSecuritySupported = KeywordType("uri-security-supported")
-
     /**
      * "user-defined-values-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val userDefinedValuesSupported = KeywordType("user-defined-values-supported")
-
+    /**
+     * "warnings-count" as defined in:
+     * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
+     */
+    @JvmField val warningsCount = IntType("warnings-count")
+    /**
+     * "which-jobs" as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [WhichJobs].
+     */
+    @JvmField val whichJobs = KeywordType("which-jobs")
     /**
      * "which-jobs-supported" as defined in:
      * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [WhichJobs].
      */
     @JvmField val whichJobsSupported = KeywordType("which-jobs-supported")
-
+    /**
+     * "x-image-position" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [XImagePosition].
+     */
+    @JvmField val xImagePosition = KeywordType("x-image-position")
+    /**
+     * "x-image-position-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [XImagePosition].
+     */
+    @JvmField val xImagePositionActual = KeywordType("x-image-position-actual")
     /**
      * "x-image-position-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [XImagePosition].
      */
     @JvmField val xImagePositionDefault = KeywordType("x-image-position-default")
-
     /**
      * "x-image-position-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [XImagePosition].
      */
     @JvmField val xImagePositionSupported = KeywordType("x-image-position-supported")
-
+    /**
+     * "x-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val xImageShift = IntType("x-image-shift")
+    /**
+     * "x-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val xImageShiftActual = IntType("x-image-shift-actual")
     /**
      * "x-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xImageShiftDefault = IntType("x-image-shift-default")
-
     /**
      * "x-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xImageShiftSupported = IntRangeType("x-image-shift-supported")
-
+    /**
+     * "x-side1-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val xSide1ImageShift = IntType("x-side1-image-shift")
+    /**
+     * "x-side1-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val xSide1ImageShiftActual = IntType("x-side1-image-shift-actual")
     /**
      * "x-side1-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xSide1ImageShiftDefault = IntType("x-side1-image-shift-default")
-
     /**
      * "x-side1-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xSide1ImageShiftSupported = IntRangeType("x-side1-image-shift-supported")
-
+    /**
+     * "x-side2-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val xSide2ImageShift = IntType("x-side2-image-shift")
+    /**
+     * "x-side2-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val xSide2ImageShiftActual = IntType("x-side2-image-shift-actual")
     /**
      * "x-side2-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xSide2ImageShiftDefault = IntType("x-side2-image-shift-default")
-
     /**
      * "x-side2-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val xSide2ImageShiftSupported = IntRangeType("x-side2-image-shift-supported")
-
+    /**
+     * "xri-authentication-supported" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     * May contain any keyword from [XriAuthenticationSupported].
+     */
+    @JvmField val xriAuthenticationSupported = KeywordType("xri-authentication-supported")
+    /**
+     * "xri-security-supported" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     * May contain any keyword from [XriSecuritySupported].
+     */
+    @JvmField val xriSecuritySupported = KeywordType("xri-security-supported")
+    /**
+     * "xri-uri-scheme-supported" as defined in:
+     * [RFC3380](http://www.iana.org/go/rfc3380).
+     */
+    @JvmField val xriUriSchemeSupported = StringType(Tag.uriScheme, "xri-uri-scheme-supported")
+    /**
+     * "y-image-position" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     * May contain any keyword from [YImagePosition].
+     */
+    @JvmField val yImagePosition = KeywordType("y-image-position")
+    /**
+     * "y-image-position-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [YImagePosition].
+     */
+    @JvmField val yImagePositionActual = KeywordType("y-image-position-actual")
     /**
      * "y-image-position-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [YImagePosition].
      */
     @JvmField val yImagePositionDefault = KeywordType("y-image-position-default")
-
     /**
      * "y-image-position-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [YImagePosition].
      */
     @JvmField val yImagePositionSupported = KeywordType("y-image-position-supported")
-
+    /**
+     * "y-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val yImageShift = IntType("y-image-shift")
+    /**
+     * "y-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val yImageShiftActual = IntType("y-image-shift-actual")
     /**
      * "y-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val yImageShiftDefault = IntType("y-image-shift-default")
-
     /**
      * "y-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val yImageShiftSupported = IntRangeType("y-image-shift-supported")
-
+    /**
+     * "y-side1-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val ySide1ImageShift = IntType("y-side1-image-shift")
+    /**
+     * "y-side1-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val ySide1ImageShiftActual = IntType("y-side1-image-shift-actual")
     /**
      * "y-side1-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val ySide1ImageShiftDefault = IntType("y-side1-image-shift-default")
-
     /**
      * "y-side1-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val ySide1ImageShiftSupported = IntRangeType("y-side1-image-shift-supported")
-
+    /**
+     * "y-side2-image-shift" as defined in:
+     * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
+     */
+    @JvmField val ySide2ImageShift = IntType("y-side2-image-shift")
+    /**
+     * "y-side2-image-shift-actual" as defined in:
+     * [PWG5100.8](http://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val ySide2ImageShiftActual = IntType("y-side2-image-shift-actual")
     /**
      * "y-side2-image-shift-default" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      */
     @JvmField val ySide2ImageShiftDefault = IntType("y-side2-image-shift-default")
-
     /**
      * "y-side2-image-shift-supported" as defined in:
      * [PWG5100.3](http://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
