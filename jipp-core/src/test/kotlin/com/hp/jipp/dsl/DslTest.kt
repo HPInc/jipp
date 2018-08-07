@@ -2,7 +2,7 @@ package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.Cycler.cycle
 import com.hp.jipp.encoding.Tag
-import com.hp.jipp.model.MediaSizes
+import com.hp.jipp.encoding.MediaSizes
 import com.hp.jipp.pwg.JobTemplateGroup
 import com.hp.jipp.pwg.Media
 import com.hp.jipp.pwg.MediaCol

@@ -1,7 +1,7 @@
 package com.hp.jipp.trans;
 
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.model.IppPacket;
+import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.pwg.Operation;
 import com.hp.jipp.pwg.Status;
 import org.jetbrains.annotations.NotNull;

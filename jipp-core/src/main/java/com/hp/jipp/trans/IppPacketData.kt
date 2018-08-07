@@ -3,7 +3,7 @@
 
 package com.hp.jipp.trans
 
-import com.hp.jipp.model.IppPacket
+import com.hp.jipp.encoding.IppPacket
 import java.io.Closeable
 import java.io.InputStream
 

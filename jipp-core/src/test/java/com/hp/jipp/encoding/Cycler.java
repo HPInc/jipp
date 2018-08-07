@@ -1,13 +1,10 @@
 
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.model.IppPacket;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

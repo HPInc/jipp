@@ -1,13 +1,8 @@
 // Copyright 2017 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.model
+package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.AttributeGroup
-import com.hp.jipp.encoding.AttributeType
-import com.hp.jipp.encoding.IppInputStream
-import com.hp.jipp.encoding.IppOutputStream
-import com.hp.jipp.encoding.Tag
 import com.hp.jipp.pwg.Operation
 import com.hp.jipp.pwg.Status
 import com.hp.jipp.util.ParseError

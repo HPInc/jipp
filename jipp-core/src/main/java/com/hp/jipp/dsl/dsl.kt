@@ -4,9 +4,8 @@
 package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_VERSION_NUMBER
 import com.hp.jipp.pwg.Operation
-import com.hp.jipp.model.IppPacket
-import com.hp.jipp.model.IppPacket.Companion.DEFAULT_VERSION_NUMBER
 import com.hp.jipp.pwg.Status
 
 @DslMarker annotation class IppDslMarker
@@ -92,8 +91,14 @@ class InAttributeGroup internal constructor(var tag: Tag) : InAttributes() {
 sealed class InAttributes {
     internal val attributes = ArrayList<Attribute<*>>()
 
+    /** Add one or more attributes to the current context */
     fun attr(vararg attribute: Attribute<*>) {
-        attributes.addAll(attribute.toList())
+        attr(attribute.toList())
+    }
+
+    /** Add a list of attributes to the current context */
+    fun attr(attributes: List<Attribute<*>>) {
+        this.attributes.addAll(attributes)
     }
 
     /** Add an attribute to the group having one or more values */

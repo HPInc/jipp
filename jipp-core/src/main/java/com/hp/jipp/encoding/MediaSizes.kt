@@ -1,7 +1,7 @@
 // Copyright 2017 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.model
+package com.hp.jipp.encoding
 
 import java.util.regex.Pattern
 import com.hp.jipp.pwg.MediaCol
