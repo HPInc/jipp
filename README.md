@@ -73,7 +73,27 @@ jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 
 ## API Maturity
 
-As an 0.5.x project, APIs may still be changed in non-backwards-compatible ways.
+Until 1.0, APIs may still be changed in non-backwards-compatible ways.
+
+## Migration from 0.5.x to 0.6.x
+
+Some changes in the public API may require the following changes in your code:
+
+* Collection types are now expressed as POJO objects and do not need to be constructed manually.
+* `com.hp.jipp.model.IppPacket` moved to `com.hp.jipp.encoding.IppPacket` so that all PWG generated code lives in `.model`.
+* Keyword attribute values now present as simple, untyped Strings. Allowed strings are provided in static objects
+  (e.g. `Media.java` defines all possible media types.)
+* The `MediaSize` type is removed in favor of Media strings. If needed, the `MediaSizes` utility class provides a method
+  to extract x- and y-dimensions from a Media keyword containing dimensions.
+* The `Attribute` class is now a `List` of attribute values, so it is no longer necessary to call `.getValues()`
+  to obtain them.
+* The `AttributeGroup` class is now a `List` of `Attribute<*>` so it may be iterated directly to access attributes it
+  contains.
+* Attributes of `Name` or `Text` types now appear in those types to allow clients to access language information if
+  present and to distinguish from ordinary keywords. The following additional methods may help to convert attribute
+  values to String:
+  * `Name.asString()` and `Text.asString()` are `Stringable` and extract the value in string form. `.getValue()` also does this.
+  * `Attribute.strings()`, `AttributeGroup.getStrings()`, and `IppPacket.getStrings()` do the same for all types.
 
 ## Dependencies
 

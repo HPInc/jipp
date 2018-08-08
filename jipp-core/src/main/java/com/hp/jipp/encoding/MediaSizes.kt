@@ -17,7 +17,7 @@ object MediaSizes {
     private const val MM_HUNDREDTHS_PER_INCH = 2540
     private const val MM_HUNDREDTHS_PER_MM = 100
 
-    /** Convert a media name containing dimensions into a MediaSize object, if possible. */
+    /** Convert a media name containing dimensions into a [MediaCol.MediaSize] object, if possible. */
     @JvmStatic
     fun parse(mediaName: String): MediaCol.MediaSize? {
         val matches = WIDTH_HEIGHT.matcher(mediaName)
