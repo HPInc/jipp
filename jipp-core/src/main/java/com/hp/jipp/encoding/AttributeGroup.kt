@@ -3,8 +3,8 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.pwg.EnumTypes
-import com.hp.jipp.pwg.KeyValueTypes
+import com.hp.jipp.model.EnumTypes
+import com.hp.jipp.model.KeyValueTypes
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
@@ -46,6 +46,14 @@ class AttributeGroup(
 
     /** Return the attribute corresponding to the specified [name]. */
     operator fun get(name: String): Attribute<*>? = map[name]
+
+    /** Return all values found having this attribute type. */
+    fun <T : Any> getValues(type: AttributeType<T>): List<T> =
+        get(type) ?: listOf()
+
+    /** Return all values found having this attribute type. */
+    fun <T : Any> getStrings(type: AttributeType<T>): List<String> =
+        get(type)?.strings() ?: listOf()
 
     /** Return the attribute as conforming to the supplied attribute type. */
     operator fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =

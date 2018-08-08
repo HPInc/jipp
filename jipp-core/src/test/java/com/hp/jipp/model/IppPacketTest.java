@@ -1,9 +1,8 @@
 package com.hp.jipp.model;
 
 import com.hp.jipp.encoding.*;
-import com.hp.jipp.pwg.Operation;
-import com.hp.jipp.pwg.OperationGroup;
-import com.hp.jipp.pwg.PrinterDescriptionGroup;
+import com.hp.jipp.model.Operation;
+import static com.hp.jipp.model.Types.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -223,13 +222,13 @@ public class IppPacketTest {
     @Test
     public void readMultiValueAttributePacket() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         assertEquals(Operation.getJobAttributes, packet.getOperation());
         assertEquals(777, packet.getRequestId());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
-        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(OperationGroup.attributesCharset);
+        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(attributesCharset);
         assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.strings());
     }
 
@@ -248,42 +247,42 @@ public class IppPacketTest {
     @Test
     public void getValue() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 777,
-                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
-        assertNull(packet.getValue(Tag.jobAttributes, OperationGroup.attributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.jobAttributes, attributesNaturalLanguage));
 
         // Wrong attr
-        assertNull(packet.getValue(Tag.operationAttributes, OperationGroup.attributesNaturalLanguage));
+        assertNull(packet.getValue(Tag.operationAttributes, attributesNaturalLanguage));
 
         // All good!
-        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, OperationGroup.attributesCharset));
+        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharset));
     }
 
     @Test
     public void getValues() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, OperationGroup.attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
         packet = cycle(packet);
 
         // Wrong group
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.jobAttributes, OperationGroup.attributesCharset));
+                packet.getValues(Tag.jobAttributes, attributesCharset));
 
         // Wrong attr
         assertEquals(Arrays.asList("us-ascii", "utf-8"),
-                packet.getStrings(Tag.operationAttributes, OperationGroup.attributesCharset));
+                packet.getStrings(Tag.operationAttributes, attributesCharset));
 
         // All good!
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.operationAttributes, OperationGroup.attributesNaturalLanguage));
+                packet.getValues(Tag.operationAttributes, attributesNaturalLanguage));
     }
 
     @Test
     public void printCorrectly() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
-                groupOf(Tag.printerAttributes, PrinterDescriptionGroup.operationsSupported.of(Operation.createJob)));
+                groupOf(Tag.printerAttributes, operationsSupported.of(Operation.createJob)));
         packet = cycle(packet);
         System.out.println(packet.toString());
         assertTrue(packet.toString().contains(Operation.createJob.getName()));

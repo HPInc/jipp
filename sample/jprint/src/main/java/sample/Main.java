@@ -1,7 +1,7 @@
 package sample;
 
-import com.hp.jipp.model.IppPacket;
-import com.hp.jipp.pwg.Operation;
+import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.model.Operation;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Tag.*;
-import static com.hp.jipp.pwg.OperationGroup.*;
+import static com.hp.jipp.model.Types.*;
 
 class Main {
     public static void main(String[] args) throws IOException {

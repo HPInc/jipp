@@ -1,8 +1,7 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.pwg.DocumentState;
-import com.hp.jipp.pwg.OperationGroup;
-import com.hp.jipp.pwg.PrinterDescriptionGroup;
+import com.hp.jipp.model.DocumentState;
+import com.hp.jipp.model.Types;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,36 +43,36 @@ public class AttributeGroupTest {
     @Test
     public void multiAttribute() throws Exception {
         AttributeGroup group = groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8"),
-                OperationGroup.attributesNaturalLanguage.of("en"),
-                OperationGroup.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")));
+                Types.attributesCharset.of("utf-8"),
+                Types.attributesNaturalLanguage.of("en"),
+                Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")));
         group = cycle(group);
 
         assertEquals(group.getTag(), Tag.operationAttributes);
-        assertNotNull(group.get(OperationGroup.attributesCharset));
-        assertNotNull(group.get(OperationGroup.attributesNaturalLanguage));
-        assertNotNull(group.get(OperationGroup.printerUri));
+        assertNotNull(group.get(Types.attributesCharset));
+        assertNotNull(group.get(Types.attributesNaturalLanguage));
+        assertNotNull(group.get(Types.printerUri));
     }
 
     @Test
     public void multiMultiAttribute() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8","utf-16")));
-        assertEquals(Arrays.asList("utf-8", "utf-16"), group.get(OperationGroup.attributesCharset).strings());
+                Types.attributesCharset.of("utf-8","utf-16")));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), group.get(Types.attributesCharset).strings());
     }
 
     @Test
     public void missingAttribute() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
-                OperationGroup.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
-        assertNull(group.get(OperationGroup.attributesNaturalLanguage));
+                Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer"))));
+        assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
     @Test(expected = BuildError.class)
     public void duplicateName() throws Exception {
         groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8"),
-                OperationGroup.attributesCharset.of("utf-8"));
+                Types.attributesCharset.of("utf-8"),
+                Types.attributesCharset.of("utf-8"));
     }
 
     @Test(expected = BuildError.class)
@@ -84,12 +83,27 @@ public class AttributeGroupTest {
     @Test
     public void get() throws Exception {
         AttributeGroup group = groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8","utf-16"));
+                Types.attributesCharset.of("utf-8","utf-16"));
         // Get by attribute type
-        assertEquals(OperationGroup.attributesCharset.of("utf-8","utf-16"), group.get(OperationGroup.attributesCharset));
+        assertEquals(Types.attributesCharset.of("utf-8","utf-16"), group.get(Types.attributesCharset));
         // Get by attribute name (in some cases this will not be as well typed, e.g. collections)
-        assertEquals(OperationGroup.attributesCharset.of("utf-8","utf-16"), group.get(OperationGroup.attributesCharset.getName()));
-        assertNull(group.get(PrinterDescriptionGroup.printerName));
+        assertEquals(Types.attributesCharset.of("utf-8","utf-16"), group.get(Types.attributesCharset.getName()));
+        assertNull(group.get(Types.printerName));
+    }
+
+    @Test
+    public void getValues() throws Exception {
+        AttributeGroup group = groupOf(Tag.operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16"));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), group.getValues(Types.attributesCharset));
+        assertEquals(Collections.emptyList(), group.getValues(Types.attributesNaturalLanguage));
+    }
+
+    @Test
+    public void getStrings() throws Exception {
+        AttributeGroup group = groupOf(Tag.operationAttributes,
+                Types.printerName.of(new Name("myprinter")));
+        assertEquals(Collections.singletonList("myprinter"), group.getStrings(Types.printerName));
     }
 
     @Test
@@ -104,26 +118,26 @@ public class AttributeGroupTest {
     @Test
     public void cover() throws Exception {
         coverList(groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8","utf-16")),
-                OperationGroup.attributesCharset.of("utf-8","utf-16"),
-                OperationGroup.attributesCharset.of("utf-8"));
+                Types.attributesCharset.of("utf-8","utf-16")),
+                Types.attributesCharset.of("utf-8","utf-16"),
+                Types.attributesCharset.of("utf-8"));
     }
 
     @Test
     public void equality() throws Exception {
         AttributeGroup group = groupOf(Tag.operationAttributes,
-                OperationGroup.attributesCharset.of("utf-8","utf-16"));
-        List<Attribute<String>> attributes = Collections.singletonList(OperationGroup.attributesCharset.of("utf-8", "utf-16"));
+                Types.attributesCharset.of("utf-8","utf-16"));
+        List<Attribute<String>> attributes = Collections.singletonList(Types.attributesCharset.of("utf-8", "utf-16"));
         assertNotEquals(group, 5);
         assertEquals(group, group);
         assertEquals(attributes, group);
         //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(group, attributes);
-        assertNotEquals(group, Collections.singletonList(OperationGroup.attributesCharset.of("utf-8")));
+        assertNotEquals(group, Collections.singletonList(Types.attributesCharset.of("utf-8")));
         assertNotEquals(group, groupOf(Tag.operationAttributes,
-                Collections.singletonList(OperationGroup.attributesCharset.of("utf-8"))));
+                Collections.singletonList(Types.attributesCharset.of("utf-8"))));
         assertNotEquals(group, groupOf(Tag.printerAttributes,
-                OperationGroup.attributesCharset.of("utf-8","utf-16")));
+                Types.attributesCharset.of("utf-8","utf-16")));
         assertEquals(attributes.hashCode(), group.hashCode());
     }
 }
