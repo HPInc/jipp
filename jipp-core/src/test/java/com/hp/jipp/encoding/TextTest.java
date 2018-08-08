@@ -1,6 +1,5 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.pwg.JobStatusGroup;
 import com.hp.jipp.util.KotlinTest;
 import org.junit.Test;
 

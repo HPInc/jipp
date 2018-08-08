@@ -438,7 +438,7 @@ def emit_keyword(template, keyword):
 
 # Given a class name, select an appropriate location for it and signal the user we are writing it
 def prep_file(name, suffix='.kt'):
-    out_file = os.path.abspath(proj_dir + 'src/main/java/com/hp/jipp/pwg/' + camel_class(name) + suffix)
+    out_file = os.path.abspath(proj_dir + 'src/main/java/com/hp/jipp/model/' + camel_class(name) + suffix)
     if not os.path.exists(os.path.dirname(out_file)):
         os.makedirs(os.path.dirname(out_file))
     #print out_file

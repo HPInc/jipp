@@ -1,7 +1,7 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.pwg.DocumentState;
-import com.hp.jipp.pwg.OperationGroup;
+import com.hp.jipp.model.DocumentState;
+import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
 import org.junit.Rule;
 import org.junit.Test;
@@ -94,16 +94,16 @@ public class AttributeTest {
 
     @Test
     public void equality() throws Exception {
-        Attribute<String> charsetAttr = OperationGroup.attributesCharset.of("one", "two", "three");
-        Attribute<String> charsetAttr2 = OperationGroup.attributesCharset.of("one", "two", "three");
+        Attribute<String> charsetAttr = Types.attributesCharset.of("one", "two", "three");
+        Attribute<String> charsetAttr2 = Types.attributesCharset.of("one", "two", "three");
         assertEquals(charsetAttr, charsetAttr);
         assertEquals(charsetAttr, charsetAttr2);
         assertNotEquals(charsetAttr, 5);
-        assertNotEquals(charsetAttr, OperationGroup.attributesCharset.empty(Tag.unsupported));
-        assertNotEquals(charsetAttr, OperationGroup.attributesNaturalLanguage.of("one", "two", "three"));
+        assertNotEquals(charsetAttr, Types.attributesCharset.empty(Tag.unsupported));
+        assertNotEquals(charsetAttr, Types.attributesNaturalLanguage.of("one", "two", "three"));
 
         // Different metadata means different object:
-        Attribute<String> natLangAttr = OperationGroup.attributesNaturalLanguage.of("one", "two", "three");
+        Attribute<String> natLangAttr = Types.attributesNaturalLanguage.of("one", "two", "three");
         assertNotEquals(charsetAttr, natLangAttr);
 
         // equals must be symmetric with equivalent List
@@ -114,13 +114,13 @@ public class AttributeTest {
 
     @Test
     public void collectionOperations() {
-        Attribute<String> attr = OperationGroup.attributesCharset.of("one", "two", "three");
+        Attribute<String> attr = Types.attributesCharset.of("one", "two", "three");
         coverList(attr, "one", "four");
     }
 
     @Test
     public void empty() {
-        Attribute<String> empty = OperationGroup.attributesCharset.empty(Tag.unsupported);
+        Attribute<String> empty = Types.attributesCharset.empty(Tag.unsupported);
         assertEquals("attributes-charset(unsupported)", empty.toString());
         assertNull(empty.getValue());
     }
@@ -128,7 +128,7 @@ public class AttributeTest {
     @Test
     public void failEmpty() {
         try {
-            OperationGroup.attributesCharset.empty(Tag.octetString);
+            Types.attributesCharset.empty(Tag.octetString);
             fail("Didn't throw build error");
         } catch (BuildError ignored) {
         }

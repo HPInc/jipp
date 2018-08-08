@@ -1,6 +1,6 @@
 package sample;
 
-import com.hp.jipp.model.IppPacket;
+import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ class HttpIppClientTransport implements IppClientTransport {
 
         // Parse it back into an IPP packet
         InputStream responseInput = new DataInputStream(new ByteArrayInputStream(responseBytes.toByteArray()));
-        return new IppPacketData(IppPacket.parse(responseInput));
+        return new IppPacketData(IppPacket.read(responseInput));
     }
 
     private void copy(InputStream data, OutputStream output) throws IOException {

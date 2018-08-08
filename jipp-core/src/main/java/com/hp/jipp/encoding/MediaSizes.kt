@@ -4,7 +4,7 @@
 package com.hp.jipp.encoding
 
 import java.util.regex.Pattern
-import com.hp.jipp.pwg.MediaCol
+import com.hp.jipp.model.MediaCol
 
 object MediaSizes {
     private val WIDTH_HEIGHT = Pattern.compile(

@@ -3,7 +3,6 @@
 
 package com.hp.jipp.trans
 
-import com.hp.jipp.encoding.IppPacket
 import java.io.IOException
 import java.net.URI
 
@@ -18,10 +17,4 @@ interface IppClientTransport {
      */
     @Throws(IOException::class)
     fun sendData(uri: URI, request: IppPacketData): IppPacketData
-
-    /**
-     * Deliver an IPP packet to the specified URL including no additional data, and return the response
-     * packet (or throw an error).
-     */
-    fun send(uri: URI, request: IppPacket): IppPacket = sendData(uri, IppPacketData(request)).packet
 }

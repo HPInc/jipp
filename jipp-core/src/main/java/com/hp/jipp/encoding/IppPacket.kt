@@ -3,8 +3,8 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.pwg.Operation
-import com.hp.jipp.pwg.Status
+import com.hp.jipp.model.Operation
+import com.hp.jipp.model.Status
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.repeatUntilNull

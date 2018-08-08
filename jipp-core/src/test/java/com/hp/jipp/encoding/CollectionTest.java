@@ -1,9 +1,9 @@
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.pwg.CoveringName;
-import com.hp.jipp.pwg.FinishingsCol;
-import com.hp.jipp.pwg.FoldingDirection;
-import com.hp.jipp.pwg.FoldingReferenceEdge;
+import com.hp.jipp.model.CoveringName;
+import com.hp.jipp.model.FinishingsCol;
+import com.hp.jipp.model.FoldingDirection;
+import com.hp.jipp.model.FoldingReferenceEdge;
 import com.hp.jipp.util.KotlinTest;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static com.hp.jipp.encoding.Cycler.cycle;
-import static com.hp.jipp.pwg.DocumentStatusGroup.finishingsColActual;
+import static com.hp.jipp.model.Types.finishingsColActual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
