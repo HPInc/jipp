@@ -15,13 +15,16 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class PrinterXriSupported
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [XriAuthenticationSupported]. */
     var xriAuthentication: String? = null,
     /** May contain any keyword from [XriSecuritySupported]. */
     var xriSecurity: String? = null,
     var xriUri: java.net.URI? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [PrinterXriSupported]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

@@ -15,12 +15,15 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class ProofPrint
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [Media] or a name. */
     var media: String? = null,
     var mediaCol: MediaCol? = null,
     var proofPrintCopies: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [ProofPrint]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class DocumentFormatDetails
-@JvmOverloads constructor(
+constructor(
     var documentFormat: String? = null,
     var documentFormatDeviceId: String? = null,
     var documentFormatVersion: String? = null,
@@ -25,6 +25,9 @@ data class DocumentFormatDetails
     var documentSourceOsName: String? = null,
     var documentSourceOsVersion: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [DocumentFormatDetails]. */
+    constructor() : this(null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

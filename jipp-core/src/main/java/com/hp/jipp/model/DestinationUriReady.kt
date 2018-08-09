@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationUriReady
-@JvmOverloads constructor(
+constructor(
     var destinationAttributes: List<UntypedCollection>? = null,
     var destinationAttributesSupported: List<String>? = null,
     var destinationInfo: String? = null,
@@ -28,6 +28,9 @@ data class DestinationUriReady
     var destinationOauthUri: java.net.URI? = null,
     var destinationUri: java.net.URI? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [DestinationUriReady]. */
+    constructor() : this(null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

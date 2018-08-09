@@ -15,10 +15,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class OutputAttributes
-@JvmOverloads constructor(
+constructor(
     var noiseRemoval: Int? = null,
     var outputCompressionQualityFactor: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [OutputAttributes]. */
+    constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

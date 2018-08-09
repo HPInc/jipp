@@ -15,11 +15,14 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class PrinterVolumeSupported
-@JvmOverloads constructor(
+constructor(
     var xDimension: Int? = null,
     var yDimension: Int? = null,
     var zDimension: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [PrinterVolumeSupported]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

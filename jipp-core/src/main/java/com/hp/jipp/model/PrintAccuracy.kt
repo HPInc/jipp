@@ -15,13 +15,16 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class PrintAccuracy
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [AccuracyUnit]. */
     var accuracyUnits: String? = null,
     var xAccuracy: Int? = null,
     var yAccuracy: Int? = null,
     var zAccuracy: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [PrintAccuracy]. */
+    constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

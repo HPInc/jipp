@@ -16,9 +16,12 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class MediaColReady
-@JvmOverloads constructor(
+constructor(
     var mediaSourceProperties: MediaSourceProperties? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [MediaColReady]. */
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
@@ -54,11 +57,14 @@ data class MediaColReady
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class MediaSourceProperties
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [FeedOrientation]. */
         var mediaSourceFeedDirection: String? = null,
         var mediaSourceFeedOrientation: Orientation? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [MediaSourceProperties]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {

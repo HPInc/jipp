@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class CoverSheetInfo
-@JvmOverloads constructor(
+constructor(
     var fromName: String? = null,
     var logo: java.net.URI? = null,
     var message: String? = null,
@@ -23,6 +23,9 @@ data class CoverSheetInfo
     var subject: String? = null,
     var toName: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [CoverSheetInfo]. */
+    constructor() : this(null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

@@ -15,12 +15,15 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class PrintObjects
-@JvmOverloads constructor(
+constructor(
     var documentNumber: Int? = null,
     var objectOffset: ObjectOffset? = null,
     var objectSize: ObjectSize? = null,
     var objectUuid: java.net.URI? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [PrintObjects]. */
+    constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
@@ -71,11 +74,14 @@ data class PrintObjects
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class ObjectOffset
-    @JvmOverloads constructor(
+    constructor(
         var xOffset: Int? = null,
         var yOffset: Int? = null,
         var zOffset: Int? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [ObjectOffset]. */
+        constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -122,11 +128,14 @@ data class PrintObjects
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class ObjectSize
-    @JvmOverloads constructor(
+    constructor(
         var xDimension: Int? = null,
         var yDimension: Int? = null,
         var zDimension: Int? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [ObjectSize]. */
+        constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {

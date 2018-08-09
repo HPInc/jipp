@@ -15,11 +15,14 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class PdlInitFile
-@JvmOverloads constructor(
+constructor(
     var pdlInitFileEntry: String? = null,
     var pdlInitFileLocation: java.net.URI? = null,
     var pdlInitFileName: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [PdlInitFile]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class JobErrorSheet
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [JobErrorSheetType] or a name. */
     var jobErrorSheetType: String? = null,
     /** May contain any keyword from [JobErrorSheetWhen]. */
@@ -24,6 +24,9 @@ data class JobErrorSheet
     var media: String? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [JobErrorSheet]. */
+    constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

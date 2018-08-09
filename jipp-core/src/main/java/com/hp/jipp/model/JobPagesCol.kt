@@ -15,10 +15,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class JobPagesCol
-@JvmOverloads constructor(
+constructor(
     var fullColor: Int? = null,
     var monochrome: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [JobPagesCol]. */
+    constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class MaterialsCol
-@JvmOverloads constructor(
+constructor(
     var materialAmount: Int? = null,
     /** May contain any keyword from [MaterialAmountUnit]. */
     var materialAmountUnits: String? = null,
@@ -36,6 +36,9 @@ data class MaterialsCol
     /** May contain any keyword from [MaterialType] or a name. */
     var materialType: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [MaterialsCol]. */
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

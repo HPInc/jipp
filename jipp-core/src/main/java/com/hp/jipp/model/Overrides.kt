@@ -15,11 +15,14 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class Overrides
-@JvmOverloads constructor(
+constructor(
     var documentCopies: List<IntRange>? = null,
     var documentNumbers: List<IntRange>? = null,
     var pages: List<IntRange>? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [Overrides]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

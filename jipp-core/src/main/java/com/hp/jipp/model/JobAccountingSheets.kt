@@ -16,7 +16,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class JobAccountingSheets
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [OutputBin] or a name. */
     var jobAccountingOutputBin: String? = null,
     /** May contain any keyword from [JobAccountingSheetsType] or a name. */
@@ -25,6 +25,9 @@ data class JobAccountingSheets
     var media: String? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [JobAccountingSheets]. */
+    constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

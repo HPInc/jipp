@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class InputAttributes
-@JvmOverloads constructor(
+constructor(
     var inputAutoScaling: Boolean? = null,
     var inputAutoSkewCorrection: Boolean? = null,
     var inputBrightness: Int? = null,
@@ -41,6 +41,9 @@ data class InputAttributes
     /** May contain any keyword from [InputSource]. */
     var inputSource: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [InputAttributes]. */
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
@@ -167,12 +170,15 @@ data class InputAttributes
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class InputScanRegions
-    @JvmOverloads constructor(
+    constructor(
         var xDimension: Int? = null,
         var xOrigin: Int? = null,
         var yDimension: Int? = null,
         var yOrigin: Int? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [InputScanRegions]. */
+        constructor() : this(null, null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {

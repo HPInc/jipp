@@ -16,7 +16,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class FinishingsCol
-@JvmOverloads constructor(
+constructor(
     var baling: Baling? = null,
     var binding: Binding? = null,
     var coating: Coating? = null,
@@ -35,6 +35,9 @@ data class FinishingsCol
     var stitching: Stitching? = null,
     var trimming: List<Trimming>? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [FinishingsCol]. */
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
@@ -135,12 +138,15 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Baling
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [BalingType] or a name. */
         var balingType: String? = null,
         /** May contain any keyword from [BalingWhen]. */
         var balingWhen: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Baling]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -182,12 +188,15 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Binding
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [BindingReferenceEdge]. */
         var bindingReferenceEdge: String? = null,
         /** May contain any keyword from [BindingType] or a name. */
         var bindingType: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Binding]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -229,12 +238,15 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Coating
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [CoatingSides]. */
         var coatingSides: String? = null,
         /** May contain any keyword from [CoatingType] or a name. */
         var coatingType: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Coating]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -276,10 +288,13 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Covering
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [CoveringName] or a name. */
         var coveringName: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Covering]. */
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -316,13 +331,16 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Folding
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [FoldingDirection]. */
         var foldingDirection: String? = null,
         var foldingOffset: Int? = null,
         /** May contain any keyword from [FoldingReferenceEdge]. */
         var foldingReferenceEdge: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Folding]. */
+        constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -369,12 +387,15 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Laminating
-    @JvmOverloads constructor(
+    constructor(
         /** May contain any keyword from [LaminatingSides]. */
         var laminatingSides: String? = null,
         /** May contain any keyword from [LaminatingType] or a name. */
         var laminatingType: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Laminating]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -416,10 +437,13 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class MediaSize
-    @JvmOverloads constructor(
+    constructor(
         var xDimension: Int? = null,
         var yDimension: Int? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [MediaSize]. */
+        constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -461,12 +485,15 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Punching
-    @JvmOverloads constructor(
+    constructor(
         var punchingLocations: List<Int>? = null,
         var punchingOffset: Int? = null,
         /** May contain any keyword from [PunchingReferenceEdge]. */
         var punchingReferenceEdge: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Punching]. */
+        constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -513,7 +540,7 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Stitching
-    @JvmOverloads constructor(
+    constructor(
         var stitchingAngle: Int? = null,
         var stitchingLocations: List<Int>? = null,
         /** May contain any keyword from [StitchingMethod]. */
@@ -522,6 +549,9 @@ data class FinishingsCol
         /** May contain any keyword from [StitchingReferenceEdge]. */
         var stitchingReferenceEdge: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Stitching]. */
+        constructor() : this(null, null, null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
@@ -578,7 +608,7 @@ data class FinishingsCol
      */
     @Suppress("RedundantCompanionReference", "unused")
     data class Trimming
-    @JvmOverloads constructor(
+    constructor(
         var trimmingOffset: Int? = null,
         /** May contain any keyword from [TrimmingReferenceEdge]. */
         var trimmingReferenceEdge: String? = null,
@@ -587,6 +617,9 @@ data class FinishingsCol
         /** May contain any keyword from [TrimmingWhen]. */
         var trimmingWhen: String? = null
     ) : AttributeCollection {
+
+        /** Construct an empty [Trimming]. */
+        constructor() : this(null, null, null, null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {

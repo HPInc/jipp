@@ -15,10 +15,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class JobPresetsSupported
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [PresetName] or a name. */
     var presetName: String? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [JobPresetsSupported]. */
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

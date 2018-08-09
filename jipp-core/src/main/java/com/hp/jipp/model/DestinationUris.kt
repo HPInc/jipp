@@ -16,13 +16,16 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class DestinationUris
-@JvmOverloads constructor(
+constructor(
     var destinationAttributes: List<UntypedCollection>? = null,
     var destinationUri: java.net.URI? = null,
     var postDialString: String? = null,
     var preDialString: String? = null,
     var t33Subaddress: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [DestinationUris]. */
+    constructor() : this(null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

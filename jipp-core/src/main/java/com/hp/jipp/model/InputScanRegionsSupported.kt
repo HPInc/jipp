@@ -15,12 +15,15 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class InputScanRegionsSupported
-@JvmOverloads constructor(
+constructor(
     var xDimension: IntRange? = null,
     var xOrigin: IntRange? = null,
     var yDimension: IntRange? = null,
     var yOrigin: IntRange? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [InputScanRegionsSupported]. */
+    constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

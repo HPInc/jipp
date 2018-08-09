@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class JobMediaSheetsCol
-@JvmOverloads constructor(
+constructor(
     var blank: Int? = null,
     var blankTwoSided: Int? = null,
     var fullColor: Int? = null,
@@ -25,6 +25,9 @@ data class JobMediaSheetsCol
     var monochrome: Int? = null,
     var monochromeTwoSided: Int? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [JobMediaSheetsCol]. */
+    constructor() : this(null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

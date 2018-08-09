@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class DocumentAccess
-@JvmOverloads constructor(
+constructor(
     var accessOauthToken: List<ByteArray>? = null,
     var accessOauthUri: java.net.URI? = null,
     var accessPassword: String? = null,
@@ -23,6 +23,9 @@ data class DocumentAccess
     var accessUserName: String? = null,
     var accessX509Certificate: List<ByteArray>? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [DocumentAccess]. */
+    constructor() : this(null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

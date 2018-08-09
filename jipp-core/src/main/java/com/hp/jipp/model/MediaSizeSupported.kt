@@ -15,10 +15,13 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class MediaSizeSupported
-@JvmOverloads constructor(
+constructor(
     var xDimension: IntOrIntRange? = null,
     var yDimension: IntOrIntRange? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [MediaSizeSupported]. */
+    constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {

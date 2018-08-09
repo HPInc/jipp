@@ -16,13 +16,16 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  */
 @Suppress("RedundantCompanionReference", "unused")
 data class SeparatorSheets
-@JvmOverloads constructor(
+constructor(
     /** May contain any keyword from [Media] or a name. */
     var media: String? = null,
     var mediaCol: MediaCol? = null,
     /** May contain any keyword from [SeparatorSheetsType]. */
     var separatorSheetsType: List<String>? = null
 ) : AttributeCollection {
+
+    /** Construct an empty [SeparatorSheets]. */
+    constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
