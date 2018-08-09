@@ -38,8 +38,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.0'
-    compile 'com.hp.jipp:jipp-pdl:0.6.0' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.6.1'
+    compile 'com.hp.jipp:jipp-pdl:0.6.1' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -75,7 +75,7 @@ jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 
 Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
-## Migration from v0.5.7 to v0.6.0
+## Migration from v0.5.7 to v0.6.*
 
 0.6 includes some API changes. Some changes may require changes in your code.
 
@@ -96,7 +96,7 @@ Until 1.0, APIs may still be changed in non-backwards-compatible ways.
   values to String:
   * `Name.asString()` and `Text.asString()` are `Stringable` and extract the value in string form. `.getValue()` also does this.
   * `Attribute.strings()`, `AttributeGroup.getStrings()`, and `IppPacket.getStrings()` do the same for all types.
-
+* `Status.ok` is now `Status.successfulOk`, etc.
 ## Dependencies
 
 `jipp-core`'s only dependencies are JDK 6+ and the current Kotlin runtime.

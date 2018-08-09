@@ -24,7 +24,7 @@ public class IppFeaturesSupported {
     public static final String faxout = "faxout";
     public static final String iccColorMatching = "icc-color-matching";
     public static final String infrastructurePrinter = "infrastructure-printer";
-    public static final String ipp3D = "ipp-3d";
+    public static final String ipp3d = "ipp-3d";
     public static final String ippEverywhere = "ipp-everywhere";
     public static final String jobSave = "job-save";
     public static final String none = "none";

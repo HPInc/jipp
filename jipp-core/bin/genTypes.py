@@ -357,7 +357,14 @@ def spaced_title(string):
 
 # Accepts any string, returning in the form CamelClass
 def camel_class(string):
-    return "".join([word.title() for word in re.split("[ _\.-]", string) if len(word) > 0])
+    parts = [word.lower().capitalize() for word in re.split("[ _-]", string) if len(word)]
+    combined = ""
+    for part in parts:
+        part = part.replace('.', 'p')
+        if combined and combined[-1].isdigit() and part[0].isdigit():
+            combined += '_'
+        combined += part
+    return combined
 
 def camel_class_path(string):
     return "".join([word.title() for word in re.split("[ _-]", string) if len(word) > 0])
