@@ -67,7 +67,7 @@ public class BinaryTest {
         URL url = getClass().getClassLoader().getResource("printer");
         if (url != null) return url.getPath();
 
-        // Running in AndroidStudio, manually adjust path
+        // If running in AndroidStudio, manually adjust path
         url = getClass().getClassLoader().getResource(".");
         assertNotNull(url);
         return url.getPath().replace("/build/classes/java/test/", "/build/resources/test/" + path);

@@ -16,6 +16,7 @@ import java.util.* // ktlint-disable
 /**
  * A tagged group of attributes.
  */
+@Suppress("TooManyFunctions") // Necessary
 class AttributeGroup(
     val tag: Tag,
     private val attributes: List<Attribute<*>>
@@ -285,8 +286,7 @@ class AttributeGroup(
             }
             mark(IppInputStream.TAG_LEN + IppInputStream.LENGTH_LENGTH)
             val tag = readTag()
-            if (tag.isDelimiter || tag.isOutOfBand || tag == Tag.memberAttributeName || tag == Tag.endCollection ||
-                readShort().toInt() != 0) {
+            if (tag.isEndOfValueStream() || readShort().toInt() != 0) {
                 // Non-value tag or non-empty name means its a completely different attribute.
                 reset()
                 return null
@@ -296,6 +296,10 @@ class AttributeGroup(
                 ?: throw ParseError("No codec found for tag $tag")
             return readValue(codec, tag, attributeName)
         }
+
+        /** Identify tags that indicate the current attribute has no more values */
+        private fun Tag.isEndOfValueStream() =
+            isDelimiter || isOutOfBand || this == Tag.memberAttributeName || this == Tag.endCollection
 
         /** Write the attribute to this stream. */
         fun IppOutputStream.writeAttribute(attribute: Attribute<*>, name: String = attribute.name) {

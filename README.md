@@ -77,9 +77,11 @@ Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
 ## Migration from 0.5.x to 0.6.x
 
-Some changes in the public API may require the following changes in your code:
+0.6 includes some API changes. Some changes may require changes in your code.
 
-* Collection types are now expressed as POJO objects and do not need to be constructed manually.
+* `Types` now includes all defined types as published as of 2018-04-06 at
+  [IANA](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml).
+* Collection types such as `MediaCol` are now expressed as POJO objects and are automatically constructed/deconstructed.
 * `com.hp.jipp.model.IppPacket` moved to `com.hp.jipp.encoding.IppPacket` so that all PWG generated code lives in `.model`.
 * Keyword attribute values now present as simple, untyped Strings. Allowed strings are provided in static objects
   (e.g. `Media.java` defines all possible media types.)
