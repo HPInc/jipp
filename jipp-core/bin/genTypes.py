@@ -408,18 +408,7 @@ def emit_keyword(template, keyword):
         if group_name not in attributes:
             warn("Keyword refers to group " + group_name + " but no such group", keyword)
             return
-        if keyword['values']:
-            keyword['jdoc'] = 'Legal values also include all attribute names found in {@link ' + camel_class(group_name) + \
-                              "Group}."
-            keyword['kdoc'] = 'Legal values also include all attribute names found in [' + camel_class(group_name) + \
-                              "Group]."
-        else:
-            keyword['jdoc'] = 'Legal values include all attribute names found in {@link ' + camel_class(group_name) + \
-                              "Group}."
-            keyword['kdoc'] = 'Legal values include all attribute names found in [' + camel_class(group_name) + \
-                              "Group]."
-
-        # keyword['values'] = sorted(attributes[group_name].keys())
+        # Used to include kdoc/jdoc reference group but we don't preserve groups any more
 
     if not keyword['values'] and 'empty_ok' not in keyword:
         #warn("keyword " + keyword['name'] + " has no values defined", keyword)
@@ -758,7 +747,7 @@ def fix_ktypes(type, syntax, name, group_name = ''):
                 type['ktype'] = "String"
                 if real_type['values']:
                     type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "]."
-                else:
+                elif 'kdoc' in real_type:
                     type['kdoc'] = real_type['kdoc']
 
             elif syntax == 'keyword | name':

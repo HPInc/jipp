@@ -10,7 +10,6 @@ package com.hp.jipp.model;
 
 /**
  * Values applicable for "document-format-varying-attributes" keywords.
- * Legal values also include all attribute names found in {@link PrinterDescriptionGroup}.
  *
  * @see <a href="http://www.iana.org/go/rfc3380">RFC3380</a>
  */

@@ -1361,7 +1361,6 @@ object Types {
     /**
      * "job-mandatory-attributes" as defined in:
      * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).
-     * Legal values include all attribute names found in [JobTemplateGroup].
      */
     @JvmField val jobMandatoryAttributes = KeywordType("job-mandatory-attributes")
     /**
@@ -2716,7 +2715,6 @@ object Types {
     /**
      * "pdl-override-guaranteed-supported" as defined in:
      * [IPPWG20151019](http://www.pwg.org/archives/ipp/2015/018629.html).
-     * Legal values include all attribute names found in [JobTemplateGroup].
      */
     @JvmField val pdlOverrideGuaranteedSupported = KeywordType("pdl-override-guaranteed-supported")
     /**
