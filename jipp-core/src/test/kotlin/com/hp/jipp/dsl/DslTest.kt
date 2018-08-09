@@ -13,7 +13,7 @@ import java.net.URI
 
 class DslTest {
     private val uri = URI.create("ipp://192.168.0.101:631/ipp/print")
-    private val mediaSize = MediaSizes.parse(Media.naLetter85X11In)!!
+    private val mediaSize = MediaSizes.parse(Media.naLetter8p5x11in)!!
 
     @Test fun packetTest() {
         val packet = ippPacket(Operation.printJob) {
