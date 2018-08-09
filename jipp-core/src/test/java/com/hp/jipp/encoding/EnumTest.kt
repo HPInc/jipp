@@ -28,7 +28,6 @@ class EnumTest {
     @Throws(Exception::class)
     fun sample() {
         assertEquals(listOf(Sample.One), cycle(MySample, MySample.of(Sample.One)))
-        assertThat(Enum.allFrom(Sample::class.java), hasItems(Sample.One, Sample.Two, Sample.Three))
     }
 
     @Test

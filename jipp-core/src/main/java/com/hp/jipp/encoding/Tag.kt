@@ -95,8 +95,15 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
         @JvmField val memberAttributeName = Tag(0x4A, "memberAttrName")
 
         /** All known [Tag] values. */
-        @JvmField val all = Enum.allFrom<Tag>(Tag::class.java)
+        @JvmField val all = listOf(operationAttributes, jobAttributes, endOfAttributes, printerAttributes,
+            unsupportedAttributes,
+            unsupported, unknown, noValue, notSettable, deleteAttribute, adminDefine,
+            integerValue, booleanValue, enumValue,
+            octetString, dateTime, resolution, rangeOfInteger, beginCollection, textWithLanguage, nameWithLanguage,
+            endCollection,
+            textWithoutLanguage, nameWithoutLanguage, keyword, uri, uriScheme, charset, naturalLanguage, mimeMediaType,
+            memberAttributeName)
 
-        private val codeMap: Map<Int, Tag> = Enum.toCodeMap(Enum.allFrom(Tag::class.java))
+        private val codeMap: Map<Int, Tag> = Enum.toCodeMap(all)
     }
 }
