@@ -12,8 +12,8 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "document-state" enum as defined in:
- *   * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf)
- *   * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf)
+ * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf),
+ * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
  */
 data class DocumentState(override val code: Int, override val name: String) : Enum() {
 

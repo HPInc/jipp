@@ -12,20 +12,20 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "operations-supported" enum as defined in:
- *   * [APPLE20150505-2](http://www.pwg.org/pipermail/ipp/2015/018516.html)
- *   * [APPLE20150505-3](http://www.pwg.org/pipermail/ipp/2015/018518.html)
- *   * [IPPGUPA](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippgupa-20171214.pdf)
- *   * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf)
- *   * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
- *   * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf)
- *   * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf)
- *   * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf)
- *   * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf)
- *   * [RFC3380](http://www.iana.org/go/rfc3380)
- *   * [RFC3995](http://www.iana.org/go/rfc3995)
- *   * [RFC3996](http://www.iana.org/go/rfc3996)
- *   * [RFC3998](http://www.iana.org/go/rfc3998)
- *   * [RFC8011](http://www.iana.org/go/rfc8011)
+ * [APPLE20150505-2](http://www.pwg.org/pipermail/ipp/2015/018516.html),
+ * [APPLE20150505-3](http://www.pwg.org/pipermail/ipp/2015/018518.html),
+ * [IPPGUPA](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippgupa-20171214.pdf),
+ * [PWG5100.11](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf),
+ * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf),
+ * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf),
+ * [PWG5100.17](http://ftp.pwg.org/pub/pwg/candidates/cs-ippscan10-20140918-5100.17.pdf),
+ * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf),
+ * [PWG5100.5](http://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
+ * [RFC3380](http://www.iana.org/go/rfc3380),
+ * [RFC3995](http://www.iana.org/go/rfc3995),
+ * [RFC3996](http://www.iana.org/go/rfc3996),
+ * [RFC3998](http://www.iana.org/go/rfc3998),
+ * [RFC8011](http://www.iana.org/go/rfc8011).
  */
 data class Operation(override val code: Int, override val name: String) : Enum() {
 

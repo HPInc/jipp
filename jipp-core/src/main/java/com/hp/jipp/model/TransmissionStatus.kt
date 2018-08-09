@@ -12,7 +12,7 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "transmission-status" enum as defined in:
- *   * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf)
+ * [PWG5100.15](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
  */
 data class TransmissionStatus(override val code: Int, override val name: String) : Enum() {
 

@@ -12,13 +12,7 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "print-quality" enum as defined in:
- *   * [RFC8011](http://www.iana.org/go/rfc8011)
- *
- * Also used by:
- *   * `input-quality`
- *   * `input-quality-supported`
- *   * `print-quality-default`
- *   * `print-quality-supported`
+ * [RFC8011](http://www.iana.org/go/rfc8011).
  */
 data class PrintQuality(override val code: Int, override val name: String) : Enum() {
 

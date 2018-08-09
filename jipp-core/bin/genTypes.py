@@ -467,6 +467,7 @@ def emit_kind(env, template_name, items, emit_func):
         item['refs'] = []
         for ref_item in items.values():
             if 'ref' in ref_item and ref_item['ref'] == item['name']:
+                # Many but not of these refs will be found in Types.*
                 item['refs'].append(ref_item['name'])
 
         emit_func(template, item)

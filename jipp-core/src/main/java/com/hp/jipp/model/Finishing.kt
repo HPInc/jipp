@@ -12,20 +12,11 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "finishings" enum as defined in:
- *   * [CANON-PUNCHING](http://www.pwg.org/pipermail/ipp/2016/018825.html)
- *   * [IPP-JOG-OFFSET](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20170214.pdf)
- *   * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf)
- *   * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
- *   * [RFC8011](http://www.iana.org/go/rfc8011)
- *
- * Also used by:
- *   * `finishings-default`
- *   * `finishings-ready`
- *   * `finishings-supported`
- *   * `job-finishings`
- *   * `job-finishings-default`
- *   * `job-finishings-ready`
- *   * `job-finishings-supported`
+ * [CANON-PUNCHING](http://www.pwg.org/pipermail/ipp/2016/018825.html),
+ * [IPP-JOG-OFFSET](http://ftp.pwg.org/pub/pwg/ipp/minutes/ippv2-f2f-minutes-20170214.pdf),
+ * [PWG5100.1](http://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf),
+ * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf),
+ * [RFC8011](http://www.iana.org/go/rfc8011).
  */
 data class Finishing(override val code: Int, override val name: String) : Enum() {
 

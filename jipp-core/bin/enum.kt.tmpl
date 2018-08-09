@@ -12,10 +12,7 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "{{ enum.fullname }}" enum as defined in:{%- for spec in enum.specs | sort %}
- *   * [{{ spec | upper }}]({{ specs[spec] }}){%- endfor %}{%- if enum['refs']%}
- *
- * Also used by:{%- for ref in enum.refs | sort %}
- *   * `{{ ref }}`{%- endfor%}{%- endif %}
+ * [{{ spec | upper }}]({{ specs[spec] }}){{ "," if not loop.last }}{%- endfor %}.
  */
 data class {{ enum.name | camel_class }}(override val code: Int, override val name: String) : Enum() {
 

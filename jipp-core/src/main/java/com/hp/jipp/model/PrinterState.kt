@@ -12,7 +12,7 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "printer-state" enum as defined in:
- *   * [RFC8011](http://www.iana.org/go/rfc8011)
+ * [RFC8011](http://www.iana.org/go/rfc8011).
  */
 data class PrinterState(override val code: Int, override val name: String) : Enum() {
 

@@ -12,18 +12,15 @@ import com.hp.jipp.encoding.Enum // Override java Enum
 
 /**
  * "status" enum as defined in:
- *   * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
- *   * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf)
- *   * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf)
- *   * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf)
- *   * [RFC3380](http://www.iana.org/go/rfc3380)
- *   * [RFC3995](http://www.iana.org/go/rfc3995)
- *   * [RFC3996](http://www.iana.org/go/rfc3996)
- *   * [RFC3998](http://www.iana.org/go/rfc3998)
- *   * [RFC8011](http://www.iana.org/go/rfc8011)
- *
- * Also used by:
- *   * `fetch-status-code`
+ * [PWG5100.13](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf),
+ * [PWG5100.16](http://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf),
+ * [PWG5100.18](http://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf),
+ * [PWG5100.7](http://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf),
+ * [RFC3380](http://www.iana.org/go/rfc3380),
+ * [RFC3995](http://www.iana.org/go/rfc3995),
+ * [RFC3996](http://www.iana.org/go/rfc3996),
+ * [RFC3998](http://www.iana.org/go/rfc3998),
+ * [RFC8011](http://www.iana.org/go/rfc8011).
  */
 data class Status(override val code: Int, override val name: String) : Enum() {
 
