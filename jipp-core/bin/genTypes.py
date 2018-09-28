@@ -151,7 +151,7 @@ def parse_enum(record):
         return
 
     if name is None:
-        m = re.search("<? ?(?:[aA]ny |all )\"?([a-z-]+)\"?( enum)? (value(s?)|name(s?)) ?>?", value)
+        m = re.search("<? ?(?:[aA]ny |all )\"?([a-z-]+)\"?>?", value)
         if m and m.group(1):
             enum['ref'] = m.group(1)
         else:
@@ -235,9 +235,10 @@ def assign_ref(ref, target):
     ref = re.sub(' the "separator-sheets"$', ' the "separator-sheets" Job Template attribute', ref)
     ref = re.sub(' the "cover-back"$', ' the "cover-back" Job Template attribute', ref)
     ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
+    ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
 
     # A reference to a keyword
-    m = re.search("^\"?([a-z-]+)\"?( keyword)? (value(s?)|name(s?))$", ref)
+    m = re.search("^\"?([a-z-]+)\"?( |keyword|value(s?)|name(s?))*$", ref)
     if m and m.group(1):
         target['ref'] = m.group(1)
         return True
@@ -311,6 +312,15 @@ def parse_attribute(record):
         if member_name.endswith('(extension)'):
             # Chop off (extension) and use it to replace former member syntax
             member_name = member_name[:-len('(extension)')]
+
+        if member_name.endswith('(obsolete)'):
+            # This demarcation means we should remove this name
+            member_name = member_name[:-len('(obsolete)')]
+            if member_name in attr['members']:
+                del attr['members'][member_name]
+            else:
+                warn(member_name + " is obsolete but couldn't remove it", attr)
+            return
 
         if member_name.startswith('<'):
             if not assign_ref(member_name, attr):
@@ -409,13 +419,6 @@ def emit_keyword(template, keyword):
         if keyword['values']:
             warn("Cannot handle keyword with both ref and values", keyword)
         return
-
-    if 'ref_group' in keyword:
-        group_name = keyword['ref_group']
-        if group_name not in attributes:
-            warn("Keyword refers to group " + group_name + " but no such group", keyword)
-            return
-        # Used to include kdoc/jdoc reference group but we don't preserve groups any more
 
     if not keyword['values'] and 'empty_ok' not in keyword:
         #warn("keyword " + keyword['name'] + " has no values defined", keyword)
