@@ -1,7 +1,7 @@
 allprojects {
-    ext.kotlin_version = '1.2.60'
+    ext.kotlin_version = '1.2.71'
     ext.dokka_version = '0.9.17'
-    ext.ktlint_version = '0.23.1'
+    ext.ktlint_version = '0.28.0'
 
     // Version of JIPP & friends to publish
     ext.jipp_version = '0.6.1'
@@ -19,8 +19,8 @@ allprojects {
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
             classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
             classpath "gradle.plugin.pl.squirrel:classycle-gradle-plugin:1.2"
-            classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:3.3.0"
-            classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0.RC7"
+            classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:6.0.0"
+            classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0.RC9.2"
         }
     }
 

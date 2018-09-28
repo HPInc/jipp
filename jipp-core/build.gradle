@@ -64,11 +64,8 @@ jacocoTestReport {
 }
 
 detekt {
-    profile("main") {
-        baseline = "$projectDir/src/config/baseline.xml"
-        input = "$projectDir/src/main"
-        output = "$buildDir/reports/detekt"
-    }
+    input = files("$projectDir/src/main")
+    baseline = file("$projectDir/src/config/baseline.xml")
 }
 
 // Graph dependencies
@@ -95,7 +92,6 @@ ktlint {
 
 afterEvaluate {
     check.dependsOn ktlintCheck
-    check.dependsOn detektCheck
 }
 
 task sourceJar(type: Jar) {
