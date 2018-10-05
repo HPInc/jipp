@@ -38,8 +38,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.1'
-    compile 'com.hp.jipp:jipp-pdl:0.6.1' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.6.2'
+    compile 'com.hp.jipp:jipp-pdl:0.6.2' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -81,7 +81,7 @@ Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
 * `Types` now includes all defined types as published as of 2018-04-06 at
   [IANA](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml).
-* Collection types such as `MediaCol` are now expressed as POJO objects and are automatically constructed/deconstructed.
+* Collection types such as `MediaCol` are now expressed as POJO and are automatically constructed/deconstructed.
 * `com.hp.jipp.model.IppPacket` moved to `com.hp.jipp.encoding.IppPacket` so that all PWG generated code lives in `.model`.
 * Keyword attribute values now present as simple, untyped Strings. Allowed strings are provided in static objects
   (e.g. `Media.java` defines all possible media types.)

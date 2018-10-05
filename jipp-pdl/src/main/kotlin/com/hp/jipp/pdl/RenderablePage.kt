@@ -11,6 +11,9 @@ abstract class RenderablePage {
     /** Height of the page in points */
     abstract val heightPoints: Double
 
+    /** Return a form of this page, rotated from its present orientation. */
+    abstract fun rotate(amount: RotationUnit): RenderablePage
+
     /**
      * Render a full-width swath of the page into an array of bytes at the given DPI.
      */
@@ -39,8 +42,7 @@ abstract class RenderablePage {
 
     companion object {
         /** Points per inch (72) */
-        @JvmField
-        val POINTS_PER_INCH = 72.0
+        private const val POINTS_PER_INCH = 72.0
 
         /** Utility method used to convert points to pixels at a certain dpi */
         @JvmStatic
