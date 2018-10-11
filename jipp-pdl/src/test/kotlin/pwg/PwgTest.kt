@@ -18,10 +18,10 @@ class PwgTest {
         val name = "validateGeneratedPwg"
         val outPwg = File("build/$name.pwg")
         // Create and load a sample PDF
-        val doc = RandomDocument(123L, 2, 72.0, 72.0)
+        val doc = RandomDocument(123L, 2, 72.0, 72.0, 300)
 
         // Create and write as PWG
-        PwgWriter(outPwg.outputStream(), PwgCapabilities(color = true), 300).use {
+        PwgWriter(outPwg.outputStream(), PwgCapabilities(color = true)).use {
             it.write(doc)
             it.close()
         }
