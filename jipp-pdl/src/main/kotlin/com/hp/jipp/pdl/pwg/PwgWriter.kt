@@ -11,8 +11,7 @@ import java.io.OutputStream
 @SuppressWarnings("MagicNumber")
 class PwgWriter(
     outputStream: OutputStream,
-    private val caps: PwgCapabilities,
-    private val dpi: Int
+    private val caps: PwgCapabilities
 ) : DataOutputStream(outputStream) {
 
     /** Write a null-terminated [string] including up to [width] bytes*/
@@ -28,14 +27,12 @@ class PwgWriter(
     fun write(doc: RenderableDocument) {
         writeString("RaS2", 4)
         for (page in doc.reversed()) {
-            write(page)
+            write(doc, page)
         }
     }
 
     @Suppress("LongMethod") // It's clearer to do it all here
-    private fun write(page: RenderablePage) {
-        val pixelWidth = RenderablePage.pointsToPixels(dpi, page.widthPoints)
-        val pixelHeight = RenderablePage.pointsToPixels(dpi, page.heightPoints)
+    private fun write(doc: RenderableDocument, page: RenderablePage) {
         val colorSpace = if (caps.color) ColorSpace.RGB else ColorSpace.GRAYSCALE
         writeString("PwgRaster", 64)
         writeString("", 64) // mediaColor
@@ -44,8 +41,8 @@ class PwgWriter(
         writeBlank(12) // reserved
         writeInt(0) // cutMedia
         writeInt(0) // duplex
-        writeInt(dpi) // resolutionX
-        writeInt(dpi) // resolutionY
+        writeInt(doc.dpi) // resolutionX
+        writeInt(doc.dpi) // resolutionY
         writeBlank(16) // reserved
         writeInt(0) // insertSheet
         writeInt(0) // jog
@@ -57,16 +54,16 @@ class PwgWriter(
         writeInt(0) // numCopies
         writeInt(0) // orientation
         writeBlank(4) // reserved
-        writeInt(page.widthPoints.toInt()) // pageSizeX
-        writeInt(page.heightPoints.toInt()) // pageSizeY
+        writeInt(page.widthPixels * POINTS_PER_INCH / doc.dpi) // pageSizeX
+        writeInt(page.heightPixels * POINTS_PER_INCH / doc.dpi) // pageSizeY
         writeBlank(8) // reserved
         writeInt(0) // tumble
-        writeInt(pixelWidth) // width (pixels)
-        writeInt(pixelHeight) // height (pixels)
+        writeInt(page.widthPixels) // width (pixels)
+        writeInt(page.heightPixels) // height (pixels)
         writeBlank(4) // reserved
         writeInt(8) // bitsPerColor
         writeInt(24) // bitsPerPixel
-        writeInt(pixelWidth * colorSpace.bytesPerPixel) // bytesPerLine
+        writeInt(page.widthPixels * colorSpace.bytesPerPixel) // bytesPerLine
         writeInt(0) // colorOrder
         writeInt(19) // colorSpace (RGB)
         writeBlank(16) // reserved
@@ -90,16 +87,16 @@ class PwgWriter(
         writeString("", 64) // pageSizeName
 
         var yOffset = 0
-        val packer = PackBits(bytesPerPixel = colorSpace.bytesPerPixel, pixelsPerLine = pixelWidth)
+        val packer = PackBits(bytesPerPixel = colorSpace.bytesPerPixel, pixelsPerLine = page.widthPixels)
         var size = 0
         var byteArray: ByteArray? = null
-        while (yOffset < pixelHeight) {
-            val height = Math.min(64, pixelHeight - yOffset)
-            val renderSize = page.renderSize(dpi, height, colorSpace)
+        while (yOffset < page.heightPixels) {
+            val height = Math.min(64, page.heightPixels - yOffset)
+            val renderSize = page.renderSize(height, colorSpace)
             if (byteArray?.size != renderSize) {
                 byteArray = ByteArray(renderSize)
             }
-            page.render(dpi, yOffset, height, colorSpace, byteArray)
+            page.render(yOffset, height, colorSpace, byteArray)
             val encodedBytes = ByteArrayOutputStream()
             packer.encode(ByteArrayInputStream(byteArray), encodedBytes)
             write(encodedBytes.toByteArray())
@@ -110,5 +107,9 @@ class PwgWriter(
 
     private fun writeBlank(bytes: Int) {
         write(ByteArray(bytes))
+    }
+
+    companion object {
+        const val POINTS_PER_INCH = 72
     }
 }

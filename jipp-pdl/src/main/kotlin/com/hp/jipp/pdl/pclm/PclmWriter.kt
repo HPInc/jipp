@@ -28,9 +28,7 @@ class PclmWriter(
     /** Destination for encoded PCLM stream */
     private val outputStream: OutputStream,
     /** Capabilities of target device */
-    private val caps: PclmCapabilities,
-    /** Resolution of rendered content */
-    private val dpi: Int
+    private val caps: PclmCapabilities
 ) : Writer() {
     private val encoder = StreamEncoder.forOutputStreamWriter(outputStream, this, null as String?)
 
@@ -66,7 +64,7 @@ class PclmWriter(
         startDoc()
 
         // Print last page first so that the user doesn't have to shuffle. Printer should request this?
-        for (page in document.reversed()) writePage(page)
+        for (page in document.reversed()) writePage(document, page)
 
         endDoc()
         flush()
@@ -81,12 +79,9 @@ class PclmWriter(
     private data class Swath(val objectNumber: Int, val imageNumber: Int, val height: Int, val yOffset: Int)
 
     /** Write a rendered page */
-    private fun writePage(page: RenderablePage) {
-        val heightPixels = RenderablePage.pointsToPixels(dpi = dpi, points = page.heightPoints)
-        val widthPixels = RenderablePage.pointsToPixels(dpi = dpi, points = page.widthPoints)
-
+    private fun writePage(doc: RenderableDocument, page: RenderablePage) {
         // Number of strips (rounding up so we get all strips including the last)
-        val stripCount = Math.ceil(heightPixels / caps.stripHeight.toDouble()).roundToInt()
+        val stripCount = Math.ceil(page.heightPixels / caps.stripHeight.toDouble()).roundToInt()
 
         // Find the top of the page (PDF puts y=0 at bottom, opposite of most computer images)
         var yOffset = 0
@@ -94,7 +89,7 @@ class PclmWriter(
         // Build out swath definitions. Note: duplex will run backwards
         val swaths = (0 until stripCount).map { index ->
             val height = if (index == stripCount - 1) {
-                heightPixels - (stripCount - 1) * caps.stripHeight
+                page.heightPixels - (stripCount - 1) * caps.stripHeight
             } else caps.stripHeight
 
             // Predict the object number assuming page object, page content stream object, and interleaved transforms
@@ -118,7 +113,9 @@ class PclmWriter(
 
             // Note: For landscape we would use a different media box
             // MediaBox MUST be integral for some printers
-            write("/MediaBox [ 0 0 ${page.widthPoints.toInt()} ${page.heightPoints.toInt()} ]\n")
+            val heightPoints: Int = page.heightPixels * POINTS_PER_INCH / doc.dpi
+            val widthPoints: Int = page.widthPixels * POINTS_PER_INCH / doc.dpi
+            write("/MediaBox [ 0 0 $widthPoints $heightPoints ]\n")
             write("/Contents [ ${objectNumber + 1} 0 R ]\n")
         }
 
@@ -127,13 +124,13 @@ class PclmWriter(
         // Write the page content stream object
         pdObject {
             val contentStream = CharArrayWriter()
-            contentStream.write("${POINTS_PER_INCH / dpi} 0 0 ${POINTS_PER_INCH / dpi} 0 0 cm\n")
+            contentStream.write("${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 ${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 cm\n")
             contentStream.write("/P <</MCID 0>> BDC q\n")
 
             for (swath in swaths) {
                 // Transfer swath image offset back to page coordinates
-                val pageYOffset = heightPixels - swath.yOffset - swath.height
-                contentStream.write("$widthPixels 0 0 ${swath.height} 0 $pageYOffset cm\n")
+                val pageYOffset = page.heightPixels - swath.yOffset - swath.height
+                contentStream.write("${page.widthPixels} 0 0 ${swath.height} 0 $pageYOffset cm\n")
                 contentStream.write("/Image${swath.imageNumber} Do Q\n")
                 contentStream.write("/P <</MCID 0>> BDC q\n")
             }
@@ -142,7 +139,7 @@ class PclmWriter(
 
             write("/Length ${contentStream.size()}\n")
         }
-        writeSwaths(page, swaths, widthPixels)
+        writeSwaths(page, swaths, page.widthPixels)
     }
 
     private fun writeSwaths(page: RenderablePage, swaths: List<Swath>, widthPixels: Int) {
@@ -206,8 +203,8 @@ class PclmWriter(
             renderBytes = ByteArray(size)
         }
 
-        page.render(dpi = dpi, yOffset = swath.yOffset, swathHeight = swath.height,
-            colorSpace = colorSpace, byteArray = renderBytes)
+        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = colorSpace,
+            byteArray = renderBytes)
 
         if (forceNonBlank) return renderBytes
 
@@ -298,7 +295,7 @@ class PclmWriter(
     }
 
     private companion object {
-        private const val POINTS_PER_INCH = 72f
+        private const val POINTS_PER_INCH: Int = 72
         private const val CATALOG_OBJECT_NUMBER = 1
         private const val PAGE_TREE_OBJECT_NUMBER = CATALOG_OBJECT_NUMBER + 1
     }

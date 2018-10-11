@@ -1,13 +1,11 @@
 package pclm
 
-import java.io.ByteArrayOutputStream
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.pclm.PclmCapabilities
 import com.hp.jipp.pdl.pclm.PclmWriter
+import org.junit.Test
 import util.ByteWindow
 import util.RandomDocument
+import java.io.ByteArrayOutputStream
 
 class PclmTest {
 
@@ -21,16 +19,11 @@ class PclmTest {
         cyclePclm(PclmCapabilities(32, false))
     }
 
-    @Test
-    fun pixelsToPoints() {
-        assertEquals(72.0, RenderablePage.pixelsToPoints(300, RenderablePage.pointsToPixels(300, 72.0)), 0.0001)
-    }
-
     private fun cyclePclm(caps: PclmCapabilities) {
         // Use a tall enough page so that we're assured there will be at least one blank area
-        val randomDocument = RandomDocument(12345L, 2, 72.0, 150.0)
+        val randomDocument = RandomDocument(12345L, 2, 72.0, 150.0, 300)
         val bytesOut = ByteArrayOutputStream()
-        PclmWriter(bytesOut, caps, 300).use {
+        PclmWriter(bytesOut, caps).use {
             it.write(randomDocument)
         }
 
