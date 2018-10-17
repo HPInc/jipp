@@ -26,7 +26,7 @@ class PwgWriter(
 
     fun write(doc: RenderableDocument) {
         writeString("RaS2", 4)
-        for (page in doc.reversed()) {
+        for (page in doc) {
             write(doc, page)
         }
     }

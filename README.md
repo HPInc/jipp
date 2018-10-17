@@ -38,8 +38,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.4'
-    compile 'com.hp.jipp:jipp-pdl:0.6.4' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.6.5'
+    compile 'com.hp.jipp:jipp-pdl:0.6.5' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
