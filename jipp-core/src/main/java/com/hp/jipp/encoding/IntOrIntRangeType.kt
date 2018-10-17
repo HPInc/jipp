@@ -12,6 +12,7 @@ class IntOrIntRangeType(
         when (value) {
             is Int -> IntOrIntRange(value)
             is IntRange -> IntOrIntRange(value)
+            is IntOrIntRange -> value
             else -> null
         }
 

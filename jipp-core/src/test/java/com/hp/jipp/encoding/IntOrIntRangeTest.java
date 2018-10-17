@@ -39,24 +39,24 @@ public class IntOrIntRangeTest {
     }
 
     @Test
-    public void rangeOrIntMixed() throws IOException {
+    public void rangeOrIntMixed() {
         Attribute<IntOrIntRange> ranges = rangeOrIntType.of(new IntOrIntRange(5), new IntOrIntRange(5, 6));
         assertEquals(5, ranges.get(0).getStart());
     }
 
     @Test
-    public void range() throws Exception {
+    public void range() {
         IntOrIntRange range = new IntOrIntRange(5, 6);
         assertEquals(new IntRange(5, 6), range.getValue());
     }
 
     @Test
-    public void cover() throws Exception {
+    public void cover() {
         KotlinTest.cover(new IntOrIntRange(5), new IntOrIntRange(5), new IntOrIntRange(5, 6));
     }
 
     @Test
-    public void equality() throws Exception {
+    public void equality() {
         IntOrIntRange value = new IntOrIntRange(5);
         assertEquals(value, value);
         assertEquals(new IntOrIntRange(5), value);
@@ -65,7 +65,7 @@ public class IntOrIntRangeTest {
     }
 
     @Test
-    public void of() throws Exception {
+    public void of() {
         assertEquals(rangeOrIntType.of(new IntRange(1, 2), new IntRange(3, 4)),
                 rangeOrIntType.ofRanges(Arrays.asList(new IntRange(1, 2), new IntRange(3, 4))));
     }
