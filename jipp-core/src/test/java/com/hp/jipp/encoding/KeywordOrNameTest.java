@@ -27,13 +27,10 @@ public class KeywordOrNameTest {
                 new KeywordOrName(new Name("name"))));
         assertEquals(Arrays.asList("keyword", "name"), attribute.strings());
     }
-<<<<<<< HEAD
 
     @Test
     public void keywords() throws IOException {
         Attribute<KeywordOrName> attribute = cycle(type, type.of("keyword", "keyword2"));
         assertEquals(Arrays.asList("keyword", "keyword2"), attribute.strings());
     }
-=======
->>>>>>> Add keyword | name type
 }
