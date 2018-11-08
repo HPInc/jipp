@@ -137,6 +137,7 @@ class AttributeGroup(
                     writeValueBytes(it.value)
                 }),
                 KeywordType.codec,
+                KeywordOrNameType.codec, // Must follow both Keyword and Name
                 UriType.codec,
                 codec({ it.isCharString }, { tag ->
                     // Handle other harder-to-type values here:
