@@ -31,6 +31,10 @@ class PwgWriter(
         }
     }
 
+    /** Return a PWG-encodable value corresponding to this [Boolean]. */
+    private fun Boolean.toInt() =
+        if (this) 1 else 0
+
     @Suppress("LongMethod") // It's clearer to do it all here
     private fun write(doc: RenderableDocument, page: RenderablePage) {
         val colorSpace = if (caps.color) ColorSpace.RGB else ColorSpace.GRAYSCALE
@@ -40,7 +44,7 @@ class PwgWriter(
         writeString("", 64) // printContentOptimize
         writeBlank(12) // reserved
         writeInt(0) // cutMedia
-        writeInt(0) // duplex
+        writeInt(caps.duplex.toInt()) // duplex
         writeInt(doc.dpi) // resolutionX
         writeInt(doc.dpi) // resolutionY
         writeBlank(16) // reserved
@@ -57,7 +61,7 @@ class PwgWriter(
         writeInt(page.widthPixels * POINTS_PER_INCH / doc.dpi) // pageSizeX
         writeInt(page.heightPixels * POINTS_PER_INCH / doc.dpi) // pageSizeY
         writeBlank(8) // reserved
-        writeInt(0) // tumble
+        writeInt(caps.tumble.toInt()) // tumble
         writeInt(page.widthPixels) // width (pixels)
         writeInt(page.heightPixels) // height (pixels)
         writeBlank(4) // reserved

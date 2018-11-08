@@ -2,7 +2,7 @@
 [![CodeCov](https://codecov.io/github/HPInc/jipp/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp/javadoc/index.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.2.71-orange.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.0-orange.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
@@ -11,7 +11,7 @@ This project contains:
 
 * `jipp-core`, the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
 * `jipp-pdls`, which converts raster format docs to common page description languages (PCLm and PWG-Raster).
-* `jprint`, a sample app showing how jipp-core can be used to send a document to a printer.
+* `jprint`, a sample app showing how `jipp-core` can be used to send a document to a printer.
 
 `jipp-core` features:
 * Supports construction of IPP servers, clients, routers, gateways, etc.
@@ -38,8 +38,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.5'
-    compile 'com.hp.jipp:jipp-pdl:0.6.5' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.6.6'
+    compile 'com.hp.jipp:jipp-pdl:0.6.6' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -75,7 +75,11 @@ jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 
 Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
-## Migration from v0.5.7 to v0.6.*
+## Migration to v0.6.6
+* The `KeywordOrName` type was introduced to allow for fields that can legitimately contain either IANA-registered
+  keywords OR unregistered, locally-defined names. For example, `MediaCol.mediaType`.
+
+## Migration from v0.5.x to v0.6.x
 
 0.6 includes some API changes. Some changes may require changes in your code.
 
