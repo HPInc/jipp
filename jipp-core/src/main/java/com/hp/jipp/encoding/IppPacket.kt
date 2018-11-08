@@ -15,6 +15,7 @@ import java.io.OutputStream
 /**
  * An IPP packet consisting of header information and zero or more attribute groups.
  */
+@Suppress("TooManyFunctions")
 data class IppPacket constructor(
     val versionNumber: Int = DEFAULT_VERSION_NUMBER,
     val code: Int,
@@ -53,11 +54,17 @@ data class IppPacket constructor(
     fun <T : Any> getValues(groupDelimiter: Tag, type: AttributeType<T>): List<T> =
         this[groupDelimiter]?.get(type) ?: listOf()
 
-    fun <T : Any> getStrings(groupDelimiter: Tag, type: AttributeType<T>): List<String> =
-        this[groupDelimiter]?.get(type)?.strings() ?: listOf()
-
+    /** Return the first value within the group of [groupDelimiter] and [type]. */
     fun <T : Any> getValue(groupDelimiter: Tag, type: AttributeType<T>): T? =
         this[groupDelimiter]?.get(type)?.get(0)
+
+    /** Return the string form of any attribute values within the group of [groupDelimiter] and [type]. */
+    fun <T : Any> getStrings(groupDelimiter: Tag, type: AttributeType<T>): List<String> =
+        this[groupDelimiter]?.getStrings(type) ?: listOf()
+
+    /** Return the string form of the first attribute value within the group of [groupDelimiter] and [type]. */
+    fun <T : Any> getString(groupDelimiter: Tag, type: AttributeType<T>): String? =
+        this[groupDelimiter]?.getString(type)
 
     /** Make a copy of this packet but replace with the supplied attribute groups */
     fun withAttributeGroups(attributeGroups: List<AttributeGroup>): IppPacket =

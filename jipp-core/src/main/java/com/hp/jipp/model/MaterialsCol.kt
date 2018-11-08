@@ -34,7 +34,7 @@ constructor(
     var materialShellThickness: Int? = null,
     var materialTemperature: IntOrIntRange? = null,
     /** May contain any keyword from [MaterialType] or a name. */
-    var materialType: String? = null
+    var materialType: KeywordOrName? = null
 ) : AttributeCollection {
 
     /** Construct an empty [MaterialsCol]. */
@@ -110,7 +110,7 @@ constructor(
         val materialRateUnits = KeywordType(Name.materialRateUnits)
         val materialShellThickness = IntType(Name.materialShellThickness)
         val materialTemperature = IntOrIntRangeType(Name.materialTemperature)
-        val materialType = KeywordType(Name.materialType)
+        val materialType = KeywordOrNameType(Name.materialType)
     }
 
     /** Defines types for each member of [MaterialsCol] */

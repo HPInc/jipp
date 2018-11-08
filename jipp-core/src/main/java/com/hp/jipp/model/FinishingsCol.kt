@@ -22,10 +22,10 @@ constructor(
     var coating: Coating? = null,
     var covering: Covering? = null,
     /** May contain any keyword from [FinishingTemplate] or a name. */
-    var finishingTemplate: String? = null,
+    var finishingTemplate: KeywordOrName? = null,
     var folding: List<Folding>? = null,
     /** May contain any keyword from [ImpositionTemplate] or a name. */
-    var impositionTemplate: String? = null,
+    var impositionTemplate: KeywordOrName? = null,
     var laminating: Laminating? = null,
     var mediaSheetsSupported: IntRange? = null,
     var mediaSize: MediaSize? = null,
@@ -100,9 +100,9 @@ constructor(
         val binding = Binding.Type(Name.binding)
         val coating = Coating.Type(Name.coating)
         val covering = Covering.Type(Name.covering)
-        val finishingTemplate = KeywordType(Name.finishingTemplate)
+        val finishingTemplate = KeywordOrNameType(Name.finishingTemplate)
         val folding = Folding.Type(Name.folding)
-        val impositionTemplate = KeywordType(Name.impositionTemplate)
+        val impositionTemplate = KeywordOrNameType(Name.impositionTemplate)
         val laminating = Laminating.Type(Name.laminating)
         val mediaSheetsSupported = IntRangeType(Name.mediaSheetsSupported)
         val mediaSize = MediaSize.Type(Name.mediaSize)
@@ -140,7 +140,7 @@ constructor(
     data class Baling
     constructor(
         /** May contain any keyword from [BalingType] or a name. */
-        var balingType: String? = null,
+        var balingType: KeywordOrName? = null,
         /** May contain any keyword from [BalingWhen]. */
         var balingWhen: String? = null
     ) : AttributeCollection {
@@ -169,7 +169,7 @@ constructor(
 
         /** Types for each member attribute. */
         object Types {
-            val balingType = KeywordType(Name.balingType)
+            val balingType = KeywordOrNameType(Name.balingType)
             val balingWhen = KeywordType(Name.balingWhen)
         }
 
@@ -192,7 +192,7 @@ constructor(
         /** May contain any keyword from [BindingReferenceEdge]. */
         var bindingReferenceEdge: String? = null,
         /** May contain any keyword from [BindingType] or a name. */
-        var bindingType: String? = null
+        var bindingType: KeywordOrName? = null
     ) : AttributeCollection {
 
         /** Construct an empty [Binding]. */
@@ -220,7 +220,7 @@ constructor(
         /** Types for each member attribute. */
         object Types {
             val bindingReferenceEdge = KeywordType(Name.bindingReferenceEdge)
-            val bindingType = KeywordType(Name.bindingType)
+            val bindingType = KeywordOrNameType(Name.bindingType)
         }
 
         /** Defines types for each member of [Binding] */
@@ -242,7 +242,7 @@ constructor(
         /** May contain any keyword from [CoatingSides]. */
         var coatingSides: String? = null,
         /** May contain any keyword from [CoatingType] or a name. */
-        var coatingType: String? = null
+        var coatingType: KeywordOrName? = null
     ) : AttributeCollection {
 
         /** Construct an empty [Coating]. */
@@ -270,7 +270,7 @@ constructor(
         /** Types for each member attribute. */
         object Types {
             val coatingSides = KeywordType(Name.coatingSides)
-            val coatingType = KeywordType(Name.coatingType)
+            val coatingType = KeywordOrNameType(Name.coatingType)
         }
 
         /** Defines types for each member of [Coating] */
@@ -290,7 +290,7 @@ constructor(
     data class Covering
     constructor(
         /** May contain any keyword from [CoveringName] or a name. */
-        var coveringName: String? = null
+        var coveringName: KeywordOrName? = null
     ) : AttributeCollection {
 
         /** Construct an empty [Covering]. */
@@ -314,7 +314,7 @@ constructor(
 
         /** Types for each member attribute. */
         object Types {
-            val coveringName = KeywordType(Name.coveringName)
+            val coveringName = KeywordOrNameType(Name.coveringName)
         }
 
         /** Defines types for each member of [Covering] */
@@ -391,7 +391,7 @@ constructor(
         /** May contain any keyword from [LaminatingSides]. */
         var laminatingSides: String? = null,
         /** May contain any keyword from [LaminatingType] or a name. */
-        var laminatingType: String? = null
+        var laminatingType: KeywordOrName? = null
     ) : AttributeCollection {
 
         /** Construct an empty [Laminating]. */
@@ -419,7 +419,7 @@ constructor(
         /** Types for each member attribute. */
         object Types {
             val laminatingSides = KeywordType(Name.laminatingSides)
-            val laminatingType = KeywordType(Name.laminatingType)
+            val laminatingType = KeywordOrNameType(Name.laminatingType)
         }
 
         /** Defines types for each member of [Laminating] */
@@ -613,7 +613,7 @@ constructor(
         /** May contain any keyword from [TrimmingReferenceEdge]. */
         var trimmingReferenceEdge: String? = null,
         /** May contain any keyword from [TrimmingType] or a name. */
-        var trimmingType: String? = null,
+        var trimmingType: KeywordOrName? = null,
         /** May contain any keyword from [TrimmingWhen]. */
         var trimmingWhen: String? = null
     ) : AttributeCollection {
@@ -650,7 +650,7 @@ constructor(
         object Types {
             val trimmingOffset = IntType(Name.trimmingOffset)
             val trimmingReferenceEdge = KeywordType(Name.trimmingReferenceEdge)
-            val trimmingType = KeywordType(Name.trimmingType)
+            val trimmingType = KeywordOrNameType(Name.trimmingType)
             val trimmingWhen = KeywordType(Name.trimmingWhen)
         }
 

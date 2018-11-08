@@ -18,11 +18,11 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobAccountingSheets
 constructor(
     /** May contain any keyword from [OutputBin] or a name. */
-    var jobAccountingOutputBin: String? = null,
+    var jobAccountingOutputBin: KeywordOrName? = null,
     /** May contain any keyword from [JobAccountingSheetsType] or a name. */
-    var jobAccountingSheetsType: String? = null,
+    var jobAccountingSheetsType: KeywordOrName? = null,
     /** May contain any keyword from [Media] or a name. */
-    var media: String? = null,
+    var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
@@ -56,9 +56,9 @@ constructor(
 
     /** Types for each member attribute. */
     object Types {
-        val jobAccountingOutputBin = KeywordType(Name.jobAccountingOutputBin)
-        val jobAccountingSheetsType = KeywordType(Name.jobAccountingSheetsType)
-        val media = KeywordType(Name.media)
+        val jobAccountingOutputBin = KeywordOrNameType(Name.jobAccountingOutputBin)
+        val jobAccountingSheetsType = KeywordOrNameType(Name.jobAccountingSheetsType)
+        val media = KeywordOrNameType(Name.media)
         val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 

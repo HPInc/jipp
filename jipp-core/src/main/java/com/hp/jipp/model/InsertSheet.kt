@@ -20,7 +20,7 @@ constructor(
     var insertAfterPageNumber: Int? = null,
     var insertCount: Int? = null,
     /** May contain any keyword from [Media] or a name. */
-    var media: String? = null,
+    var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
@@ -56,7 +56,7 @@ constructor(
     object Types {
         val insertAfterPageNumber = IntType(Name.insertAfterPageNumber)
         val insertCount = IntType(Name.insertCount)
-        val media = KeywordType(Name.media)
+        val media = KeywordOrNameType(Name.media)
         val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 

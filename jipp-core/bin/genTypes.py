@@ -762,8 +762,8 @@ def fix_ktypes(type, syntax, name, group_name = ''):
                     type['kdoc'] = real_type['kdoc']
 
             elif syntax == 'keyword | name':
-                intro = "KeywordType("
-                type['ktype'] = "String"
+                intro = "KeywordOrNameType("
+                type['ktype'] = "KeywordOrName"
                 type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "] or a name."
         elif syntax == 'keyword':
             # No definition was given so fall back to Keyword

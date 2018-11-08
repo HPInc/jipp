@@ -35,7 +35,7 @@ object Types {
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [BalingType] or a name.
      */
-    @JvmField val balingTypeSupported = KeywordType("baling-type-supported")
+    @JvmField val balingTypeSupported = KeywordOrNameType("baling-type-supported")
     /**
      * "baling-when-supported" as defined in:
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
@@ -80,7 +80,7 @@ object Types {
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [CoatingType] or a name.
      */
-    @JvmField val coatingTypeSupported = KeywordType("coating-type-supported")
+    @JvmField val coatingTypeSupported = KeywordOrNameType("coating-type-supported")
     /**
      * "color-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
@@ -209,7 +209,7 @@ object Types {
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [CoveringName] or a name.
      */
-    @JvmField val coveringNameSupported = KeywordType("covering-name-supported")
+    @JvmField val coveringNameSupported = KeywordOrNameType("covering-name-supported")
     /**
      * "current-page-order" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
@@ -780,25 +780,25 @@ object Types {
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
-    @JvmField val impositionTemplate = KeywordType("imposition-template")
+    @JvmField val impositionTemplate = KeywordOrNameType("imposition-template")
     /**
      * "imposition-template-actual" as defined in:
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
-    @JvmField val impositionTemplateActual = KeywordType("imposition-template-actual")
+    @JvmField val impositionTemplateActual = KeywordOrNameType("imposition-template-actual")
     /**
      * "imposition-template-default" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
-    @JvmField val impositionTemplateDefault = KeywordType("imposition-template-default")
+    @JvmField val impositionTemplateDefault = KeywordOrNameType("imposition-template-default")
     /**
      * "imposition-template-supported" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [ImpositionTemplate] or a name.
      */
-    @JvmField val impositionTemplateSupported = KeywordType("imposition-template-supported")
+    @JvmField val impositionTemplateSupported = KeywordOrNameType("imposition-template-supported")
     /**
      * "impressions" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
@@ -981,25 +981,25 @@ object Types {
      * [PWG5100.16](https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
-    @JvmField val jobAccountType = KeywordType("job-account-type")
+    @JvmField val jobAccountType = KeywordOrNameType("job-account-type")
     /**
      * "job-account-type-actual" as defined in:
      * [PWG5100.16](https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
-    @JvmField val jobAccountTypeActual = KeywordType("job-account-type-actual")
+    @JvmField val jobAccountTypeActual = KeywordOrNameType("job-account-type-actual")
     /**
      * "job-account-type-default" as defined in:
      * [PWG5100.16](https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
-    @JvmField val jobAccountTypeDefault = KeywordType("job-account-type-default")
+    @JvmField val jobAccountTypeDefault = KeywordOrNameType("job-account-type-default")
     /**
      * "job-account-type-supported" as defined in:
      * [PWG5100.16](https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf).
      * May contain any keyword from [JobAccountType] or a name.
      */
-    @JvmField val jobAccountTypeSupported = KeywordType("job-account-type-supported")
+    @JvmField val jobAccountTypeSupported = KeywordOrNameType("job-account-type-supported")
     /**
      * "job-accounting-sheets" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
@@ -1149,19 +1149,19 @@ object Types {
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobDelayOutputUntil] or a name.
      */
-    @JvmField val jobDelayOutputUntil = KeywordType("job-delay-output-until")
+    @JvmField val jobDelayOutputUntil = KeywordOrNameType("job-delay-output-until")
     /**
      * "job-delay-output-until-default" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobDelayOutputUntil] or a name.
      */
-    @JvmField val jobDelayOutputUntilDefault = KeywordType("job-delay-output-until-default")
+    @JvmField val jobDelayOutputUntilDefault = KeywordOrNameType("job-delay-output-until-default")
     /**
      * "job-delay-output-until-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobDelayOutputUntil] or a name.
      */
-    @JvmField val jobDelayOutputUntilSupported = KeywordType("job-delay-output-until-supported")
+    @JvmField val jobDelayOutputUntilSupported = KeywordOrNameType("job-delay-output-until-supported")
     /**
      * "job-delay-output-until-time" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
@@ -1282,25 +1282,25 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
-    @JvmField val jobHoldUntil = KeywordType("job-hold-until")
+    @JvmField val jobHoldUntil = KeywordOrNameType("job-hold-until")
     /**
      * "job-hold-until-actual" as defined in:
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
-    @JvmField val jobHoldUntilActual = KeywordType("job-hold-until-actual")
+    @JvmField val jobHoldUntilActual = KeywordOrNameType("job-hold-until-actual")
     /**
      * "job-hold-until-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
-    @JvmField val jobHoldUntilDefault = KeywordType("job-hold-until-default")
+    @JvmField val jobHoldUntilDefault = KeywordOrNameType("job-hold-until-default")
     /**
      * "job-hold-until-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobHoldUntil] or a name.
      */
-    @JvmField val jobHoldUntilSupported = KeywordType("job-hold-until-supported")
+    @JvmField val jobHoldUntilSupported = KeywordOrNameType("job-hold-until-supported")
     /**
      * "job-hold-until-time" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
@@ -1491,13 +1491,13 @@ object Types {
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobPasswordEncryption] or a name.
      */
-    @JvmField val jobPasswordEncryption = KeywordType("job-password-encryption")
+    @JvmField val jobPasswordEncryption = KeywordOrNameType("job-password-encryption")
     /**
      * "job-password-encryption-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [JobPasswordEncryption] or a name.
      */
-    @JvmField val jobPasswordEncryptionSupported = KeywordType("job-password-encryption-supported")
+    @JvmField val jobPasswordEncryptionSupported = KeywordOrNameType("job-password-encryption-supported")
     /**
      * "job-password-length-supported" as defined in:
      * [IPPWG20160229-1](https://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
@@ -1508,13 +1508,13 @@ object Types {
      * [IPPWG20160229-1](https://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
      * May contain any keyword from [JobPasswordRepertoireSupported] or a name.
      */
-    @JvmField val jobPasswordRepertoireConfigured = KeywordType("job-password-repertoire-configured")
+    @JvmField val jobPasswordRepertoireConfigured = KeywordOrNameType("job-password-repertoire-configured")
     /**
      * "job-password-repertoire-supported" as defined in:
      * [IPPWG20160229-1](https://ftp.pwg.org/pub/pwg/ipp/wd/wp-job-password-repertoire-20160101.pdf).
      * May contain any keyword from [JobPasswordRepertoireSupported] or a name.
      */
-    @JvmField val jobPasswordRepertoireSupported = KeywordType("job-password-repertoire-supported")
+    @JvmField val jobPasswordRepertoireSupported = KeywordOrNameType("job-password-repertoire-supported")
     /**
      * "job-password-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
@@ -1643,13 +1643,13 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobSheet] or a name.
      */
-    @JvmField val jobSheets = KeywordType("job-sheets")
+    @JvmField val jobSheets = KeywordOrNameType("job-sheets")
     /**
      * "job-sheets-actual" as defined in:
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      * May contain any keyword from [JobSheet] or a name.
      */
-    @JvmField val jobSheetsActual = KeywordType("job-sheets-actual")
+    @JvmField val jobSheetsActual = KeywordOrNameType("job-sheets-actual")
     /**
      * "job-sheets-col" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf),
@@ -1677,13 +1677,13 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobSheet] or a name.
      */
-    @JvmField val jobSheetsDefault = KeywordType("job-sheets-default")
+    @JvmField val jobSheetsDefault = KeywordOrNameType("job-sheets-default")
     /**
      * "job-sheets-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [JobSheet] or a name.
      */
-    @JvmField val jobSheetsSupported = KeywordType("job-sheets-supported")
+    @JvmField val jobSheetsSupported = KeywordOrNameType("job-sheets-supported")
     /**
      * "job-spooling-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
@@ -1763,7 +1763,7 @@ object Types {
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      * May contain any keyword from [LaminatingType] or a name.
      */
-    @JvmField val laminatingTypeSupported = KeywordType("laminating-type-supported")
+    @JvmField val laminatingTypeSupported = KeywordOrNameType("laminating-type-supported")
     /**
      * "last-document" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
@@ -1879,19 +1879,19 @@ object Types {
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf).
      * May contain any keyword from [Media] or a name.
      */
-    @JvmField val media = KeywordType("media")
+    @JvmField val media = KeywordOrNameType("media")
     /**
      * "media-actual" as defined in:
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      * May contain any keyword from [Media] or a name.
      */
-    @JvmField val mediaActual = KeywordType("media-actual")
+    @JvmField val mediaActual = KeywordOrNameType("media-actual")
     /**
      * "media-back-coating-supported" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaBackCoating] or a name.
      */
-    @JvmField val mediaBackCoatingSupported = KeywordType("media-back-coating-supported")
+    @JvmField val mediaBackCoatingSupported = KeywordOrNameType("media-back-coating-supported")
     /**
      * "media-bottom-margin-supported" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -1939,25 +1939,25 @@ object Types {
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaColor] or a name.
      */
-    @JvmField val mediaColorSupported = KeywordType("media-color-supported")
+    @JvmField val mediaColorSupported = KeywordOrNameType("media-color-supported")
     /**
      * "media-default" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Media] or a name.
      */
-    @JvmField val mediaDefault = KeywordType("media-default")
+    @JvmField val mediaDefault = KeywordOrNameType("media-default")
     /**
      * "media-front-coating-supported" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaBackCoating] or a name.
      */
-    @JvmField val mediaFrontCoatingSupported = KeywordType("media-front-coating-supported")
+    @JvmField val mediaFrontCoatingSupported = KeywordOrNameType("media-front-coating-supported")
     /**
      * "media-grain-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [MediaGrain] or a name.
      */
-    @JvmField val mediaGrainSupported = KeywordType("media-grain-supported")
+    @JvmField val mediaGrainSupported = KeywordOrNameType("media-grain-supported")
     /**
      * "media-hole-count-supported" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
@@ -1983,7 +1983,7 @@ object Types {
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [Media] or a name.
      */
-    @JvmField val mediaKeySupported = KeywordType("media-key-supported")
+    @JvmField val mediaKeySupported = KeywordOrNameType("media-key-supported")
     /**
      * "media-left-margin-supported" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -1999,7 +1999,7 @@ object Types {
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaPrePrinted] or a name.
      */
-    @JvmField val mediaPrePrintedSupported = KeywordType("media-pre-printed-supported")
+    @JvmField val mediaPrePrintedSupported = KeywordOrNameType("media-pre-printed-supported")
     /**
      * "media-ready" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
@@ -2010,7 +2010,7 @@ object Types {
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaRecycled] or a name.
      */
-    @JvmField val mediaRecycledSupported = KeywordType("media-recycled-supported")
+    @JvmField val mediaRecycledSupported = KeywordOrNameType("media-recycled-supported")
     /**
      * "media-right-margin-supported" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -2046,13 +2046,13 @@ object Types {
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      * May contain any keyword from [MediaSource] or a name.
      */
-    @JvmField val mediaSourceSupported = KeywordType("media-source-supported")
+    @JvmField val mediaSourceSupported = KeywordOrNameType("media-source-supported")
     /**
      * "media-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Media] or a name.
      */
-    @JvmField val mediaSupported = KeywordType("media-supported")
+    @JvmField val mediaSupported = KeywordOrNameType("media-supported")
     /**
      * "media-thickness-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
@@ -2063,7 +2063,7 @@ object Types {
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      * May contain any keyword from [MediaTooth] or a name.
      */
-    @JvmField val mediaToothSupported = KeywordType("media-tooth-supported")
+    @JvmField val mediaToothSupported = KeywordOrNameType("media-tooth-supported")
     /**
      * "media-top-margin-supported" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -2074,7 +2074,7 @@ object Types {
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
      * May contain any keyword from [MediaType] or a name.
      */
-    @JvmField val mediaTypeSupported = KeywordType("media-type-supported")
+    @JvmField val mediaTypeSupported = KeywordOrNameType("media-type-supported")
     /**
      * "media-weight-metric-supported" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
@@ -2457,26 +2457,26 @@ object Types {
      * [PWG5100.2](https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
-    @JvmField val outputBin = KeywordType("output-bin")
+    @JvmField val outputBin = KeywordOrNameType("output-bin")
     /**
      * "output-bin-actual" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf),
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
-    @JvmField val outputBinActual = KeywordType("output-bin-actual")
+    @JvmField val outputBinActual = KeywordOrNameType("output-bin-actual")
     /**
      * "output-bin-default" as defined in:
      * [PWG5100.2](https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
-    @JvmField val outputBinDefault = KeywordType("output-bin-default")
+    @JvmField val outputBinDefault = KeywordOrNameType("output-bin-default")
     /**
      * "output-bin-supported" as defined in:
      * [PWG5100.2](https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf).
      * May contain any keyword from [OutputBin] or a name.
      */
-    @JvmField val outputBinSupported = KeywordType("output-bin-supported")
+    @JvmField val outputBinSupported = KeywordOrNameType("output-bin-supported")
     /**
      * "output-device" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf).

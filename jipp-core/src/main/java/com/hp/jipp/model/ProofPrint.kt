@@ -17,7 +17,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class ProofPrint
 constructor(
     /** May contain any keyword from [Media] or a name. */
-    var media: String? = null,
+    var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null,
     var proofPrintCopies: Int? = null
 ) : AttributeCollection {
@@ -49,7 +49,7 @@ constructor(
 
     /** Types for each member attribute. */
     object Types {
-        val media = KeywordType(Name.media)
+        val media = KeywordOrNameType(Name.media)
         val mediaCol = MediaCol.Type(Name.mediaCol)
         val proofPrintCopies = IntType(Name.proofPrintCopies)
     }
