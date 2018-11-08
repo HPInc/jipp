@@ -17,11 +17,11 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobErrorSheet
 constructor(
     /** May contain any keyword from [JobErrorSheetType] or a name. */
-    var jobErrorSheetType: String? = null,
+    var jobErrorSheetType: KeywordOrName? = null,
     /** May contain any keyword from [JobErrorSheetWhen]. */
     var jobErrorSheetWhen: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    var media: String? = null,
+    var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
@@ -55,9 +55,9 @@ constructor(
 
     /** Types for each member attribute. */
     object Types {
-        val jobErrorSheetType = KeywordType(Name.jobErrorSheetType)
+        val jobErrorSheetType = KeywordOrNameType(Name.jobErrorSheetType)
         val jobErrorSheetWhen = KeywordType(Name.jobErrorSheetWhen)
-        val media = KeywordType(Name.media)
+        val media = KeywordOrNameType(Name.media)
         val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 

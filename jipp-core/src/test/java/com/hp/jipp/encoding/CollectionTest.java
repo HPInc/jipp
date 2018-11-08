@@ -19,7 +19,7 @@ public class CollectionTest {
 
     private FinishingsCol finishingsCol = new FinishingsCol();
     {
-        finishingsCol.setCovering(new FinishingsCol.Covering(CoveringName.preCut));
+        finishingsCol.setCovering(new FinishingsCol.Covering(new KeywordOrName(CoveringName.preCut)));
         finishingsCol.setFolding(Arrays.asList(
                 new FinishingsCol.Folding(FoldingDirection.inward, 22, FoldingReferenceEdge.bottom),
                 new FinishingsCol.Folding(FoldingDirection.outward, 66, FoldingReferenceEdge.left)));

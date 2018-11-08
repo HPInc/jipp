@@ -17,7 +17,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobTriggersSupported
 constructor(
     /** May contain any keyword from [PresetName] or a name. */
-    var presetName: String? = null
+    var presetName: KeywordOrName? = null
 ) : AttributeCollection {
 
     /** Construct an empty [JobTriggersSupported]. */
@@ -41,7 +41,7 @@ constructor(
 
     /** Types for each member attribute. */
     object Types {
-        val presetName = KeywordType(Name.presetName)
+        val presetName = KeywordOrNameType(Name.presetName)
     }
 
     /** Defines types for each member of [JobTriggersSupported] */

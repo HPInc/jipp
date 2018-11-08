@@ -20,7 +20,7 @@ constructor(
     /** May contain any keyword from [CoverType]. */
     var coverType: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    var media: String? = null,
+    var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null
 ) : AttributeCollection {
 
@@ -52,7 +52,7 @@ constructor(
     /** Types for each member attribute. */
     object Types {
         val coverType = KeywordType(Name.coverType)
-        val media = KeywordType(Name.media)
+        val media = KeywordOrNameType(Name.media)
         val mediaCol = MediaCol.Type(Name.mediaCol)
     }
 

@@ -52,9 +52,13 @@ class AttributeGroup(
     fun <T : Any> getValues(type: AttributeType<T>): List<T> =
         get(type) ?: listOf()
 
-    /** Return all values found having this attribute type. */
+    /** Return the string form of any values present for this attribute [type]. */
     fun <T : Any> getStrings(type: AttributeType<T>): List<String> =
         get(type)?.strings() ?: listOf()
+
+    /** Return the string form (or null) of the first value present for this attribute [type]. */
+    fun <T : Any> getString(type: AttributeType<T>): String? =
+        get(type)?.strings()?.firstOrNull()
 
     /** Return the attribute as conforming to the supplied attribute type. */
     operator fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =

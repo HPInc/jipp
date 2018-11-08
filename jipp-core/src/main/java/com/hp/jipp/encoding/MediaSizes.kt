@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 import com.hp.jipp.model.MediaCol
 
 object MediaSizes {
-    private val WIDTH_HEIGHT = Pattern.compile(
+    private val widthHeightPattern = Pattern.compile(
         "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
     private const val WIDTH_AT = 1
     private const val HEIGHT_AT = 3
@@ -20,7 +20,7 @@ object MediaSizes {
     /** Convert a media name containing dimensions into a [MediaCol.MediaSize] object, if possible. */
     @JvmStatic
     fun parse(mediaName: String): MediaCol.MediaSize? {
-        val matches = WIDTH_HEIGHT.matcher(mediaName)
+        val matches = widthHeightPattern.matcher(mediaName)
         if (!matches.find() || matches.groupCount() < WIDTH_HEIGHT_DIMENSION_COUNT) {
             // No way to guess media size from name, not enough parts.
             return null

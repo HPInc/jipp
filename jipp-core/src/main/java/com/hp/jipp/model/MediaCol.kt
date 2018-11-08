@@ -19,37 +19,37 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class MediaCol
 constructor(
     /** May contain any keyword from [MediaBackCoating] or a name. */
-    var mediaBackCoating: String? = null,
+    var mediaBackCoating: KeywordOrName? = null,
     var mediaBottomMargin: Int? = null,
     /** May contain any keyword from [MediaColor] or a name. */
-    var mediaColor: String? = null,
+    var mediaColor: KeywordOrName? = null,
     /** May contain any keyword from [MediaBackCoating] or a name. */
-    var mediaFrontCoating: String? = null,
+    var mediaFrontCoating: KeywordOrName? = null,
     /** May contain any keyword from [MediaGrain] or a name. */
-    var mediaGrain: String? = null,
+    var mediaGrain: KeywordOrName? = null,
     var mediaHoleCount: Int? = null,
     var mediaInfo: String? = null,
     /** May contain any keyword from [Media] or a name. */
-    var mediaKey: String? = null,
+    var mediaKey: KeywordOrName? = null,
     var mediaLeftMargin: Int? = null,
     var mediaOrderCount: Int? = null,
     /** May contain any keyword from [MediaPrePrinted] or a name. */
-    var mediaPrePrinted: String? = null,
+    var mediaPrePrinted: KeywordOrName? = null,
     /** May contain any keyword from [MediaRecycled] or a name. */
-    var mediaRecycled: String? = null,
+    var mediaRecycled: KeywordOrName? = null,
     var mediaRightMargin: Int? = null,
     var mediaSize: MediaSize? = null,
     /** May contain any keyword from [Media] or a name. */
-    var mediaSizeName: String? = null,
+    var mediaSizeName: KeywordOrName? = null,
     /** May contain any keyword from [MediaSource] or a name. */
-    var mediaSource: String? = null,
+    var mediaSource: KeywordOrName? = null,
     var mediaSourceProperties: MediaSourceProperties? = null,
     var mediaThickness: Int? = null,
     /** May contain any keyword from [MediaTooth] or a name. */
-    var mediaTooth: String? = null,
+    var mediaTooth: KeywordOrName? = null,
     var mediaTopMargin: Int? = null,
     /** May contain any keyword from [MediaType] or a name. */
-    var mediaType: String? = null,
+    var mediaType: KeywordOrName? = null,
     var mediaWeightMetric: Int? = null
 ) : AttributeCollection {
 
@@ -137,27 +137,27 @@ constructor(
 
     /** Types for each member attribute. */
     object Types {
-        val mediaBackCoating = KeywordType(Name.mediaBackCoating)
+        val mediaBackCoating = KeywordOrNameType(Name.mediaBackCoating)
         val mediaBottomMargin = IntType(Name.mediaBottomMargin)
-        val mediaColor = KeywordType(Name.mediaColor)
-        val mediaFrontCoating = KeywordType(Name.mediaFrontCoating)
-        val mediaGrain = KeywordType(Name.mediaGrain)
+        val mediaColor = KeywordOrNameType(Name.mediaColor)
+        val mediaFrontCoating = KeywordOrNameType(Name.mediaFrontCoating)
+        val mediaGrain = KeywordOrNameType(Name.mediaGrain)
         val mediaHoleCount = IntType(Name.mediaHoleCount)
         val mediaInfo = TextType(Name.mediaInfo)
-        val mediaKey = KeywordType(Name.mediaKey)
+        val mediaKey = KeywordOrNameType(Name.mediaKey)
         val mediaLeftMargin = IntType(Name.mediaLeftMargin)
         val mediaOrderCount = IntType(Name.mediaOrderCount)
-        val mediaPrePrinted = KeywordType(Name.mediaPrePrinted)
-        val mediaRecycled = KeywordType(Name.mediaRecycled)
+        val mediaPrePrinted = KeywordOrNameType(Name.mediaPrePrinted)
+        val mediaRecycled = KeywordOrNameType(Name.mediaRecycled)
         val mediaRightMargin = IntType(Name.mediaRightMargin)
         val mediaSize = MediaSize.Type(Name.mediaSize)
-        val mediaSizeName = KeywordType(Name.mediaSizeName)
-        val mediaSource = KeywordType(Name.mediaSource)
+        val mediaSizeName = KeywordOrNameType(Name.mediaSizeName)
+        val mediaSource = KeywordOrNameType(Name.mediaSource)
         val mediaSourceProperties = MediaSourceProperties.Type(Name.mediaSourceProperties)
         val mediaThickness = IntType(Name.mediaThickness)
-        val mediaTooth = KeywordType(Name.mediaTooth)
+        val mediaTooth = KeywordOrNameType(Name.mediaTooth)
         val mediaTopMargin = IntType(Name.mediaTopMargin)
-        val mediaType = KeywordType(Name.mediaType)
+        val mediaType = KeywordOrNameType(Name.mediaType)
         val mediaWeightMetric = IntType(Name.mediaWeightMetric)
     }
 
