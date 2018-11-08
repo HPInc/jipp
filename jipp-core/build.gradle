@@ -184,10 +184,10 @@ def customizePom(pom) {
             resolveStrategy = DELEGATE_FIRST
 
             description 'Parse/build IPP packets'
-            name = project.name
+            name project.name
             url 'https://github.com/HPInc/jipp'
             organization {
-                name = 'HP Development Company, L.P.'
+                name 'HP Development Company, L.P.'
                 url 'https://github.com/HPInc'
             }
             issueManagement {
@@ -196,7 +196,7 @@ def customizePom(pom) {
             }
             licenses {
                 license {
-                    name = 'MIT'
+                    name 'MIT'
                     url 'https://github.com/HPInc/jipp/blob/master/LICENSE.md'
                     distribution 'repo'
                 }
@@ -208,7 +208,7 @@ def customizePom(pom) {
             }
             developers {
                 developer {
-                    name = 'Glade Diviney'
+                    name 'Glade Diviney'
                 }
             }
         }
