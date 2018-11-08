@@ -1,12 +1,15 @@
 package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.Cycler.cycle
+import com.hp.jipp.encoding.IntOrIntRange
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.encoding.MediaSizes
 import com.hp.jipp.model.Types
 import com.hp.jipp.model.Media
 import com.hp.jipp.model.MediaCol
 import com.hp.jipp.model.Operation
+import com.hp.jipp.model.Status
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.net.URI
@@ -31,5 +34,15 @@ class DslTest {
 
         assertEquals("utf-8", cycled.getValue(Tag.operationAttributes, Types.attributesCharset))
         assertEquals(mediaSize, cycled.getValue(Tag.jobAttributes, Types.mediaCol)!!.mediaSize)
+    }
+
+    @Test fun intOrIntRange() {
+        val packet = ippPacket(Status.successfulOk) {
+            group(Tag.printerAttributes) {
+                attr(Types.numberUpSupported, IntOrIntRange(5..6))
+            }
+        }
+        Assert.assertNotEquals(listOf<IntOrIntRange>(),
+            packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
     }
 }

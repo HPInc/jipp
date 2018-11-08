@@ -62,10 +62,9 @@ class PclmWriter(
         crossReferences.add(-1) // Placeholder for Catalog
         crossReferences.add(-1) // Placeholder for Page Tree
         startDoc()
-
-        // Print last page first so that the user doesn't have to shuffle. Printer should request this?
-        for (page in document.reversed()) writePage(document, page)
-
+        for (page in document) {
+            writePage(document, page)
+        }
         endDoc()
         flush()
     }

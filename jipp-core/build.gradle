@@ -46,7 +46,9 @@ test {
     }
 }
 
-test.finalizedBy jacocoTestReport
+test {
+    finalizedBy jacocoTestReport
+}
 
 jacocoTestReport {
     reports {
@@ -56,9 +58,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it,
-                    exclude: ['**/AutoValue_**',
-                              '**/pwg/**'])
+            fileTree(dir: it, exclude: ['**/model/**'])
         })
     }
 }
