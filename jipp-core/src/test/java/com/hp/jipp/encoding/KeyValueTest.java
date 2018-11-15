@@ -3,39 +3,39 @@
 
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.model.Status;
 import kotlin.Pair;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.function.BiFunction;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
+import static com.hp.jipp.encoding.Cycler.cycle;
 import static org.junit.Assert.*;
-
-import static com.hp.jipp.encoding.Cycler.*;
-
 
 public class KeyValueTest {
 
-    private KeyValueType keyValueType = new KeyValueType("key-value");
+    private KeyValuesType keyValuesType = new KeyValuesType("key-value");
 
     @Test
     public void empty() throws Exception {
         KeyValues value = new KeyValues();
-        @SuppressWarnings("unchecked") Attribute<KeyValues> attribute = keyValueType.of(value);
-        assertEquals(value.getPairs(), cycle(keyValueType, attribute).getValue().getPairs());
+        @SuppressWarnings("unchecked") Attribute<KeyValues> attribute = keyValuesType.of(value);
+        assertEquals(value.getPairs(), cycle(keyValuesType, attribute).getValue().getPairs());
     }
 
     @Test
     public void notEmpty() throws Exception {
         KeyValues value = new KeyValues("one", "oneValue", "two", "twoValue");
-        Attribute<KeyValues> attribute = keyValueType.of(Collections.singletonList(value));
-        assertEquals(value, cycle(keyValueType, attribute).getValue());
+        Attribute<KeyValues> attribute = keyValuesType.of(Collections.singletonList(value));
+        assertEquals(value, cycle(keyValuesType, attribute).getValue());
     }
 
     @Test
     public void construct() throws Exception {
-        Attribute<KeyValues> attribute = keyValueType.of("one", "oneValue", "two", "twoValue");
-        assertEquals(attribute.getValue(), cycle(keyValueType, attribute).getValue());
+        Attribute<KeyValues> attribute = keyValuesType.of("one", "oneValue", "two", "twoValue");
+        assertEquals(attribute.getValue(), cycle(keyValuesType, attribute).getValue());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class KeyValueTest {
     @Test
     public void pairs() throws Exception {
         @SuppressWarnings("unchecked")
-        KeyValues kv = new KeyValues(new Pair<String, String>("one", "oneValue"));
+        KeyValues kv = new KeyValues(new Pair<>("one", "oneValue"));
         assertEquals("oneValue", kv.get("one"));
     }
 
@@ -55,23 +55,23 @@ public class KeyValueTest {
     public void preserveOrder() throws Exception {
         KeyValues kv = new KeyValues("one", "oneValue", "two", "twoValue", "three", "threeValue");
         System.out.println(kv);
-        assertEquals(Arrays.asList("one", "two", "three"), new ArrayList<String>(kv.getKeys()));
+        assertEquals(Arrays.asList("one", "two", "three"), new ArrayList<>(kv.getKeys()));
     }
 
     @Test
     public void nonCoerce() throws Exception {
         // Refuse to coerce anything but a bytearray or string
-        assertEquals(new KeyValues("key5", "value5"), keyValueType.coerce("key5=value5"));
-        assertEquals(new KeyValues("key5", "value5"), keyValueType.coerce("key5=value5;"));
-        assertEquals(new KeyValues("key5", "value5"), keyValueType.coerce("key5=value5;".getBytes()));
-        assertNull(keyValueType.coerce(5));
+        assertEquals(new KeyValues("key5", "value5"), keyValuesType.coerce("key5=value5"));
+        assertEquals(new KeyValues("key5", "value5"), keyValuesType.coerce("key5=value5;"));
+        assertEquals(new KeyValues("key5", "value5"), keyValuesType.coerce("key5=value5;".getBytes()));
+        assertNull(keyValuesType.coerce(5));
     }
 
     @Test
     public void equality() throws Exception {
         KeyValues kv = new KeyValues("one", "oneValue", "two", "twoValue");
         assertNotEquals(kv, 5);
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("one", "oneValue");
         map.put("two", "twoValue");
         assertEquals(kv, map);
@@ -87,14 +87,23 @@ public class KeyValueTest {
         assertEquals(2, kv.size());
         assertEquals(kv.hashCode(), new KeyValues("key5", "value5", "key1", "value1").hashCode());
         assertFalse(kv.isEmpty());
-        Map<String, String> map = new HashMap<String, String>(kv);
+        Map<String, String> map = new HashMap<>(kv);
         assertEquals(map, kv);
         assertEquals(kv, map);
         assertNotEquals(5, kv);
         assertEquals(map.hashCode(), kv.hashCode());
-        assertEquals(new HashSet<String>(Arrays.asList("key1", "key5")), kv.keySet());
+        assertEquals(new HashSet<>(Arrays.asList("key1", "key5")), kv.keySet());
         assertTrue(kv.getValues().containsAll(Arrays.asList("value1", "value5")));
         coverUnmodifiableMap(kv);
+    }
+
+    @Test
+    public void localPacket() throws IOException {
+        Attribute<KeyValues> kv = keyValuesType.of("one", "oneValue", "two", "twoValue");
+        // Note: NOT cycled
+        IppPacket packet = new IppPacket(Status.successfulOk, 0x50607, groupOf(Tag.printerAttributes,
+                kv));
+        assertEquals(kv, packet.getValues(Tag.printerAttributes, keyValuesType));
     }
 
     private void coverUnmodifiableMap(Map<String, String> map) {

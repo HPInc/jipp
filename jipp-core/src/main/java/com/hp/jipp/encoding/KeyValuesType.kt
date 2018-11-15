@@ -4,11 +4,12 @@
 package com.hp.jipp.encoding
 
 /** Represents an attribute type encoded in key-value pairs. */
-class KeyValueType(override val name: String) : AttributeType<KeyValues> {
+class KeyValuesType(override val name: String) : AttributeType<KeyValues> {
     override fun coerce(value: Any): KeyValues? =
         when (value) {
             is String -> KeyValues.parse(value)
             is ByteArray -> coerce(String(value))
+            is KeyValues -> value
             else -> null
         }
 
