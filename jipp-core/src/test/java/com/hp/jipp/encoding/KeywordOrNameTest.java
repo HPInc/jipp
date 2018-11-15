@@ -33,4 +33,12 @@ public class KeywordOrNameTest {
         Attribute<KeywordOrName> attribute = cycle(type, type.of("keyword", "keyword2"));
         assertEquals(Arrays.asList("keyword", "keyword2"), attribute.strings());
     }
+
+    @Test
+    public void asString() {
+        AttributeGroup group = AttributeGroup.groupOf(Tag.operationAttributes, type.of(
+                new KeywordOrName("keyword"),
+                new KeywordOrName(new Name("nombre", "es"))));
+        assertEquals(Arrays.asList("keyword", "nombre"), group.getValues(type.getAsString()));
+    }
 }

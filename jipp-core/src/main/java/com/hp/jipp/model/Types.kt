@@ -488,7 +488,7 @@ object Types {
      * "document-metadata" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
-    @JvmField val documentMetadata = KeyValueType("document-metadata")
+    @JvmField val documentMetadata = KeyValuesType("document-metadata")
     /**
      * "document-name" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
@@ -3022,7 +3022,7 @@ object Types {
      * "printer-alert" as defined in:
      * [PWG5100.9](https://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf).
      */
-    @JvmField val printerAlert = KeyValueType("printer-alert")
+    @JvmField val printerAlert = KeyValuesType("printer-alert")
     /**
      * "printer-alert-description" as defined in:
      * [PWG5100.9](https://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf).
@@ -3102,7 +3102,7 @@ object Types {
      * "printer-finisher" as defined in:
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
-    @JvmField val printerFinisher = KeyValueType("printer-finisher")
+    @JvmField val printerFinisher = KeyValuesType("printer-finisher")
     /**
      * "printer-finisher-description" as defined in:
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
@@ -3112,7 +3112,7 @@ object Types {
      * "printer-finisher-supplies" as defined in:
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
-    @JvmField val printerFinisherSupplies = KeyValueType("printer-finisher-supplies")
+    @JvmField val printerFinisherSupplies = KeyValuesType("printer-finisher-supplies")
     /**
      * "printer-finisher-supplies-description" as defined in:
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
@@ -3147,7 +3147,7 @@ object Types {
      * "printer-input-tray" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
-    @JvmField val printerInputTray = KeyValueType("printer-input-tray")
+    @JvmField val printerInputTray = KeyValuesType("printer-input-tray")
     /**
      * "printer-is-accepting-jobs" as defined in:
      * [RFC3996](http://www.iana.org/go/rfc3996).
@@ -3218,7 +3218,7 @@ object Types {
      * "printer-output-tray" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
-    @JvmField val printerOutputTray = KeyValueType("printer-output-tray")
+    @JvmField val printerOutputTray = KeyValuesType("printer-output-tray")
     /**
      * "printer-privacy-policy-uri" as defined in:
      * [IPPPRIVACY10](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippprivacy10-20180412.pdf).
@@ -3305,7 +3305,7 @@ object Types {
      * "printer-supply" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
-    @JvmField val printerSupply = KeyValueType("printer-supply")
+    @JvmField val printerSupply = KeyValuesType("printer-supply")
     /**
      * "printer-supply-description" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).

@@ -4,7 +4,7 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.model.EnumTypes
-import com.hp.jipp.model.KeyValueTypes
+import com.hp.jipp.model.KeyValuesTypes
 import com.hp.jipp.util.BuildError
 import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrintable
@@ -275,7 +275,7 @@ class AttributeGroup(
                     return it.coerce(readInt())!!
                 }
             } else if (tag == Tag.octetString) {
-                KeyValueTypes.all[attributeName]?.also {
+                KeyValuesTypes.all[attributeName]?.also {
                     return KeyValues.codec.readValue(this, tag)
                 }
             }

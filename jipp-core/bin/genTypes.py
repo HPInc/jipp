@@ -791,8 +791,8 @@ def fix_ktypes(type, syntax, name, group_name = ''):
 
     if name in key_value_type_names:
         # Catch this before octetString
-        intro = "KeyValueType("
-        syntax = "keyValue"
+        intro = "KeyValuesType("
+        syntax = "keyValues"
         type['kref'] = camel_class_path(group_name) + '.' + camel_member(name)
         key_values[name] = type
 
@@ -892,7 +892,7 @@ def emit_code():
             app=os.path.basename(sys.argv[0]),
             updated=updated)))
 
-    with open(prep_file('Key-Value-Types'), 'w') as file:
+    with open(prep_file('Key-Values-Types'), 'w') as file:
         file.write(rstrip_all(env.get_template('keyvalues.kt.tmpl').render(
             types=key_values.values(),
             app=os.path.basename(sys.argv[0]),

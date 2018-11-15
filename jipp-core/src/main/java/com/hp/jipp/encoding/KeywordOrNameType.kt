@@ -18,6 +18,23 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
             else -> null
         }
 
+    /**
+     * A form of this [AttributeType] that represents all incoming Name and Keyword data as [String] objects.
+     */
+    val asString: AttributeType<String> by lazy {
+        object : AttributeType<String> {
+            override val name = this@KeywordOrNameType.name
+
+            override fun coerce(value: Any): String? =
+                when (value) {
+                    is KeywordOrName -> value.keyword ?: value.name?.value
+                    is Name -> value.value
+                    is String -> value
+                    else -> null
+                }
+        }
+    }
+
     /** Return an attribute containing values as keywords .*/
     fun of(vararg keywords: String) = of(keywords.map { KeywordOrName(it) })
 

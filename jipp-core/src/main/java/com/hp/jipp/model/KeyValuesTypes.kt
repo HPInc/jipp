@@ -10,10 +10,10 @@ package com.hp.jipp.model
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 
 /**
- * All known [KeyValueType] types, used for better decoding of [IppPacket] data.
+ * All known [KeyValuesType] types, used for better decoding of [IppPacket] data.
  */
-object KeyValueTypes {
-    @JvmField val all: Map<String, KeyValueType> = listOf(
+object KeyValuesTypes {
+    @JvmField val all: Map<String, KeyValuesType> = listOf(
         Types.printerOutputTray,
         Types.documentMetadata,
         Types.printerFinisherSupplies,

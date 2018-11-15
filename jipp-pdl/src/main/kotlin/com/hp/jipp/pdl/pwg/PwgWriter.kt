@@ -61,7 +61,7 @@ class PwgWriter(
         writeInt(page.widthPixels * POINTS_PER_INCH / doc.dpi) // pageSizeX
         writeInt(page.heightPixels * POINTS_PER_INCH / doc.dpi) // pageSizeY
         writeBlank(8) // reserved
-        writeInt(caps.tumble.toInt()) // tumble
+        writeInt(if (caps.duplex) caps.tumble.toInt() else 0) // tumble but only if duplex
         writeInt(page.widthPixels) // width (pixels)
         writeInt(page.heightPixels) // height (pixels)
         writeBlank(4) // reserved
