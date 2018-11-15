@@ -101,7 +101,8 @@ data class IppPacket constructor(
     }
 
     companion object {
-        const val DEFAULT_VERSION_NUMBER = 0x0101
+        /** Default version number for IPP packets (0x200 for IPP 2.2) */
+        const val DEFAULT_VERSION_NUMBER = 0x0202
 
         @JvmStatic
         @Throws(IOException::class)
