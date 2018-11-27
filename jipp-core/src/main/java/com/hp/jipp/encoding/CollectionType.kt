@@ -40,8 +40,8 @@ open class CollectionType<T : AttributeCollection>(
 
         private val endCollectionAttribute = EmptyAttribute("", Tag.endCollection)
 
-        private fun IppInputStream.readCollectionAttributes(): List<Attribute<Any>> {
-            val attributes = mutableListOf<Attribute<Any>>()
+        private fun IppInputStream.readCollectionAttributes(): List<Attribute<*>> {
+            val attributes = mutableListOf<Attribute<*>>()
             while (true) {
                 val tag = readTag()
                 when (tag) {

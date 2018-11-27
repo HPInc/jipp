@@ -1,5 +1,6 @@
 package com.hp.jipp.trans;
 
+import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppPacket;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -30,9 +31,8 @@ abstract public class HttpIppServerTransport implements IppServerTransport {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                InputStream inputStream = exchange.getRequestBody();
-                IppPacket receivePacket = IppPacket.read(inputStream);
-                IppPacketData data = new IppPacketData(receivePacket, inputStream);
+                IppInputStream inputStream = new IppInputStream(exchange.getRequestBody());
+                IppPacketData data = new IppPacketData(inputStream.readPacket(), inputStream);
                 IppPacketData response = HttpIppServerTransport.this.handle(exchange.getRequestURI(), data);
                 DataOutputStream output = new DataOutputStream(new BufferedOutputStream(exchange.getResponseBody()));
                 response.getPacket().write(output);

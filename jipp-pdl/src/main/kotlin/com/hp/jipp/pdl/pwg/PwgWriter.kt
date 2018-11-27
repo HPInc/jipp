@@ -69,7 +69,7 @@ class PwgWriter(
         writeInt(24) // bitsPerPixel
         writeInt(page.widthPixels * colorSpace.bytesPerPixel) // bytesPerLine
         writeInt(0) // colorOrder
-        writeInt(19) // colorSpace (RGB)
+        writeInt(colorSpace.colorSpaceEnum) // colorSpace (RGB or Grayscale)
         writeBlank(16) // reserved
         writeInt(3) // numColors
         writeBlank(28) // reserved
@@ -115,5 +115,12 @@ class PwgWriter(
 
     companion object {
         const val POINTS_PER_INCH = 72
+
+        /** Return a ColorSpaceEnum value corresponding to the supplied [ColorSpace]. */
+        private val ColorSpace.colorSpaceEnum: Int
+            get() = when (this) {
+                ColorSpace.GRAYSCALE -> 18
+                else -> 19
+            }
     }
 }

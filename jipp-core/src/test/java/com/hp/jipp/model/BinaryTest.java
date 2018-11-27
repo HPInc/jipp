@@ -1,35 +1,23 @@
 package com.hp.jipp.model;
 
-import com.hp.jipp.encoding.*;
+import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.encoding.IppOutputStream;
+import com.hp.jipp.encoding.IppPacket;
+import kotlin.io.FilesKt;
 import org.junit.Test;
 
-import static com.hp.jipp.util.BytesKt.toHexString;
-import static com.hp.jipp.util.BytesKt.toWrappedHexString;
-import static org.junit.Assert.*;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.io.FilesKt;
+import static com.hp.jipp.util.BytesKt.toWrappedHexString;
+import static org.junit.Assert.*;
 
 public class BinaryTest {
-
-//    @Test
-//    public void scanNames() throws Exception {
-//        for (File binFile : getBinFiles()) {
-//            IppPacket packet = IppPacket.parse(new DataInputStream(new ByteArrayInputStream(FilesKt.readBytes(binFile))));
-//            if (packet.getAttributeGroup(Tag.printerAttributes) == null) continue;
-//            if (packet.getValues(Tag.printerAttributes, Types.printerInfo).isEmpty()) continue;
-//
-//            System.out.println(binFile.getName() + "\t" + packet.getValues(Tag.printerAttributes, Types.printerInfo) +
-//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerName) +
-//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerDnsSdName) +
-//                    "\t" + packet.getValues(Tag.printerAttributes, Types.printerUuid));
-//        }
-//    }
-//
 
     @Test
     public void cycleBinaries() throws IOException {
@@ -42,7 +30,7 @@ public class BinaryTest {
         System.out.println("\n========= Parsing " + fileName);
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(inputBytes));
 
-        IppPacket packet = IppPacket.read(input);
+        IppPacket packet = input.readPacket();
         System.out.println(fileName + packet.prettyPrint(120, "  "));
 
         // Now repack it and make sure the bytes are the same
@@ -58,7 +46,7 @@ public class BinaryTest {
         File printerDir = new File(getResource("printer"));
         assertTrue(printerDir.isDirectory());
 
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         getBinFiles(files, printerDir);
         return files;
     }
@@ -91,8 +79,8 @@ public class BinaryTest {
             long nanos = System.nanoTime();
             int reps = 50;
             for (int i = 0; i < reps; i++) {
-                DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
-                IppPacket.read(in);
+                IppInputStream in = new IppInputStream(new ByteArrayInputStream(bytes));
+                in.readPacket();
                 in.close();
             }
             System.out.println(((System.nanoTime() - nanos)/1000/reps) + "us for each rx of " + reps + " of " +

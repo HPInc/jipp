@@ -1,11 +1,9 @@
 package com.hp.jipp.trans
 
 import com.hp.jipp.encoding.IppInputStream
-import com.hp.jipp.encoding.IppPacket
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
-import java.io.DataInputStream
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI
@@ -45,9 +43,10 @@ class HttpIppClientTransport : IppClientTransport {
                 copyTo(rxBytes)
             }
 
-            DataInputStream(ByteArrayInputStream(rxBytes.toByteArray())).use {
+            ByteArrayInputStream(rxBytes.toByteArray()).use { input ->
                 println("Parsing received data")
-                IppPacketData(IppPacket.read(IppInputStream(it)))
+                val ippInput = IppInputStream(input)
+                IppPacketData(ippInput.readPacket(), ippInput)
             }
         }
     }

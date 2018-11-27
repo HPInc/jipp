@@ -17,13 +17,10 @@ open class BaseAttribute<T : Any>(
     constructor(name: String, type: AttributeType<T>, values: List<T>) : this(name, type, null, values)
 
     /** Construct an empty (no-value) attribute for a specific attribute type. */
-    constructor(name: String, type: AttributeType<T>, tag: Tag) : this(name, type, tag, emptyList())
+    constructor(name: String, type: AttributeType<T>?, tag: Tag) : this(name, type, tag, emptyList())
 
     /** Construct an attribute with unknown attribute type, containing certain values. */
     constructor(name: String, values: List<T>) : this(name, null, null, values)
-
-    /** Construct an empty (no-value) attribute for an unknown attribute type. */
-    constructor(name: String, tag: Tag) : this(name, null, tag, emptyList())
 
     init {
         if (values.isEmpty() && !tagAllowsEmpty(tag)) {

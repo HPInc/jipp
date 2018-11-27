@@ -42,7 +42,7 @@ public class Cycler {
         output.close();
 
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
-        return IppPacket.read(input);
+        return input.readPacket();
     }
 
     public static byte[] toBytes(IppPacket packet) throws IOException {
@@ -52,15 +52,14 @@ public class Cycler {
         return bytesOut.toByteArray();
     }
 
-    public static byte[] toBytes(Attribute<?> attribute) throws IOException {
+    static byte[] toBytes(Attribute<?> attribute)  {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         IppOutputStream out = new IppOutputStream(bytesOut);
         AttributeGroup.Companion.writeAttribute(out, attribute, attribute.getName());
         return bytesOut.toByteArray();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> void coverList(List<T> list, T firstValue, T notPresentValue) {
+    static <T> void coverList(List<T> list, T firstValue, T notPresentValue) {
 
         assertFalse(list.isEmpty());
         assertTrue(list.contains(firstValue));
@@ -72,6 +71,7 @@ public class Cycler {
         assertEquals(firstValue, list.toArray()[0]);
         assertEquals(firstValue, list.get(0));
 
+        //noinspection LoopStatementThatDoesntLoop (We want to test iterator)
         for (T item : list) {
             assertEquals(item, firstValue);
             break;

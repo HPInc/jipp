@@ -228,7 +228,7 @@ class AttributeGroup(
             AttributeGroup(groupTag, { input.readNextAttribute() }.repeatUntilNull().toList())
 
         /** Read the next attribute if present */
-        fun IppInputStream.readNextAttribute(): Attribute<Any>? =
+        fun IppInputStream.readNextAttribute(): Attribute<*>? =
             if (available() == 0) {
                 null
             } else {
@@ -245,13 +245,13 @@ class AttributeGroup(
         /**
          * Read and return an attribute with all of its values.
          */
-        private fun IppInputStream.readAnyAttribute(initTag: Tag): Attribute<Any> =
+        private fun IppInputStream.readAnyAttribute(initTag: Tag): Attribute<*> =
             readAnyAttribute(readString(), initTag)
 
         /**
          * Read and return an attribute with all of its values.
          */
-        fun IppInputStream.readAnyAttribute(attributeName: String, initTag: Tag): Attribute<Any> {
+        fun IppInputStream.readAnyAttribute(attributeName: String, initTag: Tag): Attribute<*> {
             if (initTag.isOutOfBand) {
                 readValueBytes()
                 return EmptyAttribute(attributeName, initTag)

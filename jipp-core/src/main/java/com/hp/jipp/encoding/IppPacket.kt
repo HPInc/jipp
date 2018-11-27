@@ -5,9 +5,7 @@ package com.hp.jipp.encoding
 
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
-import com.hp.jipp.util.ParseError
 import com.hp.jipp.util.PrettyPrinter
-import com.hp.jipp.util.repeatUntilNull
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -101,34 +99,21 @@ data class IppPacket constructor(
     }
 
     companion object {
-        /** Default version number for IPP packets (0x200 for IPP 2.2) */
-        const val DEFAULT_VERSION_NUMBER = 0x0202
+        /** Default version number for IPP packets (0x200 for IPP 2.0) */
+        const val DEFAULT_VERSION_NUMBER = 0x0200
 
         @JvmStatic
         @Throws(IOException::class)
-        @Deprecated("use read()", ReplaceWith("read(input)", "com.hp.jipp.model.IppPacket.Companion.read"))
+        @Deprecated("use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()","com.hp.jipp.encoding.IppInputStream"))
         fun parse(input: InputStream): IppPacket =
-            read(input)
+            (input as? IppInputStream ?: IppInputStream(input)).readPacket()
 
         @JvmStatic
         @Throws(IOException::class)
-        fun read(input: InputStream): IppPacket {
-            val ippInput = input as? IppInputStream ?: IppInputStream(input)
-            return IppPacket(ippInput.readShort().toInt(),
-                ippInput.readShort().toInt(),
-                ippInput.readInt(),
-                { readNextGroup(ippInput) }.repeatUntilNull().toList())
-        }
-
-        private fun readNextGroup(input: IppInputStream): AttributeGroup? {
-            val tag = Tag.read(input)
-            return when (tag) {
-                Tag.endOfAttributes -> null
-                else -> {
-                    if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
-                    AttributeGroup.read(input, tag)
-                }
-            }
-        }
+        @Deprecated("use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
+        fun read(input: InputStream) =
+            (input as? IppInputStream ?: IppInputStream(input)).readPacket()
     }
 }

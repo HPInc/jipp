@@ -65,7 +65,7 @@ public class IppPacketTest {
                 (byte) 0x09,
         };
         exception.expect(EOFException.class);
-        IppPacket.read(new ByteArrayInputStream(in));
+        new IppInputStream(new ByteArrayInputStream(in)).readPacket();
     }
 
     @Test
@@ -164,7 +164,7 @@ public class IppPacketTest {
                 (byte) 0x03,
         };
 
-        IppPacket.read(new ByteArrayInputStream(bytes));
+        new IppInputStream(new ByteArrayInputStream(bytes)).readPacket();
     }
 
 
@@ -233,7 +233,7 @@ public class IppPacketTest {
     }
 
     @Test
-    public void withAttributeGroups() throws IOException {
+    public void withAttributeGroups() {
         IppPacket copyFrom = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777);
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777, groupOf(Tag.operationAttributes),
                 groupOf(Tag.jobAttributes));
