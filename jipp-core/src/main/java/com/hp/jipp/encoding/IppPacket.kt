@@ -105,7 +105,7 @@ data class IppPacket constructor(
         @JvmStatic
         @Throws(IOException::class)
         @Deprecated("use IppInputStream.readPacket()",
-            ReplaceWith("readPacket()","com.hp.jipp.encoding.IppInputStream"))
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
         fun parse(input: InputStream): IppPacket =
             (input as? IppInputStream ?: IppInputStream(input)).readPacket()
 
