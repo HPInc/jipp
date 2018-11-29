@@ -14,7 +14,7 @@ open class BaseAttribute<T : Any>(
 ) : Attribute<T>, List<T> by values {
 
     /** Construct an attribute for a specific attribute type containing certain values. */
-    constructor(name: String, type: AttributeType<T>, values: List<T>) : this(name, type, null, values)
+    constructor(name: String, type: AttributeType<T>, values: Iterable<T>) : this(name, type, null, values.toList())
 
     /** Construct an empty (no-value) attribute for a specific attribute type. */
     constructor(name: String, type: AttributeType<T>?, tag: Tag) : this(name, type, tag, emptyList())

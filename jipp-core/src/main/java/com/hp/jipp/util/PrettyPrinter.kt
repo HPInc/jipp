@@ -71,7 +71,7 @@ class PrettyPrinter internal constructor(
     /**
      * Add items to the current group
      */
-    fun addAll(items: Collection<Any>): PrettyPrinter {
+    fun addAll(items: Iterable<Any>): PrettyPrinter {
         checkUnprinted()
         for (item in items) {
             innerAdd(item)

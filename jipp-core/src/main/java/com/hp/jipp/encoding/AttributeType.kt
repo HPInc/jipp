@@ -10,7 +10,7 @@ interface AttributeType<T : Any> {
     val name: String
 
     /** Return an attribute containing one or more values of type [T]. */
-    fun of(values: List<T>): Attribute<T> {
+    fun of(values: Iterable<T>): Attribute<T> {
         val self = this
         return BaseAttribute(self.name, this, values)
     }
