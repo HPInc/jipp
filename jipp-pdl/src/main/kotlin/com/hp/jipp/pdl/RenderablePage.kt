@@ -1,3 +1,6 @@
+// Copyright 2018 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.pdl
 
 /** A page whose contents can be rendered to an [IntArray] of pixels. */
