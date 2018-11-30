@@ -2,7 +2,9 @@ package pwg
 
 import com.hp.jipp.pdl.pwg.PackBits
 import com.hp.jipp.pdl.pwg.PwgCapabilities
+import com.hp.jipp.pdl.pwg.PwgHeader
 import com.hp.jipp.pdl.pwg.PwgWriter
+import com.hp.jipp.util.toWrappedHexString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.ByteWindow
@@ -14,7 +16,6 @@ import java.io.File
 class PwgTest {
     @Test
     fun validateGeneratedPwg() {
-
         val name = "validateGeneratedPwg"
         val outPwg = File("build/$name.pwg")
         // Create and load a sample PDF
@@ -23,13 +24,42 @@ class PwgTest {
         // Create and write as PWG
         PwgWriter(outPwg.outputStream(), PwgCapabilities(color = true)).use {
             it.write(doc)
-            it.close()
         }
 
         // Load and validate
         outPwg.inputStream().use {
             PwgValidator.validate(it)
         }
+    }
+
+    @Test
+    fun cycleDefaultHeader() {
+        val header = PwgHeader(bitsPerColor = 8, bitsPerPixel = 24,
+            colorSpace = PwgHeader.ColorSpace.Srgb,
+            hwResolutionX = 300,
+            hwResolutionY = 300,
+            height = 1000,
+            width = 2000,
+            numColors = 3
+            )
+        val output = ByteArrayOutputStream()
+        header.write(output)
+        val read = PwgHeader.read(ByteArrayInputStream(output.toByteArray()))
+        assertEquals(header.toString(), read.toString())
+    }
+
+    @Test
+    fun cycleHeader() {
+        val output = ByteArrayOutputStream()
+        val doc = RandomDocument(123L, 2, 72.0, 72.0, 300)
+        PwgWriter(output, PwgCapabilities(color = true)).use {
+            it.write(doc)
+        }
+        val originalHeader = output.toByteArray().sliceArray(4 until PwgHeader.HEADER_SIZE + 4)
+        val header = PwgHeader.read(ByteArrayInputStream(originalHeader))
+        val headerOutput = ByteArrayOutputStream().also { header.write(it) }
+        assertEquals(PwgHeader.HEADER_SIZE, headerOutput.size())
+        assertEquals(originalHeader.toWrappedHexString(), headerOutput.toByteArray().toWrappedHexString())
     }
 
     @Test
