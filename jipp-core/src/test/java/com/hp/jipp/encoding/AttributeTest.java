@@ -46,17 +46,17 @@ public class AttributeTest {
 
     @SuppressWarnings("unchecked")
     @Test public void unknownAttr() throws IOException {
-        assertEquals(Tag.unknown, cycle(Attribute.unknown("unknown-attribute")).getTag());
+        assertEquals(Tag.unknown, cycle(Attributes.unknown("unknown-attribute")).getTag());
     }
 
     @SuppressWarnings("unchecked")
     @Test public void unsupportedAttr() throws IOException {
-        assertEquals(Tag.unsupported, cycle(Attribute.unsupported("unsupported-attribute")).getTag());
+        assertEquals(Tag.unsupported, cycle(Attributes.unsupported("unsupported-attribute")).getTag());
     }
 
     @SuppressWarnings("unchecked")
     @Test public void noValueAttr() throws IOException {
-        assertEquals(Tag.noValue, cycle(Attribute.noValue("no-value-attribute")).getTag());
+        assertEquals(Tag.noValue, cycle(Attributes.noValue("no-value-attribute")).getTag());
     }
 
     @Test public void coerceAttr() {
