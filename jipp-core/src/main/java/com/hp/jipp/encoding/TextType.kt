@@ -17,7 +17,7 @@ open class TextType(override val name: String) : AttributeType<Text> {
     fun of(vararg values: String) = of(values.map { Text(it) })
 
     /** Return an attribute containing values as text strings (without language) */
-    fun ofStrings(values: List<String>) = of(values.map { Text(it) })
+    fun ofStrings(values: Iterable<String>) = of(values.map { Text(it) })
 
     companion object {
         val codec = AttributeGroup.codec({ it == Tag.textWithLanguage || it == Tag.textWithoutLanguage }, {

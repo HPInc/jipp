@@ -66,12 +66,12 @@ class PwgWriter(
         writeInt(page.heightPixels) // height (pixels)
         writeBlank(4) // reserved
         writeInt(8) // bitsPerColor
-        writeInt(24) // bitsPerPixel
+        writeInt(8 * colorSpace.bytesPerPixel) // bitsPerPixel
         writeInt(page.widthPixels * colorSpace.bytesPerPixel) // bytesPerLine
         writeInt(0) // colorOrder
         writeInt(colorSpace.colorSpaceEnum) // colorSpace (RGB or Grayscale)
         writeBlank(16) // reserved
-        writeInt(3) // numColors
+        writeInt(colorSpace.bytesPerPixel) // numColors
         writeBlank(28) // reserved
         writeInt(0) // totalPageCount
         writeInt(0) // crossFeedTransform

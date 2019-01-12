@@ -42,10 +42,10 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
     fun of(vararg names: Name) = of(names.map { KeywordOrName(it) })
 
     /** Return an attribute containing values interpreted as keywords. */
-    fun ofKeywords(values: List<String>) = of(values.map { KeywordOrName(Name(it)) })
+    fun ofKeywords(values: Iterable<String>) = of(values.map { KeywordOrName(Name(it)) })
 
     /** Return an attribute containing values as text strings (without language). */
-    fun ofNames(values: List<String>) = of(values.map { KeywordOrName(Name(it)) })
+    fun ofNames(values: Iterable<String>) = of(values.map { KeywordOrName(Name(it)) })
 
     companion object {
         val codec = AttributeGroup.codec<KeywordOrName>({ false }, {

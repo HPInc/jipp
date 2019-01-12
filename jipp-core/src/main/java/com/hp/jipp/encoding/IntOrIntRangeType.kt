@@ -17,13 +17,13 @@ class IntOrIntRangeType(
         }
 
     /** Return an attribute containing the supplied integer value(s) */
-    fun ofIntegers(integers: List<Int>) = of(integers.map { IntOrIntRange(it) })
+    fun ofIntegers(integers: Iterable<Int>) = of(integers.map { IntOrIntRange(it) })
 
     /** Return an attribute containing the supplied integer value(s) */
     fun of(vararg integers: Int) = ofIntegers(integers.toList())
 
     /** Return an attribute containing the supplied range(s) */
-    fun ofRanges(ranges: List<IntRange>) = of(ranges.map { IntOrIntRange(it) })
+    fun ofRanges(ranges: Iterable<IntRange>) = of(ranges.map { IntOrIntRange(it) })
 
     /** Return an attribute containing the supplied range(s) */
     fun of(vararg ranges: IntRange) = ofRanges(ranges.toList())
