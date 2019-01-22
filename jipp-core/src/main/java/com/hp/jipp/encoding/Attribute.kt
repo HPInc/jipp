@@ -64,21 +64,4 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
         is ByteArray -> "0x" + value.toHexString()
         else -> value.toString()
     }
-
-    companion object {
-        /** Return a typeless [Tag.unknown] attribute. */
-        @JvmStatic
-        fun unknown(name: String): Attribute<Nothing> =
-            BaseAttribute(name, null, Tag.unknown)
-
-        /** Return a typeless [Tag.unsupported] attribute. */
-        @JvmStatic
-        fun unsupported(name: String): Attribute<Nothing> =
-            BaseAttribute(name, null, Tag.unsupported)
-
-        /** Return a typeless [Tag.noValue] attribute. */
-        @JvmStatic
-        fun noValue(name: String): Attribute<Nothing> =
-            BaseAttribute(name, null, Tag.noValue)
-    }
 }
