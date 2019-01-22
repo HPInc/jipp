@@ -1,8 +1,12 @@
 package com.hp.jipp.model;
 
-import com.hp.jipp.encoding.*;
-import com.hp.jipp.model.Operation;
-import static com.hp.jipp.model.Types.*;
+import com.hp.jipp.encoding.Attribute;
+import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.encoding.OtherString;
+import com.hp.jipp.encoding.StringType;
+import com.hp.jipp.encoding.Tag;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -15,9 +19,16 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
-import static org.junit.Assert.*;
-
-import static com.hp.jipp.encoding.Cycler.*;
+import static com.hp.jipp.encoding.Cycler.cycle;
+import static com.hp.jipp.encoding.Cycler.toBytes;
+import static com.hp.jipp.model.Types.attributesCharset;
+import static com.hp.jipp.model.Types.attributesNaturalLanguage;
+import static com.hp.jipp.model.Types.operationsSupported;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class IppPacketTest {
     @Rule

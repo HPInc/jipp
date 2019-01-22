@@ -11,8 +11,10 @@ import org.junit.rules.ExpectedException;
 
 import static com.hp.jipp.encoding.Cycler.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import kotlin.ranges.IntRange;
 
@@ -108,5 +110,29 @@ public class AttributeTypeTest {
         assertEquals(new IntOrIntRange(5), attribute2.get(0));
         assertEquals(new IntOrIntRange(7, 10), attribute2.get(1));
         assertEquals(Arrays.asList(new IntOrIntRange(5), new IntOrIntRange(7, 10)), attribute2);
+    }
+
+    @Test
+    public void mediaColTypeTest() {
+        MediaCol mediaType1 = new MediaCol();
+        mediaType1.setMediaSize(MediaSizes.parse(Media.naLetter8p5x11in));
+        mediaType1.setMediaLeftMargin(750);
+        mediaType1.setMediaRightMargin(750);
+        mediaType1.setMediaBottomMargin(750);
+        mediaType1.setMediaTopMargin(750);
+        mediaType1.setMediaSource(new KeywordOrName(MediaSource.main));
+        mediaType1.setMediaType(new KeywordOrName(MediaType.stationery));
+        // And others...
+
+        List<MediaCol> readyList = new ArrayList<>();
+        readyList.add(mediaType1);
+        // Etc.
+
+        IppPacket packet = new IppPacket(Status.successfulOk, 1234,
+                groupOf(Tag.operationAttributes /* +default operation attributes */),
+                groupOf(Tag.printerAttributes,
+                        Types.mediaColReady.of(readyList),
+                        Types.mediaColDatabase.of(readyList) /* + other requested attributes */ ));
+
     }
 }
