@@ -17,6 +17,7 @@ data class PwgHeader(
     val mediaType: String = "",
     val printContentOptimize: String = "",
     val cutMedia: When = When.Never,
+    /** True if printing two-sided. */
     val duplex: Boolean = false,
     val hwResolutionX: Int,
     val hwResolutionY: Int,
@@ -31,6 +32,7 @@ data class PwgHeader(
     val pageSizeX: Int = 0,
     /** Media height in points. */
     val pageSizeY: Int = 0,
+    /** True if two-sided printing should be flipped along the short-edge. */
     val tumble: Boolean = false,
     /** Full-bleed page width in pixels. */
     val width: Int,
@@ -52,14 +54,12 @@ data class PwgHeader(
     val imageBoxRight: Int = 0,
     /** Bottom position of non-blank area in pixels, if image box is known. */
     val imageBoxBottom: Int = 0,
-    /** An sRGB color field containing 24 bits of color data. */
-    val alternatePrimary: Int = 0xFFFFFF,
+    /** An sRGB color field containing 24 bits of color data. Default: WHITE */
+    val alternatePrimary: Int = WHITE,
     val printQuality: PrintQuality = PrintQuality.Default,
     /** USB vendor identification number or 0. */
     val vendorIdentifier: Int = 0,
-    /** Length of [vendorData], 0-1088. */
-    val vendorLength: Int = 0,
-    /** Octets containing exactly [vendorLength] bytes of vendor-specific data. */
+    /** Octets containing 0-1088 bytes of vendor-specific data. */
     val vendorData: ByteArray = byteArrayOf(),
     val renderingIntent: String = "",
     val pageSizeName: String = ""
@@ -68,12 +68,8 @@ data class PwgHeader(
     val bytesPerLine: Int = ((bitsPerPixel * width + 7) / 8)
 
     init {
-        if (vendorLength > MAX_VENDOR_DATA_SIZE) {
-            throw IllegalArgumentException("vendorLength=$vendorLength must not be > $MAX_VENDOR_DATA_SIZE")
-        }
-        if (vendorLength != vendorData.size) {
-            throw IllegalArgumentException("vendorLength=$vendorLength does not match " +
-                "vendorData.size=${vendorData.size}")
+        if (vendorData.size > MAX_VENDOR_DATA_SIZE) {
+            throw IllegalArgumentException("vendorData.size of ${vendorData.size} must not be > $MAX_VENDOR_DATA_SIZE")
         }
     }
 
@@ -87,6 +83,7 @@ data class PwgHeader(
         fun from(value: Int): T
     }
 
+    /** Points during print when another operation should take place. */
     enum class When(override val value: Int) : HasValue {
         Never(0), AfterDocument(1), AfterJob(2), AfterSet(3), AfterPage(4);
 
@@ -95,6 +92,7 @@ data class PwgHeader(
         }
     }
 
+    /** Kinds of duplexing. */
     enum class Edge(override val value: Int) : HasValue {
         ShortEdgeFirst(0), LongEdgeFirst(1);
 
@@ -103,6 +101,7 @@ data class PwgHeader(
         }
     }
 
+    /** Output orientation of a page. */
     enum class Orientation(override val value: Int) : HasValue {
         Portrait(0), Landscape(1), ReversePortrait(2), ReverseLandscape(3);
 
@@ -119,6 +118,7 @@ data class PwgHeader(
         }
     }
 
+    /** Meaning of color values provided for each pixel. */
     enum class ColorSpace(override val value: Int) : HasValue {
         Rgb(1), Black(2), Cmyk(6), Sgray(18), Srgb(19), AdobeRgb(20), Device1(48), Device2(49), Device3(50),
         Device4(51), Device5(52), Device6(53), Device7(54), Device8(55), Device9(56), Device10(57), Device11(58),
@@ -129,6 +129,7 @@ data class PwgHeader(
         }
     }
 
+    /** Media input source. */
     enum class MediaPosition(override val value: Int) : HasValue {
         Auto(0), Main(1), Alternate(2), LargeCapacity(3), Manual(4), Envelope(5), Disc(6), Photo(7), Hagaki(8),
         MainRoll(9), AlternateRoll(10), Top(11), Middle(12), Bottom(13), Side(14), Left(15), Right(16), Center(17),
@@ -142,6 +143,7 @@ data class PwgHeader(
         }
     }
 
+    /** Requested output quality. */
     enum class PrintQuality(override val value: Int) : HasValue {
         Default(0), Draft(3), Normal(4), High(5);
 
@@ -199,8 +201,10 @@ data class PwgHeader(
             writeInt(printQuality)
             writeReserved(20)
             writeInt(vendorIdentifier)
-            writeInt(vendorLength)
+            writeInt(vendorData.size)
             write(vendorData, 0, vendorData.size)
+            // Pad with 0
+            writeReserved(1088 - vendorData.size)
             writeReserved(MAX_VENDOR_DATA_SIZE - vendorData.size)
             writeReserved(64)
             writeCString(renderingIntent)
@@ -248,7 +252,6 @@ data class PwgHeader(
         if (alternatePrimary != other.alternatePrimary) return false
         if (printQuality != other.printQuality) return false
         if (vendorIdentifier != other.vendorIdentifier) return false
-        if (vendorLength != other.vendorLength) return false
         if (!vendorData.contentEquals(other.vendorData)) return false
         if (renderingIntent != other.renderingIntent) return false
         if (pageSizeName != other.pageSizeName) return false
@@ -291,7 +294,6 @@ data class PwgHeader(
         result = 31 * result + alternatePrimary
         result = 31 * result + printQuality.hashCode()
         result = 31 * result + vendorIdentifier
-        result = 31 * result + vendorLength
         result = 31 * result + vendorData.contentHashCode()
         result = 31 * result + renderingIntent.hashCode()
         result = 31 * result + pageSizeName.hashCode()
@@ -302,6 +304,8 @@ data class PwgHeader(
         const val PWG_RASTER_NAME = "PwgRaster"
         const val MAX_VENDOR_DATA_SIZE = 1088
         const val HEADER_SIZE = 1796
+        const val WHITE = 0xFFFFFF
+
         private const val CSTRING_LENGTH = 64
 
         /**
@@ -354,11 +358,10 @@ data class PwgHeader(
                     alternatePrimary = readInt(),
                     printQuality = readValue(PrintQuality).also { skip(20) },
                     vendorIdentifier = readInt(),
-                    vendorLength = readInt().also { readVendorLength = it },
-                    vendorData = ByteArray(MAX_VENDOR_DATA_SIZE).let {
+                    vendorData = ByteArray(readInt()).also {
                         read(it)
-                        it.sliceArray(0 until readVendorLength)
-                    }.also { skip(64) },
+                        skip(64L + (1088 - it.size))
+                    },
                     renderingIntent = readCString(),
                     pageSizeName = readCString())
             }

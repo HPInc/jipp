@@ -11,10 +11,17 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
 
+typealias PwgHeaderBuilder = (RenderableDocument, RenderablePage) -> PwgHeader
+
 @SuppressWarnings("MagicNumber")
-class PwgWriter(
+class PwgWriter
+@JvmOverloads constructor(
     outputStream: OutputStream,
-    private val caps: PwgCapabilities
+    /**
+     * A header builder, used to construct an appropriate PwgHeader for each page of a document.
+     * [rgbHeaderBuilder], [grayscaleHeaderBuilder], or a custom builder may be used.
+     */
+    private val headerBuilder: PwgHeaderBuilder
 ) : DataOutputStream(outputStream) {
 
     /** Write a null-terminated [string] including up to [width] bytes*/
@@ -27,10 +34,11 @@ class PwgWriter(
         }
     }
 
+    /** Write a document to the writer's [outputStream]. */
     fun write(doc: RenderableDocument) {
         writeString("RaS2", 4)
-        for (page in doc) {
-            write(doc, page)
+        doc.forEach { page ->
+            write(doc, page, headerBuilder(doc, page))
         }
     }
 
@@ -39,71 +47,24 @@ class PwgWriter(
         if (this) 1 else 0
 
     @Suppress("LongMethod") // It's clearer to do it all here
-    private fun write(doc: RenderableDocument, page: RenderablePage) {
-        val colorSpace = if (caps.color) ColorSpace.RGB else ColorSpace.GRAYSCALE
-        writeString("PwgRaster", 64)
-        writeString("", 64) // mediaColor
-        writeString("", 64) // mediaType
-        writeString("", 64) // printContentOptimize
-        writeBlank(12) // reserved
-        writeInt(0) // cutMedia
-        writeInt(caps.duplex.toInt()) // duplex
-        writeInt(doc.dpi) // resolutionX
-        writeInt(doc.dpi) // resolutionY
-        writeBlank(16) // reserved
-        writeInt(0) // insertSheet
-        writeInt(0) // jog
-        writeInt(0) // leadingEdge
-        writeBlank(12) // reserved
-        writeInt(0) // mediaPosition
-        writeInt(0) // mediaWeight
-        writeBlank(8) // reserved
-        writeInt(0) // numCopies
-        writeInt(0) // orientation
-        writeBlank(4) // reserved
-        writeInt(page.widthPixels * POINTS_PER_INCH / doc.dpi) // pageSizeX
-        writeInt(page.heightPixels * POINTS_PER_INCH / doc.dpi) // pageSizeY
-        writeBlank(8) // reserved
-        writeInt(if (caps.duplex) caps.tumble.toInt() else 0) // tumble but only if duplex
-        writeInt(page.widthPixels) // width (pixels)
-        writeInt(page.heightPixels) // height (pixels)
-        writeBlank(4) // reserved
-        writeInt(8) // bitsPerColor
-        writeInt(8 * colorSpace.bytesPerPixel) // bitsPerPixel
-        writeInt(page.widthPixels * colorSpace.bytesPerPixel) // bytesPerLine
-        writeInt(0) // colorOrder
-        writeInt(colorSpace.colorSpaceEnum) // colorSpace (RGB or Grayscale)
-        writeBlank(16) // reserved
-        writeInt(colorSpace.bytesPerPixel) // numColors
-        writeBlank(28) // reserved
-        writeInt(0) // totalPageCount
-        writeInt(0) // crossFeedTransform
-        writeInt(0) // feedTransform
-        writeInt(0) // imageBoxLeft
-        writeInt(0) // imageBoxTop
-        writeInt(0) // imageBoxRight
-        writeInt(0) // imageBoxBottom
-        writeInt(0xFFFFFF) // alternatePrimary (white pixel)
-        writeInt(0) // printQuality
-        writeBlank(20)
-        writeInt(0) // vendorIdentifier
-        writeInt(0) // vendorLength
-        writeBlank(1088) // vendor
-        writeBlank(64) // reserved
-        writeString("", 64) // renderingIntent
-        writeString("", 64) // pageSizeName
+    private fun write(doc: RenderableDocument, page: RenderablePage, header: PwgHeader) {
+
+        header.write(this)
+
+        // TODO: The manipulation of ColorSpace feels cheap here. Should PwgHeader.ColorSpace implement jipp.ColorSpace?
 
         var yOffset = 0
-        val packer = PackBits(bytesPerPixel = colorSpace.bytesPerPixel, pixelsPerLine = page.widthPixels)
+        val bytesPerPixel = header.bitsPerPixel / 8
+        val packer = PackBits(bytesPerPixel = bytesPerPixel, pixelsPerLine = header.bytesPerLine / bytesPerPixel)
         var size = 0
         var byteArray: ByteArray? = null
         while (yOffset < page.heightPixels) {
             val height = Math.min(64, page.heightPixels - yOffset)
-            val renderSize = page.renderSize(height, colorSpace)
+            val renderSize = page.renderSize(bytesPerPixel * page.widthPixels * height)
             if (byteArray?.size != renderSize) {
                 byteArray = ByteArray(renderSize)
             }
-            page.render(yOffset, height, colorSpace, byteArray)
+            page.render(yOffset, height, header.colorSpace.toJippColorSpace(), byteArray)
             val encodedBytes = ByteArrayOutputStream()
             packer.encode(ByteArrayInputStream(byteArray), encodedBytes)
             write(encodedBytes.toByteArray())
@@ -118,6 +79,32 @@ class PwgWriter(
 
     companion object {
         const val POINTS_PER_INCH = 72
+        const val BITS_PER_BYTE = 8
+        val rgbHeaderBuilder = { doc: RenderableDocument, page: RenderablePage ->
+            PwgHeader(
+                hwResolutionX = doc.dpi, hwResolutionY = doc.dpi,
+                pageSizeX = page.widthPixels * POINTS_PER_INCH / doc.dpi,
+                pageSizeY = page.heightPixels * POINTS_PER_INCH / doc.dpi,
+                width = page.widthPixels, height = page.heightPixels,
+                bitsPerColor = BITS_PER_BYTE,
+                bitsPerPixel = ColorSpace.RGB.bytesPerPixel * BITS_PER_BYTE,
+                colorSpace = PwgHeader.ColorSpace.Srgb,
+                numColors = ColorSpace.RGB.bytesPerPixel
+            )
+        }
+
+        val grayscaleHeaderBuilder = { doc: RenderableDocument, page: RenderablePage ->
+            PwgHeader(
+                hwResolutionX = doc.dpi, hwResolutionY = doc.dpi,
+                pageSizeX = page.widthPixels * POINTS_PER_INCH / doc.dpi,
+                pageSizeY = page.heightPixels * POINTS_PER_INCH / doc.dpi,
+                width = page.widthPixels, height = page.heightPixels,
+                bitsPerColor = BITS_PER_BYTE,
+                bitsPerPixel = ColorSpace.GRAYSCALE.bytesPerPixel * BITS_PER_BYTE,
+                colorSpace = PwgHeader.ColorSpace.Sgray,
+                numColors = ColorSpace.GRAYSCALE.bytesPerPixel
+            )
+        }
 
         /** Return a ColorSpaceEnum value corresponding to the supplied [ColorSpace]. */
         private val ColorSpace.colorSpaceEnum: Int
@@ -125,5 +112,9 @@ class PwgWriter(
                 ColorSpace.GRAYSCALE -> 18
                 else -> 19
             }
+
+        private fun PwgHeader.ColorSpace.toJippColorSpace(): ColorSpace {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 }

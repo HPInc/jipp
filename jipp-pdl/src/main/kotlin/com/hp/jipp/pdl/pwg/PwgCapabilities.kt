@@ -3,6 +3,9 @@
 
 package com.hp.jipp.pdl.pwg
 
+import com.hp.jipp.pdl.RenderableDocument
+import com.hp.jipp.pdl.RenderablePage
+
 /**
  * Define bits that are to be set in pages sent over PWG-Raster format.
  */
