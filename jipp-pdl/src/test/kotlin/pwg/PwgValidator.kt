@@ -10,7 +10,7 @@ import java.io.DataInputStream
 import java.io.InputStream
 
 object PwgValidator {
-    const val HEADER_SIZE = 1796
+    private const val HEADER_SIZE = 1796
 
     fun validate(inputStream: InputStream) = inputStream.validatePwg()
 
