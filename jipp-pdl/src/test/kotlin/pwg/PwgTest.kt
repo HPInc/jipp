@@ -1,7 +1,6 @@
 package pwg
 
 import com.hp.jipp.pdl.pwg.PackBits
-import com.hp.jipp.pdl.pwg.PwgCapabilities
 import com.hp.jipp.pdl.pwg.PwgHeader
 import com.hp.jipp.pdl.pwg.PwgWriter
 import com.hp.jipp.util.toWrappedHexString
@@ -22,7 +21,7 @@ class PwgTest {
         val doc = RandomDocument(123L, 2, 72.0, 72.0, 300)
 
         // Create and write as PWG
-        PwgWriter(outPwg.outputStream(), PwgCapabilities(color = true)).use {
+        PwgWriter(outPwg.outputStream()).use {
             it.write(doc)
         }
 
@@ -52,7 +51,7 @@ class PwgTest {
     fun cycleHeader() {
         val output = ByteArrayOutputStream()
         val doc = RandomDocument(123L, 2, 72.0, 72.0, 300)
-        PwgWriter(output, PwgCapabilities(color = true)).use {
+        PwgWriter(output).use {
             it.write(doc)
         }
         val originalHeader = output.toByteArray().sliceArray(4 until PwgHeader.HEADER_SIZE + 4)
