@@ -204,7 +204,6 @@ data class PwgHeader(
             writeInt(vendorData.size)
             write(vendorData, 0, vendorData.size)
             // Pad with 0
-            writeReserved(1088 - vendorData.size)
             writeReserved(MAX_VENDOR_DATA_SIZE - vendorData.size)
             writeReserved(64)
             writeCString(renderingIntent)
@@ -318,9 +317,6 @@ data class PwgHeader(
             ((input as? DataInputStream) ?: DataInputStream(input)).run {
                 // Discard the initial PwgRaster string
                 readCString()
-
-                // Capture the vendor length when we get there
-                var readVendorLength: Int
 
                 // Read everything parameter-by-parameter
                 PwgHeader(

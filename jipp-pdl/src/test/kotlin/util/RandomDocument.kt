@@ -21,7 +21,7 @@ class RandomDocument(
 
     override fun iterator(): Iterator<RenderablePage> = pages.iterator()
 
-    class Page(seed: Long, override val widthPixels: Int, override val heightPixels: Int) : RenderablePage() {
+    class Page(seed: Long, widthPixels: Int, heightPixels: Int) : RenderablePage(widthPixels, heightPixels) {
         private val random = Random(seed)
 
         override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
