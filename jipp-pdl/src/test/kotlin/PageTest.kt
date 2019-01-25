@@ -37,7 +37,7 @@ class PageTest {
 
     @Test
     fun generate() {
-        fakePage(1).toDisplay(ColorSpace.RGB).also { output ->
+        fakePage(1).toDisplay(ColorSpace.Rgb).also { output ->
             println("Page 1, no transform:\n$output")
             assertEquals("...1...........", output.split("\n")[3])
         }
@@ -45,7 +45,7 @@ class PageTest {
 
     @Test
     fun rotate() {
-        fakePage(2).rotated().toDisplay(ColorSpace.GRAYSCALE).also { output ->
+        fakePage(2).rotated().toDisplay(ColorSpace.Grayscale).also { output ->
             println("Page 2, rotated 180:\n$output")
             assertEquals(".....2.........", output.split("\n")[9]) // Center line
             assertEquals("............2..", output.split("\n")[16])
@@ -54,7 +54,7 @@ class PageTest {
 
     @Test
     fun flipX() {
-        fakePage(3).flipX().toDisplay(ColorSpace.GRAYSCALE).also { output ->
+        fakePage(3).flipX().toDisplay(ColorSpace.Grayscale).also { output ->
             println("Page 3, flipped on X axis:\n$output")
             assertEquals("...........3...", output.split("\n")[3])
         }
@@ -62,7 +62,7 @@ class PageTest {
 
     @Test
     fun flipY() {
-        fakePage(4).flipY().toDisplay(ColorSpace.RGB).also { output ->
+        fakePage(4).flipY().toDisplay(ColorSpace.Rgb).also { output ->
             println("Page 4, flipped on Y axis:\n$output")
             assertEquals("...........4...", output.split("\n")[7])
         }

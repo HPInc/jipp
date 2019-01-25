@@ -4,12 +4,16 @@
 package com.hp.jipp.pdl.pwg
 
 import com.hp.jipp.model.MediaSource
+import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.OutputSettings
+import com.hp.jipp.pdl.PrinterOutputTray
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
+import com.hp.jipp.pdl.isEven
 import java.lang.IllegalArgumentException
 
 /**
@@ -17,16 +21,26 @@ import java.lang.IllegalArgumentException
  */
 open class PwgSettings(
     /** Color space. */
-    val colorSpace: ColorSpace = ColorSpace.RGB,
-    /** A keyword from [Sides]. */
-    val sides: String = Sides.oneSided,
-    /** The media source to use, from [MediaSource]. */
-    source: String = MediaSource.auto,
-    /** The coordinate system requested for the back side of two-sided sheets, from [PwgRasterDocumentSheetBack]. */
-    val sheetBack: String = PwgRasterDocumentSheetBack.normal,
+    final override val colorSpace: ColorSpace = ColorSpace.Rgb,
+
+    /** Two-sided printing selection, a keyword from [Sides]. */
+    final override val sides: String = Sides.oneSided,
+
+    /** The media source to use, a keyword from [MediaSource]. */
+    final override val source: String = MediaSource.auto,
+
     /** The level of print quality to use, or null for default. */
-    quality: PrintQuality? = null
-) {
+    final override val quality: PrintQuality? = null,
+
+    /** Output Bin setting, either [OutputBin.faceDown] or [OutputBin.faceUp]. */
+    override val outputBin: String = OutputBin.faceUp,
+
+    /** Stacking order, a keyword from [PrinterOutputTray.StackingOrder]. */
+    override val stackingOrder: String = PrinterOutputTray.StackingOrder.firstToLast,
+
+    /** The coordinate system requested for the back side of two-sided sheets, from [PwgRasterDocumentSheetBack]. */
+    val sheetBack: String = PwgRasterDocumentSheetBack.normal
+) : OutputSettings {
     /** The calculated [PwgHeader.MediaPosition] for these settings. */
     val pwgMediaPosition = source.toPwgMediaPosition()
 
@@ -80,7 +94,7 @@ open class PwgSettings(
 
             /** Return the correct transform given a 0-based page number, sides mode, and sheet-back requirements. */
             fun lookup(pageNumber: Int, sides: String, sheetBack: String) =
-                if (pageNumber % 2 == 0) default else transforms.getOrDefault(sides to sheetBack, default)
+                if (pageNumber.isEven) default else transforms.getOrDefault(sides to sheetBack, default)
         }
     }
 
@@ -90,8 +104,8 @@ open class PwgSettings(
 
         private fun ColorSpace.toPwgColorSpace() =
             when (this) {
-                ColorSpace.RGB -> PwgHeader.ColorSpace.Srgb
-                ColorSpace.GRAYSCALE -> PwgHeader.ColorSpace.Sgray
+                ColorSpace.Rgb -> PwgHeader.ColorSpace.Srgb
+                ColorSpace.Grayscale -> PwgHeader.ColorSpace.Sgray
             }
 
         private fun String.toPwgMediaPosition() =
