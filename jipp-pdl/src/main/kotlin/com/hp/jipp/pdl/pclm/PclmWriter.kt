@@ -3,9 +3,14 @@
 
 package com.hp.jipp.pdl.pclm
 
+import com.hp.jipp.model.PclmRasterBackSide
+import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
+import com.hp.jipp.pdl.isEven
+import com.hp.jipp.pdl.mapPages
+import com.hp.jipp.pdl.handleSides
 import java.io.ByteArrayOutputStream
 import java.io.CharArrayWriter
 import java.io.IOException
@@ -30,8 +35,8 @@ import kotlin.math.roundToInt
 class PclmWriter(
     /** Destination for encoded PCLM stream */
     private val outputStream: OutputStream,
-    /** Capabilities of target device */
-    private val caps: PclmCapabilities
+    /** PCLM Settings to use when writing. */
+    private val settings: PclmSettings
 ) : Writer() {
     private val encoder = StreamEncoder.forOutputStreamWriter(outputStream, this, null as String?)
 
@@ -65,12 +70,23 @@ class PclmWriter(
         crossReferences.add(-1) // Placeholder for Catalog
         crossReferences.add(-1) // Placeholder for Page Tree
         startDoc()
-        for (page in document) {
+        document.mapPages { doc ->
+            doc.mapIndexed { pageNumber, page -> page.transform(pageNumber) }
+        }.handleSides(settings).forEach { page ->
             writePage(document, page)
         }
         endDoc()
         flush()
     }
+
+    private fun RenderablePage.transform(number: Int) =
+        when {
+            number.isEven -> this
+            settings.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.rotated -> rotated()
+            settings.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.flipped -> flipY()
+            settings.sides == Sides.twoSidedShortEdge && settings.backSide == PclmRasterBackSide.flipped -> flipX()
+            else -> this
+        }
 
     /** Write the header to start a PCLM */
     private fun startDoc() {
@@ -83,7 +99,7 @@ class PclmWriter(
     /** Write a rendered page */
     private fun writePage(doc: RenderableDocument, page: RenderablePage) {
         // Number of strips (rounding up so we get all strips including the last)
-        val stripCount = Math.ceil(page.heightPixels / caps.stripHeight.toDouble()).roundToInt()
+        val stripCount = Math.ceil(page.heightPixels / settings.stripHeight.toDouble()).roundToInt()
 
         // Find the top of the page (PDF puts y=0 at bottom, opposite of most computer images)
         var yOffset = 0
@@ -91,8 +107,8 @@ class PclmWriter(
         // Build out swath definitions. Note: duplex will run backwards
         val swaths = (0 until stripCount).map { index ->
             val height = if (index == stripCount - 1) {
-                page.heightPixels - (stripCount - 1) * caps.stripHeight
-            } else caps.stripHeight
+                page.heightPixels - (stripCount - 1) * settings.stripHeight
+            } else settings.stripHeight
 
             // Predict the object number assuming page object, page content stream object, and interleaved transforms
             Swath(objectNumber = crossReferences.size + 2 + (index * 2),
@@ -161,11 +177,11 @@ class PclmWriter(
                 }
 
                 write("/Width $widthPixels\n")
-                if (caps.color) {
-                    write("/ColorSpace /DeviceRGB\n")
-                } else {
-                    write("/ColorSpace /DeviceGray\n")
+                when (settings.colorSpace) {
+                    ColorSpace.Rgb -> write("/ColorSpace /DeviceRGB\n")
+                    ColorSpace.Grayscale -> write("/ColorSpace /DeviceGray\n")
                 }
+
                 write("/Height ${swath.height}\n")
                 write("/Filter /FlateDecode\n")
                 write("/Subtype /Image\n")
@@ -199,13 +215,12 @@ class PclmWriter(
         bytes: ByteArray?
     ): ByteArray {
         var renderBytes = bytes
-        val colorSpace = if (caps.color) ColorSpace.RGB else ColorSpace.GRAYSCALE
-        val size = swath.height * widthPixels * colorSpace.bytesPerPixel
+        val size = swath.height * widthPixels * settings.colorSpace.bytesPerPixel
         if (renderBytes?.size != size) {
             renderBytes = ByteArray(size)
         }
 
-        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = colorSpace,
+        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = settings.colorSpace,
             byteArray = renderBytes)
 
         if (forceNonBlank) return renderBytes

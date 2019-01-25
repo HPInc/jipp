@@ -1,6 +1,7 @@
 package pclm
 
-import com.hp.jipp.pdl.pclm.PclmCapabilities
+import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.pclm.PclmSettings
 import com.hp.jipp.pdl.pclm.PclmWriter
 import org.junit.Test
 import util.ByteWindow
@@ -11,15 +12,15 @@ class PclmTest {
 
     @Test
     fun validateGeneratedPclm() {
-        cyclePclm(PclmCapabilities(32, true))
+        cyclePclm(PclmSettings(stripHeight = 32))
     }
 
     @Test
     fun validateGeneratedPclmBw() {
-        cyclePclm(PclmCapabilities(32, false))
+        cyclePclm(PclmSettings(stripHeight = 32, colorSpace = ColorSpace.Grayscale))
     }
 
-    private fun cyclePclm(caps: PclmCapabilities) {
+    private fun cyclePclm(caps: PclmSettings) {
         // Use a tall enough page so that we're assured there will be at least one blank area
         val randomDocument = RandomDocument(12345L, 2, 72.0, 150.0, 300)
         val bytesOut = ByteArrayOutputStream()

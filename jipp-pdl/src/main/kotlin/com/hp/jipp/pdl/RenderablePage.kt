@@ -8,7 +8,8 @@ abstract class RenderablePage(
     /** Width of the entire page, in pixels. */
     val widthPixels: Int,
     /** Height of the entire page, in pixels. */
-    val heightPixels: Int) {
+    val heightPixels: Int
+) {
 
     /**
      * Render a full-width swath of the page into an array of bytes at the given DPI.
@@ -63,7 +64,17 @@ abstract class RenderablePage(
         }
     }
 
+    /** Return a blank version of this page (same width/height but all pixels white). */
+    fun blank() =
+        object : RenderablePage(heightPixels, widthPixels) {
+            override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
+                byteArray.fill(WHITE_BYTE)
+            }
+        }
+
     companion object {
+        const val WHITE_BYTE = 0xFF.toByte()
+
         /** Rotate the pixels in this byte array 180 degrees. */
         private fun ByteArray.rotate180(width: Int, bytesPerPixel: Int) {
             val height = size / (width * bytesPerPixel)
