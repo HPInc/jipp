@@ -1,3 +1,6 @@
+// Copyright 2018 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.model;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
