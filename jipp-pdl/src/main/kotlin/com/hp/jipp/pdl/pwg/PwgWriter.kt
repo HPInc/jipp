@@ -5,22 +5,25 @@ package com.hp.jipp.pdl.pwg
 
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
-import com.hp.jipp.pdl.handleSides
-import com.hp.jipp.pdl.mapPages
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
 
+/**
+ * An [OutputStream] that can write a [RenderableDocument] in PWG-Raster format.
+ */
 class PwgWriter
 @JvmOverloads constructor(
     outputStream: OutputStream,
-    private val settings: PwgSettings = PwgSettings()
+    private val settings: PwgSettings = PwgSettings(),
+    /** Supply a converter here if you would like to return a customized header. */
+    val headerCustomizer: (RenderablePage, PwgHeader) -> PwgHeader = { _, header -> header }
 ) : DataOutputStream(outputStream) {
 
     /** Write a document to this [outputStream]. */
     fun write(doc: RenderableDocument) {
-        write("RaS2".toByteArray())
+        write(MAGIC_NUMBER)
         doc.mapPages {
             it.mapIndexed { num, page ->
                 val header = settings.buildHeader(doc, page, num)
@@ -34,7 +37,7 @@ class PwgWriter
         }.handleSides(settings)
 
         doc.forEachIndexed { num, page ->
-            val header = settings.buildHeader(doc, page, num)
+            val header = headerCustomizer(page, settings.buildHeader(doc, page, num))
             header.write(this)
             writePageContent(page, header)
         }
@@ -43,8 +46,6 @@ class PwgWriter
     private fun writePageContent(page: RenderablePage, header: PwgHeader) {
         // Pack and write the content bytes
         var yOffset = 0
-        val bytesPerPixel = header.bitsPerPixel / PwgSettings.BITS_PER_BYTE
-        val packer = PackBits(bytesPerPixel = bytesPerPixel, pixelsPerLine = header.bytesPerLine / bytesPerPixel)
         var size = 0
         var byteArray: ByteArray? = null
         while (yOffset < page.heightPixels) {
@@ -55,7 +56,7 @@ class PwgWriter
             }
             page.render(yOffset, height, settings.colorSpace, byteArray)
             val encodedBytes = ByteArrayOutputStream()
-            packer.encode(ByteArrayInputStream(byteArray), encodedBytes)
+            header.packBits.encode(ByteArrayInputStream(byteArray), encodedBytes)
             write(encodedBytes.toByteArray())
             size += encodedBytes.size()
             yOffset += height
@@ -63,6 +64,8 @@ class PwgWriter
     }
 
     companion object {
+        val MAGIC_NUMBER = "RaS2".toByteArray()
+
         // Pack and encode only this many lines at a time to conserve RAM
         const val MAX_SWATH_HEIGHT = 64
     }

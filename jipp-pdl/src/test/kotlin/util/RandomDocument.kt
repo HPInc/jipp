@@ -12,7 +12,7 @@ class RandomDocument(
     private val widthPoints: Double,
     private val heightPoints: Double,
     override val dpi: Int
-) : RenderableDocument {
+) : RenderableDocument() {
 
     private val widthPixels = (widthPoints * dpi / 72).toInt()
     private val heightPixels = (widthPoints * dpi / 72).toInt()

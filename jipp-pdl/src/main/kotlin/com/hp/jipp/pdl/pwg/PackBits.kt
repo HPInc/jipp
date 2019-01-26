@@ -166,19 +166,21 @@ class PackBits(
         }
     }
 
-    /** Reads PackBits-encoded [inputBytes] until there are no more, writes raw pixels to [outputPixels] as decoded */
+    /**
+     * Read PackBits-encoded [inputBytes] into pixels in the OutputStream until [lines] have been reached.
+     */
     fun decode(inputBytes: InputStream, outputPixels: OutputStream, lines: Int) {
         var linesWritten = 0
         while (linesWritten < lines) {
             val lineRepeat = inputBytes.read()
-            if (lineRepeat == -1) return
+            if (lineRepeat == -1) throw IOException("Too few lines (read $linesWritten, expected $lines)")
             val line: ByteArray = decodeLine(inputBytes, pixelsPerLine)
             for (i in 0 until (lineRepeat + 1)) {
                 linesWritten++
                 outputPixels.write(line)
             }
         }
-        if (linesWritten > lines) throw IOException("Too many lines ($linesWritten vs $lines)")
+        if (linesWritten > lines) throw IOException("Too many lines (read $linesWritten, expected $lines)")
     }
 
     private fun decodeLine(bytes: InputStream, pixelsPerLine: Int): ByteArray {

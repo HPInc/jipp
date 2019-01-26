@@ -19,18 +19,18 @@ import java.lang.IllegalArgumentException
 /**
  * Provide settings for PWG-Raster output.
  */
-open class PwgSettings(
+data class PwgSettings(
     /** Color space. */
-    final override val colorSpace: ColorSpace = ColorSpace.Rgb,
+    override val colorSpace: ColorSpace = ColorSpace.Rgb,
 
     /** Two-sided printing selection, a keyword from [Sides]. */
-    final override val sides: String = Sides.oneSided,
+    override val sides: String = Sides.oneSided,
 
     /** The media source to use, a keyword from [MediaSource]. */
-    final override val source: String = MediaSource.auto,
+    override val source: String = MediaSource.auto,
 
     /** The level of print quality to use, or null for default. */
-    final override val quality: PrintQuality? = null,
+    override val quality: PrintQuality? = null,
 
     /** Output Bin setting, either [OutputBin.faceDown] or [OutputBin.faceUp]. */
     override val outputBin: String = OutputBin.faceUp,
@@ -45,15 +45,15 @@ open class PwgSettings(
     val pwgMediaPosition = source.toPwgMediaPosition()
 
     /** The calculated [PwgHeader.ColorSpace] for these settings. */
-    val pwgColorSpace = colorSpace.toPwgColorSpace()
+    val pwgColorSpace = PwgHeader.ColorSpace.from(colorSpace)
 
     /** The calculated [PwgHeader.PrintQuality] for these settings. */
     val pwgPrintQuality = quality?.toPwgPrintQuality() ?: PwgHeader.PrintQuality.Default
 
     /**
-     * Build a [PwgHeader] from current settings. May be overridden if other settings are required.
+     * Build a [PwgHeader] from current settings.
      */
-    open fun buildHeader(
+    fun buildHeader(
         doc: RenderableDocument,
         page: RenderablePage,
         /** 0-based page number. */
@@ -70,7 +70,6 @@ open class PwgSettings(
             bitsPerColor = BITS_PER_BYTE,
             bitsPerPixel = colorSpace.bytesPerPixel * BITS_PER_BYTE,
             colorSpace = pwgColorSpace,
-            numColors = colorSpace.bytesPerPixel,
             duplex = sides != Sides.oneSided,
             tumble = sides == Sides.twoSidedShortEdge,
             mediaPosition = pwgMediaPosition,
@@ -101,12 +100,6 @@ open class PwgSettings(
     companion object {
         private const val POINTS_PER_INCH = 72
         const val BITS_PER_BYTE = 8
-
-        private fun ColorSpace.toPwgColorSpace() =
-            when (this) {
-                ColorSpace.Rgb -> PwgHeader.ColorSpace.Srgb
-                ColorSpace.Grayscale -> PwgHeader.ColorSpace.Sgray
-            }
 
         private fun String.toPwgMediaPosition() =
             when (this) {

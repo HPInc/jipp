@@ -115,9 +115,6 @@ private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
     }
 }
 
-private fun Iterable<ByteWindow>.stripEmpties(): Iterable<ByteWindow> =
-    filterNot { it.length == 0 }
-
 /** Return an iterator that skips any util.ByteWindow containing a comment */
 private fun Iterator<ByteWindow>.stripEmpties(): Iterator<ByteWindow> {
     val parent = this
