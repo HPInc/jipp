@@ -1,3 +1,6 @@
+// Copyright 2018 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 import org.junit.Assert
 
 object KotlinTest {
