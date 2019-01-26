@@ -12,7 +12,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class PwgTest {
+class PwgWriterTest {
     @Test
     fun validateGeneratedPwg() {
         val name = "validateGeneratedPwg"
@@ -38,9 +38,7 @@ class PwgTest {
             hwResolutionX = 300,
             hwResolutionY = 300,
             height = 1000,
-            width = 2000,
-            numColors = 3
-            )
+            width = 2000)
         val output = ByteArrayOutputStream()
         header.write(output)
         val read = PwgHeader.read(ByteArrayInputStream(output.toByteArray()))

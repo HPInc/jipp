@@ -9,8 +9,6 @@ import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.isEven
-import com.hp.jipp.pdl.mapPages
-import com.hp.jipp.pdl.handleSides
 import java.io.ByteArrayOutputStream
 import java.io.CharArrayWriter
 import java.io.IOException

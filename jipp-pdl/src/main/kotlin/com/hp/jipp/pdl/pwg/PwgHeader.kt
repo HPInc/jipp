@@ -5,6 +5,7 @@ package com.hp.jipp.pdl.pwg
 
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -42,7 +43,6 @@ data class PwgHeader(
     val bitsPerPixel: Int,
     val colorOrder: ColorOrder = ColorOrder.Chunky,
     val colorSpace: ColorSpace,
-    val numColors: Int,
     val totalPageCount: Int = 0,
     val crossFeedTransform: Int = 1,
     val feedTransform: Int = 1,
@@ -66,6 +66,12 @@ data class PwgHeader(
 ) {
     /** Number of bytes per line, always based on [width] and [bitsPerPixel]. */
     val bytesPerLine: Int = ((bitsPerPixel * width + 7) / 8)
+
+    /** Number of colors supported. */
+    val numColors: Int = bitsPerPixel / bitsPerColor
+
+    /** PackBits object used for encoding/decoding pixels of data. */
+    val packBits = PackBits(bytesPerPixel = bitsPerPixel / PwgSettings.BITS_PER_BYTE, pixelsPerLine = width)
 
     init {
         if (vendorData.size > MAX_VENDOR_DATA_SIZE) {
@@ -124,8 +130,23 @@ data class PwgHeader(
         Device4(51), Device5(52), Device6(53), Device7(54), Device8(55), Device9(56), Device10(57), Device11(58),
         Device12(59), Device13(60), Device14(61), Device15(62);
 
+        /** Return the [com.hp.jipp.pdl.ColorSpace] corresponding to this one or throw if no match. */
+        fun toPdlColorSpace() =
+            when (this) {
+                PwgHeader.ColorSpace.Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
+                PwgHeader.ColorSpace.Sgray -> com.hp.jipp.pdl.ColorSpace.Grayscale
+                else -> TODO("No conversion available")
+            }
+
         companion object : ValueConverter<ColorSpace> {
             override fun from(value: Int) = ColorSpace.values().firstOrNull { it.value == value } ?: ColorSpace.Srgb
+
+            /** Given a [com.hp.jipp.pdl.ColorSpace] return the corresponding [PwgHeader.ColorSpace]. */
+            fun from(from: com.hp.jipp.pdl.ColorSpace) =
+                when (from) {
+                    com.hp.jipp.pdl.ColorSpace.Rgb -> PwgHeader.ColorSpace.Srgb
+                    com.hp.jipp.pdl.ColorSpace.Grayscale -> PwgHeader.ColorSpace.Sgray
+                }
         }
     }
 
@@ -240,7 +261,6 @@ data class PwgHeader(
         if (bitsPerPixel != other.bitsPerPixel) return false
         if (colorOrder != other.colorOrder) return false
         if (colorSpace != other.colorSpace) return false
-        if (numColors != other.numColors) return false
         if (totalPageCount != other.totalPageCount) return false
         if (crossFeedTransform != other.crossFeedTransform) return false
         if (feedTransform != other.feedTransform) return false
@@ -282,7 +302,6 @@ data class PwgHeader(
         result = 31 * result + bitsPerPixel
         result = 31 * result + colorOrder.hashCode()
         result = 31 * result + colorSpace.hashCode()
-        result = 31 * result + numColors
         result = 31 * result + totalPageCount
         result = 31 * result + crossFeedTransform
         result = 31 * result + feedTransform
@@ -308,7 +327,7 @@ data class PwgHeader(
         private const val CSTRING_LENGTH = 64
 
         /**
-         * Read the input stream to construct a PwgHeader.
+         * Read the input stream to construct a PwgHeader, throwing [IOException] if input data is invalid.
          *
          * The input stream MUST contain 1796 octets. It MAY contain invalid enums (which will be silently converted
          * to default values).
@@ -316,7 +335,9 @@ data class PwgHeader(
         fun read(input: InputStream): PwgHeader =
             ((input as? DataInputStream) ?: DataInputStream(input)).run {
                 // Discard the initial PwgRaster string
-                readCString()
+                readCString().also {
+                    if (it != PWG_RASTER_NAME) throw IOException("Header $it is not $PWG_RASTER_NAME")
+                }
 
                 // Read everything parameter-by-parameter
                 PwgHeader(
@@ -340,10 +361,15 @@ data class PwgHeader(
                     width = readInt(),
                     height = readInt().also { skip(4) },
                     bitsPerColor = readInt(),
-                    bitsPerPixel = readInt().also { skip(4) }, // Since bytesPerLine is calculated
+                    bitsPerPixel = readInt().also {
+                        skip(4) // bytesPerLine (ignore)
+                    },
                     colorOrder = readValue(ColorOrder),
-                    colorSpace = readValue(ColorSpace).also { skip(16) },
-                    numColors = readInt().also { skip(28) },
+                    colorSpace = readValue(ColorSpace).also {
+                        skip(16)
+                        skip(4) // numColors (ignore)
+                        skip(28) // Space after numColors
+                    },
                     totalPageCount = readInt(),
                     crossFeedTransform = readInt(),
                     feedTransform = readInt(),
