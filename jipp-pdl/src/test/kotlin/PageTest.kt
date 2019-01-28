@@ -47,7 +47,7 @@ class PageTest {
 
     @Test
     fun flipYEven() {
-        val page = fakePage(BLUE, ColorSpace.Rgb, height=18)
+        val page = fakePage(BLUE, ColorSpace.Rgb, height = 18)
             .flipY()
         toString(page, ColorSpace.Rgb).also { output ->
             println("Page 4, flipped on Y axis:\n$output")

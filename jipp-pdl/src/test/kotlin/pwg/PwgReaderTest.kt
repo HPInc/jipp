@@ -121,5 +121,4 @@ class PwgReaderTest {
         PwgSettings().copy(quality = PrintQuality.normal)
         PwgSettings().copy(quality = PrintQuality.high)
     }
-
 }
