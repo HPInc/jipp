@@ -45,6 +45,26 @@ class PageTest {
         }
     }
 
+    @Test
+    fun flipYEven() {
+        val page = fakePage(BLUE, ColorSpace.Rgb, height=18)
+            .flipY()
+        toString(page, ColorSpace.Rgb).also { output ->
+            println("Page 4, flipped on Y axis:\n$output")
+            assertEquals("..........B....", output.split("\n")[7])
+        }
+    }
+
+    @Test
+    fun blank() {
+        val page = fakePage(BLUE, ColorSpace.Rgb)
+            .blank()
+        toString(page, ColorSpace.Rgb).also { output ->
+            println("Blank page::\n$output")
+            assertEquals("...............", output.split("\n")[7])
+        }
+    }
+
     companion object {
         const val WHITE_BYTE = 0xFF.toByte()
         const val BLACK_BYTE = 0x00.toByte()
@@ -94,8 +114,8 @@ class PageTest {
          * Return a page that looks like  "\", with num in each color for each pixel drawn in a 45 degree line, and
          * all other pixels perfectly white (0xFF).
          */
-        fun fakePage(pixel: ByteArray, pixelColorSpace: ColorSpace): RenderablePage {
-            return object : RenderablePage(15, 19) {
+        fun fakePage(pixel: ByteArray, pixelColorSpace: ColorSpace, width: Int = 15, height: Int = 19): RenderablePage {
+            return object : RenderablePage(width, height) {
                 override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
                     val outputPixel = ByteArray(colorSpace.bytesPerPixel)
                     pixelColorSpace.converter(colorSpace).invoke(pixel, outputPixel)

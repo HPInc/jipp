@@ -66,7 +66,7 @@ abstract class RenderablePage(
 
     /** Return a blank version of this page (same width/height but all pixels white). */
     fun blank() =
-        object : RenderablePage(heightPixels, widthPixels) {
+        object : RenderablePage(widthPixels, heightPixels) {
             override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
                 byteArray.fill(WHITE_BYTE)
             }
