@@ -78,6 +78,7 @@ Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 ## Migration to v0.6.12
 
 * PCLM and PWG Raster got upgrades, in that they properly handle multi-page and duplex cases. You're only responsible for providing a normal, front-to-back RenderableDocument, and to pass along valid settings based on known printer attributes and user output requirements. The PDL library internally handles page re-ordering, page rotation, flipping, etc to provide the best possible output. As a result the `PwgCapabilities` and `PclmCapabilties` classes have been removed in favor of `PwgSettings` and `PclmSettings`.
+* `Attribute.unknown` etc was moved to `Attributes.unknown` for backwards-compatibility with Java.
 
 ## Migration to v0.6.6
 
