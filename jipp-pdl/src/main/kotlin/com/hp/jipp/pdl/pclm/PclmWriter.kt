@@ -70,7 +70,7 @@ class PclmWriter(
         startDoc()
         document.mapPages { doc ->
             doc.mapIndexed { pageNumber, page -> page.transform(pageNumber) }
-        }.handleSides(settings).forEach { page ->
+        }.handleSides(settings.output).forEach { page ->
             writePage(document, page)
         }
         endDoc()
@@ -80,9 +80,12 @@ class PclmWriter(
     private fun RenderablePage.transform(number: Int) =
         when {
             number.isEven -> this
-            settings.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.rotated -> rotated()
-            settings.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.flipped -> flipY()
-            settings.sides == Sides.twoSidedShortEdge && settings.backSide == PclmRasterBackSide.flipped -> flipX()
+            settings.output.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.rotated ->
+                rotated()
+            settings.output.sides == Sides.twoSidedLongEdge && settings.backSide == PclmRasterBackSide.flipped ->
+                flipY()
+            settings.output.sides == Sides.twoSidedShortEdge && settings.backSide == PclmRasterBackSide.flipped ->
+                flipX()
             else -> this
         }
 
@@ -175,7 +178,7 @@ class PclmWriter(
                 }
 
                 write("/Width $widthPixels\n")
-                when (settings.colorSpace) {
+                when (settings.output.colorSpace) {
                     ColorSpace.Rgb -> write("/ColorSpace /DeviceRGB\n")
                     ColorSpace.Grayscale -> write("/ColorSpace /DeviceGray\n")
                 }
@@ -213,12 +216,12 @@ class PclmWriter(
         bytes: ByteArray?
     ): ByteArray {
         var renderBytes = bytes
-        val size = swath.height * widthPixels * settings.colorSpace.bytesPerPixel
+        val size = swath.height * widthPixels * settings.output.colorSpace.bytesPerPixel
         if (renderBytes?.size != size) {
             renderBytes = ByteArray(size)
         }
 
-        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = settings.colorSpace,
+        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = settings.output.colorSpace,
             byteArray = renderBytes)
 
         if (forceNonBlank) return renderBytes

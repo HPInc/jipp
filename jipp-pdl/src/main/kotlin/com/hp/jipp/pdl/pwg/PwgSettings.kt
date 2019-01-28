@@ -4,51 +4,32 @@
 package com.hp.jipp.pdl.pwg
 
 import com.hp.jipp.model.MediaSource
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
-import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
-import com.hp.jipp.pdl.PrinterOutputTray
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.isEven
-import java.lang.IllegalArgumentException
 
 /**
  * Provide settings for PWG-Raster output.
  */
 data class PwgSettings(
-    /** Color space. */
-    override val colorSpace: ColorSpace = ColorSpace.Rgb,
-
-    /** Two-sided printing selection, a keyword from [Sides]. */
-    override val sides: String = Sides.oneSided,
-
-    /** The media source to use, a keyword from [MediaSource]. */
-    override val source: String = MediaSource.auto,
-
-    /** The level of print quality to use, or null for default. */
-    override val quality: PrintQuality? = null,
-
-    /** Output Bin setting, either [OutputBin.faceDown] or [OutputBin.faceUp]. */
-    override val outputBin: String = OutputBin.faceUp,
-
-    /** Stacking order, a keyword from [PrinterOutputTray.StackingOrder]. */
-    override val stackingOrder: String = PrinterOutputTray.StackingOrder.firstToLast,
+    /** Ordinary output settings. */
+    val output: OutputSettings = OutputSettings(),
 
     /** The coordinate system requested for the back side of two-sided sheets, from [PwgRasterDocumentSheetBack]. */
     val sheetBack: String = PwgRasterDocumentSheetBack.normal
-) : OutputSettings {
+) {
     /** The calculated [PwgHeader.MediaPosition] for these settings. */
-    val pwgMediaPosition = source.toPwgMediaPosition()
+    val pwgMediaPosition = output.source.toPwgMediaPosition()
 
     /** The calculated [PwgHeader.ColorSpace] for these settings. */
-    val pwgColorSpace = PwgHeader.ColorSpace.from(colorSpace)
+    val pwgColorSpace = PwgHeader.ColorSpace.from(output.colorSpace)
 
     /** The calculated [PwgHeader.PrintQuality] for these settings. */
-    val pwgPrintQuality = quality?.toPwgPrintQuality() ?: PwgHeader.PrintQuality.Default
+    val pwgPrintQuality = output.quality?.toPwgPrintQuality() ?: PwgHeader.PrintQuality.Default
 
     /**
      * Build a [PwgHeader] from current settings.
@@ -57,9 +38,10 @@ data class PwgSettings(
         doc: RenderableDocument,
         page: RenderablePage,
         /** 0-based page number. */
+
         pageNumber: Int
     ): PwgHeader {
-        val transform = PwgFeedTransform.lookup(pageNumber, sides, sheetBack)
+        val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack)
         return PwgHeader(
             hwResolutionX = doc.dpi,
             hwResolutionY = doc.dpi,
@@ -68,10 +50,10 @@ data class PwgSettings(
             width = page.widthPixels,
             height = page.heightPixels,
             bitsPerColor = BITS_PER_BYTE,
-            bitsPerPixel = colorSpace.bytesPerPixel * BITS_PER_BYTE,
+            bitsPerPixel = output.colorSpace.bytesPerPixel * BITS_PER_BYTE,
             colorSpace = pwgColorSpace,
-            duplex = sides != Sides.oneSided,
-            tumble = sides == Sides.twoSidedShortEdge,
+            duplex = output.sides != Sides.oneSided,
+            tumble = output.sides == Sides.twoSidedShortEdge,
             mediaPosition = pwgMediaPosition,
             printQuality = pwgPrintQuality,
             feedTransform = transform.feedTransform,

@@ -5,6 +5,7 @@ package pwg
 
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.OutputSettings
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.pwg.PackBits
 import com.hp.jipp.pdl.pwg.PwgHeader
@@ -114,11 +115,11 @@ class PwgReaderTest {
                 .split("(?=[A-Z0-9]+)".toRegex()).joinToString("-") // add dashes back
                 .replace("[0-9][0-9-]+".toRegex()) { it.value.replace("-", "") } // fix tray-1-0
                 .toLowerCase()
-            PwgSettings().copy(source = ippName)
+            PwgSettings(output = OutputSettings(source = ippName))
         }
 
-        PwgSettings().copy(quality = PrintQuality.draft)
-        PwgSettings().copy(quality = PrintQuality.normal)
-        PwgSettings().copy(quality = PrintQuality.high)
+        PwgSettings(output = OutputSettings(quality = PrintQuality.draft))
+        PwgSettings(output = OutputSettings(quality = PrintQuality.normal))
+        PwgSettings(output = OutputSettings(quality = PrintQuality.high))
     }
 }

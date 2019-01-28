@@ -4,6 +4,7 @@
 package pclm
 
 import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.OutputSettings
 import com.hp.jipp.pdl.pclm.PclmSettings
 import com.hp.jipp.pdl.pclm.PclmWriter
 import org.junit.Test
@@ -20,7 +21,7 @@ class PclmTest {
 
     @Test
     fun validateGeneratedPclmBw() {
-        cyclePclm(PclmSettings(stripHeight = 32, colorSpace = ColorSpace.Grayscale))
+        cyclePclm(PclmSettings(stripHeight = 32, output = OutputSettings(colorSpace = ColorSpace.Grayscale)))
     }
 
     private fun cyclePclm(caps: PclmSettings) {
