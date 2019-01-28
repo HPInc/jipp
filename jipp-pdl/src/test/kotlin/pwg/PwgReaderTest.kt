@@ -11,6 +11,7 @@ import com.hp.jipp.pdl.pwg.PackBits
 import com.hp.jipp.pdl.pwg.PwgHeader
 import com.hp.jipp.pdl.pwg.PwgReader
 import com.hp.jipp.pdl.pwg.PwgSettings
+import com.hp.jipp.pdl.pwg.PwgSettings.Companion.BITS_PER_BYTE
 import com.hp.jipp.pdl.pwg.PwgWriter
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -21,7 +22,6 @@ import java.io.IOException
 
 class PwgReaderTest {
     @Test fun simple() {
-        // Let's create a one-page, small, grayscale PWG raster document.
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
             val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
@@ -41,7 +41,6 @@ class PwgReaderTest {
     }
 
     @Test fun multiPage() {
-        // Let's create a one-page, small, grayscale PWG raster document.
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
             val pages = listOf(
@@ -62,6 +61,25 @@ class PwgReaderTest {
         }
         val page2 = read.toList()[1] as PwgReader.PwgPage
         PageTest.toString(page2, ColorSpace.Rgb).also {
+            println(it)
+            assertEquals("...K...........", it.split("\n")[3])
+        }
+    }
+
+    @Test fun colorToGray() {
+        val doc = object : RenderableDocument() {
+            override val dpi: Int = 1
+            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            override fun iterator() = pages.iterator()
+        }
+
+        val output = ByteArrayOutputStream()
+        PwgWriter(output).write(doc)
+
+        val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
+        assertEquals(doc.dpi, read.dpi)
+        val page = read.first() as PwgReader.PwgPage
+        PageTest.toString(page, ColorSpace.Grayscale).also {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }
@@ -121,5 +139,10 @@ class PwgReaderTest {
         PwgSettings(output = OutputSettings(quality = PrintQuality.draft))
         PwgSettings(output = OutputSettings(quality = PrintQuality.normal))
         PwgSettings(output = OutputSettings(quality = PrintQuality.high))
+
+        val pwgHeader = PwgHeader(bitsPerColor = BITS_PER_BYTE,
+            bitsPerPixel = BITS_PER_BYTE * ColorSpace.Rgb.bytesPerPixel, colorSpace = PwgHeader.ColorSpace.Srgb,
+            width = 100, height = 100, hwResolutionY = 100, hwResolutionX = 100)
+        KotlinTest.cover(pwgHeader, pwgHeader.copy(), pwgHeader.copy(alternatePrimary = 0))
     }
 }

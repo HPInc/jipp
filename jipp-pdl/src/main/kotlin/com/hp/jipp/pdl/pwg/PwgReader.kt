@@ -49,9 +49,7 @@ class PwgReader(inputStream: InputStream) : DataInputStream(inputStream) {
             val headerBytes = ByteArray(PwgHeader.HEADER_SIZE)
             while (input.read(headerBytes) != -1) {
                 val header = readValidHeader(headerBytes)
-                println("Read header $header")
                 pages += readPwgPage(header, input)
-                println("Added page ${pages.last().widthPixels}x${pages.last().heightPixels} pixels")
             }
         }
 
@@ -84,7 +82,6 @@ class PwgReader(inputStream: InputStream) : DataInputStream(inputStream) {
 
         override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
             val input = ByteArrayInputStream(pageBytes)
-            println("Decode up to $yOffset")
             header.packBits.decode(input, NullOutputStream, yOffset)
             if (PwgHeader.ColorSpace.from(colorSpace) == header.colorSpace) {
                 // Decode directly to the target byte array
