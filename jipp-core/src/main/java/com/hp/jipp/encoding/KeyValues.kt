@@ -4,14 +4,14 @@
 package com.hp.jipp.encoding
 
 /** A map of keys to values where keys and values are both strings. */
-@Suppress("ConstructorParameterNaming") // _encoding is weird but it's supposed to be
+@Suppress("ConstructorParameterNaming") // _encoded is weird but it's supposed to be
 class KeyValues(
     /** Pairs of key/values. */
     val pairs: Map<String, String> = linkedMapOf(),
     /**
      * The original string representation, if known. If present this exact string will be written instead of
-     * the contents [pairs]. This may differ from the calculated representation from [pairs] due to
-     * implementations that differ in appending the final ";".
+     * the content in [pairs]. This may differ from the calculated representation from [pairs] due to
+     * implementations which append a final ";".
      *
      * Note: this field is ignored by equals/hashcode methods.
      */
