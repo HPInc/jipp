@@ -34,7 +34,7 @@ class PwgWriter
                     else -> page
                 }
             }
-        }.handleSides(settings)
+        }.handleSides(settings.output)
 
         doc.forEachIndexed { num, page ->
             val header = headerCustomizer(page, settings.buildHeader(doc, page, num))
@@ -50,11 +50,11 @@ class PwgWriter
         var byteArray: ByteArray? = null
         while (yOffset < page.heightPixels) {
             val height = Math.min(MAX_SWATH_HEIGHT, page.heightPixels - yOffset)
-            val renderSize = page.renderSize(height, settings.colorSpace)
+            val renderSize = page.renderSize(height, settings.output.colorSpace)
             if (byteArray?.size != renderSize) {
                 byteArray = ByteArray(renderSize)
             }
-            page.render(yOffset, height, settings.colorSpace, byteArray)
+            page.render(yOffset, height, settings.output.colorSpace, byteArray)
             val encodedBytes = ByteArrayOutputStream()
             header.packBits.encode(ByteArrayInputStream(byteArray), encodedBytes)
             write(encodedBytes.toByteArray())
