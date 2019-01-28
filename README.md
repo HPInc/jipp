@@ -2,7 +2,7 @@
 [![CodeCov](https://codecov.io/github/HPInc/jipp/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp/javadoc/index.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.11-blue.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.20-blue.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
@@ -75,12 +75,17 @@ jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 
 Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
-## Migration from v0.6.5
+## Migration to v0.6.12
+
+* PCLM and PWG Raster got upgrades, in that they properly handle multi-page and duplex cases. You're only responsible for providing a normal, front-to-back RenderableDocument, and to pass along valid settings based on known printer attributes and user output requirements. The PDL library internally handles page re-ordering, page rotation, flipping, etc to provide the best possible output. As a result the `PwgCapabilities` and `PclmCapabilties` classes have been removed in favor of `PwgSettings` and `PclmSettings`.
+
+## Migration to v0.6.6
+
 * The `KeywordOrName` type was introduced to allow for fields that can legitimately contain either IANA-registered
   keywords OR unregistered, locally-defined names. For example, `MediaCol.mediaType` must contain a KeywordOrName,
   not simply a String (Keyword).
 
-## Migration from v0.5.x
+## Migration to v0.6
 
 0.6 includes some API changes. Some changes may require changes in your code.
 
@@ -102,6 +107,7 @@ Until 1.0, APIs may still be changed in non-backwards-compatible ways.
   * `Name.asString()` and `Text.asString()` are `Stringable` and extract the value in string form. `.getValue()` also does this.
   * `Attribute.strings()`, `AttributeGroup.getStrings()`, and `IppPacket.getStrings()` do the same for all types.
 * `Status.ok` is now `Status.successfulOk`, etc.
+
 ## Dependencies
 
 `jipp-core`'s only dependencies are JDK 6+ and the current Kotlin runtime.
