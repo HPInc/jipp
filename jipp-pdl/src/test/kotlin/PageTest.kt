@@ -86,7 +86,7 @@ class PageTest {
 
         fun toString(
             page: RenderablePage,
-            colorSpace: ColorSpace
+            colorSpace: ColorSpace = ColorSpace.Rgb
         ): String {
             val swathHeight: Int = min(MAX_STRING_DIMENSION, page.heightPixels)
             val bytes = ByteArray(page.renderSize(swathHeight, colorSpace))

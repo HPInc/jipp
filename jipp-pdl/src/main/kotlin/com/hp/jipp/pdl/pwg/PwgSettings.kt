@@ -38,7 +38,6 @@ data class PwgSettings(
         doc: RenderableDocument,
         page: RenderablePage,
         /** 0-based page number. */
-
         pageNumber: Int
     ): PwgHeader {
         val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack)

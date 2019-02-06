@@ -3,8 +3,16 @@
 
 package pwg
 
+import com.hp.jipp.model.OutputBin
+import com.hp.jipp.model.PwgRasterDocumentSheetBack
+import com.hp.jipp.model.Sides
+import com.hp.jipp.pdl.ColorSpace
+import com.hp.jipp.pdl.OutputSettings
+import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.pwg.PackBits
 import com.hp.jipp.pdl.pwg.PwgHeader
+import com.hp.jipp.pdl.pwg.PwgReader
+import com.hp.jipp.pdl.pwg.PwgSettings
 import com.hp.jipp.pdl.pwg.PwgWriter
 import com.hp.jipp.util.toWrappedHexString
 import org.junit.Assert.assertEquals
@@ -60,6 +68,29 @@ class PwgWriterTest {
         val headerOutput = ByteArrayOutputStream().also { header.write(it) }
         assertEquals(PwgHeader.HEADER_SIZE, headerOutput.size())
         assertEquals(originalHeader.toWrappedHexString(), headerOutput.toByteArray().toWrappedHexString())
+    }
+
+    @Test
+    fun writeDuplexRotated() {
+        val doc = object : RenderableDocument() {
+            override val dpi: Int = 1
+            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
+                PageTest.fakePage(PageTest.RED, ColorSpace.Rgb))
+            override fun iterator() = pages.iterator()
+        }
+
+        val output = ByteArrayOutputStream()
+        PwgWriter(output, settings = PwgSettings(
+            output = OutputSettings(sides = Sides.twoSidedLongEdge, outputBin = OutputBin.faceDown),
+            sheetBack = PwgRasterDocumentSheetBack.rotated))
+            .write(doc)
+
+        val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
+        val page = readDoc.toList()[1] as PwgReader.PwgPage
+        PageTest.toString(page).also {
+            println(it)
+            assertEquals("...........R...", it.split("\n")[15])
+        }
     }
 
     @Test

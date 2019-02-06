@@ -43,9 +43,10 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
             settings.stackingOrder == PrinterOutputTray.StackingOrder.lastToFirst &&
                 settings.outputBin == OutputBin.faceUp ->
                 mapPages { it.reversed() }
-            settings.stackingOrder == PrinterOutputTray.StackingOrder.firstToLast &&
-                settings.outputBin == OutputBin.faceDown ->
-                mapPages { doc -> doc.toList().chunked(2).flatMap { it.reversed() } }
+            // NOTE: This behavior is required by WFDS but not actually expected by printers
+//            settings.stackingOrder == PrinterOutputTray.StackingOrder.firstToLast &&
+//                settings.outputBin == OutputBin.faceDown ->
+//                mapPages { doc -> doc.toList().chunked(2).flatMap { it.reversed() } }
             else -> this
         }
 }
