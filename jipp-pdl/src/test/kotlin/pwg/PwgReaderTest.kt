@@ -3,6 +3,7 @@
 
 package pwg
 
+import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
@@ -50,7 +51,7 @@ class PwgReaderTest {
         }
 
         val output = ByteArrayOutputStream()
-        PwgWriter(output).write(doc)
+        PwgWriter(output, settings = PwgSettings(output = OutputSettings(outputBin = OutputBin.faceDown))).write(doc)
 
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)

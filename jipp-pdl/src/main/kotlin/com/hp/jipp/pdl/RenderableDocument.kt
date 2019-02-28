@@ -27,8 +27,8 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
     fun handleSides(settings: OutputSettings) =
         when {
             settings.sides == Sides.oneSided -> this
-            else -> handleSidesExtraBlank().handleSidesStackingOrder(settings)
-        }
+            else -> handleSidesExtraBlank()
+        }.handleSidesStackingOrder(settings)
 
     /** For a two-sided output document, return a document with an extra blank page added if necessary. */
     private fun handleSidesExtraBlank() =
@@ -37,7 +37,7 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
             else -> this
         }
 
-    /** For a two-sided output document, return a document with the correct stacking order. */
+    /** For any document, return a document with the correct stacking order. */
     private fun handleSidesStackingOrder(settings: OutputSettings) =
         when {
             settings.stackingOrder == PrinterOutputTray.StackingOrder.lastToFirst &&

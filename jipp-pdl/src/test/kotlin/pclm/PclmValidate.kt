@@ -315,7 +315,6 @@ internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
 
     val iterator = rawIterator.stripComments().stripEmpties()
     val header = iterator.next().asString().split(" ")
-    println("Object header contains: $header")
     val objectNumber = header[0].toInt()
     Assert.assertEquals(0, header[1].toInt()) // generation # is always 0 because we don't edit PCLM
     Assert.assertEquals("obj", header[2])

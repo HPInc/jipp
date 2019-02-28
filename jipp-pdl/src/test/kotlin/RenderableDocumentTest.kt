@@ -50,6 +50,13 @@ class RenderableDocumentTest {
         assertEquals("123b", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
+    @Test fun faceUpLastToFirstSimplex() {
+        val settings = OutputSettings(sides = Sides.oneSided,
+            stackingOrder = PrinterOutputTray.StackingOrder.lastToFirst,
+            outputBin = OutputBin.faceUp)
+        assertEquals("321", doc.handleSides(settings).joinToString("") { it.getPageName() })
+    }
+
     private fun RenderablePage.getPageName() =
         when {
             toString().contains("blank") -> "b"
