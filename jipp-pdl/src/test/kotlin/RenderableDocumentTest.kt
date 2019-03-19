@@ -21,28 +21,28 @@ class RenderableDocumentTest {
         }
     }
 
-    @Test fun faceUpLastToFirst() {
+    @Test fun `face-up, lastToFirst, duplex`() {
         val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
             stackingOrder = PrinterOutputTray.StackingOrder.lastToFirst,
             outputBin = OutputBin.faceUp)
         assertEquals("b321", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
-    @Test fun faceUpFirstToLast() {
+    @Test fun `face-up, firstToLast, duplex`() {
         val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
             stackingOrder = PrinterOutputTray.StackingOrder.firstToLast,
             outputBin = OutputBin.faceUp)
-        assertEquals("123b", doc.handleSides(settings).joinToString("") { it.getPageName() })
+        assertEquals("b321", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
-    @Test fun faceDownLastToFirst() {
+    @Test fun `face-down, lastToFirst, duplex`() {
         val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
             stackingOrder = PrinterOutputTray.StackingOrder.lastToFirst,
             outputBin = OutputBin.faceDown)
         assertEquals("123b", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
-    @Test fun faceDownFirstToLast() {
+    @Test fun `face-down, firstToLast, duplex`() {
         val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
             stackingOrder = PrinterOutputTray.StackingOrder.firstToLast,
             outputBin = OutputBin.faceDown)
@@ -50,7 +50,7 @@ class RenderableDocumentTest {
         assertEquals("123b", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
-    @Test fun faceUpLastToFirstSimplex() {
+    @Test fun `face-up, last-to-first, simplex`() {
         val settings = OutputSettings(sides = Sides.oneSided,
             stackingOrder = PrinterOutputTray.StackingOrder.lastToFirst,
             outputBin = OutputBin.faceUp)

@@ -40,9 +40,9 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
     /** For any document, return a document with the correct stacking order. */
     private fun handleSidesStackingOrder(settings: OutputSettings) =
         when {
-            settings.stackingOrder == PrinterOutputTray.StackingOrder.lastToFirst &&
-                settings.outputBin == OutputBin.faceUp ->
-                mapPages { it.reversed() }
+            // NOTE: WFDS implies you need both faceUp and lastToFirst to require N-to-1 but in practice
+            // only faceUp matters
+            settings.outputBin == OutputBin.faceUp -> mapPages { it.reversed() }
             // NOTE: This behavior is required by WFDS but not actually expected by printers
 //            settings.stackingOrder == PrinterOutputTray.StackingOrder.firstToLast &&
 //                settings.outputBin == OutputBin.faceDown ->

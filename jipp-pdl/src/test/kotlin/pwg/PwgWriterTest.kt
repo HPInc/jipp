@@ -71,6 +71,32 @@ class PwgWriterTest {
     }
 
     @Test
+    fun `face-up first-to-last multi-page prints in N-to-1 order`() {
+        val doc = object : RenderableDocument() {
+            override val dpi: Int = 1
+            val pages = listOf(
+                PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
+                PageTest.fakePage(PageTest.RED, ColorSpace.Rgb))
+            override fun iterator() = pages.iterator()
+        }
+
+        val output = ByteArrayOutputStream()
+        PwgWriter(output, settings = PwgSettings(
+            output = OutputSettings(
+                sides = Sides.oneSided,
+                outputBin = OutputBin.faceUp),
+            sheetBack = PwgRasterDocumentSheetBack.rotated)) // Rotated doesn't mater, this isn't duplex
+            .write(doc)
+
+        val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
+        val page = readDoc.toList()[0] as PwgReader.PwgPage
+        PageTest.toString(page).also {
+            println(it)
+            assertEquals("...........R...", it.split("\n")[11])
+        }
+    }
+
+    @Test
     fun writeDuplexRotated() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
