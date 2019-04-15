@@ -122,5 +122,5 @@ A full build of this project requires `python` (2.x) and `dot` to generate depen
 ## Related projects
 
 * [`javax.print` (JSR6)](https://docs.oracle.com/javase/7/docs/api/javax/print/package-summary.html) - Standard Java printing APIs. IPP 1.1 only, client-side only. API is not supported by Android.
-* [Cups4J](http://www.cups4j.org/) - GPL licensed, with a [port to Android](https://github.com/BenoitDuffez/AndroidCupsPrint).
+* [Cups4J](http://www.cups4j.org/) - LGPL licensed, with a [port to Android](https://github.com/BenoitDuffez/AndroidCupsPrint).
 * [JSPI](https://github.com/bhagyas/jspi)
