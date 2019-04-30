@@ -15,6 +15,8 @@ open class DateTimeType(override val name: String) : AttributeType<Calendar> {
     override fun coerce(value: Any) =
         value as? Calendar
 
+    override fun toString() = "DateTimeType($name)"
+
     companion object {
         val codec = codec<Calendar>(Tag.dateTime, {
             val bytes = readValueBytes()

@@ -10,6 +10,8 @@ open class OctetsType(override val name: String) : AttributeType<ByteArray> {
     override fun coerce(value: Any) =
         value as? ByteArray
 
+    override fun toString() = "OctetsType($name)"
+
     companion object {
         val codec = AttributeGroup.codec(Tag.octetString, {
             readValueBytes()

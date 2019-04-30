@@ -47,6 +47,8 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
     /** Return an attribute containing values as text strings (without language). */
     fun ofNames(values: Iterable<String>) = of(values.map { KeywordOrName(Name(it)) })
 
+    override fun toString() = "KeywordOrNameType($name)"
+
     companion object {
         val codec = AttributeGroup.codec<KeywordOrName>({ false }, {
             throw IllegalArgumentException("This codec is not used for reading")

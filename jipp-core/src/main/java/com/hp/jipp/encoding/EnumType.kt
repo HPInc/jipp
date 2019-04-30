@@ -12,8 +12,6 @@ open class EnumType<T : Enum>(
 ) : AttributeType<T> {
     fun of(vararg values: Int) = of(values.map { factory(it) })
 
-    override fun toString() = "EnumType($name)"
-
     override fun coerce(value: Any) =
         when (value) {
             is UntypedEnum -> factory(value.code)
@@ -21,6 +19,8 @@ open class EnumType<T : Enum>(
             is Int -> factory(value)
             else -> null
         }
+
+    override fun toString() = "EnumType($name)"
 
     companion object {
         val codec = codec<Enum>(Tag.enumValue, {

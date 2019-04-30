@@ -8,6 +8,8 @@ open class BooleanType(override val name: String) : AttributeType<Boolean> {
     override fun coerce(value: Any) =
         value as? Boolean
 
+    override fun toString() = "BooleanType($name)"
+
     companion object {
         val codec = AttributeGroup.codec(Tag.booleanValue, {
             takeLength(AttributeGroup.BYTE_LENGTH)

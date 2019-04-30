@@ -28,6 +28,8 @@ class IntOrIntRangeType(
     /** Return an attribute containing the supplied range(s) */
     fun of(vararg ranges: IntRange) = ofRanges(ranges.toList())
 
+    override fun toString() = "IntOrIntRangeType($name)"
+
     companion object {
         val codec = AttributeGroup.codec<IntOrIntRange>({ false }, {
             throw IllegalArgumentException("Cannot read")

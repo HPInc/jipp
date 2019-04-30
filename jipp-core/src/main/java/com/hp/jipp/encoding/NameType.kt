@@ -19,6 +19,8 @@ open class NameType(override val name: String) : AttributeType<Name> {
     /** Return an attribute containing values as text strings (without language) */
     fun ofStrings(values: Iterable<String>) = of(values.map { Name(it) })
 
+    override fun toString() = "NameType($name)"
+
     companion object {
         val codec = AttributeGroup.codec({ it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage }, {
             if (it == Tag.nameWithLanguage) {

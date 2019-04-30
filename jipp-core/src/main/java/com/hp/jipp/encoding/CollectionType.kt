@@ -21,6 +21,8 @@ open class CollectionType<T : AttributeCollection>(
             null
         }
 
+    override fun toString() = "CollectionType($name)"
+
     companion object {
 
         val codec = AttributeGroup.codec<AttributeCollection>(Tag.beginCollection, {

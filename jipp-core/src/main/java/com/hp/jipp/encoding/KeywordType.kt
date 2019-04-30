@@ -8,6 +8,8 @@ open class KeywordType(override val name: String) : AttributeType<String> {
     override fun coerce(value: Any) =
         value as? String
 
+    override fun toString() = "KeywordType($name)"
+
     companion object {
         val codec = AttributeGroup.codec(Tag.keyword, {
             readString()

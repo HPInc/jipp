@@ -13,6 +13,8 @@ class KeyValuesType(override val name: String) : AttributeType<KeyValues> {
             else -> null
         }
 
+    override fun toString() = "KeyValuesType($name)"
+
     /**
      * Construct an attribute of this type containing the supplied key/value pairs.
      * Each pair is supplied as a pair of arguments, e.g. `[of]("key1", "value1", "key2", "value2")`.

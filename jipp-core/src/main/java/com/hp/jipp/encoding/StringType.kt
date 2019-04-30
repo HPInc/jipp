@@ -15,4 +15,6 @@ open class StringType(val tag: Tag, override val name: String) : AttributeType<S
             is OtherString -> value.value
             else -> null
         }
+
+    override fun toString() = "StringType($name)"
 }
