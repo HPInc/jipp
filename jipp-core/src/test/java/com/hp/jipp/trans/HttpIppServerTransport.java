@@ -1,13 +1,13 @@
 package com.hp.jipp.trans;
 
 import com.hp.jipp.encoding.IppInputStream;
-import com.hp.jipp.encoding.IppPacket;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-
-import java.io.*;
-
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 
 /** A sample IPP server over the HTTP transport */

@@ -94,7 +94,7 @@ data class PwgHeader(
         Never(0), AfterDocument(1), AfterJob(2), AfterSet(3), AfterPage(4);
 
         companion object : ValueConverter<When> {
-            override fun from(value: Int) = When.values().firstOrNull { it.value == value } ?: Never
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Never
         }
     }
 
@@ -103,7 +103,7 @@ data class PwgHeader(
         ShortEdgeFirst(0), LongEdgeFirst(1);
 
         companion object : ValueConverter<Edge> {
-            override fun from(value: Int) = Edge.values().firstOrNull { it.value == value } ?: ShortEdgeFirst
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: ShortEdgeFirst
         }
     }
 
@@ -112,7 +112,7 @@ data class PwgHeader(
         Portrait(0), Landscape(1), ReversePortrait(2), ReverseLandscape(3);
 
         companion object : ValueConverter<Orientation> {
-            override fun from(value: Int) = Orientation.values().firstOrNull { it.value == value } ?: Portrait
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Portrait
         }
     }
 
@@ -120,7 +120,7 @@ data class PwgHeader(
         Chunky(0);
 
         companion object : ValueConverter<ColorOrder> {
-            override fun from(value: Int) = ColorOrder.values().firstOrNull { it.value == value } ?: Chunky
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Chunky
         }
     }
 
@@ -133,19 +133,19 @@ data class PwgHeader(
         /** Return the [com.hp.jipp.pdl.ColorSpace] corresponding to this one or throw if no match. */
         fun toPdlColorSpace() =
             when (this) {
-                PwgHeader.ColorSpace.Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
-                PwgHeader.ColorSpace.Sgray -> com.hp.jipp.pdl.ColorSpace.Grayscale
+                Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
+                Sgray -> com.hp.jipp.pdl.ColorSpace.Grayscale
                 else -> TODO("No conversion available")
             }
 
         companion object : ValueConverter<ColorSpace> {
-            override fun from(value: Int) = ColorSpace.values().firstOrNull { it.value == value } ?: ColorSpace.Srgb
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Srgb
 
             /** Given a [com.hp.jipp.pdl.ColorSpace] return the corresponding [PwgHeader.ColorSpace]. */
             fun from(from: com.hp.jipp.pdl.ColorSpace) =
                 when (from) {
-                    com.hp.jipp.pdl.ColorSpace.Rgb -> PwgHeader.ColorSpace.Srgb
-                    com.hp.jipp.pdl.ColorSpace.Grayscale -> PwgHeader.ColorSpace.Sgray
+                    com.hp.jipp.pdl.ColorSpace.Rgb -> Srgb
+                    com.hp.jipp.pdl.ColorSpace.Grayscale -> Sgray
                 }
         }
     }
@@ -160,7 +160,7 @@ data class PwgHeader(
         Roll6(45), Roll7(46), Roll8(47), Roll9(48), Roll10(49);
 
         companion object : ValueConverter<MediaPosition> {
-            override fun from(value: Int) = MediaPosition.values().firstOrNull { it.value == value } ?: Auto
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Auto
         }
     }
 
@@ -169,7 +169,7 @@ data class PwgHeader(
         Default(0), Draft(3), Normal(4), High(5);
 
         companion object : ValueConverter<PrintQuality> {
-            override fun from(value: Int) = PrintQuality.values().firstOrNull { it.value == value } ?: Default
+            override fun from(value: Int) = values().firstOrNull { it.value == value } ?: Default
         }
     }
 

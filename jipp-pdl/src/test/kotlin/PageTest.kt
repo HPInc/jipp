@@ -10,7 +10,7 @@ import kotlin.math.min
 class PageTest {
     @Test fun generate() {
         val page = fakePage(RED, ColorSpace.Rgb)
-        toString(page, ColorSpace.Rgb).also { output ->
+        describe(page, ColorSpace.Rgb).also { output ->
             println("Page 1, no transform:\n$output")
             assertEquals("...R...........", output.split("\n")[3])
         }
@@ -19,7 +19,7 @@ class PageTest {
     @Test fun rotate() {
         val page = fakePage(byteArrayOf(BLACK_BYTE), ColorSpace.Grayscale)
             .rotated()
-        toString(page, ColorSpace.Grayscale).also { output ->
+        describe(page, ColorSpace.Grayscale).also { output ->
             println("Page 2, rotated 180:\n$output")
             assertEquals(".....K.........", output.split("\n")[9]) // Center line
             assertEquals("............K..", output.split("\n")[16])
@@ -29,7 +29,7 @@ class PageTest {
     @Test fun flipX() {
         val page = fakePage(byteArrayOf(BLACK_BYTE), ColorSpace.Grayscale)
             .flipX()
-        toString(page, ColorSpace.Grayscale).also { output ->
+        describe(page, ColorSpace.Grayscale).also { output ->
             println("Page 3, flipped on X axis:\n$output")
             assertEquals("...........K...", output.split("\n")[3])
         }
@@ -39,7 +39,7 @@ class PageTest {
     fun flipY() {
         val page = fakePage(BLUE, ColorSpace.Rgb)
             .flipY()
-        toString(page, ColorSpace.Rgb).also { output ->
+        describe(page, ColorSpace.Rgb).also { output ->
             println("Page 4, flipped on Y axis:\n$output")
             assertEquals("...........B...", output.split("\n")[7])
         }
@@ -49,7 +49,7 @@ class PageTest {
     fun flipYEven() {
         val page = fakePage(BLUE, ColorSpace.Rgb, height = 18)
             .flipY()
-        toString(page, ColorSpace.Rgb).also { output ->
+        describe(page, ColorSpace.Rgb).also { output ->
             println("Page 4, flipped on Y axis:\n$output")
             assertEquals("..........B....", output.split("\n")[7])
         }
@@ -59,7 +59,7 @@ class PageTest {
     fun blank() {
         val page = fakePage(BLUE, ColorSpace.Rgb)
             .blank()
-        toString(page, ColorSpace.Rgb).also { output ->
+        describe(page, ColorSpace.Rgb).also { output ->
             println("Blank page::\n$output")
             assertEquals("...............", output.split("\n")[7])
         }
@@ -84,7 +84,7 @@ class PageTest {
             )
         private const val MAX_STRING_DIMENSION = 80
 
-        fun toString(
+        fun describe(
             page: RenderablePage,
             colorSpace: ColorSpace = ColorSpace.Rgb
         ): String {

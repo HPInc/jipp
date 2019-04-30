@@ -7,31 +7,31 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /** Identifies a color space which describes how each pixel of image data is encoded */
-enum class ColorSpace(val bytesPerPixel: Int, val numColors: Int) {
+enum class ColorSpace(val bytesPerPixel: Int) {
     /** Three bytes per pixel: Red, Green, Blue */
-    Rgb(3, 3),
+    Rgb(3),
 
     /** One byte per pixel, between 0x00=Black and 0xFF=White */
-    Grayscale(1, 1);
+    Grayscale(1);
 
     /** Return a converter lambda that will copy bytes from this color space to another. */
     fun converter(outputColor: ColorSpace): (ByteArray, ByteArray) -> Unit =
         when (this) {
-            ColorSpace.Grayscale ->
+            Grayscale ->
                 when (outputColor) {
-                    ColorSpace.Grayscale -> { input, output -> output[0] = input[0] }
-                    ColorSpace.Rgb -> { input, output ->
+                    Grayscale -> { input, output -> output[0] = input[0] }
+                    Rgb -> { input, output ->
                         output[0] = input[0]
                         output[1] = input[0]
                         output[2] = input[0]
                     }
                 }
-            ColorSpace.Rgb ->
+            Rgb ->
                 when (outputColor) {
-                    ColorSpace.Grayscale -> { input, output ->
+                    Grayscale -> { input, output ->
                         output[0] = ((LUM_R * input[0]) + (LUM_G * input[1]) + (LUM_B * input[2])).toByte()
                     }
-                    ColorSpace.Rgb -> { input, output -> input.copyInto(output) }
+                    Rgb -> { input, output -> input.copyInto(output) }
                 }
         }
 

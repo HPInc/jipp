@@ -144,7 +144,7 @@ class PrettyPrinter internal constructor(
 
             internal fun width(): Int {
                 var result = 0
-                if (!prefix.isEmpty()) {
+                if (prefix.isNotEmpty()) {
                     result += prefix.length + style.spacer.length
                 }
                 result += style.opener.length + style.spacer.length + items.sumBy { it.toString().length }
@@ -155,7 +155,7 @@ class PrettyPrinter internal constructor(
 
             internal fun compressed(): String {
                 val out = StringBuilder()
-                if (!prefix.isEmpty()) {
+                if (prefix.isNotEmpty()) {
                     out.append(prefix)
                     out.append(style.spacer)
                 }
@@ -169,7 +169,7 @@ class PrettyPrinter internal constructor(
 
             internal fun expanded(startPos: Int, indent: String): String {
                 val out = StringBuilder()
-                if (!prefix.isEmpty()) {
+                if (prefix.isNotEmpty()) {
                     out.append(prefix)
                     out.append(style.spacer)
                 }

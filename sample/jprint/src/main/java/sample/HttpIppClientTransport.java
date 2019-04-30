@@ -1,15 +1,18 @@
 package sample;
 
 import com.hp.jipp.encoding.IppInputStream;
-import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple HTTP-only transport for IPP.

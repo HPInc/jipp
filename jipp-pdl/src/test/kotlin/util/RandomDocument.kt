@@ -12,13 +12,13 @@ import java.util.Random
 class RandomDocument(
     seed: Long,
     pages: Int,
-    private val widthPoints: Double,
-    private val heightPoints: Double,
+    widthPoints: Double,
+    heightPoints: Double,
     override val dpi: Int
 ) : RenderableDocument() {
 
     private val widthPixels = (widthPoints * dpi / 72).toInt()
-    private val heightPixels = (widthPoints * dpi / 72).toInt()
+    private val heightPixels = (heightPoints * dpi / 72).toInt()
 
     private val pages: List<RenderablePage> = (0 until pages).map { Page(seed + it, widthPixels, heightPixels) }
 

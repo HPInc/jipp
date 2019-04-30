@@ -51,7 +51,7 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
 
         /** Return or create a [Tag] for the supplied code */
         @JvmStatic
-        fun fromInt(value: Int) = Tag.codeMap[value] ?: Tag(value, "tag(x%x)".format(value))
+        fun fromInt(value: Int) = codeMap[value] ?: Tag(value, "tag(x%x)".format(value))
 
         // Delimiter tags
         @JvmField val operationAttributes = Tag(0x01, "operation-attributes")
@@ -104,6 +104,6 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
             textWithoutLanguage, nameWithoutLanguage, keyword, uri, uriScheme, charset, naturalLanguage, mimeMediaType,
             memberAttributeName)
 
-        private val codeMap: Map<Int, Tag> = Enum.toCodeMap(all)
+        private val codeMap: Map<Int, Tag> = toCodeMap(all)
     }
 }
