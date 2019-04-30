@@ -4,7 +4,6 @@
 package com.hp.jipp.pdl
 
 import com.hp.jipp.model.MediaSource
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.model.Sides
 
@@ -22,9 +21,6 @@ data class OutputSettings(
     /** The level of print quality to use, or null for default. */
     val quality: PrintQuality? = null,
 
-    /** Output Bin setting, either [OutputBin.faceDown] or [OutputBin.faceUp]. */
-    val outputBin: String = OutputBin.faceUp,
-
-    /** Stacking order, a keyword from [PrinterOutputTray.StackingOrder]. */
-    val stackingOrder: String = PrinterOutputTray.StackingOrder.lastToFirst
+    /** True if page order should be reversed. */
+    val reversed: Boolean = false
 )

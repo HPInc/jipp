@@ -3,7 +3,6 @@
 
 package pwg
 
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
@@ -84,7 +83,7 @@ class PwgWriterTest {
         PwgWriter(output, settings = PwgSettings(
             output = OutputSettings(
                 sides = Sides.oneSided,
-                outputBin = OutputBin.faceUp),
+                reversed = true),
             sheetBack = PwgRasterDocumentSheetBack.rotated)) // Rotated doesn't mater, this isn't duplex
             .write(doc)
 
@@ -107,7 +106,7 @@ class PwgWriterTest {
 
         val output = ByteArrayOutputStream()
         PwgWriter(output, settings = PwgSettings(
-            output = OutputSettings(sides = Sides.twoSidedLongEdge, outputBin = OutputBin.faceDown),
+            output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
             sheetBack = PwgRasterDocumentSheetBack.rotated))
             .write(doc)
 
