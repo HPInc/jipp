@@ -23,11 +23,6 @@ import java.io.IOException
 
 class PwgReaderTest {
 
-    @Test fun fromDisk() {
-        println("Validating ${File("raster.pwg").absoluteFile}")
-        PwgValidator.validate(File("raster.pwg").inputStream())
-    }
-
     @Test fun simple() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
