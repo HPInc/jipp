@@ -3,6 +3,8 @@
 
 package pwg
 
+import KotlinTest
+import PageTest
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
@@ -18,7 +20,6 @@ import org.junit.Assert.fail
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 
 class PwgReaderTest {
