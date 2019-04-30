@@ -63,8 +63,19 @@ class InPacket constructor(
         groups.add(group.invoke(Tag.operationAttributes, init))
     }
 
+    /** Add a job attributes group. */
     fun jobAttributes(init: InAttributeGroup.() -> Unit) {
         groups.add(group.invoke(Tag.jobAttributes, init))
+    }
+
+    /** Add a printer attributes group. */
+    fun printerAttributes(init: InAttributeGroup.() -> Unit) {
+        groups.add(group.invoke(Tag.printerAttributes, init))
+    }
+
+    /** Add an unsupported attributes group. */
+    fun unsupportedAttributes(init: InAttributeGroup.() -> Unit) {
+        groups.add(group.invoke(Tag.unsupportedAttributes, init))
     }
 
     /** Build the final packet with current values */
