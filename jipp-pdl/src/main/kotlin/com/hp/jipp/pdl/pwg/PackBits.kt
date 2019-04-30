@@ -157,8 +157,7 @@ class PackBits(
         }
 
         private fun readLine(into: ByteArray): Boolean {
-            val bytesRead = pixelsIn.read(into)
-            return when (bytesRead) {
+            return when (val bytesRead = pixelsIn.read(into)) {
                 -1 -> false
                 into.size -> true
                 else -> throw IOException("Could not read whole line ($bytesRead bytes instead of ${lineArray.size}")

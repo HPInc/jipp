@@ -1,8 +1,6 @@
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
-import com.hp.jipp.pdl.PrinterOutputTray
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import org.junit.Assert.assertEquals

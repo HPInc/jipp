@@ -21,6 +21,6 @@ data class ResolutionUnit(override val code: Int, override val name: String) : E
         @JvmField val all = listOf(dotsPerInch, dotsPerCentimeter).map { it.code to it }.toMap()
 
         operator fun get(value: Int): ResolutionUnit =
-            ResolutionUnit.all[value] ?: ResolutionUnit(value, "???")
+            all[value] ?: ResolutionUnit(value, "???")
     }
 }

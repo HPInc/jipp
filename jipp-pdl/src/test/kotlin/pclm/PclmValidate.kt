@@ -3,10 +3,13 @@
 
 package pclm
 
-import util.ByteWindow
 import org.hamcrest.Matchers.isOneOf
-import org.junit.Assert
-import org.junit.Assert.* // ktlint-disable no-wildcard-imports
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
+import util.ByteWindow
 
 /** An iterator that allows sniffing out of the next line start */
 interface ByteWindowIterator : Iterator<ByteWindow> {
@@ -198,7 +201,7 @@ fun ByteWindow.validatePclm(): PdfStructure {
                 val fields = it.asString().trim().split(" ")
                 // Each item must be either 20 lines long or a two-value group delimiter
                 if (it.length != 19 && it.length != 18) {
-                    Assert.assertEquals("$it must be 20 bytes long or a 2-field line", 2, fields.size)
+                    assertEquals("$it must be 20 bytes long or a 2-field line", 2, fields.size)
                 }
                 fields
             }
@@ -316,12 +319,12 @@ internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
     val iterator = rawIterator.stripComments().stripEmpties()
     val header = iterator.next().asString().split(" ")
     val objectNumber = header[0].toInt()
-    Assert.assertEquals(0, header[1].toInt()) // generation # is always 0 because we don't edit PCLM
-    Assert.assertEquals("obj", header[2])
+    assertEquals(0, header[1].toInt()) // generation # is always 0 because we don't edit PCLM
+    assertEquals("obj", header[2])
 
     // First element must be a dictionary
     val startDict = iterator.next()
-    Assert.assertEquals("<<", startDict.asString())
+    assertEquals("<<", startDict.asString())
     val dict = iterator.nextDictionary()
 
     // In PCLM objects might have a stream so check for it
@@ -332,13 +335,12 @@ internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
         val afterStream = drop(rawIterator.lineStart - offset + streamLength.value.toInt())
         val rawTerminal = afterStream.lines.iterator() as ByteWindowIterator
         val terminal = rawTerminal.stripComments()
-        val next = terminal.next().asString()
-        when (next) {
-            "" -> Assert.assertEquals("endstream", terminal.next().asString())
+        when (val next = terminal.next().asString()) {
+            "" -> assertEquals("endstream", terminal.next().asString())
             "endstream" -> Unit // Good
             else -> throw AssertionError("unrecognized object end at $next")
         }
-        Assert.assertEquals("endobj", terminal.next().asString())
+        assertEquals("endobj", terminal.next().asString())
         copy(length = rawTerminal.lineStart - offset) to PclmObject(objectNumber, dict, stream)
     } else if (lastLine == "endobj") {
         copy(length = rawIterator.lineStart - offset) to PclmObject(objectNumber, dict)

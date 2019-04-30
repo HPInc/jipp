@@ -270,7 +270,7 @@ class AttributeGroup(
             // Apply a special case for enum values which we can match with all known [Enums]
             if (tag == Tag.enumValue) {
                 EnumTypes.all[attributeName]?.also {
-                    takeLength(AttributeGroup.INT_LENGTH)
+                    takeLength(INT_LENGTH)
                     // Note: !! is safe because we know EnumTypes can handle Int input
                     return it.coerce(readInt())!!
                 }

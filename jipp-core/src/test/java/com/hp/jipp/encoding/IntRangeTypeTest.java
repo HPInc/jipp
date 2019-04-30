@@ -1,18 +1,16 @@
 package com.hp.jipp.encoding;
 
+import java.io.IOException;
 import kotlin.ranges.IntRange;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class IntRangeTypeTest {
-    IntRangeType rangeType = new IntRangeType("range-only");
-    IntOrIntRangeType rangeOrIntType = new IntOrIntRangeType("range-or-int");
+    private IntRangeType rangeType = new IntRangeType("range-only");
+    private IntOrIntRangeType rangeOrIntType = new IntOrIntRangeType("range-or-int");
 
     @Test
     public void simpleRange() throws IOException {

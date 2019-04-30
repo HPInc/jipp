@@ -41,7 +41,7 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.first() as PwgReader.PwgPage
-        PageTest.toString(page, ColorSpace.Rgb).also {
+        PageTest.describe(page, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...B...........", it.split("\n")[3])
         }
@@ -62,12 +62,12 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.toList()[0] as PwgReader.PwgPage
-        PageTest.toString(page, ColorSpace.Rgb).also {
+        PageTest.describe(page, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...B...........", it.split("\n")[3])
         }
         val page2 = read.toList()[1] as PwgReader.PwgPage
-        PageTest.toString(page2, ColorSpace.Rgb).also {
+        PageTest.describe(page2, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }
@@ -86,7 +86,7 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.first() as PwgReader.PwgPage
-        PageTest.toString(page, ColorSpace.Grayscale).also {
+        PageTest.describe(page, ColorSpace.Grayscale).also {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }

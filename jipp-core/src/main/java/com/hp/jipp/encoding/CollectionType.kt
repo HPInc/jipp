@@ -43,8 +43,7 @@ open class CollectionType<T : AttributeCollection>(
         private fun IppInputStream.readCollectionAttributes(): List<Attribute<*>> {
             val attributes = mutableListOf<Attribute<*>>()
             while (true) {
-                val tag = readTag()
-                when (tag) {
+                when (val tag = readTag()) {
                     Tag.endCollection -> {
                         skipValueBytes()
                         skipValueBytes()

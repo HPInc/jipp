@@ -89,7 +89,7 @@ class PwgWriterTest {
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         val page = readDoc.toList()[0] as PwgReader.PwgPage
-        PageTest.toString(page).also {
+        PageTest.describe(page).also {
             println(it)
             assertEquals("...........R...", it.split("\n")[11])
         }
@@ -112,7 +112,7 @@ class PwgWriterTest {
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         val page = readDoc.toList()[1] as PwgReader.PwgPage
-        PageTest.toString(page).also {
+        PageTest.describe(page).also {
             println(it)
             assertEquals("...........R...", it.split("\n")[15])
         }
