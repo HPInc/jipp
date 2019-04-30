@@ -3,7 +3,6 @@
 
 package com.hp.jipp.pdl
 
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.Sides
 
 /** A document, consisting of a collection of [RenderablePage] objects. */
@@ -28,7 +27,7 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
         when {
             settings.sides == Sides.oneSided -> this
             else -> handleSidesExtraBlank()
-        }.handleSidesStackingOrder(settings)
+        }.handleReversed(settings)
 
     /** For a two-sided output document, return a document with an extra blank page added if necessary. */
     private fun handleSidesExtraBlank() =
@@ -38,15 +37,9 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
         }
 
     /** For any document, return a document with the correct stacking order. */
-    private fun handleSidesStackingOrder(settings: OutputSettings) =
+    private fun handleReversed(settings: OutputSettings) =
         when {
-            // NOTE: WFDS implies you need both faceUp and lastToFirst to require N-to-1 but in practice
-            // only faceUp matters
-            settings.outputBin == OutputBin.faceUp -> mapPages { it.reversed() }
-            // NOTE: This behavior is required by WFDS but not actually expected by printers
-//            settings.stackingOrder == PrinterOutputTray.StackingOrder.firstToLast &&
-//                settings.outputBin == OutputBin.faceDown ->
-//                mapPages { doc -> doc.toList().chunked(2).flatMap { it.reversed() } }
+            settings.reversed -> mapPages { it.reversed() }
             else -> this
         }
 }

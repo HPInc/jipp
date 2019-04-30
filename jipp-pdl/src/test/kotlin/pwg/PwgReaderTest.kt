@@ -3,7 +3,6 @@
 
 package pwg
 
-import com.hp.jipp.model.OutputBin
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
@@ -19,9 +18,16 @@ import org.junit.Assert.fail
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 
 class PwgReaderTest {
+
+    @Test fun fromDisk() {
+        println("Validating ${File("raster.pwg").absoluteFile}")
+        PwgValidator.validate(File("raster.pwg").inputStream())
+    }
+
     @Test fun simple() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
@@ -51,7 +57,7 @@ class PwgReaderTest {
         }
 
         val output = ByteArrayOutputStream()
-        PwgWriter(output, settings = PwgSettings(output = OutputSettings(outputBin = OutputBin.faceDown))).write(doc)
+        PwgWriter(output, settings = PwgSettings(output = OutputSettings())).write(doc)
 
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
