@@ -3,6 +3,7 @@
 
 package pwg
 
+import com.hp.jipp.model.Orientation
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
@@ -96,7 +97,7 @@ class PwgWriterTest {
     }
 
     @Test
-    fun writeDuplexRotated() {
+    fun `write rotated duplex job`() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
             val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
@@ -116,6 +117,25 @@ class PwgWriterTest {
             println(it)
             assertEquals("...........R...", it.split("\n")[15])
         }
+    }
+
+    @Test
+    fun `retain orientation setting`() {
+        val doc = object : RenderableDocument() {
+            override val dpi: Int = 1
+            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            override fun iterator() = pages.iterator()
+        }
+        val output = ByteArrayOutputStream()
+        PwgWriter(output, settings = PwgSettings(
+            output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
+            sheetBack = PwgRasterDocumentSheetBack.rotated,
+            orientation = Orientation.reverseLandscape))
+            .write(doc)
+
+        val read = PwgHeader.read(ByteArrayInputStream(output.toByteArray()
+            .sliceArray(4 until PwgHeader.HEADER_SIZE + 4)))
+        assertEquals(PwgHeader.Orientation.ReverseLandscape, read.orientation)
     }
 
     @Test
