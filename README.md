@@ -58,6 +58,8 @@ IppPacket printRequest = new IppPacket(Operation.printJob, 123,
 transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
 ```
 
+## Sample Applications
+
 ### jprint
 A very basic use case is demonstrated by the `jprint` sample app. To run it:
 
@@ -84,11 +86,10 @@ An example of rendering a PDF to PWG-Raster or PCLm. To run it:
 unzip -o ./sample/jrender/build/distributions/jrender-*.zip
 
 # Convert a PDF-file to PWG-Raster.
-jrender-*/bin/jrender sample.pdf sample.pwg pwg
+jrender-*/bin/jrender sample.pdf sample.pwg
 
 # Convert a PDF-file to PCLm.
-jrender-*/bin/jrender sample.pdf sample.pclm pclm
-
+jrender-*/bin/jrender sample.pdf sample.pclm
 ```
 
 

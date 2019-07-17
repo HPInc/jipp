@@ -33,11 +33,11 @@ import com.hp.jipp.pdl.pwg.PwgSettings;
 import com.hp.jipp.pdl.pwg.PwgWriter;
 
 class Main {
-
     private static final int DPI = 300;
     private static final ImageType IMAGE_TYPE = ImageType.RGB;
-
-    private static final int BLACK_LIMIT = 380;
+    private final static double RED_COEFFICIENT = 0.2126;
+    private final static double GREEN_COEFFICIENT = 0.7512;
+    private final static double BLUE_COEFFICIENT = 0.0722;
 
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {
@@ -45,10 +45,7 @@ class Main {
                     Arrays.asList(args));
         }
 
-        OutputFormat outputFormat = OutputFormat.PWG_RASTER;
-        if (args.length >= 3) {
-            outputFormat = OutputFormat.toOutputFormat(args[2]);
-        }
+        OutputFormat outputFormat = OutputFormat.toOutputFormat(getExtension(args[1]));
 
         InputStream pdfInputStream = new BufferedInputStream(new FileInputStream(new File(args[0])));
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(new File(args[1])));
@@ -65,7 +62,6 @@ class Main {
 
             for (int pageIndex = 0; pageIndex < pages.getCount(); pageIndex++) {
                 BufferedImage image = pdfRenderer.renderImageWithDPI(pageIndex, DPI, IMAGE_TYPE);
-
                 int width = image.getWidth();
                 int height = image.getHeight();
 
@@ -73,35 +69,24 @@ class Main {
 
                     @Override
                     public void render(int yOffset, int swathHeight, ColorSpace colorSpace, byte[] byteArray) {
-
                         int red, green, blue, rgb;
-                        byte b;
 
                         int byteIndex = 0;
                         for (int y = yOffset; y < (yOffset + swathHeight); y++) {
                             for (int x = 0; x < width; x++) {
 
                                 rgb = image.getRGB(x, y);
-
-                                red = ((rgb >> 16) & 0xFF);
-                                green = ((rgb >> 8) & 0xFF);
-                                blue = ((rgb) & 0xFF);
+                                red = (rgb >> 16) & 0xFF;
+                                green = (rgb >> 8) & 0xFF;
+                                blue = rgb & 0xFF;
 
                                 if (colorSpace == ColorSpace.Grayscale) {
-                                    b = 0x00;
-                                    int totalColor = red + green + blue;
-                                    if (totalColor > BLACK_LIMIT) {
-                                        b = (byte) 0xff;
-                                    }
-                                    byteArray[byteIndex] = b;
-                                    byteIndex++;
+                                    byteArray[byteIndex++] = (byte) (RED_COEFFICIENT * red +
+                                            GREEN_COEFFICIENT * green + BLUE_COEFFICIENT * blue);
                                 } else {
-                                    byteArray[byteIndex] = (byte) red;
-                                    byteIndex++;
-                                    byteArray[byteIndex] = (byte) green;
-                                    byteIndex++;
-                                    byteArray[byteIndex] = (byte) blue;
-                                    byteIndex++;
+                                    byteArray[byteIndex++] = (byte) red;
+                                    byteArray[byteIndex++] = (byte) green;
+                                    byteArray[byteIndex++] = (byte) blue;
                                 }
                             }
                         }
@@ -111,7 +96,6 @@ class Main {
             }
 
             RenderableDocument renderableDocument = new RenderableDocument() {
-
                 @Override
                 public Iterator<RenderablePage> iterator() {
                     return renderablePages.iterator();
@@ -123,12 +107,23 @@ class Main {
                 }
             };
 
-            if (outputFormat == OutputFormat.PCLM) {
-                saveRenderableDocumentAsPCLm(renderableDocument, colorSpace, outputStream);
-            } else {
-                saveRenderableDocumentAsPWG(renderableDocument, colorSpace, outputStream);
+            switch (outputFormat) {
+                case PCLM:
+                    saveRenderableDocumentAsPCLm(renderableDocument, colorSpace, outputStream);
+                    break;
+                case PWG_RASTER:
+                    saveRenderableDocumentAsPWG(renderableDocument, colorSpace, outputStream);
+                    break;
             }
         }
+    }
+
+    private static String getExtension(String name) {
+        int index = name.lastIndexOf(".");
+        if (index == -1 || index <= name.lastIndexOf("/")) {
+            throw new IllegalArgumentException(name + " has no extension");
+        }
+        return name.substring(index + 1);
     }
 
     private static void saveRenderableDocumentAsPCLm(RenderableDocument renderableDocument,
@@ -139,7 +134,6 @@ class Main {
 
         PclmWriter writer = new PclmWriter(outputStream, caps);
         writer.write(renderableDocument);
-        writer.flush();
         writer.close();
 
     }
@@ -152,17 +146,15 @@ class Main {
 
         PwgWriter writer = new PwgWriter(outputStream, caps);
         writer.write(renderableDocument);
-        writer.flush();
         writer.close();
     }
 
     private static ColorSpace convertImageTypeToColorSpace(ImageType imageType) {
         switch (imageType) {
-            case BINARY :
-            case GRAY : {
+            case BINARY:
+            case GRAY:
                 return ColorSpace.Grayscale;
-            }
-            default :
+            default:
                 return ColorSpace.Rgb;
         }
     }
@@ -172,7 +164,7 @@ class Main {
         PCLM("PCLm");
 
         private final String name;
-        private OutputFormat(String name) {
+        OutputFormat(String name) {
             this.name = name;
         }
         public String getName() {
@@ -180,12 +172,12 @@ class Main {
         }
 
         public static OutputFormat toOutputFormat(String formatName) {
-            for (OutputFormat format :EnumSet.allOf(OutputFormat.class)) {
+            for (OutputFormat format : OutputFormat.values()) {
                 if (format.getName().equalsIgnoreCase(formatName)) {
                     return format;
                 }
             }
-            throw new IllegalArgumentException("Output Format " + formatName + " is invalid");
+            throw new IllegalArgumentException("Output format " + formatName + " is invalid");
         }
     }
 }
