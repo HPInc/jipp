@@ -12,6 +12,7 @@ This project contains:
 * `jipp-core`, the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
 * `jipp-pdls`, which converts raster format docs to common page description languages (PCLm and PWG-Raster).
 * `jprint`, a sample app showing how `jipp-core` can be used to send a document to a printer.
+* `jrender`, a sample app showing how `jipp-pdl` can be used to convert a PDF to PCLm or PWG-Raster.
 
 `jipp-core` features:
 * Supports construction of IPP servers, clients, routers, gateways, etc.
@@ -57,6 +58,7 @@ IppPacket printRequest = new IppPacket(Operation.printJob, 123,
 transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
 ```
 
+### jprint
 A very basic use case is demonstrated by the `jprint` sample app. To run it:
 
 ```
@@ -70,6 +72,25 @@ unzip -o ./sample/jprint/build/distributions/jprint-*.zip
 # (The printer must natively support the file type.)
 jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
 ```
+
+### jrender
+An example of rendering a PDF to PWG-Raster or PCLm. To run it:
+
+```
+# build the app
+./gradlew jrender:build
+
+# unzip in the current directory
+unzip -o ./sample/jrender/build/distributions/jrender-*.zip
+
+# Convert a PDF-file to PWG-Raster.
+jrender-*/bin/jrender sample.pdf sample.pwg pwg
+
+# Convert a PDF-file to PCLm.
+jrender-*/bin/jrender sample.pdf sample.pclm pclm
+
+```
+
 
 ## API Maturity
 

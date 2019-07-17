@@ -1,5 +1,7 @@
 include ':jprint'
+include ':jrender'
 include 'jipp-core'
 include 'jipp-pdl'
 
 project(':jprint').projectDir = new File(rootDir, 'sample/jprint')
+project(':jrender').projectDir = new File(rootDir, 'sample/jrender')
