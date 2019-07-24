@@ -65,3 +65,7 @@ jobs:
           path: ./sample/jprint/build/distributions
           destination: app
 
+      - store_artifacts:
+          path: ./sample/jrender/build/distributions
+          destination: app
+

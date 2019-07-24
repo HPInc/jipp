@@ -1,0 +1,18 @@
+group 'com.hp.jipp'
+version '0.1'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+mainClassName = 'sample.jrender.Main'
+
+dependencies {
+    implementation project(path: ':jipp-core'),
+            project(path: ':jipp-pdl'),
+            'org.apache.pdfbox:pdfbox:2.0.16',
+            'org.apache.pdfbox:fontbox:2.0.16',
+            'commons-logging:commons-logging:1.2'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
