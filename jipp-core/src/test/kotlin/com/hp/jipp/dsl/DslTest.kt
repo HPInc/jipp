@@ -3,6 +3,7 @@ package com.hp.jipp.dsl
 import com.hp.jipp.encoding.Cycler.cycle
 import com.hp.jipp.encoding.IntOrIntRange
 import com.hp.jipp.encoding.MediaSizes
+import com.hp.jipp.encoding.Name
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.BindingType
 import com.hp.jipp.model.Media
@@ -29,6 +30,7 @@ class DslTest {
             }
             jobAttributes {
                 attr(Types.mediaCol, MediaCol(mediaSize = mediaSize))
+                attr(Types.documentMessage, "A description of the document")
             }
             printerAttributes {
                 attr(Types.bindingTypeSupported, BindingType.adhesive)
@@ -43,6 +45,7 @@ class DslTest {
         assertEquals(mediaSize, cycled.getValue(Tag.jobAttributes, Types.mediaCol)!!.mediaSize)
         assertEquals(listOf(BindingType.adhesive), cycled.getValues(Tag.printerAttributes, Types.bindingTypeSupported))
         assertEquals(Types.outputBin.noValue(), cycled[Tag.unsupportedAttributes]?.get(Types.outputBin))
+        assertEquals("A description of the document", cycled[Tag.jobAttributes]?.getValue(Types.documentMessage)?.value)
     }
 
     @Test fun intOrIntRange() {
@@ -53,5 +56,35 @@ class DslTest {
         }
         Assert.assertNotEquals(listOf<IntOrIntRange>(),
             packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
+    }
+
+    @Test fun multiGroup() {
+        val packet = ippPacket(Operation.printJob) {
+            // We can get and set the status if we want to
+            assertEquals(Operation.printJob.code, status.code)
+            status = Status.clientErrorBadRequest
+            operationAttributes {
+                attr(Types.attributesCharset, "utf-8")
+                attr(Types.attributesNaturalLanguage, "en")
+            }
+            operationAttributes {
+                attr(Types.printerUri, uri)
+                attr(Types.attributesCharset, "utf-16") // replace extant
+                attr(Types.requestingUserName, "Test User")
+            }
+        }
+        // Status and code go in the same place
+        assertEquals(Status.clientErrorBadRequest.code, packet.code)
+
+        // Only a single group is added
+        assertEquals(1, packet.attributeGroups.size)
+        assertEquals(Name("Test User"), packet.getValue(Tag.operationAttributes, Types.requestingUserName))
+
+        // Earlier entries are replaced
+        assertEquals("utf-16", packet.getValue(Tag.operationAttributes, Types.attributesCharset))
+
+        // Order is preserved
+        assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
+            Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
     }
 }
