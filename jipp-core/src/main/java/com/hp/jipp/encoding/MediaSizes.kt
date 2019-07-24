@@ -3,8 +3,8 @@
 
 package com.hp.jipp.encoding
 
-import java.util.regex.Pattern
 import com.hp.jipp.model.MediaCol
+import java.util.regex.Pattern
 
 object MediaSizes {
     private val widthHeightPattern = Pattern.compile(

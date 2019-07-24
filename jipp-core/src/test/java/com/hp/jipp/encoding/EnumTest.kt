@@ -1,10 +1,8 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.encoding.Cycler.cycle
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.* // ktlint-disable no-wildcard-imports
-
-import com.hp.jipp.encoding.Cycler.* // ktlint-disable no-wildcard-imports
 
 class EnumTest {
     /** An enumeration of possible printer states  */

@@ -28,10 +28,10 @@ data class IppPacket constructor(
         vararg groups: AttributeGroup
     ) : this(versionNumber, code, requestId, groups.toList())
 
-    constructor(status: Status, requestId: Int, vararg groups: AttributeGroup):
+    constructor(status: Status, requestId: Int, vararg groups: AttributeGroup) :
         this(code = status.code, requestId = requestId, attributeGroups = groups.toList())
 
-    constructor(operation: Operation, requestId: Int, vararg groups: AttributeGroup):
+    constructor(operation: Operation, requestId: Int, vararg groups: AttributeGroup) :
         this(code = operation.code, requestId = requestId, attributeGroups = groups.toList())
 
     /** Return this response packet's code as a [Status]. */

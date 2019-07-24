@@ -3,6 +3,7 @@
 
 package pwg
 
+import PageTest
 import com.hp.jipp.model.Orientation
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
@@ -15,13 +16,13 @@ import com.hp.jipp.pdl.pwg.PwgReader
 import com.hp.jipp.pdl.pwg.PwgSettings
 import com.hp.jipp.pdl.pwg.PwgWriter
 import com.hp.jipp.util.toWrappedHexString
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.ByteWindow
 import util.RandomDocument
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
 
 class PwgWriterTest {
     @Test

@@ -3,9 +3,9 @@
 
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderablePage
+import kotlin.math.min
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.math.min
 
 class PageTest {
     @Test fun generate() {

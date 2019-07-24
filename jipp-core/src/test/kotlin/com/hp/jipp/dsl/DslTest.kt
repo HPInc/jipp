@@ -10,10 +10,10 @@ import com.hp.jipp.model.MediaCol
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
 import com.hp.jipp.model.Types
+import java.net.URI
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.net.URI
 
 class DslTest {
     private val uri = URI.create("ipp://192.168.0.101:631/ipp/print")
