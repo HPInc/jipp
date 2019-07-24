@@ -5,7 +5,6 @@ import com.hp.jipp.encoding.IntOrIntRange
 import com.hp.jipp.encoding.MediaSizes
 import com.hp.jipp.encoding.Name
 import com.hp.jipp.encoding.Tag
-import com.hp.jipp.encoding.Text
 import com.hp.jipp.model.BindingType
 import com.hp.jipp.model.Media
 import com.hp.jipp.model.MediaCol
