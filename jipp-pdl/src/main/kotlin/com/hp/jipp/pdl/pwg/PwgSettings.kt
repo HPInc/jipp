@@ -16,7 +16,7 @@ import com.hp.jipp.pdl.isEven
 /**
  * Provide settings for PWG-Raster output.
  */
-data class PwgSettings(
+data class PwgSettings @JvmOverloads constructor(
     /** Ordinary output settings. */
     val output: OutputSettings = OutputSettings(),
 

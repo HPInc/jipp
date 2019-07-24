@@ -1,5 +1,15 @@
 package sample.jrender;
 
+import com.hp.jipp.model.MediaSource;
+import com.hp.jipp.model.Sides;
+import com.hp.jipp.pdl.ColorSpace;
+import com.hp.jipp.pdl.OutputSettings;
+import com.hp.jipp.pdl.RenderableDocument;
+import com.hp.jipp.pdl.RenderablePage;
+import com.hp.jipp.pdl.pclm.PclmSettings;
+import com.hp.jipp.pdl.pclm.PclmWriter;
+import com.hp.jipp.pdl.pwg.PwgSettings;
+import com.hp.jipp.pdl.pwg.PwgWriter;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -11,26 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
-
-import com.hp.jipp.model.MediaSource;
-import com.hp.jipp.model.PwgRasterDocumentSheetBack;
-import com.hp.jipp.model.Sides;
-import com.hp.jipp.pdl.ColorSpace;
-import com.hp.jipp.pdl.OutputSettings;
-import com.hp.jipp.pdl.RenderableDocument;
-import com.hp.jipp.pdl.RenderablePage;
-import com.hp.jipp.pdl.pclm.PclmSettings;
-import com.hp.jipp.pdl.pclm.PclmWriter;
-import com.hp.jipp.pdl.pwg.PwgSettings;
-import com.hp.jipp.pdl.pwg.PwgWriter;
 
 class Main {
     private static final int DPI = 300;
@@ -53,11 +49,8 @@ class Main {
         ColorSpace colorSpace = convertImageTypeToColorSpace(IMAGE_TYPE);
 
         try (PDDocument document = PDDocument.load(pdfInputStream)) {
-
             PDFRenderer pdfRenderer = new PDFRenderer(document);
-
             PDPageTree pages = document.getPages();
-
             List<RenderablePage> renderablePages = new ArrayList<>();
 
             for (int pageIndex = 0; pageIndex < pages.getCount(); pageIndex++) {
@@ -130,7 +123,7 @@ class Main {
                                                      ColorSpace colorSpace, OutputStream outputStream) throws IOException {
 
         OutputSettings outputSettings = new OutputSettings(colorSpace, Sides.oneSided, MediaSource.auto, null, false);
-        PclmSettings caps = new PclmSettings(outputSettings, 64, PwgRasterDocumentSheetBack.normal);
+        PclmSettings caps = new PclmSettings(outputSettings, 64);
 
         PclmWriter writer = new PclmWriter(outputStream, caps);
         writer.write(renderableDocument);
@@ -142,7 +135,7 @@ class Main {
                                                     ColorSpace colorSpace, OutputStream outputStream) throws IOException {
 
         OutputSettings outputSettings = new OutputSettings(colorSpace, Sides.oneSided, MediaSource.auto, null, false);
-        PwgSettings caps = new PwgSettings(outputSettings, PwgRasterDocumentSheetBack.normal);
+        PwgSettings caps = new PwgSettings(outputSettings);
 
         PwgWriter writer = new PwgWriter(outputStream, caps);
         writer.write(renderableDocument);
