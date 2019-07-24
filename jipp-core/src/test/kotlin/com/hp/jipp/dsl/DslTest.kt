@@ -3,6 +3,7 @@ package com.hp.jipp.dsl
 import com.hp.jipp.encoding.Cycler.cycle
 import com.hp.jipp.encoding.IntOrIntRange
 import com.hp.jipp.encoding.MediaSizes
+import com.hp.jipp.encoding.Name
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.BindingType
 import com.hp.jipp.model.Media
@@ -53,5 +54,29 @@ class DslTest {
         }
         Assert.assertNotEquals(listOf<IntOrIntRange>(),
             packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
+    }
+
+    @Test fun multiGroup() {
+        val packet = ippPacket(Operation.printJob) {
+            operationAttributes {
+                attr(Types.attributesCharset, "utf-8")
+                attr(Types.attributesNaturalLanguage, "en")
+            }
+            operationAttributes {
+                attr(Types.printerUri, uri)
+                attr(Types.attributesCharset, "utf-16") // replace extant
+                attr(Types.requestingUserName, "Test User")
+            }
+        }
+        // Only a single group is added
+        assertEquals(1, packet.attributeGroups.size)
+        assertEquals(Name("Test User"), packet.getValue(Tag.operationAttributes, Types.requestingUserName))
+
+        // Earlier entries are replaced
+        assertEquals("utf-16", packet.getValue(Tag.operationAttributes, Types.attributesCharset))
+
+        // Order is preserved
+        assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
+            Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
     }
 }
