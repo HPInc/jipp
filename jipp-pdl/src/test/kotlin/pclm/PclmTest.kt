@@ -7,10 +7,10 @@ import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
 import com.hp.jipp.pdl.pclm.PclmSettings
 import com.hp.jipp.pdl.pclm.PclmWriter
+import java.io.ByteArrayOutputStream
 import org.junit.Test
 import util.ByteWindow
 import util.RandomDocument
-import java.io.ByteArrayOutputStream
 
 class PclmTest {
 

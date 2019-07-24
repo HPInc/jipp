@@ -15,12 +15,12 @@ import com.hp.jipp.pdl.pwg.PwgReader
 import com.hp.jipp.pdl.pwg.PwgSettings
 import com.hp.jipp.pdl.pwg.PwgSettings.Companion.BITS_PER_BYTE
 import com.hp.jipp.pdl.pwg.PwgWriter
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
+import org.junit.Test
 
 class PwgReaderTest {
 

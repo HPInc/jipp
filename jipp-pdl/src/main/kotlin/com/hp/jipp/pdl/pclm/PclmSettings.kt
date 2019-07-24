@@ -7,7 +7,7 @@ import com.hp.jipp.model.PclmRasterBackSide
 import com.hp.jipp.pdl.OutputSettings
 
 /** Capabilities of the target device that are important when rendering */
-data class PclmSettings(
+data class PclmSettings @JvmOverloads constructor(
     /** Ordinary output settings. */
     val output: OutputSettings = OutputSettings(),
 

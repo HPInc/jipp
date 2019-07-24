@@ -15,8 +15,8 @@ import java.io.IOException
 import java.io.OutputStream
 import java.io.Writer
 import java.util.zip.DeflaterOutputStream
-import sun.nio.cs.StreamEncoder
 import kotlin.math.roundToInt
+import sun.nio.cs.StreamEncoder
 
 /**
  * Writes a document using PCLm page description language as specified in "Wi-Fi Peer-to-Peer

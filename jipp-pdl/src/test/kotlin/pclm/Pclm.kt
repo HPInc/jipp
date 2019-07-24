@@ -1,7 +1,7 @@
 package pclm
 
-import util.ByteWindow
 import java.math.BigDecimal
+import util.ByteWindow
 
 /** Parent class for all PCLM data types */
 interface PclmData {

@@ -4,11 +4,11 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.ParseError
+import com.hp.jipp.util.repeatUntilNull
 import java.io.BufferedInputStream
 import java.io.DataInputStream
-import java.io.InputStream
-import com.hp.jipp.util.repeatUntilNull
 import java.io.IOException
+import java.io.InputStream
 
 /** An [InputStream] which can read IPP packet data. */
 class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputStream(inputStream)) {

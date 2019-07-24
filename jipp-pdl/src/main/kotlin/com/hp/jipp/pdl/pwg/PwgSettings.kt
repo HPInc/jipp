@@ -4,6 +4,7 @@
 package com.hp.jipp.pdl.pwg
 
 import com.hp.jipp.model.MediaSource
+import com.hp.jipp.model.Orientation
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
@@ -15,12 +16,15 @@ import com.hp.jipp.pdl.isEven
 /**
  * Provide settings for PWG-Raster output.
  */
-data class PwgSettings(
+data class PwgSettings @JvmOverloads constructor(
     /** Ordinary output settings. */
     val output: OutputSettings = OutputSettings(),
 
     /** The coordinate system requested for the back side of two-sided sheets, from [PwgRasterDocumentSheetBack]. */
-    val sheetBack: String = PwgRasterDocumentSheetBack.normal
+    val sheetBack: String = PwgRasterDocumentSheetBack.normal,
+
+    /** The orientation used when printing the current job. */
+    val orientation: Orientation = Orientation.portrait
 ) {
     /** The calculated [PwgHeader.MediaPosition] for these settings. */
     val pwgMediaPosition = output.source.toPwgMediaPosition()
@@ -44,6 +48,7 @@ data class PwgSettings(
         return PwgHeader(
             hwResolutionX = doc.dpi,
             hwResolutionY = doc.dpi,
+            orientation = orientation.toPwgOrientation(),
             pageSizeX = page.widthPixels * POINTS_PER_INCH / doc.dpi,
             pageSizeY = page.heightPixels * POINTS_PER_INCH / doc.dpi,
             width = page.widthPixels,
@@ -81,6 +86,15 @@ data class PwgSettings(
     companion object {
         private const val POINTS_PER_INCH = 72
         const val BITS_PER_BYTE = 8
+
+        private fun Orientation.toPwgOrientation(): PwgHeader.Orientation =
+            when (this) {
+                Orientation.portrait -> PwgHeader.Orientation.Portrait
+                Orientation.reversePortrait -> PwgHeader.Orientation.ReversePortrait
+                Orientation.landscape -> PwgHeader.Orientation.Landscape
+                Orientation.reverseLandscape -> PwgHeader.Orientation.ReverseLandscape
+                else -> PwgHeader.Orientation.Portrait
+            }
 
         private fun String.toPwgMediaPosition() =
             when (this) {

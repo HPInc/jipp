@@ -267,7 +267,7 @@ class AttributeGroup(
 
         @Suppress("ReturnCount")
         private fun <T : Any> IppInputStream.readValue(codec: Codec<T>, tag: Tag, attributeName: String): Any {
-            // Apply a special case for enum values which we can match with all known [Enums]
+            // Apply a special case for enum values which we can match with all known [EnumTypes]
             if (tag == Tag.enumValue) {
                 EnumTypes.all[attributeName]?.also {
                     takeLength(INT_LENGTH)

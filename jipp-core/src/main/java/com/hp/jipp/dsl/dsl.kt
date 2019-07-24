@@ -21,18 +21,18 @@ object ippPacket {
     operator fun invoke(
         operation: Operation,
         requestId: Int = DEFAULT_REQUEST_ID,
-        init: InPacket.() -> Unit
+        func: InPacket.() -> Unit
     ) = with(InPacket(DEFAULT_VERSION_NUMBER, operation.code, requestId)) {
-        init()
+        func()
         build()
     }
 
     operator fun invoke(
         status: Status,
         requestId: Int = DEFAULT_REQUEST_ID,
-        init: InPacket.() -> Unit
+        func: InPacket.() -> Unit
     ) = with(InPacket(DEFAULT_VERSION_NUMBER, status.code, requestId)) {
-        init()
+        func()
         build()
     }
 }
@@ -46,73 +46,80 @@ class InPacket constructor(
     var code: Int,
     var requestId: Int = ippPacket.DEFAULT_REQUEST_ID
 ) {
-    private val groups = ArrayList<AttributeGroup>()
+    private val groups = ArrayList<InAttributeGroup>()
 
-    /** Allow code to be set/get as a status */
-    private var status: Status
+    /** Allow code to be set/get as a status (for responses). */
+    var status: Status
         set(value) { code = value.code }
         get() = Status[code]
 
-    /** Add a new attribute group to the packet */
-    fun group(tag: Tag, init: InAttributeGroup.() -> Unit) {
-        groups.add(group.invoke(tag, init))
+    /** Adds or appends to an attribute group of [tag]. */
+    fun group(tag: Tag, func: InAttributeGroup.() -> Unit) {
+        groups.find { it.tag == tag }?.also { inGroup ->
+            inGroup.func()
+        } ?: run {
+            InAttributeGroup(tag).also {
+                groups.add(it)
+                it.func()
+            }
+        }
     }
 
-    /** Add an operation attributes group */
-    fun operationAttributes(init: InAttributeGroup.() -> Unit) {
-        groups.add(group.invoke(Tag.operationAttributes, init))
+    /** Add or appends to the operation attributes group. */
+    fun operationAttributes(func: InAttributeGroup.() -> Unit) {
+        group(Tag.operationAttributes, func)
     }
 
-    /** Add a job attributes group. */
-    fun jobAttributes(init: InAttributeGroup.() -> Unit) {
-        groups.add(group.invoke(Tag.jobAttributes, init))
+    /** Add or appends to the job attributes group. */
+    fun jobAttributes(func: InAttributeGroup.() -> Unit) {
+        group(Tag.jobAttributes, func)
     }
 
-    /** Add a printer attributes group. */
-    fun printerAttributes(init: InAttributeGroup.() -> Unit) {
-        groups.add(group.invoke(Tag.printerAttributes, init))
+    /** Add or appends to the printer attributes group. */
+    fun printerAttributes(func: InAttributeGroup.() -> Unit) {
+        group(Tag.printerAttributes, func)
     }
 
-    /** Add an unsupported attributes group. */
-    fun unsupportedAttributes(init: InAttributeGroup.() -> Unit) {
-        groups.add(group.invoke(Tag.unsupportedAttributes, init))
+    /** Add or appends to the unsupported attributes group. */
+    fun unsupportedAttributes(func: InAttributeGroup.() -> Unit) {
+        group(Tag.unsupportedAttributes, func)
     }
 
     /** Build the final packet with current values */
-    fun build(): IppPacket = IppPacket(versionNumber, code, requestId, groups)
+    fun build(): IppPacket = IppPacket(versionNumber, code, requestId, groups.map { it.build() })
 }
 
-/** DSL for defining an AttributeGroup */
+/** DSL for defining an [AttributeGroup]. */
 @Suppress("ClassName", "ClassNaming")
 object group {
-    operator fun invoke(tag: Tag, init: InAttributeGroup.() -> Unit): AttributeGroup {
+    operator fun invoke(tag: Tag, func: InAttributeGroup.() -> Unit): AttributeGroup {
         val context = InAttributeGroup(tag)
-        context.init()
+        context.func()
         return context.build()
     }
 }
 
 @IppDslMarker
 class InAttributeGroup internal constructor(var tag: Tag) : InAttributes() {
-    /** Build the final attribute group */
-    internal fun build(): AttributeGroup = AttributeGroup(tag, attributes.toList())
+    /** Build the final attribute group. */
+    internal fun build(): AttributeGroup = AttributeGroup(tag, attributes.values.toList())
 }
 
-/** Any context which can receive attributes */
+/** Any context which can receive attributes. */
 sealed class InAttributes {
-    internal val attributes = ArrayList<Attribute<*>>()
+    internal val attributes = mutableMapOf<AttributeType<*>, Attribute<*>>()
 
-    /** Add one or more attributes to the current context */
+    /** Add a list of attributes to append or replace in the current context. */
+    fun attr(toAdd: List<Attribute<*>>) {
+        attributes.putAll(toAdd.map { it.type!! to it })
+    }
+
+    /** Add one or more attributes to be appended or replaced in the current context. */
     fun attr(vararg attribute: Attribute<*>) {
         attr(attribute.toList())
     }
 
-    /** Add a list of attributes to the current context */
-    fun attr(attributes: List<Attribute<*>>) {
-        this.attributes.addAll(attributes)
-    }
-
-    /** Add an attribute to the group having one or more values */
+    /** Add or replace an attribute to the group having one or more values. */
     fun <T : Any> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
         if (values.isEmpty()) {
             // Note: must be listOf here or we end up with List<Object> during vararg conversion
@@ -122,6 +129,7 @@ sealed class InAttributes {
         }
     }
 
+    /** Add or replace an attribute to the group having one or more values. */
     fun attr(attributeType: NameType, value: String, vararg values: String) {
         if (values.isEmpty()) {
             attr(attributeType.of(value))
@@ -130,6 +138,7 @@ sealed class InAttributes {
         }
     }
 
+    /** Add or replace an attribute to the group having one or more values. */
     fun attr(attributeType: TextType, value: String, vararg values: String) {
         if (values.isEmpty()) {
             attr(attributeType.of(value))
