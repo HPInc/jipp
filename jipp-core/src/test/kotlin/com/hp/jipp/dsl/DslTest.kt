@@ -58,7 +58,7 @@ class DslTest {
             packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
     }
 
-    @Test fun multiGroup() {
+    @Test fun `extend a group`() {
         val packet = ippPacket(Operation.printJob) {
             // We can get and set the status if we want to
             assertEquals(Operation.printJob.code, status.code)
@@ -67,7 +67,7 @@ class DslTest {
                 attr(Types.attributesCharset, "utf-8")
                 attr(Types.attributesNaturalLanguage, "en")
             }
-            operationAttributes {
+            operationAttributes(extend = true) {
                 attr(Types.printerUri, uri)
                 attr(Types.attributesCharset, "utf-16") // replace extant
                 attr(Types.requestingUserName, "Test User")

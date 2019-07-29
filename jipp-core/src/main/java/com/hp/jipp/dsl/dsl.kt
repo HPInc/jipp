@@ -53,9 +53,16 @@ class InPacket constructor(
         set(value) { code = value.code }
         get() = Status[code]
 
-    /** Adds or appends to an attribute group of [tag]. */
-    fun group(tag: Tag, func: InAttributeGroup.() -> Unit) {
-        groups.find { it.tag == tag }?.also { inGroup ->
+    /** Adds an attribute group of [tag]. */
+    fun group(
+        /** Tag of group to add. */
+        tag: Tag,
+        /** If true and a group with the same tag exists, extends that group with func(). */
+        extend: Boolean = false,
+        /** Function to execute on the new group. */
+        func: InAttributeGroup.() -> Unit
+    ) {
+        groups.find { extend && it.tag == tag }?.also { inGroup ->
             inGroup.func()
         } ?: run {
             InAttributeGroup(tag).also {
@@ -66,23 +73,23 @@ class InPacket constructor(
     }
 
     /** Add or appends to the operation attributes group. */
-    fun operationAttributes(func: InAttributeGroup.() -> Unit) {
-        group(Tag.operationAttributes, func)
+    fun operationAttributes(extend: Boolean = false, func: InAttributeGroup.() -> Unit) {
+        group(Tag.operationAttributes, extend, func)
     }
 
     /** Add or appends to the job attributes group. */
-    fun jobAttributes(func: InAttributeGroup.() -> Unit) {
-        group(Tag.jobAttributes, func)
+    fun jobAttributes(extend: Boolean = false, func: InAttributeGroup.() -> Unit) {
+        group(Tag.jobAttributes, extend, func)
     }
 
     /** Add or appends to the printer attributes group. */
-    fun printerAttributes(func: InAttributeGroup.() -> Unit) {
-        group(Tag.printerAttributes, func)
+    fun printerAttributes(extend: Boolean = false, func: InAttributeGroup.() -> Unit) {
+        group(Tag.printerAttributes, extend, func)
     }
 
     /** Add or appends to the unsupported attributes group. */
-    fun unsupportedAttributes(func: InAttributeGroup.() -> Unit) {
-        group(Tag.unsupportedAttributes, func)
+    fun unsupportedAttributes(extend: Boolean = false, func: InAttributeGroup.() -> Unit) {
+        group(Tag.unsupportedAttributes, extend, func)
     }
 
     /** Build the final packet with current values */

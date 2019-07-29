@@ -1,5 +1,8 @@
 # API Changes
 
+## 0.6.18
+* Allow both multiple groups and extensions to existing groups (follow up to #62).
+
 ## 0.6.17
 * Pass orientation into `PwgHeader` (#59).
 * More flexible Kotlin DLS (#62).
