@@ -25,7 +25,7 @@ open class CollectionType<T : AttributeCollection>(
 
     companion object {
 
-        val codec = AttributeGroup.codec<AttributeCollection>(Tag.beginCollection, {
+        val codec = Codec<AttributeCollection>(Tag.beginCollection, {
                 skipValueBytes()
                 UntypedCollection(readCollectionAttributes())
             }, {
@@ -35,9 +35,9 @@ open class CollectionType<T : AttributeCollection>(
                     writeShort(0)
                     writeString(attribute.name)
                     /** Write the attribute with a blank name */
-                    writeAttribute(attribute, name = "")
+                    writeAttribute(this, attribute, name = "")
                 }
-                writeAttribute(endCollectionAttribute)
+                writeAttribute(this, endCollectionAttribute)
             })
 
         private val endCollectionAttribute = EmptyAttribute("", Tag.endCollection)

@@ -11,7 +11,7 @@ open class ResolutionType(override val name: String) : AttributeType<Resolution>
     override fun toString() = "ResolutionType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec(Tag.resolution, {
+        val codec = Codec(Tag.resolution, {
             takeLength(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH + AttributeGroup.BYTE_LENGTH)
             Resolution(readInt(), readInt(), ResolutionUnit[readByte().toInt()])
         }, {

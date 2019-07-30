@@ -9,7 +9,7 @@ open class IntType(override val name: String) : AttributeType<Int> {
         value as? Int
 
     companion object {
-        val codec = AttributeGroup.codec(Tag.integerValue, {
+        val codec = Codec(Tag.integerValue, {
             takeLength(AttributeGroup.INT_LENGTH)
             readInt()
         }, {

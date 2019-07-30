@@ -13,7 +13,7 @@ open class OctetsType(override val name: String) : AttributeType<ByteArray> {
     override fun toString() = "OctetsType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec(Tag.octetString, {
+        val codec = Codec(Tag.octetString, {
             readValueBytes()
         }, {
             writeValueBytes(it)

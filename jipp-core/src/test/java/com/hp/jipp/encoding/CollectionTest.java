@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static com.hp.jipp.model.Types.finishingsColActual;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +40,7 @@ public class CollectionTest {
 
     @Test
     public void untypedCollection() throws Exception {
-        AttributeGroup group = cycle(new AttributeGroup(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
+        AttributeGroup group = cycle(groupOf(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
 
         // We can use an untypedColType to extract the full data received for the attribute
         UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
@@ -52,7 +53,7 @@ public class CollectionTest {
 
     @Test
     public void untypedCover() throws Exception {
-        AttributeGroup group = cycle(new AttributeGroup(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
+        AttributeGroup group = cycle(groupOf(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
         // We can use an untypedColType to extract the full data received for the attribute
         UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);

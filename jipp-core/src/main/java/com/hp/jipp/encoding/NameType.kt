@@ -22,7 +22,7 @@ open class NameType(override val name: String) : AttributeType<Name> {
     override fun toString() = "NameType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec({ it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage }, {
+        val codec = Codec({ it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage }, {
             if (it == Tag.nameWithLanguage) {
                 readShort()
                 val lang = readString() // Lang comes first

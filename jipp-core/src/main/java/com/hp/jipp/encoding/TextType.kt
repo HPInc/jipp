@@ -22,7 +22,7 @@ open class TextType(override val name: String) : AttributeType<Text> {
     override fun toString() = "TextType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec({ it == Tag.textWithLanguage || it == Tag.textWithoutLanguage }, {
+        val codec = Codec({ it == Tag.textWithLanguage || it == Tag.textWithoutLanguage }, {
             if (it == Tag.textWithLanguage) {
                 readShort()
                 val lang = readString() // Lang comes first

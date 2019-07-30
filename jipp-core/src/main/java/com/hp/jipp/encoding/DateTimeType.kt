@@ -3,7 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.AttributeGroup.Companion.codec
 import com.hp.jipp.encoding.AttributeGroup.Companion.toUint
 import com.hp.jipp.util.ParseError
 import java.util.* // ktlint-disable
@@ -18,7 +17,7 @@ open class DateTimeType(override val name: String) : AttributeType<Calendar> {
     override fun toString() = "DateTimeType($name)"
 
     companion object {
-        val codec = codec<Calendar>(Tag.dateTime, {
+        val codec = Codec<Calendar>(Tag.dateTime, {
             val bytes = readValueBytes()
             if (bytes.size != AttributeGroup.CALENDAR_LENGTH) {
                 throw ParseError("Invalid byte count " + bytes.size +
