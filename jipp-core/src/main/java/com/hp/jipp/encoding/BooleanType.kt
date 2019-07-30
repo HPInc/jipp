@@ -11,7 +11,7 @@ open class BooleanType(override val name: String) : AttributeType<Boolean> {
     override fun toString() = "BooleanType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec(Tag.booleanValue, {
+        val codec = Codec(Tag.booleanValue, {
             takeLength(AttributeGroup.BYTE_LENGTH)
             readByte() != 0.toByte()
         }, {

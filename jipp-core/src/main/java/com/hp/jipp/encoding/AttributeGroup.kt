@@ -11,46 +11,27 @@ import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import com.hp.jipp.util.repeatUntilNull
 import java.io.IOException
-import java.util.* // ktlint-disable
 
 /**
- * A tagged group of attributes.
+ * A tagged list of attributes. Only one attribute of a given type may appear in the group, although each attribute
+ * may contain 0 or more values.
  */
-@Suppress("TooManyFunctions") // Necessary
-class AttributeGroup(
-    val tag: Tag,
-    private val attributes: List<Attribute<*>>
-) : PrettyPrintable, List<Attribute<*>> by attributes {
-
-    constructor(tag: Tag, vararg attribute: Attribute<*>) : this(tag, attribute.toList())
-
-    init {
-        if (!tag.isDelimiter) {
-            throw BuildError("Group tag $tag must be a delimiter")
-        }
-        // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-        // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
-        val names = HashSet<String>()
-        for (attribute in attributes) {
-            val name = attribute.name
-            if (names.contains(name)) {
-                throw BuildError("Attribute Group contains more than one '$name` in $attributes")
-            }
-            names.add(name)
-        }
-    }
-
-    /** A map of of attribute names to matching attributes found in this group. */
-    private val map: Map<String, Attribute<*>> by lazy {
-        attributes.map { it.name to it }.toMap()
-    }
+interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
+    val tag: Tag
 
     /** Return the attribute corresponding to the specified [name]. */
-    operator fun get(name: String): Attribute<*>? = map[name]
+    operator fun get(name: String): Attribute<*>?
+
+    /** Return the attribute as conforming to the supplied attribute type. */
+    operator fun <T : Any> get(type: AttributeType<T>): Attribute<T>?
 
     /** Return all values found having this attribute type. */
     fun <T : Any> getValues(type: AttributeType<T>): List<T> =
         get(type) ?: listOf()
+
+    /** Return the first value of an attribute matching [type]. */
+    fun <T : Any> getValue(type: AttributeType<T>): T? =
+        get(type)?.firstOrNull()
 
     /** Return the string form of any values present for this attribute [type]. */
     fun <T : Any> getStrings(type: AttributeType<T>): List<String> =
@@ -60,21 +41,11 @@ class AttributeGroup(
     fun <T : Any> getString(type: AttributeType<T>): String? =
         get(type)?.strings()?.firstOrNull()
 
-    /** Return the attribute as conforming to the supplied attribute type. */
-    operator fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =
-        map[type.name]?.let {
-            type.coerce(it)
-        }
-
-    /** Return the first value of an attribute matching [type]. */
-    fun <T : Any> getValue(type: AttributeType<T>): T? =
-        get(type)?.get(0)
-
-    /** Write this group to the [IppOutputStream] */
+    /** Write this group to [output]. */
     @Throws(IOException::class)
     fun write(output: IppOutputStream) {
         output.writeByte(tag.code)
-        forEach { output.writeAttribute(it) }
+        forEach { writeAttribute(output, it) }
     }
 
     override fun print(printer: PrettyPrinter) {
@@ -83,43 +54,47 @@ class AttributeGroup(
         printer.close()
     }
 
-    override fun equals(other: Any?) =
-        if (this === other) true else when (other) {
-            is AttributeGroup -> other.tag == tag && other.attributes == attributes
-            is List<*> -> attributes == other
-            else -> false
-        }
+    /** Return a copy of this attribute group in mutable form. */
+    fun toMutable(): MutableAttributeGroup =
+        mutableGroupOf(tag, this)
 
-    override fun hashCode(): Int {
-        // Note: tag is not included because we might need to hash this with other List objects
-        return attributes.hashCode()
-    }
-
-    override fun toString(): String {
-        return "AttributeGroup($tag, $attributes)"
-    }
-
+    @Suppress("TooManyFunctions")
     companion object {
         const val BYTE_LENGTH = 1
         const val INT_LENGTH = 4
         const val CALENDAR_LENGTH = 11
-        const val BYTE_MASK = 0xFF
+        private const val BYTE_MASK = 0xFF
 
+        /** Return a fixed group of attributes. */
         @JvmStatic
-        fun groupOf(tag: Tag, attributes: List<Attribute<*>>) =
-            AttributeGroup(tag, attributes)
+        fun groupOf(tag: Tag, attributes: List<Attribute<*>>): AttributeGroup =
+            AttributeGroupImpl(tag, attributes)
 
+        /** Return a fixed group of attributes. */
         @JvmStatic
-        fun groupOf(tag: Tag, vararg attributes: Attribute<*>) =
-            AttributeGroup(tag, attributes.toList())
+        fun groupOf(tag: Tag, vararg attributes: Attribute<*>): AttributeGroup =
+            groupOf(tag, attributes.toList())
+
+        /** Return a mutable group of attributes. */
+        @JvmStatic
+        fun mutableGroupOf(tag: Tag, attributes: List<Attribute<*>>): MutableAttributeGroup =
+            MutableAttributeGroupImpl(tag, attributes)
+
+        /** Return a mutable group of attributes. */
+        @JvmStatic
+        fun mutableGroupOf(tag: Tag, vararg attributes: Attribute<*>): MutableAttributeGroup =
+            mutableGroupOf(tag, attributes.toList())
 
         /** Codecs for core types */
         private val codecs by lazy {
+            // Note: lazy is required for late evaluation
+            // Also note: codecs are defined and referenced internally here to avoid problems passing
+            // them through the Collection codec, which also needs them.
             listOf(
                 IntType.codec,
                 BooleanType.codec,
                 EnumType.codec,
-                codec(Tag.octetString, {
+                Codec(Tag.octetString, {
                     readValueBytes()
                 }, {
                     writeValueBytes(it)
@@ -133,7 +108,7 @@ class AttributeGroup(
                 NameType.codec,
                 OctetsType.codec,
                 KeyValues.codec,
-                codec({ it.isOctetString || it.isInteger }, { tag ->
+                Codec({ it.isOctetString || it.isInteger }, { tag ->
                     // Used when we don't know how to interpret the content. Even with integers,
                     // we don't know whether to expect a short or byte or int or whatever.
                     OtherOctets(tag, readValueBytes())
@@ -143,7 +118,7 @@ class AttributeGroup(
                 KeywordType.codec,
                 KeywordOrNameType.codec, // Must follow both Keyword and Name
                 UriType.codec,
-                codec({ it.isCharString }, { tag ->
+                Codec({ it.isCharString }, { tag ->
                     // Handle other harder-to-type values here:
                     // uriScheme, naturalLanguage, mimeMediaType, charset etc.
                     OtherString(tag, readString())
@@ -164,54 +139,7 @@ class AttributeGroup(
                 .toMap()
         }
 
-        /** Reads/writes values of [T]. */
-        interface Codec<T> {
-            val cls: Class<T>
-            /** Return true if this codec handles the specified tag. */
-            fun handlesTag(tag: Tag): Boolean
-            /** Read a value from the input stream */
-            fun readValue(input: IppInputStream, startTag: Tag): T
-            /** Write value (assuming it is an instance of [T]). */
-            fun writeValue(output: IppOutputStream, value: Any)
-            /** The tag to use for a particular value. */
-            fun tagOf(value: Any): Tag
-        }
-
         fun Byte.toUint(): Int = this.toInt() and BYTE_MASK
-
-        /** Construct a codec handling [TaggedValue] values, covering any number of [Tag] input values. */
-        inline fun <reified T : TaggedValue> codec(
-            crossinline handlesTagFunc: (Tag) -> Boolean,
-            crossinline readAttrFunc: IppInputStream.(startTag: Tag) -> T,
-            crossinline writeAttrFunc: IppOutputStream.(value: T) -> Unit
-        ) =
-            object : Codec<T> {
-                override val cls: Class<T> = T::class.java
-                override fun tagOf(value: Any) = (value as T).tag
-                override fun handlesTag(tag: Tag) = handlesTagFunc(tag)
-                override fun readValue(input: IppInputStream, startTag: Tag): T =
-                    input.readAttrFunc(startTag)
-                override fun writeValue(output: IppOutputStream, value: Any) {
-                    output.writeAttrFunc(value as T)
-                }
-            }
-
-        /** Construct a codec handling values encoded by a particular [Tag]. */
-        inline fun <reified T> codec(
-            valueTag: Tag,
-            crossinline readAttrFunc: IppInputStream.(startTag: Tag) -> T,
-            crossinline writeAttrFunc: IppOutputStream.(value: T) -> Unit
-        ) =
-            object : Codec<T> {
-                override val cls: Class<T> = T::class.java
-                override fun tagOf(value: Any) = valueTag
-                override fun handlesTag(tag: Tag) = valueTag == tag
-                override fun readValue(input: IppInputStream, startTag: Tag): T =
-                    input.readAttrFunc(startTag)
-                override fun writeValue(output: IppOutputStream, value: Any) {
-                    output.writeAttrFunc(value as T)
-                }
-            }
 
         /**
          * Read and return the next tag in the input.
@@ -225,7 +153,7 @@ class AttributeGroup(
         @JvmStatic
         @Throws(IOException::class)
         fun read(input: IppInputStream, groupTag: Tag) =
-            AttributeGroup(groupTag, { input.readNextAttribute() }.repeatUntilNull().toList())
+            groupOf(groupTag, { input.readNextAttribute() }.repeatUntilNull().toList())
 
         /** Read the next attribute if present */
         fun IppInputStream.readNextAttribute(): Attribute<*>? =
@@ -307,32 +235,39 @@ class AttributeGroup(
             isDelimiter || isOutOfBand || this == Tag.memberAttributeName || this == Tag.endCollection
 
         /** Write the attribute to this stream. */
-        fun IppOutputStream.writeAttribute(attribute: Attribute<*>, name: String = attribute.name) {
-            attribute.tag?.also {
-                // Write the out-of-band tag
-                writeTag(it)
-                writeString(name)
-                writeShort(0) // 0 value length = no values
-            } ?: run {
-                var nameToWrite = name
-                attribute.forEach { value ->
-                    val encoder = clsToCodec[value.javaClass]
-                        ?: codecs.firstOrNull { it.cls.isAssignableFrom(value.javaClass) }
-                        ?: throw BuildError("Cannot handle $value: ${value.javaClass}")
-
-                    // If the attribute has an enforced tag then apply it
-                    val tag = if (attribute.type is StringType) {
-                        (attribute.type as StringType).tag
-                    } else {
-                        encoder.tagOf(value)
-                    }
-                    writeTag(tag)
-                    writeString(nameToWrite)
-                    encoder.writeValue(this, value)
-
-                    // Only write attribute name for the first item
-                    nameToWrite = ""
+        fun writeAttribute(stream: IppOutputStream, attribute: Attribute<*>, name: String = attribute.name) {
+            with(stream) {
+                attribute.tag?.also {
+                    // Write the out-of-band tag
+                    writeTag(it)
+                    writeString(name)
+                    writeShort(0) // 0 value length = no values
+                } ?: run {
+                    writeValueAttribute(attribute, name)
                 }
+            }
+        }
+
+        /** Write an attribute having value(s) to this stream. */
+        private fun IppOutputStream.writeValueAttribute(attribute: Attribute<*>, name: String) {
+            var nameToWrite = name
+            attribute.forEach { value ->
+                val encoder = clsToCodec[value.javaClass]
+                    ?: codecs.firstOrNull { it.cls.isAssignableFrom(value.javaClass) }
+                    ?: throw BuildError("Cannot handle $value: ${value.javaClass}")
+
+                // If the attribute has an enforced tag then apply it
+                val tag = if (attribute.type is StringType) {
+                    (attribute.type as StringType).tag
+                } else {
+                    encoder.tagOf(value)
+                }
+                writeTag(tag)
+                writeString(nameToWrite)
+                encoder.writeValue(this, value)
+
+                // Only write attribute name for the first item
+                nameToWrite = ""
             }
         }
     }

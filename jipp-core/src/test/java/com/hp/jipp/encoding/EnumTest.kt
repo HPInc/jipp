@@ -1,5 +1,6 @@
 package com.hp.jipp.encoding
 
+import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 import com.hp.jipp.encoding.Cycler.cycle
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -37,6 +38,6 @@ class EnumTest {
     @Throws(Exception::class)
     fun fetchFromGroup() {
         assertEquals(listOf(Sample.Two, Sample.Three),
-                cycle(AttributeGroup(Tag.jobAttributes, mySample.of(Sample.Two, Sample.Three)))[mySample])
+                cycle(groupOf(Tag.jobAttributes, mySample.of(Sample.Two, Sample.Three)))[mySample])
     }
 }
