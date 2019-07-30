@@ -19,7 +19,7 @@ public class Cycler {
 
     @SuppressWarnings("unchecked")
     public static <T> Attribute<T> cycle(Attribute<T> attribute) throws IOException {
-        return (Attribute<T>) cycle(new AttributeGroup(Tag.printerAttributes, Collections.singletonList(attribute)))
+        return (Attribute<T>) cycle(groupOf(Tag.printerAttributes, Collections.singletonList(attribute)))
                 .get(0);
     }
 

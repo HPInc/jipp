@@ -20,7 +20,8 @@ class DslTest {
     private val uri = URI.create("ipp://192.168.0.101:631/ipp/print")
     private val mediaSize = MediaSizes.parse(Media.naLetter8p5x11in)!!
 
-    @Test fun packetTest() {
+    @Test
+    fun packetTest() {
         val packet = ippPacket(Operation.printJob) {
             operationAttributes {
                 attr(Types.attributesCharset, "utf-8")
@@ -48,7 +49,8 @@ class DslTest {
         assertEquals("A description of the document", cycled[Tag.jobAttributes]?.getValue(Types.documentMessage)?.value)
     }
 
-    @Test fun intOrIntRange() {
+    @Test
+    fun intOrIntRange() {
         val packet = ippPacket(Status.successfulOk) {
             group(Tag.printerAttributes) {
                 attr(Types.numberUpSupported, IntOrIntRange(5..6))
@@ -58,7 +60,8 @@ class DslTest {
             packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
     }
 
-    @Test fun `extend a group`() {
+    @Test
+    fun `extend a group`() {
         val packet = ippPacket(Operation.printJob) {
             // We can get and set the status if we want to
             assertEquals(Operation.printJob.code, status.code)
@@ -71,6 +74,38 @@ class DslTest {
                 attr(Types.printerUri, uri)
                 attr(Types.attributesCharset, "utf-16") // replace extant
                 attr(Types.requestingUserName, "Test User")
+            }
+        }
+        // Status and code go in the same place
+        assertEquals(Status.clientErrorBadRequest.code, packet.code)
+
+        // Only a single group is added
+        assertEquals(1, packet.attributeGroups.size)
+        assertEquals(Name("Test User"), packet.getValue(Tag.operationAttributes, Types.requestingUserName))
+
+        // Earlier entries are replaced
+        assertEquals("utf-16", packet.getValue(Tag.operationAttributes, Types.attributesCharset))
+
+        // Order is preserved
+        assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
+            Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
+    }
+
+    @Test
+    fun `modify a group`() {
+        val packet = ippPacket(Operation.printJob) {
+            // We can get and set the status if we want to
+            assertEquals(Operation.printJob.code, status.code)
+            status = Status.clientErrorBadRequest
+            operationAttributes {
+                // Try a variety of accessors
+                this += Types.attributesCharset.of("utf-8")
+                this[Types.attributesNaturalLanguage] = "en"
+            }
+            operationAttributes(extend = true) {
+                add(Types.printerUri.of(uri))
+                addAll(listOf(Types.attributesCharset.of("utf-16"))) // replace prior attributesCharset
+                attr(listOf(Types.requestingUserName.of("Test User")))
             }
         }
         // Status and code go in the same place

@@ -31,7 +31,7 @@ class IntOrIntRangeType(
     override fun toString() = "IntOrIntRangeType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec<IntOrIntRange>({ false }, {
+        val codec = Codec<IntOrIntRange>({ false }, {
             throw IllegalArgumentException("Cannot read")
         }, {
             if (it.tag == Tag.integerValue) {

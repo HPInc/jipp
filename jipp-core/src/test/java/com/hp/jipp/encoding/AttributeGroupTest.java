@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
+import static com.hp.jipp.encoding.AttributeGroup.mutableGroupOf;
 import static com.hp.jipp.encoding.Cycler.coverList;
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static com.hp.jipp.encoding.Tag.operationAttributes;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertNull;
 public class AttributeGroupTest {
 
     @Test public void emptyGroup() throws IOException {
-        cycle(new AttributeGroup(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList()));
+        cycle(groupOf(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList()));
     }
 
     @Test public void emptyGroupOf() throws IOException {
@@ -32,7 +33,7 @@ public class AttributeGroupTest {
     @Test public void groupExtract() {
         AttributeType<Object> untypedDocumentStateType = new UnknownAttribute.Type("document-state");
 
-        AttributeGroup group = new AttributeGroup(operationAttributes,
+        AttributeGroup group = groupOf(operationAttributes,
                 untypedDocumentStateType.of(new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6)));
 
         DocumentState.Type documentStateType = new DocumentState.Type("document-state");
@@ -79,7 +80,7 @@ public class AttributeGroupTest {
 
     @Test(expected = BuildError.class)
     public void badDelimiter() throws Exception {
-        AttributeGroup group = new AttributeGroup(Tag.adminDefine);
+        AttributeGroup group = groupOf(Tag.adminDefine);
     }
 
     @Test
@@ -141,5 +142,19 @@ public class AttributeGroupTest {
         assertNotEquals(group, groupOf(Tag.printerAttributes,
                 Types.attributesCharset.of("utf-8","utf-16")));
         assertEquals(attributes.hashCode(), group.hashCode());
+    }
+
+    @Test
+    public void mutableEquality() throws Exception {
+        AttributeGroup group = groupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16"));
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8","utf-16"));
+        assertEquals(group, mutableGroup);
+        assertEquals(mutableGroup, group);
+        assertEquals(group, group.toMutable());
+
+        mutableGroup.add(Types.requestingUserName.of("test"));
+        assertNotEquals(group, mutableGroup);
     }
 }

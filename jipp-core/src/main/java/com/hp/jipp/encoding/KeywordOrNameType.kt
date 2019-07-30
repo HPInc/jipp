@@ -50,7 +50,7 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
     override fun toString() = "KeywordOrNameType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec<KeywordOrName>({ false }, {
+        val codec = Codec<KeywordOrName>({ false }, {
             throw IllegalArgumentException("This codec is not used for reading")
         }, {
             if (NameType.codec.handlesTag(it.tag)) {

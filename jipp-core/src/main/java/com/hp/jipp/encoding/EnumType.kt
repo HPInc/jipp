@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.AttributeGroup.Companion.codec
-
 /** An attribute type based on [Enum] type of [T]*/
 open class EnumType<T : Enum>(
     override val name: String,
@@ -23,7 +21,7 @@ open class EnumType<T : Enum>(
     override fun toString() = "EnumType($name)"
 
     companion object {
-        val codec = codec<Enum>(Tag.enumValue, {
+        val codec = Codec<Enum>(Tag.enumValue, {
             takeLength(AttributeGroup.INT_LENGTH)
             UntypedEnum(readInt())
         }, {

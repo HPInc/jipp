@@ -11,7 +11,7 @@ open class KeywordType(override val name: String) : AttributeType<String> {
     override fun toString() = "KeywordType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec(Tag.keyword, {
+        val codec = Codec(Tag.keyword, {
             readString()
         }, {
             writeString(it)

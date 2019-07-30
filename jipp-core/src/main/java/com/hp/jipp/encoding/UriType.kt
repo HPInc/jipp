@@ -14,7 +14,7 @@ open class UriType(override val name: String) : AttributeType<URI> {
     override fun toString() = "UriType($name)"
 
     companion object {
-        val codec = AttributeGroup.codec<URI>(Tag.uri, {
+        val codec = Codec<URI>(Tag.uri, {
             val uriString = readString()
             try {
                 URI.create(uriString)

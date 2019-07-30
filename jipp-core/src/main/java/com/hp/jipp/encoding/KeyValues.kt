@@ -35,7 +35,7 @@ class KeyValues(
     companion object {
         private const val ELEMENT_SEPARATOR = ";"
         private const val PART_SEPARATOR = "="
-        val codec = AttributeGroup.codec(Tag.octetString, {
+        val codec = Codec(Tag.octetString, {
             parse(readString())
         }, {
             // Write the original string, or fall back to pairs if _encoded is not present
