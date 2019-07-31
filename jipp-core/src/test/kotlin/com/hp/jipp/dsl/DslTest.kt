@@ -70,7 +70,7 @@ class DslTest {
                 attr(Types.attributesCharset, "utf-8")
                 attr(Types.attributesNaturalLanguage, "en")
             }
-            operationAttributes(extend = true) {
+            extend(Tag.operationAttributes) {
                 attr(Types.printerUri, uri)
                 attr(Types.attributesCharset, "utf-16") // replace extant
                 attr(Types.requestingUserName, "Test User")
@@ -102,7 +102,7 @@ class DslTest {
                 this += Types.attributesCharset.of("utf-8")
                 this[Types.attributesNaturalLanguage] = "en"
             }
-            operationAttributes(extend = true) {
+            extend(Tag.operationAttributes) {
                 add(Types.printerUri.of(uri))
                 addAll(listOf(Types.attributesCharset.of("utf-16"))) // replace prior attributesCharset
                 attr(listOf(Types.requestingUserName.of("Test User")))
@@ -121,5 +121,50 @@ class DslTest {
         // Order is preserved
         assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
             Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
+    }
+
+    @Test
+    fun `extend a non-existent group`() {
+        val packet = ippPacket(Operation.printJob) {
+            // Extend a tag that's not there
+            extend(Tag.printerAttributes) {
+                attr(Types.jobAccountId, "25")
+            }
+        }
+        assertEquals(Name("25"), packet.getValue(Tag.printerAttributes, Types.jobAccountId))
+    }
+
+    @Test
+    fun `add a group`() {
+        val operationGroup = group(Tag.operationAttributes) {
+            attr(Types.attributesNaturalLanguage, "en")
+        }
+        val packet = ippPacket(Operation.printJob) {
+            group(operationGroup)
+        }
+        assertEquals("en", packet.getValue(Tag.operationAttributes, Types.attributesNaturalLanguage))
+    }
+
+    @Test
+    fun `mess with packet fields`() {
+        val packet = ippPacket(Operation.printJob) {
+            operationAttributes { }
+            if (operation == Operation.printJob) {
+                operation = Operation.createJob
+            }
+            versionNumber = 2000
+            requestId++
+        }
+        assertEquals(Operation.createJob, packet.operation)
+        assertEquals(2000, packet.versionNumber)
+        assertEquals(ippPacket.DEFAULT_REQUEST_ID + 1, packet.requestId)
+    }
+
+    @Test
+    fun `set packet code directly`() {
+        val packet = ippPacket(Operation.printJob) {
+            code = Operation.createJob.code
+        }
+        assertEquals(Operation.createJob, packet.operation)
     }
 }

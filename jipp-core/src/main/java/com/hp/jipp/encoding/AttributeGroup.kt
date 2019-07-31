@@ -78,7 +78,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
         /** Return a mutable group of attributes. */
         @JvmStatic
         fun mutableGroupOf(tag: Tag, attributes: List<Attribute<*>>): MutableAttributeGroup =
-            MutableAttributeGroupImpl(tag, attributes)
+            MutableAttributeGroup(tag, attributes)
 
         /** Return a mutable group of attributes. */
         @JvmStatic

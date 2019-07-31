@@ -50,7 +50,7 @@ open class BaseAttribute<T : Any>(
         } else when (other) {
             is Attribute<*> ->
                 // When comparing an attribute, evaluate its name and tag in addition to values
-                other.name == name && other.tag == tag && values == other
+                other.name == name && other.tag == tag && values.stringinate() == other.stringinate()
             is List<*> ->
                 // When comparing against any other list, just compare values
                 values == other
@@ -59,6 +59,6 @@ open class BaseAttribute<T : Any>(
 
     override fun hashCode(): Int {
         // We do not consider name/tag when hashing because equals==true must also result in equal hashes
-        return values.hashCode()
+        return values.stringinate().hashCode()
     }
 }

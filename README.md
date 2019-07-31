@@ -39,8 +39,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.18'
-    compile 'com.hp.jipp:jipp-pdl:0.6.18' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.6.19'
+    compile 'com.hp.jipp:jipp-pdl:0.6.19' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -97,39 +97,7 @@ jrender-*/bin/jrender sample.pdf sample.pclm
 
 Until 1.0, APIs may still be changed in non-backwards-compatible ways.
 
-## Migration to v0.6.12
-
-* PCLM and PWG Raster got upgrades, in that they properly handle multi-page and duplex cases. You're only responsible for providing a normal, front-to-back RenderableDocument, and to pass along valid settings based on known printer attributes and user output requirements. The PDL library internally handles page re-ordering, page rotation, flipping, etc to provide the best possible output. As a result the `PwgCapabilities` and `PclmCapabilties` classes have been removed in favor of `PwgSettings` and `PclmSettings`.
-* `Attribute.unknown` etc was moved to `Attributes.unknown` for backwards-compatibility with Java.
-
-## Migration to v0.6.6
-
-* The `KeywordOrName` type was introduced to allow for fields that can legitimately contain either IANA-registered
-  keywords OR unregistered, locally-defined names. For example, `MediaCol.mediaType` must contain a KeywordOrName,
-  not simply a String (Keyword).
-
-## Migration to v0.6
-
-0.6 includes some API changes. Some changes may require changes in your code.
-
-* `Types` now includes all defined types as published as of 2018-04-06 at
-  [IANA](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml).
-* Collection types such as `MediaCol` are now expressed as POJO and are automatically constructed/deconstructed.
-* `com.hp.jipp.model.IppPacket` moved to `com.hp.jipp.encoding.IppPacket` so that all PWG generated code lives in `.model`.
-* Keyword attribute values now present as simple, untyped Strings. Allowed strings are provided in static objects
-  (e.g. `Media.java` defines all possible media types.)
-* The `MediaSize` type is removed in favor of Media strings. If needed, the `MediaSizes` utility class provides a method
-  to extract x- and y-dimensions from a Media keyword containing dimensions.
-* The `Attribute` class is now a `List` of attribute values, so it is no longer necessary to call `.getValues()`
-  to obtain them.
-* The `AttributeGroup` class is now a `List` of `Attribute<*>` so it may be iterated directly to access attributes it
-  contains.
-* Attributes of `Name` or `Text` types now appear in those types to allow clients to access language information if
-  present and to distinguish from ordinary keywords. The following additional methods may help to convert attribute
-  values to String:
-  * `Name.asString()` and `Text.asString()` are `Stringable` and extract the value in string form. `.getValue()` also does this.
-  * `Attribute.strings()`, `AttributeGroup.getStrings()`, and `IppPacket.getStrings()` do the same for all types.
-* `Status.ok` is now `Status.successfulOk`, etc.
+See [HISTORY.md](HISTORY.md) for more details.
 
 ## Dependencies
 

@@ -49,48 +49,57 @@ class InPacket constructor(
 ) {
     private val groups = ArrayList<MutableAttributeGroup>()
 
-    /** Allow code to be set/get as a status (for responses). */
+    /** Allow set/get of request [Operation] (stored in [code]). */
+    var operation: Operation
+        set(value) { code = value.code }
+        get() = Operation[code]
+
+    /** Allow set/get of response [Status] (stored in [code]). */
     var status: Status
         set(value) { code = value.code }
         get() = Status[code]
 
-    /** Adds an attribute group of [tag]. */
-    fun group(
-        /** Tag of group to add. */
-        tag: Tag,
-        /** If true and a group with the same tag exists, extends that group with func(). */
-        extend: Boolean = false,
-        /** Function to execute on the new group. */
-        func: MutableAttributeGroup.() -> Unit
-    ) {
-        groups.find { extend && it.tag == tag }?.also { inGroup ->
-            inGroup.func()
-        } ?: run {
-            mutableGroupOf(tag).also {
-                groups.add(it)
-                it.func()
-            }
+    /** Append a new [AttributeGroup] of [tag] as filled out by [func]. */
+    fun group(tag: Tag, func: MutableAttributeGroup.() -> Unit) {
+        mutableGroupOf(tag).also {
+            groups.add(it)
+            it.func()
         }
     }
 
+    /**
+     * If a group with [tag] exists, extend the last group matching [tag] with [func],
+     * otherwise add a new group.
+     */
+    fun extend(tag: Tag, func: MutableAttributeGroup.() -> Unit) {
+        groups.findLast { it.tag == tag }?.also { inGroup ->
+            inGroup.func()
+        } ?: group(tag, func)
+    }
+
+    /** Add a copy of [group] to the packet. */
+    fun group(group: AttributeGroup) {
+        groups.add(group.toMutable())
+    }
+
     /** Add or appends to the operation attributes group. */
-    fun operationAttributes(extend: Boolean = false, func: MutableAttributeGroup.() -> Unit) {
-        group(Tag.operationAttributes, extend, func)
+    fun operationAttributes(func: MutableAttributeGroup.() -> Unit) {
+        group(Tag.operationAttributes, func)
     }
 
     /** Add or appends to the job attributes group. */
-    fun jobAttributes(extend: Boolean = false, func: MutableAttributeGroup.() -> Unit) {
-        group(Tag.jobAttributes, extend, func)
+    fun jobAttributes(func: MutableAttributeGroup.() -> Unit) {
+        group(Tag.jobAttributes, func)
     }
 
     /** Add or appends to the printer attributes group. */
-    fun printerAttributes(extend: Boolean = false, func: MutableAttributeGroup.() -> Unit) {
-        group(Tag.printerAttributes, extend, func)
+    fun printerAttributes(func: MutableAttributeGroup.() -> Unit) {
+        group(Tag.printerAttributes, func)
     }
 
     /** Add or appends to the unsupported attributes group. */
-    fun unsupportedAttributes(extend: Boolean = false, func: MutableAttributeGroup.() -> Unit) {
-        group(Tag.unsupportedAttributes, extend, func)
+    fun unsupportedAttributes(func: MutableAttributeGroup.() -> Unit) {
+        group(Tag.unsupportedAttributes, func)
     }
 
     /** Build the final packet with current values */
@@ -100,9 +109,6 @@ class InPacket constructor(
 /** DSL for defining an [AttributeGroup]. */
 @Suppress("ClassName", "ClassNaming")
 object group {
-    operator fun invoke(tag: Tag, func: MutableAttributeGroup.() -> Unit): AttributeGroup {
-        val context = mutableGroupOf(tag)
-        context.func()
-        return context.toGroup()
-    }
+    operator fun invoke(tag: Tag, func: MutableAttributeGroup.() -> Unit) =
+        mutableGroupOf(tag).apply { func() }.toGroup()
 }

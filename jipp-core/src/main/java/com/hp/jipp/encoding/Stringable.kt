@@ -11,3 +11,7 @@ interface Stringable {
      */
     fun asString(): String
 }
+
+/** Convert a list of items that might be [Stringable] into strings and leave everything else alone. */
+internal fun Collection<*>.stringinate(): List<*> =
+    map { if (it is Stringable) it.asString() else it }

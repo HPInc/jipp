@@ -5,6 +5,7 @@ import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,19 +16,24 @@ import static com.hp.jipp.encoding.AttributeGroup.mutableGroupOf;
 import static com.hp.jipp.encoding.Cycler.coverList;
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static com.hp.jipp.encoding.Tag.operationAttributes;
+import static com.hp.jipp.encoding.Tag.printerAttributes;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class AttributeGroupTest {
 
     @Test public void emptyGroup() throws IOException {
-        cycle(groupOf(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList()));
+        cycle(groupOf(printerAttributes, Collections.<Attribute<Object>>emptyList()));
     }
 
     @Test public void emptyGroupOf() throws IOException {
-        assertEquals(0, cycle(groupOf(Tag.printerAttributes, Collections.<Attribute<Object>>emptyList())).size());
+        assertEquals(0, cycle(groupOf(printerAttributes, Collections.<Attribute<Object>>emptyList())).size());
     }
 
     @Test public void groupExtract() {
@@ -139,7 +145,7 @@ public class AttributeGroupTest {
         assertNotEquals(group, Collections.singletonList(Types.attributesCharset.of("utf-8")));
         assertNotEquals(group, groupOf(operationAttributes,
                 Collections.singletonList(Types.attributesCharset.of("utf-8"))));
-        assertNotEquals(group, groupOf(Tag.printerAttributes,
+        assertNotEquals(group, groupOf(printerAttributes,
                 Types.attributesCharset.of("utf-8","utf-16")));
         assertEquals(attributes.hashCode(), group.hashCode());
     }
@@ -147,14 +153,75 @@ public class AttributeGroupTest {
     @Test
     public void mutableEquality() throws Exception {
         AttributeGroup group = groupOf(operationAttributes,
-                Types.attributesCharset.of("utf-8","utf-16"));
+                Types.attributesCharset.of("utf-8", "utf-16"));
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
-                Types.attributesCharset.of("utf-8","utf-16"));
+                Types.attributesCharset.of("utf-8", "utf-16"));
         assertEquals(group, mutableGroup);
         assertEquals(mutableGroup, group);
         assertEquals(group, group.toMutable());
 
         mutableGroup.add(Types.requestingUserName.of("test"));
         assertNotEquals(group, mutableGroup);
+    }
+
+    @Test
+    public void mutableGroupOperations() throws Exception {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"));
+        assertTrue(mutableGroup.contains(Types.attributesCharset.of("utf-8")));
+        assertEquals(0, mutableGroup.indexOf(Types.attributesCharset.of("utf-8")));
+
+        Attribute<Name> printerName = Types.printerName.of("myprinter");
+        mutableGroup.attr(Types.printerName.of(new Name("myprinter")));
+        assertEquals(1, mutableGroup.lastIndexOf(printerName));
+        assertEquals(printerName, mutableGroup.get(Types.printerName));
+
+        mutableGroup.plusAssign(Collections.singletonList(printerName));
+        assertEquals(printerName, mutableGroup.get(Types.printerName.getName()));
+
+        mutableGroup.attr(Types.printerName, "first", "second");
+        assertEquals(Types.printerName.of("first", "second"), mutableGroup.get(Types.printerName));
+
+        mutableGroup.attr(Types.printerName, new Name("third"), new Name("fourth"));
+        assertEquals(Types.printerName.of("third", "fourth"), mutableGroup.get(Types.printerName));
+
+        mutableGroup.attr(Types.printerOrganization, "mine", "still mine");
+        assertEquals(Types.printerOrganization.of("mine", "still mine"), mutableGroup.get(Types.printerOrganization));
+
+        assertNull(mutableGroup.get(Types.documentFormat.getName()));
+        assertThat(mutableGroup.toString(), startsWith("MutableAttributeGroup"));
+        mutableGroup.setTag(Tag.jobAttributes);
+    }
+
+    @Test
+    public void mutableGroupDrop() throws Exception {
+        Attribute<Name> printerName = Types.printerName.of("jim");
+        MutableAttributeGroup mutableGroup = mutableGroupOf(printerAttributes, printerName);
+        assertEquals(printerName, mutableGroup.drop(Types.printerName));
+        assertFalse(mutableGroup.drop(printerName)); // Not there anymore
+
+        // Put it back and drop it again
+        mutableGroup.add(printerName);
+        assertTrue(mutableGroup.drop(printerName));
+        assertFalse(mutableGroup.drop(printerName));
+    }
+
+    @Test
+    public void cycleMutableGroup() throws Exception {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"));
+        AttributeGroup cycledGroup = cycle(mutableGroup);
+        assertEquals(mutableGroup.get(Types.attributesCharset), cycledGroup.get(Types.attributesCharset));
+        assertEquals(mutableGroup, mutableGroup);
+        assertEquals(mutableGroup, cycledGroup);
+        assertEquals(cycledGroup, mutableGroup);
+        assertEquals(cycledGroup.hashCode(), mutableGroup.hashCode());
+        assertEquals(mutableGroup, new ArrayList<>(cycledGroup));
+        assertEquals(cycledGroup, new ArrayList<>(mutableGroup));
+        assertNotEquals(mutableGroup, "other");
+        assertNotEquals(mutableGroup, 5);
+        assertNotEquals(mutableGroup, new ArrayList<>());
+        assertNotEquals(mutableGroup, groupOf(Tag.operationAttributes, Types.attributesCharset.of("utf-9")));
+        assertNotEquals(mutableGroup, groupOf(printerAttributes, Types.attributesCharset.of("utf-8")));
     }
 }
