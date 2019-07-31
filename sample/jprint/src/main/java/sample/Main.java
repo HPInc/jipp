@@ -43,7 +43,7 @@ class Main {
                         requestedAttributes.of(documentFormatSupported.getName())));
 
         System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
-        IppPacketData request = new IppPacketData(attributeRequest, new FileInputStream(inputFile));
+        IppPacketData request = new IppPacketData(attributeRequest);
         IppPacketData response = transport.sendData(uri, request);
         System.out.println("Received: " + response.getPacket().prettyPrint(100, "  "));
 
