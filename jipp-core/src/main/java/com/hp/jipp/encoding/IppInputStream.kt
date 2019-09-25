@@ -37,10 +37,7 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
         val valueLength = readShort().toInt()
         val valueBytes = ByteArray(valueLength)
         if (valueLength > 0) {
-            val actual = read(valueBytes)
-            if (valueLength > actual) {
-                throw ParseError("Value too short: expected " + valueBytes.size + " but got " + actual)
-            }
+            readFully(valueBytes)
         }
         return valueBytes
     }
