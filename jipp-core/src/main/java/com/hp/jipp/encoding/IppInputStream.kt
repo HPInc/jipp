@@ -22,15 +22,16 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
             readInt(),
             { readNextGroup() }.repeatUntilNull().toList())
 
-    /** Reads the next attribute group from the stream. */
+    /** Reads the next attribute group from the stream or null if no more attributes are found. */
     private fun readNextGroup(): AttributeGroup? =
-        when (val tag = Tag.read(this)) {
-            Tag.endOfAttributes -> null
-            else -> {
+        Tag.read(this)?.let { tag ->
+            if (tag == Tag.endOfAttributes) {
+                null
+            } else {
                 if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
                 AttributeGroup.read(this, tag)
             }
-        }
+        } // Note: a null tag means there was no endOfAttributes tag (which is not valid) but we ignore it.
 
     /** Read a length-value pair, returning it as a [ByteArray]. */
     internal fun readValueBytes(): ByteArray {

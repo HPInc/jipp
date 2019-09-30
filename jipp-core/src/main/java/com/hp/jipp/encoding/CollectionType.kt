@@ -54,13 +54,12 @@ open class CollectionType<T : AttributeCollection>(
                     Tag.memberAttributeName -> {
                         skipValueBytes()
                         val memberName = readString()
-                        val memberTag = readTag()
+                        val memberTag = readTag() ?: throw ParseError("Missing member tag in $tag")
                         // Read and throw away the (blank) attribute value
                         readValueBytes()
                         attributes.add(readAnyAttribute(memberName, memberTag))
                     }
-                    else ->
-                        throw ParseError("Bad tag in collection: $tag")
+                    else -> throw ParseError("Bad tag in collection: $tag")
                 }
             }
         }

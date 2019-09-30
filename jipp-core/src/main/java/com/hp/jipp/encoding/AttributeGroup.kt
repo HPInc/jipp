@@ -156,12 +156,9 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
             groupOf(groupTag, { input.readNextAttribute() }.repeatUntilNull().toList())
 
         /** Read the next attribute if present */
-        fun IppInputStream.readNextAttribute(): Attribute<*>? =
-            if (available() == 0) {
-                null
-            } else {
-                mark(1)
-                val tag = readTag()
+        fun IppInputStream.readNextAttribute(): Attribute<*>? {
+            mark(1)
+            return readTag()?.let { tag ->
                 if (tag.isDelimiter) {
                     reset()
                     null
@@ -169,6 +166,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
                     readAnyAttribute(tag)
                 }
             }
+        }
 
         /**
          * Read and return an attribute with all of its values.
@@ -213,21 +211,19 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
 
         @Suppress("ReturnCount") // Best way to handle errors in this case
         private fun IppInputStream.readNextValue(attributeName: String): Any? {
-            // Must have at least enough for another tag and name length string
-            if (available() < IppInputStream.TAG_LEN + IppInputStream.LENGTH_LENGTH) {
-                return null
-            }
             mark(IppInputStream.TAG_LEN + IppInputStream.LENGTH_LENGTH)
-            val tag = readTag()
-            if (tag.isEndOfValueStream() || readShort().toInt() != 0) {
-                // Non-value tag or non-empty name means its a completely different attribute.
-                reset()
-                return null
+            return readTag()?.let { tag ->
+                if (tag.isEndOfValueStream() || readShort().toInt() != 0) {
+                    // Non-value tag or non-empty name means its a completely different attribute.
+                    reset()
+                    null
+                } else {
+                    val codec = tagToCodec[tag] // Fast lookup
+                        ?: codecs.firstOrNull { it.handlesTag(tag) } // Slower, more thorough lookup
+                        ?: throw ParseError("No codec found for tag $tag")
+                    readValue(codec, tag, attributeName)
+                }
             }
-            val codec = tagToCodec[tag] // Fast lookup
-                ?: codecs.firstOrNull { it.handlesTag(tag) } // Slower, more thorough lookup
-                ?: throw ParseError("No codec found for tag $tag")
-            return readValue(codec, tag, attributeName)
         }
 
         /** Identify tags that indicate the current attribute has no more values */

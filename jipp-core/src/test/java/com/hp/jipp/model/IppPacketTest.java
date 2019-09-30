@@ -68,15 +68,17 @@ public class IppPacketTest {
     @Test
     public void readShortPacket() throws IOException {
         byte[] in = new byte[] {
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
-                (byte) 0x09,
+                (byte) 0x01,
+                (byte) 0x02,
+                (byte) 0x00,
+                (byte) 0x0C,
+                (byte) 0x00,
+                (byte) 0x05,
+                (byte) 0x06
+                // Missing bytes
+//                (byte) 0x07
+//                (byte) 0x01,
+//                (byte) 0x03,
         };
         exception.expect(EOFException.class);
         new IppInputStream(new ByteArrayInputStream(in)).readPacket();

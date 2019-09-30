@@ -3,6 +3,7 @@ package com.hp.jipp.model;
 import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppOutputStream;
 import com.hp.jipp.encoding.IppPacket;
+import java.io.InputStream;
 import kotlin.io.FilesKt;
 import org.junit.Test;
 
@@ -18,7 +19,6 @@ import static com.hp.jipp.util.BytesKt.toWrappedHexString;
 import static org.junit.Assert.*;
 
 public class BinaryTest {
-
     @Test
     public void cycleBinaries() throws IOException {
         for (File binFile : getBinFiles()) {
@@ -31,7 +31,7 @@ public class BinaryTest {
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(inputBytes));
 
         IppPacket packet = input.readPacket();
-        System.out.println(fileName + packet.prettyPrint(120, "  "));
+        System.out.println(packet.prettyPrint(120, "  "));
 
         // Now repack it and make sure the bytes are the same
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();

@@ -47,7 +47,7 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
     companion object {
         /** Read and return a [Tag] from the input stream  */
         @JvmStatic
-        fun read(input: DataInputStream): Tag = fromInt(input.readByte().toInt())
+        fun read(input: DataInputStream): Tag? = input.read().takeIf { it >= 0 }?.let { fromInt(it) }
 
         /** Return or create a [Tag] for the supplied code */
         @JvmStatic
