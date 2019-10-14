@@ -21,6 +21,7 @@ jobs:
         - gh-pages
 
     steps:
+      - run: sudo apt update
       - run: sudo apt install openjfx graphviz
 
       # Checkout, with submodules

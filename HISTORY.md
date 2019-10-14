@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.6.22
+* Handle PWG raster color space of 1 (RGB) (#72).
+
 ## 0.6.21
 * Do not assume packet will be read completely before parsing it (#71).
 
