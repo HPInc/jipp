@@ -113,10 +113,10 @@ class PrettyPrinter internal constructor(
         private const val GROUP_SIZE_MIN_OPEN = 3
         private const val SHORT_DIVISOR = 3
 
-        /** A style for arrays, e.g. "Me [ A, B, C ]"  */
+        /** A style for arrays, e.g. "Me \[ A, B, C \]". */
         @JvmField val ARRAY = Style("[", "]", ",", " ")
 
-        /** A style for objects, e.g. "Me { A, B, C }"  */
+        /** A style for objects, e.g. "Me { A, B, C }". */
         @JvmField val OBJECT = Style("{", "}", ",", " ")
 
         /** A style for key/value pairs e.g. "Me A/B/C". Works best when there is only one value.  */
@@ -125,7 +125,7 @@ class PrettyPrinter internal constructor(
         /** A style with no indenting or separators at all */
         @JvmField val SILENT = Style("", "", ",", "")
 
-        /** Style used for delimiting members of a pretty-printed group  */
+        /** Style used for delimiting members of a pretty-printed group. */
         class Style internal constructor(
             val opener: String,
             val closer: String,
@@ -133,7 +133,7 @@ class PrettyPrinter internal constructor(
             val spacer: String
         )
 
-        /** A group of objects currently being pretty-printed  */
+        /** A group of objects currently being pretty-printed. */
         internal class Group internal constructor(
             private val style: Style,
             private val prefix: String,

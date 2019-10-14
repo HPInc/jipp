@@ -9,6 +9,7 @@ package com.hp.jipp.model
 
 import com.hp.jipp.encoding.Enum
 import com.hp.jipp.encoding.EnumType
+import com.hp.jipp.encoding.IppPacket
 
 /**
  * All known [Enum] types, used for better decoding of [IppPacket] data.

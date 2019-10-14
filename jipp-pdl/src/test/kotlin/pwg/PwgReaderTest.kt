@@ -20,9 +20,17 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
+import org.junit.Ignore
 import org.junit.Test
 
 class PwgReaderTest {
+
+    @Ignore // To use this drop a document into "resources" and comment out this line
+    @Test fun readFromDisk() {
+        PwgReader(javaClass.getResourceAsStream("/document_001.pwg")!!).readDocument().forEach {
+            println((it as PwgReader.PwgPage).header)
+        }
+    }
 
     @Test fun simple() {
         val doc = object : RenderableDocument() {

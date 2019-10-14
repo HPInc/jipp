@@ -126,16 +126,16 @@ data class PwgHeader(
 
     /** Meaning of color values provided for each pixel. */
     enum class ColorSpace(override val value: Int) : HasValue {
-        Rgb(1), Black(2), Cmyk(6), Sgray(18), Srgb(19), AdobeRgb(20), Device1(48), Device2(49), Device3(50),
+        Rgb(1), Black(3), Cmyk(6), Sgray(18), Srgb(19), AdobeRgb(20), Device1(48), Device2(49), Device3(50),
         Device4(51), Device5(52), Device6(53), Device7(54), Device8(55), Device9(56), Device10(57), Device11(58),
         Device12(59), Device13(60), Device14(61), Device15(62);
 
         /** Return the [com.hp.jipp.pdl.ColorSpace] corresponding to this one or throw if no match. */
         fun toPdlColorSpace() =
             when (this) {
-                Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
+                Rgb, Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
                 Sgray -> com.hp.jipp.pdl.ColorSpace.Grayscale
-                else -> TODO("No conversion available")
+                else -> TODO("No conversion available for $this")
             }
 
         companion object : ValueConverter<ColorSpace> {
