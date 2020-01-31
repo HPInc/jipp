@@ -1,11 +1,21 @@
 package sample;
 
+import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,18 +30,83 @@ import static com.hp.jipp.model.Types.*;
 
 class Main {
     private final static String FORMAT_PDF = "application/pdf";
-    private final static String USAGE = "Usage: [PRINTER_PATH] [FILE] <MIME_FORMAT>\n";
+    private final static String CMD_NAME = "jprint";
+
+    private final static IppClientTransport transport = new HttpIppClientTransport();
 
     public static void main(String[] args) throws IOException {
-        if (args.length < 2) {
-            throw new IllegalArgumentException(USAGE + "Received: " +
-                    Arrays.asList(args));
-        }
-        String format = args.length > 2 ? args[2] : FORMAT_PDF;
-        URI uri = URI.create(args[0]);
-        File inputFile = new File(args[1]);
+        Options options = new Options();
+        options.addOption("h", "help", false, "show help");
+        OptionGroup commandGroup = new OptionGroup();
+        commandGroup.addOption(new Option("a", "get-attributes", false, "get printer attributes"));
+        commandGroup.addOption(new Option("p", "print-job", true, "print a file"));
+        options.addOptionGroup(commandGroup);
+        options.addOption("d", "media-col-database", false, "get-attributes also queries media-col-database");
+        options.addOption("m", "mime-type", true, "print-job mime-type (default=" + FORMAT_PDF + ")");
 
-        IppClientTransport transport = new HttpIppClientTransport();
+        try {
+            CommandLineParser parser = new DefaultParser();
+            CommandLine command = parser.parse(options, args);
+
+            if (command.hasOption("h")) {
+                help(options);
+            }
+
+            List<String> argList = command.getArgList();
+            if (argList.size() != 1) {
+                throw new ParseException("Must supply a single PRINTER_PATH");
+            }
+            URI path;
+            try {
+                 path = URI.create(argList.get(0));
+            } catch (IllegalArgumentException e) {
+                throw new ParseException("Failed to parse PRINTER_PATH");
+            }
+
+            if (command.hasOption("a")) {
+                getAttributes(path, command);
+            } else if (command.hasOption("p")) {
+                print(path, command);
+            } else {
+                throw new ParseException("No command");
+            }
+        } catch (ParseException e) {
+            System.err.println("\n" + e.getMessage());
+            help(options);
+        }
+    }
+
+    private static void getAttributes(URI uri, CommandLine command) throws IOException {
+        // Query for supported document formats
+        Attribute<String> requested;
+        if (command.hasOption("d")) {
+            requested = requestedAttributes.of(Types.mediaColDatabase.getName(), "all");
+        } else {
+            requested = requestedAttributes.of("all");
+        }
+
+        IppPacket attributeRequest = new IppPacket(Operation.getPrinterAttributes, 1,
+                groupOf(operationAttributes,
+                        attributesCharset.of("utf-8"),
+                        attributesNaturalLanguage.of("en"),
+                        printerUri.of(uri),
+                        requestingUserName.of("jprint"),
+                        requested));
+
+        System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
+        IppPacketData request = new IppPacketData(attributeRequest);
+        IppPacketData response = transport.sendData(uri, request);
+        System.out.println("Received: " + response.getPacket().prettyPrint(100, "  "));
+    }
+
+    private static void print(URI uri, CommandLine command) throws IOException, ParseException {
+        String format = command.getOptionValue("m");
+        if (format == null) {
+            format = FORMAT_PDF;
+        }
+
+        File inputFile = new File(command.getOptionValue("p"));
+        System.out.println("File is " + inputFile);
 
         // Query for supported document formats
         IppPacket attributeRequest = new IppPacket(Operation.getPrinterAttributes, 1,
@@ -39,7 +114,7 @@ class Main {
                         attributesCharset.of("utf-8"),
                         attributesNaturalLanguage.of("en"),
                         printerUri.of(uri),
-                        requestingUserName.of("jprint"),
+                        requestingUserName.of(CMD_NAME),
                         requestedAttributes.of(documentFormatSupported.getName())));
 
         System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
@@ -50,7 +125,7 @@ class Main {
         // Make sure the format is supported
         List<String> formats = response.getPacket().getStrings(printerAttributes, documentFormatSupported);
         if (!formats.contains(format)) {
-            throw new IllegalArgumentException(USAGE + format + " format not supported in " + formats);
+            throw new ParseException(format + " format not supported by printer in " + formats);
         }
 
         // Deliver the print request
@@ -66,5 +141,13 @@ class Main {
         request = new IppPacketData(printRequest, new FileInputStream(inputFile));
         response = transport.sendData(uri, request);
         System.out.println("Received: " + response.getPacket().prettyPrint(100, "  "));
+    }
+
+    private static void help(Options options) {
+        HelpFormatter helpFormatter = new HelpFormatter();
+        helpFormatter.setWidth(120);
+        helpFormatter.setOptionComparator(null);
+        helpFormatter.printHelp(CMD_NAME, options, true);
+        System.exit(0);
     }
 }

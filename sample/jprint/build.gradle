@@ -9,6 +9,6 @@ mainClassName = 'sample.Main'
 
 dependencies {
     implementation project(path: ':jipp-core')
-
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

@@ -123,7 +123,7 @@ class Main {
                                                      ColorSpace colorSpace, OutputStream outputStream) throws IOException {
 
         OutputSettings outputSettings = new OutputSettings(colorSpace, Sides.oneSided, MediaSource.auto, null, false);
-        PclmSettings caps = new PclmSettings(outputSettings, 64);
+        PclmSettings caps = new PclmSettings(outputSettings, 32);
 
         PclmWriter writer = new PclmWriter(outputStream, caps);
         writer.write(renderableDocument);
