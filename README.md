@@ -71,8 +71,8 @@ A very basic use case is demonstrated by the `jprint` sample app. To run it:
 unzip -o ./sample/jprint/build/distributions/jprint-*.zip
 
 # Use IPP to print a file to the supplied HTTP/IPP endpoint.
-# (The printer must natively support the file type.)
-jprint-*/bin/jprint "ipp://192.168.1.102:631/ipp/print" sample.pdf
+# (The printer must natively support the supplied file type.)
+jprint-*/bin/jprint -p sample.pdf ipp://192.168.1.102:631/ipp/print
 ```
 
 ### jrender
