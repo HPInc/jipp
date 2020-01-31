@@ -41,10 +41,10 @@ jacocoTestReport {
     }
 
     afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
+        getClassDirectories().setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: ['**/AutoValue_**'])
-        })
+        }))
     }
 }
 
