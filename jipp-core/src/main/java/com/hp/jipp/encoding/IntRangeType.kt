@@ -12,10 +12,10 @@ open class IntRangeType(override val name: String) : AttributeType<IntRange> {
 
     companion object {
         val codec = Codec(Tag.rangeOfInteger, {
-            takeLength(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH)
+            takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
             IntRange(readInt(), readInt())
         }, {
-            writeShort(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH)
+            writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
             writeInt(it.first)
             writeInt(it.last)
         })

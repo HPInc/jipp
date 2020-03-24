@@ -14,7 +14,7 @@ open class KeywordType(override val name: String) : AttributeType<String> {
         val codec = Codec(Tag.keyword, {
             readString()
         }, {
-            writeString(it)
+            writeStringValue(it)
         })
     }
 }

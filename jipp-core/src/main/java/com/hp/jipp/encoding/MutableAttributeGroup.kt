@@ -118,10 +118,6 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         map.remove(attribute.name)
     }
 
-    override fun write(output: IppOutputStream) {
-        toGroup().write(output)
-    }
-
     /** Return a copy of this object as a non-mutable [AttributeGroup]. */
     fun toGroup(): AttributeGroup = groupOf(tag, toList())
 

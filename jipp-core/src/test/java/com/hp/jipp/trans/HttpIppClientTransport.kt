@@ -1,6 +1,7 @@
 package com.hp.jipp.trans
 
 import com.hp.jipp.encoding.IppInputStream
+import com.hp.jipp.encoding.IppOutputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -30,7 +31,10 @@ class HttpIppClientTransport : IppClientTransport {
 
         return DataOutputStream(connection.outputStream).use { output ->
             println("Writing packet")
-            request.packet.write(output)
+            IppOutputStream(output).apply {
+                write(request.packet)
+                flush()
+            }
             println("Writing Extra Data")
             request.data?.apply {
                 copyTo(output)

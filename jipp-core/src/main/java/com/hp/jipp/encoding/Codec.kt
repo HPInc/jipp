@@ -6,12 +6,16 @@ package com.hp.jipp.encoding
 /** Reads/writes values of [T]. */
 interface Codec<T> {
     val cls: Class<T>
+
     /** Return true if this codec handles the specified tag. */
     fun handlesTag(tag: Tag): Boolean
+
     /** Read a value from the input stream */
     fun readValue(input: IppInputStream, startTag: Tag): T
+
     /** Write value (assuming it is an instance of [T]). */
     fun writeValue(output: IppOutputStream, value: Any)
+
     /** The tag to use for a particular value. */
     fun tagOf(value: Any): Tag
 

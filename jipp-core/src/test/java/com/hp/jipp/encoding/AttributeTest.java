@@ -68,48 +68,6 @@ public class AttributeTest {
     }
 
     @Test
-    public void octetString() throws Exception {
-        AttributeType<byte[]> octetsType = new OctetsType("name");
-        Attribute<byte[]> attribute = octetsType.of("value".getBytes(Charsets.UTF_8));
-        assertArrayEquals(new byte[] {
-                (byte)0x30, // octetString
-                (byte)0x00,
-                (byte)0x04,
-                'n', 'a', 'm', 'e',
-                (byte)0x00,
-                (byte)0x05,
-                'v', 'a', 'l', 'u', 'e'
-        }, toBytes(attribute));
-        attribute = cycle(attribute);
-        assertNull(attribute.getTag());
-        assertEquals("name", attribute.getName());
-        assertArrayEquals("value".getBytes(Charsets.UTF_8), attribute.get(0));
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    public void parseOtherOctet() {
-        byte[] bytes = new byte[] {
-                (byte)0x39, // Reserved octetString type
-                (byte)0x00,
-                (byte)0x04,
-                'n', 'a', 'm', 'e',
-                (byte)0x00,
-                (byte)0x05,
-                'v', 'a', 'l', 'u', 'e'
-        };
-        Attribute<?> attribute = AttributeGroup.Companion.readNextAttribute(new IppInputStream(new ByteArrayInputStream(bytes)));
-        assertEquals("name", attribute.getName());
-        OtherOctets expected = new OtherOctets(Tag.fromInt(0x39), "value".getBytes(Charsets.UTF_8));
-        assertEquals(OtherOctets.class, attribute.getValue().getClass());
-        assertArrayEquals("value".getBytes(Charsets.UTF_8), ((OtherOctets)attribute.getValue()).getValue());
-        assertEquals(expected, attribute.getValue());
-        assertEquals(expected.hashCode(), attribute.getValue().hashCode());
-        assertTrue(attribute.getValue().toString().contains("76616c7565"));
-        assertTrue(attribute.getValue().toString().contains("tag(x39)"));
-    }
-
-    @Test
     public void equality() {
         Attribute<String> charsetAttr = Types.attributesCharset.of("one", "two", "three");
         Attribute<String> charsetAttr2 = Types.attributesCharset.of("one", "two", "three");

@@ -27,19 +27,20 @@ public class Cycler {
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         IppOutputStream output = new IppOutputStream(bytes);
-        group.write(output);
+        IppPacket packet = new IppPacket(0, 0, 0, group);
+        output.write(packet);
         output.close();
 
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
-        return AttributeGroup.read(input, Tag.read(input));
+        return input.readPacket().getAttributeGroups().get(0);
     }
 
     /** Return a packet that was written to a byte stream and read back in */
     public static IppPacket cycle(IppPacket packet) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        IppOutputStream output = new IppOutputStream(bytes);
-        packet.write(output);
-        output.close();
+        try (IppOutputStream output = new IppOutputStream(bytes)) {
+            output.write(packet);
+        }
 
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
         return input.readPacket();
@@ -47,15 +48,9 @@ public class Cycler {
 
     public static byte[] toBytes(IppPacket packet) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        IppOutputStream out = new IppOutputStream(bytesOut);
-        packet.write(out);
-        return bytesOut.toByteArray();
-    }
-
-    static byte[] toBytes(Attribute<?> attribute)  {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        IppOutputStream out = new IppOutputStream(bytesOut);
-        AttributeGroup.Companion.writeAttribute(out, attribute, attribute.getName());
+        try (IppOutputStream out = new IppOutputStream(bytesOut)) {
+            out.write(packet);
+        }
         return bytesOut.toByteArray();
     }
 
@@ -71,7 +66,6 @@ public class Cycler {
         assertEquals(firstValue, list.toArray()[0]);
         assertEquals(firstValue, list.get(0));
 
-        //noinspection LoopStatementThatDoesntLoop (We want to test iterator)
         for (T item : list) {
             assertEquals(item, firstValue);
             break;

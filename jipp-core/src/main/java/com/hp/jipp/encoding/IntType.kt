@@ -10,11 +10,9 @@ open class IntType(override val name: String) : AttributeType<Int> {
 
     companion object {
         val codec = Codec(Tag.integerValue, {
-            takeLength(AttributeGroup.INT_LENGTH)
-            readInt()
+            readIntValue()
         }, {
-            writeShort(AttributeGroup.INT_LENGTH)
-            writeInt(it)
+            writeIntValue(it)
         })
     }
 }

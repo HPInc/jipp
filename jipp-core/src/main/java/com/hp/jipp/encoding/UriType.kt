@@ -22,7 +22,7 @@ open class UriType(override val name: String) : AttributeType<URI> {
                 throw ParseError("Could not parse URI $uriString", e)
             }
         }, {
-            writeString(it.toString())
+            writeStringValue(it.toString())
         })
     }
 }

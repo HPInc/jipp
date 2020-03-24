@@ -32,11 +32,11 @@ open class TextType(override val name: String) : AttributeType<Text> {
             }
         }, {
             if (it.tag == Tag.textWithLanguage) {
-                writeShort(stringLength(it.lang!!) + stringLength(it.value))
-                writeString(it.lang)
-                writeString(it.value)
+                writeShort(IppStreams.stringLength(it.lang!!) + IppStreams.stringLength(it.value))
+                writeStringValue(it.lang)
+                writeStringValue(it.value)
             } else {
-                writeString(it.value)
+                writeStringValue(it.value)
             }
         })
     }

@@ -16,7 +16,7 @@ open class OctetsType(override val name: String) : AttributeType<ByteArray> {
         val codec = Codec(Tag.octetString, {
             readValueBytes()
         }, {
-            writeValueBytes(it)
+            writeBytesValue(it)
         })
     }
 }

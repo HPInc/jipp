@@ -39,7 +39,7 @@ class KeyValues(
             parse(readString())
         }, {
             // Write the original string, or fall back to pairs if _encoded is not present
-            writeString(it._encoded ?: it.combine())
+            writeStringValue(it._encoded ?: it.combine())
         })
 
         /** Convert an IPP string to an ordered KeyValues map. */

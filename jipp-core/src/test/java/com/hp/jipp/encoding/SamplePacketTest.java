@@ -41,9 +41,9 @@ public class SamplePacketTest {
                         Types.myJobs.of(true)));
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        IppOutputStream output = new IppOutputStream(bytes);
-        packet.write(output);
-        output.close();
+        try (IppOutputStream output = new IppOutputStream(bytes)) {
+            output.write(packet);
+        }
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
 
         IppPacket inPacket = input.readPacket();
