@@ -174,8 +174,8 @@ publishing {
         maven {
             url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             credentials {
-                username project.ext.properties.sonatypeUsername
-                password project.ext.properties.sonatypePassword
+                username = project.ext.properties.sonatypeUsername
+                password = project.ext.properties.sonatypePassword
             }
         }
     }
@@ -194,32 +194,32 @@ def customizePom(pom) {
         root.children().last() + {
             resolveStrategy = DELEGATE_FIRST
 
-            description 'Parse/build IPP packets'
-            name project.name
-            url 'https://github.com/HPInc/jipp'
+            description = 'Parse/build IPP packets'
+            name = project.name
+            url = 'https://github.com/HPInc/jipp'
             organization {
-                name 'HP Development Company, L.P.'
-                url 'https://github.com/HPInc'
+                name = 'HP Development Company, L.P.'
+                url = 'https://github.com/HPInc'
             }
             issueManagement {
-                system 'GitHub'
-                url 'https://github.com/HPInc/jipp/issues'
+                system = 'GitHub'
+                url = 'https://github.com/HPInc/jipp/issues'
             }
             licenses {
                 license {
-                    name 'MIT'
-                    url 'https://github.com/HPInc/jipp/blob/master/LICENSE.md'
-                    distribution 'repo'
+                    name ='MIT'
+                    url ='https://github.com/HPInc/jipp/blob/master/LICENSE.md'
+                    distribution ='repo'
                 }
             }
             scm {
-                url 'https://github.com/HPInc/jipp'
-                connection 'scm:git:git://github.com/HPInc/jipp.git'
-                developerConnection 'scm:git:ssh://git@github.com:HPInc/jipp.git'
+                url = 'https://github.com/HPInc/jipp'
+                connection = 'scm:git:git://github.com/HPInc/jipp.git'
+                developerConnection = 'scm:git:ssh://git@github.com:HPInc/jipp.git'
             }
             developers {
                 developer {
-                    name 'Glade Diviney'
+                    name = 'Glade Diviney'
                 }
             }
         }

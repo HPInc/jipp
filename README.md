@@ -2,7 +2,7 @@
 [![CodeCov](https://codecov.io/github/HPInc/jipp/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp/javadoc/index.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.50-blue.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.70-blue.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
@@ -39,8 +39,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.6.22'
-    compile 'com.hp.jipp:jipp-pdl:0.6.22' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.7.0'
+    compile 'com.hp.jipp:jipp-pdl:0.7.0' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example

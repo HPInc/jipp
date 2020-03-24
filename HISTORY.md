@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.7.0
+* Stabilize `IppInputStream` and `IppOutputStream` APIs (#79).
+
 ## 0.6.22
 * Handle PWG raster color space of 1 (RGB) (#72).
 
@@ -23,18 +26,15 @@
 * Replace OutputSettings `outputBin` and `stackingOrder` with `reversed` (#56).
 
 ## 0.6.12
-
 * PCLM and PWG Raster got upgrades, in that they properly handle multi-page and duplex cases. You're only responsible for providing a normal, front-to-back RenderableDocument, and to pass along valid settings based on known printer attributes and user output requirements. The PDL library internally handles page re-ordering, page rotation, flipping, etc to provide the best possible output. As a result the `PwgCapabilities` and `PclmCapabilties` classes have been removed in favor of `PwgSettings` and `PclmSettings`.
 * `Attribute.unknown` etc was moved to `Attributes.unknown` for backwards-compatibility with Java.
 
 ## 0.6.6
-
 * The `KeywordOrName` type was introduced to allow for fields that can legitimately contain either IANA-registered
   keywords OR unregistered, locally-defined names. For example, `MediaCol.mediaType` must contain a KeywordOrName,
   not simply a String (Keyword).
 
 ## Earlier versions
-
 * `Types` includes all defined types as published as of 2018-04-06 at
   [IANA](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml).
 * Collection types such as `MediaCol` are expressed as POJO and are automatically constructed/deconstructed.
