@@ -12,6 +12,7 @@ import java.io.IOException
 import java.io.InputStream
 
 /** An [InputStream] which can read IPP packet data. */
+@Suppress("TooManyFunctions") // This utility class must handle many different data types.
 class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputStream(inputStream)) {
 
     /** Reads a complete packet from this stream. */
