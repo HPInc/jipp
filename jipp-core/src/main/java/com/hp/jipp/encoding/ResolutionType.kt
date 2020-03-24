@@ -12,10 +12,10 @@ open class ResolutionType(override val name: String) : AttributeType<Resolution>
 
     companion object {
         val codec = Codec(Tag.resolution, {
-            takeLength(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH + AttributeGroup.BYTE_LENGTH)
+            takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
             Resolution(readInt(), readInt(), ResolutionUnit[readByte().toInt()])
         }, {
-            writeShort(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH + AttributeGroup.BYTE_LENGTH)
+            writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
             writeInt(it.crossFeedResolution)
             writeInt(it.feedResolution)
             writeByte(it.unit.code.toByte().toInt())

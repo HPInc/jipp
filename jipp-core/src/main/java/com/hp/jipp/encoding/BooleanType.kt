@@ -12,11 +12,9 @@ open class BooleanType(override val name: String) : AttributeType<Boolean> {
 
     companion object {
         val codec = Codec(Tag.booleanValue, {
-            takeLength(AttributeGroup.BYTE_LENGTH)
-            readByte() != 0.toByte()
+            readByteValue() != 0.toByte()
         }, {
-            writeShort(AttributeGroup.BYTE_LENGTH)
-            writeByte(if (it) 0x01 else 0x00)
+            writeByteValue(if (it) 0x01 else 0x00)
         })
     }
 }

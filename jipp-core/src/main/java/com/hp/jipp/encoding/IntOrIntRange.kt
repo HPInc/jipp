@@ -12,7 +12,7 @@ class IntOrIntRange private constructor(
 ) : TaggedValue() {
 
     /** Constructs an object based on a range */
-    constructor(range: IntRange) : this (range.start, range.endInclusive, false)
+    constructor(range: IntRange) : this (range.first, range.last, false)
 
     /** Constructs an object based on a range */
     constructor(start: Int, endInclusive: Int) : this (start, endInclusive, false)
@@ -23,6 +23,7 @@ class IntOrIntRange private constructor(
     override val tag: Tag
         get() = if (simpleInt) Tag.integerValue else Tag.rangeOfInteger
 
+    /** An [Int] or [IntRange] value. */
     override val value: Any
         get() = if (simpleInt) start else range
 

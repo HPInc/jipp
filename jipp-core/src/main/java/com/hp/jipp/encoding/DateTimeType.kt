@@ -3,7 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.AttributeGroup.Companion.toUint
 import com.hp.jipp.util.ParseError
 import java.util.* // ktlint-disable
 
@@ -17,11 +16,15 @@ open class DateTimeType(override val name: String) : AttributeType<Calendar> {
     override fun toString() = "DateTimeType($name)"
 
     companion object {
+        private const val BYTE_MASK = 0xFF
+        private const val CALENDAR_LENGTH = 11
+        private fun Byte.toUint(): Int = this.toInt() and BYTE_MASK
+
         val codec = Codec<Calendar>(Tag.dateTime, {
             val bytes = readValueBytes()
-            if (bytes.size != AttributeGroup.CALENDAR_LENGTH) {
+            if (bytes.size != CALENDAR_LENGTH) {
                 throw ParseError("Invalid byte count " + bytes.size +
-                    " for dateTime, must be ${AttributeGroup.CALENDAR_LENGTH}")
+                    " for dateTime, must be $CALENDAR_LENGTH")
             }
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar[Calendar.YEAR] = (bytes[0].toInt() shl 8) + (bytes[1].toUint())
@@ -38,7 +41,7 @@ open class DateTimeType(override val name: String) : AttributeType<Calendar> {
             calendar.timeZone = TimeZone.getTimeZone(zoneString)
             calendar
         }, {
-            writeShort(AttributeGroup.CALENDAR_LENGTH)
+            writeShort(CALENDAR_LENGTH)
             writeShort(it[Calendar.YEAR])
             writeByte(it[Calendar.MONTH] + 1)
             writeByte(it[Calendar.DAY_OF_MONTH])

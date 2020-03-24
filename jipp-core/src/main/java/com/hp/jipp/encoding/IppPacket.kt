@@ -70,13 +70,11 @@ data class IppPacket constructor(
 
     /** Write this packet to the [OutputStream] as per RFC2910.  */
     @Throws(IOException::class)
+    @Deprecated("use IppInputStream.write()",
+        ReplaceWith("write()", "com.hp.jipp.encoding.IppInputStream"))
     fun write(output: OutputStream) {
         val ippOutput = IppOutputStream(output)
-        ippOutput.writeShort(versionNumber)
-        ippOutput.writeShort(code)
-        ippOutput.writeInt(requestId)
-        attributeGroups.forEach { it.write(ippOutput) }
-        Tag.endOfAttributes.write(ippOutput)
+        ippOutput.write(this)
     }
 
     /** Return a pretty-printed version of this packet (including separators and line breaks) */

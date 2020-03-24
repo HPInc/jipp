@@ -35,10 +35,9 @@ class IntOrIntRangeType(
             throw IllegalArgumentException("Cannot read")
         }, {
             if (it.tag == Tag.integerValue) {
-                writeShort(AttributeGroup.INT_LENGTH)
-                writeInt(it.start)
+                writeIntValue(it.start)
             } else {
-                writeShort(AttributeGroup.INT_LENGTH + AttributeGroup.INT_LENGTH)
+                writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
                 writeInt(it.start)
                 writeInt(it.endInclusive)
             }

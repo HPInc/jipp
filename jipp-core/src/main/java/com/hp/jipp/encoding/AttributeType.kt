@@ -39,9 +39,7 @@ interface AttributeType<T : Any> {
     fun unsupported() = empty(Tag.unsupported)
 
     /**
-     * Coerce an attribute of a different type to this type, if possible.
-     * This method is used to convert received attribute data into a more
-     * convenient type.
+     * Convert an attribute of a different type to use [T], if possible.
      */
     fun coerce(attribute: Attribute<*>): Attribute<T>? =
         if (attribute.tag != null) {
@@ -56,6 +54,8 @@ interface AttributeType<T : Any> {
             }
         }
 
-    /** Coerce a single value to this attributes type [T], if possible. */
+    /**
+     * Convert any single value to [T], if possible.
+     */
     fun coerce(value: Any): T?
 }

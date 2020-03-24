@@ -3,10 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.IOException
-
 /**
  * Value and delimiter tags as specified by RFC2910 and RFC3382
  */
@@ -38,17 +34,11 @@ data class Tag(override val code: Int, override val name: String) : Enum() {
 
     override fun toString() = name
 
-    /** Write this tag to the output stream  */
-    @Throws(IOException::class)
-    fun write(out: DataOutputStream) {
-        out.writeByte(code.toByte().toInt())
-    }
+    /** Identify tags that indicate the current attribute has no more values */
+    internal fun isEndOfValueStream() =
+        isDelimiter || isOutOfBand || this == memberAttributeName || this == endCollection
 
     companion object {
-        /** Read and return a [Tag] from the input stream  */
-        @JvmStatic
-        fun read(input: DataInputStream): Tag? = input.read().takeIf { it >= 0 }?.let { fromInt(it) }
-
         /** Return or create a [Tag] for the supplied code */
         @JvmStatic
         fun fromInt(value: Int) = codeMap[value] ?: Tag(value, "tag(x%x)".format(value))

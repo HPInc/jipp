@@ -1,13 +1,13 @@
 package com.hp.jipp.trans;
 
 import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.encoding.IppOutputStream;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 /** A sample IPP server over the HTTP transport */
@@ -34,24 +34,24 @@ abstract public class HttpIppServerTransport implements IppServerTransport {
                 IppInputStream inputStream = new IppInputStream(exchange.getRequestBody());
                 IppPacketData data = new IppPacketData(inputStream.readPacket(), inputStream);
                 IppPacketData response = HttpIppServerTransport.this.handle(exchange.getRequestURI(), data);
-                DataOutputStream output = new DataOutputStream(new BufferedOutputStream(exchange.getResponseBody()));
-                response.getPacket().write(output);
-                InputStream extraData = response.getData();
-
-                /* If response data is present, queue that also */
-                if (extraData != null) {
-                    byte[] buffer = new byte[1024];
-                    while (true) {
-                        int bytesRead = extraData.read(buffer);
-                        if (bytesRead == -1) {
-                            break;
-                        }
-                        output.write(buffer, 0, bytesRead);
-                    }
-                    extraData.close();
-                }
                 exchange.sendResponseHeaders(200, 0);
-                output.close();
+                try (OutputStream output = exchange.getResponseBody()) {
+                    new IppOutputStream(output).write(response.getPacket());
+
+                    /* If response data is present, queue that also */
+                    InputStream extraData = response.getData();
+                    if (extraData != null) {
+                        byte[] buffer = new byte[1024];
+                        while (true) {
+                            int bytesRead = extraData.read(buffer);
+                            if (bytesRead == -1) {
+                                break;
+                            }
+                            output.write(buffer, 0, bytesRead);
+                        }
+                        extraData.close();
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 throw e;

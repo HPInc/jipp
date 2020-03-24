@@ -3,7 +3,6 @@ package com.hp.jipp.model;
 import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppOutputStream;
 import com.hp.jipp.encoding.IppPacket;
-import java.io.InputStream;
 import kotlin.io.FilesKt;
 import org.junit.Test;
 
@@ -35,9 +34,9 @@ public class BinaryTest {
 
         // Now repack it and make sure the bytes are the same
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        IppOutputStream output = new IppOutputStream(bytesOut);
-        packet.write(output);
-        output.close();
+        try (IppOutputStream output = new IppOutputStream(bytesOut)) {
+            output.write(packet);
+        }
         // Compare input bytes to output bytes in hex string format for easy comparison
         assertEquals(toWrappedHexString(inputBytes), toWrappedHexString(bytesOut.toByteArray()));
     }

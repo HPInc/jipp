@@ -22,11 +22,9 @@ open class EnumType<T : Enum>(
 
     companion object {
         val codec = Codec<Enum>(Tag.enumValue, {
-            takeLength(AttributeGroup.INT_LENGTH)
-            UntypedEnum(readInt())
+            UntypedEnum(readIntValue())
         }, {
-            writeShort(AttributeGroup.INT_LENGTH)
-            writeInt(it.code)
+            writeIntValue(it.code)
         })
     }
 }
