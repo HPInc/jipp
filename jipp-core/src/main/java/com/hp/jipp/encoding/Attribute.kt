@@ -18,7 +18,7 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
     val name: String
 
     /** An out-of-band tag, present only when there are no values. */
-    val tag: Tag?
+    val tag: OutOfBandTag?
 
     /** Attribute type used to encode the attribute, if known. */
     val type: AttributeType<T>?

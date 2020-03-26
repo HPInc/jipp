@@ -12,7 +12,7 @@ import java.io.IOException
  * may contain 0 or more values.
  */
 interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
-    val tag: Tag
+    val tag: DelimiterTag
 
     /** Return the attribute corresponding to the specified [name]. */
     operator fun get(name: String): Attribute<*>?
@@ -54,22 +54,22 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
     companion object {
         /** Return a fixed group of attributes. */
         @JvmStatic
-        fun groupOf(tag: Tag, attributes: List<Attribute<*>>): AttributeGroup =
+        fun groupOf(tag: DelimiterTag, attributes: List<Attribute<*>>): AttributeGroup =
             AttributeGroupImpl(tag, attributes)
 
         /** Return a fixed group of attributes. */
         @JvmStatic
-        fun groupOf(tag: Tag, vararg attributes: Attribute<*>): AttributeGroup =
+        fun groupOf(tag: DelimiterTag, vararg attributes: Attribute<*>): AttributeGroup =
             groupOf(tag, attributes.toList())
 
         /** Return a mutable group of attributes. */
         @JvmStatic
-        fun mutableGroupOf(tag: Tag, attributes: List<Attribute<*>>): MutableAttributeGroup =
+        fun mutableGroupOf(tag: DelimiterTag, attributes: List<Attribute<*>>): MutableAttributeGroup =
             MutableAttributeGroup(tag, attributes)
 
         /** Return a mutable group of attributes. */
         @JvmStatic
-        fun mutableGroupOf(tag: Tag, vararg attributes: Attribute<*>): MutableAttributeGroup =
+        fun mutableGroupOf(tag: DelimiterTag, vararg attributes: Attribute<*>): MutableAttributeGroup =
             mutableGroupOf(tag, attributes.toList())
 
         /**
@@ -79,7 +79,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
         @Throws(IOException::class)
         @Deprecated("Use IppInputStream.read()",
             ReplaceWith("readAttributeGroup()", "com.hp.jipp.encoding.IppInputStream"))
-        fun read(input: IppInputStream, groupTag: Tag) =
+        fun read(input: IppInputStream, groupTag: DelimiterTag) =
             input.readAttributeGroup(groupTag)
     }
 }

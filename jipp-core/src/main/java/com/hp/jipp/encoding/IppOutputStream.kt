@@ -96,6 +96,9 @@ class IppOutputStream(outputStream: OutputStream) : DataOutputStream(outputStrea
             /** Write the attribute with a blank name */
             write(attribute, name = "")
         }
-        write(EmptyAttribute("", Tag.endCollection))
+        // Write an empty attribute to end the collection
+        write(Tag.endCollection)
+        writeStringValue("")
+        writeShort(0) // 0 value length = no values
     }
 }

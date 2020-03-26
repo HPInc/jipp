@@ -5,6 +5,7 @@ package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeGroup.Companion.mutableGroupOf
+import com.hp.jipp.encoding.DelimiterTag
 import com.hp.jipp.encoding.IppPacket
 import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_REQUEST_ID
 import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_VERSION_NUMBER
@@ -67,7 +68,7 @@ class InPacket constructor(
         get() = Status[code]
 
     /** Append a new [AttributeGroup] of [tag] as filled out by [func]. */
-    fun group(tag: Tag, func: MutableAttributeGroup.() -> Unit) {
+    fun group(tag: DelimiterTag, func: MutableAttributeGroup.() -> Unit) {
         mutableGroupOf(tag).also {
             groups.add(it)
             it.func()
@@ -78,7 +79,7 @@ class InPacket constructor(
      * If a group with [tag] exists, extend the last group matching [tag] with [func],
      * otherwise add a new group.
      */
-    fun extend(tag: Tag, func: MutableAttributeGroup.() -> Unit) {
+    fun extend(tag: DelimiterTag, func: MutableAttributeGroup.() -> Unit) {
         groups.findLast { it.tag == tag }?.also { inGroup ->
             inGroup.func()
         } ?: group(tag, func)
@@ -117,6 +118,6 @@ class InPacket constructor(
 @Suppress("ClassName", "ClassNaming")
 @Deprecated("Use IppPacket builders")
 object group {
-    operator fun invoke(tag: Tag, func: MutableAttributeGroup.() -> Unit) =
+    operator fun invoke(tag: DelimiterTag, func: MutableAttributeGroup.() -> Unit) =
         mutableGroupOf(tag).apply { func() }.toGroup()
 }
