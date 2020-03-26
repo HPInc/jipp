@@ -1,6 +1,9 @@
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.DocumentState;
+import com.hp.jipp.model.JobState;
+import com.hp.jipp.model.JobStateReason;
+import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
 import java.io.IOException;
@@ -11,12 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 
-import static com.hp.jipp.encoding.AttributeGroup.groupOf;
-import static com.hp.jipp.encoding.AttributeGroup.mutableGroupOf;
+import static com.hp.jipp.encoding.AttributeGroup.*;
 import static com.hp.jipp.encoding.Cycler.coverList;
 import static com.hp.jipp.encoding.Cycler.cycle;
-import static com.hp.jipp.encoding.Tag.operationAttributes;
-import static com.hp.jipp.encoding.Tag.printerAttributes;
+import static com.hp.jipp.encoding.Tag.*;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
@@ -64,9 +65,38 @@ public class AttributeGroupTest {
     }
 
     @Test
+    public void operationGroupWithUri() throws Exception {
+        IppPacket packet = IppPacket.jobResponse(Status.successfulOk, 1, URI.create("ipp://10.0.0.23/ipp/printer/job/1"),
+                JobState.pending,
+                Collections.singletonList(JobStateReason.accountClosed))
+                .putAttributes(operationAttributes, Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")))
+                .build();
+        packet = cycle(packet);
+        AttributeGroup group = packet.get(operationAttributes);
+        assertEquals(group.getTag(), operationAttributes);
+        assertNotNull(group.get(Types.attributesCharset));
+        assertNotNull(group.get(Types.attributesNaturalLanguage));
+        assertNotNull(group.get(Types.printerUri));
+        AttributeGroup jobGroup = packet.get(jobAttributes);
+        assertNotNull(jobGroup.get(Types.jobUri));
+        assertNotNull(jobGroup.get(Types.jobId));
+        assertEquals(Collections.singletonList(JobStateReason.accountClosed), jobGroup.get(Types.jobStateReasons));
+    }
+
+    @Test
+    public void multipleJobGroups() throws Exception {
+        IppPacket packet = IppPacket.jobResponse(Status.successfulOk, 1, URI.create("ipp://10.0.0.23/ipp/printer/job/1"),
+                JobState.pending)
+                .addJobAttributesGroup(1, URI.create("ipp://10.0.0.23/ipp/printer/job/2"), JobState.aborted)
+                .build();
+        packet = cycle(packet);
+        assertEquals(Tag.jobAttributes, packet.getAttributeGroups().get(2).getTag());
+    }
+
+    @Test
     public void multiMultiAttribute() throws Exception {
         AttributeGroup group = cycle(groupOf(operationAttributes,
-                Types.attributesCharset.of("utf-8","utf-16")));
+                Types.attributesCharset.of("utf-8", "utf-16")));
         assertEquals(Arrays.asList("utf-8", "utf-16"), group.get(Types.attributesCharset).strings());
     }
 
@@ -160,8 +190,18 @@ public class AttributeGroupTest {
         assertEquals(mutableGroup, group);
         assertEquals(group, group.toMutable());
 
-        mutableGroup.add(Types.requestingUserName.of("test"));
+        mutableGroup.put(Types.requestingUserName.of("test"));
         assertNotEquals(group, mutableGroup);
+    }
+
+    @Test
+    public void mutableAddMultiple() throws Exception {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8", "utf-16"));
+        mutableGroup.put(Types.attributesCharset.of("utf-8", "utf-16"),
+                Types.attributesNaturalLanguage.of("sp"));
+        assertEquals("sp", mutableGroup.getValue(Types.attributesNaturalLanguage));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), mutableGroup.getValues(Types.attributesCharset));
     }
 
     @Test
@@ -172,20 +212,20 @@ public class AttributeGroupTest {
         assertEquals(0, mutableGroup.indexOf(Types.attributesCharset.of("utf-8")));
 
         Attribute<Name> printerName = Types.printerName.of("myprinter");
-        mutableGroup.attr(Types.printerName.of(new Name("myprinter")));
+        mutableGroup.put(Types.printerName.of(new Name("myprinter")));
         assertEquals(1, mutableGroup.lastIndexOf(printerName));
         assertEquals(printerName, mutableGroup.get(Types.printerName));
 
         mutableGroup.plusAssign(Collections.singletonList(printerName));
         assertEquals(printerName, mutableGroup.get(Types.printerName.getName()));
 
-        mutableGroup.attr(Types.printerName, "first", "second");
+        mutableGroup.put(Types.printerName, "first", "second");
         assertEquals(Types.printerName.of("first", "second"), mutableGroup.get(Types.printerName));
 
-        mutableGroup.attr(Types.printerName, new Name("third"), new Name("fourth"));
+        mutableGroup.put(Types.printerName, new Name("third"), new Name("fourth"));
         assertEquals(Types.printerName.of("third", "fourth"), mutableGroup.get(Types.printerName));
 
-        mutableGroup.attr(Types.printerOrganization, "mine", "still mine");
+        mutableGroup.put(Types.printerOrganization, "mine", "still mine");
         assertEquals(Types.printerOrganization.of("mine", "still mine"), mutableGroup.get(Types.printerOrganization));
 
         assertNull(mutableGroup.get(Types.documentFormat.getName()));
@@ -201,10 +241,24 @@ public class AttributeGroupTest {
         assertFalse(mutableGroup.drop(printerName)); // Not there anymore
 
         // Put it back and drop it again
-        mutableGroup.add(printerName);
+        mutableGroup.put(printerName);
         assertTrue(mutableGroup.drop(printerName));
         assertFalse(mutableGroup.drop(printerName));
     }
+
+    @Test
+    public void minus() throws Exception {
+        Attribute<Name> printerName = Types.printerName.of("jim");
+        MutableAttributeGroup mutableGroup = mutableGroupOf(printerAttributes, printerName);
+        mutableGroup.minusAssign(Types.printerName);
+        assertNull(mutableGroup.get(Types.printerName));
+
+        mutableGroup.put(printerName);
+        assertNotNull(mutableGroup.get(Types.printerName));
+        mutableGroup.minusAssign(printerName);
+        assertNull(mutableGroup.get(Types.printerName));
+    }
+
 
     @Test
     public void cycleMutableGroup() throws Exception {

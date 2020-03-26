@@ -48,13 +48,9 @@ dependencies {
 3. Use the transport to send and receive `IppPacket` objects, e.g.:
 ```
 URI uri = URI.create("http://192.168.1.100:631/ipp/print");
-IppPacket printRequest = new IppPacket(Operation.printJob, 123,
-        groupOf(operationAttributes,
-                attributesCharset.of("utf-8"),
-                attributesNaturalLanguage.of("en"),
-                printerUri.of(uri),
-                requestingUserName.of("user"),
-                documentFormat.of("application/octet-stream")));
+IppPacket printRequest = IppPacket.printJobRequest(uri)
+        .addOperationAttribute(documentFormat.of("application/pdf")))
+        .build();
 transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
 ```
 

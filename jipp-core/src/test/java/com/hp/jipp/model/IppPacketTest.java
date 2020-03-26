@@ -10,16 +10,16 @@ import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.encoding.OtherString;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
@@ -31,9 +31,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class IppPacketTest {
+    private URI uri = URI.create("ipp://192.168.0.101:631/ipp/print");
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -302,5 +306,144 @@ public class IppPacketTest {
         packet = cycle(packet);
         System.out.println(packet.toString());
         assertTrue(packet.toString().contains(Operation.createJob.getName()));
+    }
+
+    @Test
+    public void getStrings() throws IOException {
+        packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
+                groupOf(Tag.printerAttributes, operationsSupported.of(Operation.createJob), Types.foldingDirectionSupported.noValue()));
+        packet = cycle(packet);
+        assertEquals("Create-Job(5)", packet.getString(Tag.printerAttributes, operationsSupported));
+        assertNull(packet.getString(Tag.unsupportedAttributes, Types.foldingDirectionSupported));
+
+        // Group, Attribute, and Value present
+        assertEquals(Collections.singletonList("Create-Job(5)"), packet.getStrings(Tag.printerAttributes, operationsSupported));
+        // Attribute present, no values inside
+        assertEquals(Collections.emptyList(), packet.getStrings(Tag.printerAttributes, Types.foldingDirectionSupported));
+        // Group present, no such attribute
+        assertEquals(Collections.emptyList(), packet.getStrings(Tag.printerAttributes, Types.oauthAuthorizationScope));
+        // Group not present
+        assertEquals(Collections.emptyList(), packet.getStrings(Tag.unsupportedAttributes, Types.foldingDirectionSupported));
+    }
+
+    @Test
+    public void operationString() throws IOException {
+        packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607);
+        packet = cycle(packet);
+        assertThat(packet.toString(), containsString("Hold-Job"));
+    }
+
+    @Test
+    public void statusString() throws IOException {
+        packet = new IppPacket(0x0102, Status.clientErrorAccountLimitReached.getCode(), 0x50607);
+        packet = cycle(packet);
+        assertThat(packet.toString(), containsString("client-error-account-limit-reached"));
+    }
+
+    @Test
+    public void unknownString() throws IOException {
+        packet = new IppPacket(0x0102, 999, 0x50607);
+        packet = cycle(packet);
+        assertThat(packet.toString(), containsString("999"));
+    }
+
+    @Test
+    public void builder() throws IOException {
+        packet = new IppPacket.Builder(Status.successfulOk.getCode()).build();
+        packet = cycle(packet);
+        assertEquals(Status.successfulOk, packet.getStatus());
+        assertEquals(IppPacket.DEFAULT_VERSION_NUMBER, packet.getVersionNumber());
+    }
+
+    @Test
+    public void getPrinterAttributesBuilder() throws IOException {
+        packet = IppPacket.getPrinterAttributes(uri, Types.mediaSupported).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(Operation.getPrinterAttributes, packet.getOperation());
+        assertEquals(Collections.singletonList("media-supported"), packet.getValues(Tag.operationAttributes, Types.requestedAttributes));
+    }
+
+    @Test
+    public void validateJobBuilder() throws IOException {
+        packet = IppPacket.validateJob(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(Operation.validateJob, packet.getOperation());
+    }
+
+    @Test
+    public void printJobBuilder() throws IOException {
+        packet = IppPacket.printJob(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(Operation.printJob, packet.getOperation());
+    }
+
+    @Test
+    public void createJobBuilder() throws IOException {
+        packet = IppPacket.createJob(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(Operation.createJob, packet.getOperation());
+    }
+
+    @Test
+    public void getJobsBuilder() throws IOException {
+        packet = IppPacket.getJobs(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(Operation.getJobs, packet.getOperation());
+    }
+
+    @Test
+    public void sendDocumentBuilder() throws IOException {
+        packet = IppPacket.sendDocument(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.jobUri));
+        assertEquals(Operation.sendDocument, packet.getOperation());
+    }
+
+    @Test
+    public void sendDocumentBuilder2() throws IOException {
+        packet = IppPacket.sendDocument(uri, 3).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(3, packet.getValue(Tag.operationAttributes, Types.jobId).intValue());
+        assertEquals(Operation.sendDocument, packet.getOperation());
+    }
+
+    @Test
+    public void getJobAttributesBuilder() throws IOException {
+        packet = IppPacket.getJobAttributes(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.jobUri));
+        assertEquals(Operation.getJobAttributes, packet.getOperation());
+    }
+
+    @Test
+    public void getJobAttributesBuilder2() throws IOException {
+        packet = IppPacket.getJobAttributes(uri, 3).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(3, packet.getValue(Tag.operationAttributes, Types.jobId).intValue());
+        assertEquals(Operation.getJobAttributes, packet.getOperation());
+    }
+
+    @Test
+    public void cancelJobBuilder() throws IOException {
+        packet = IppPacket.cancelJob(uri).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.jobUri));
+        assertEquals(Operation.cancelJob, packet.getOperation());
+    }
+
+    @Test
+    public void cancelJobBuilder2() throws IOException {
+        packet = IppPacket.cancelJob(uri, 3).build();
+        packet = cycle(packet);
+        assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
+        assertEquals(3, packet.getValue(Tag.operationAttributes, Types.jobId).intValue());
+        assertEquals(Operation.cancelJob, packet.getOperation());
     }
 }

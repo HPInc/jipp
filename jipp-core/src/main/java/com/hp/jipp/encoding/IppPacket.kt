@@ -3,12 +3,16 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.model.JobState
+import com.hp.jipp.model.JobStateReason
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
+import com.hp.jipp.model.Types
 import com.hp.jipp.util.PrettyPrinter
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.net.URI
 
 /**
  * An IPP packet consisting of header information and zero or more attribute groups.
@@ -96,9 +100,119 @@ data class IppPacket constructor(
         return prefix() + " " + attributeGroups
     }
 
+    class Builder
+    @JvmOverloads
+    constructor(
+        var code: Int,
+        var versionNumber: Int = DEFAULT_VERSION_NUMBER,
+        var requestId: Int = DEFAULT_REQUEST_ID
+    ) {
+        constructor(
+            status: Status,
+            versionNumber: Int = DEFAULT_VERSION_NUMBER,
+            requestId: Int = DEFAULT_REQUEST_ID
+        ) : this(status.code, versionNumber, requestId)
+
+        constructor(
+            operation: Operation,
+            versionNumber: Int = DEFAULT_VERSION_NUMBER,
+            requestId: Int = DEFAULT_REQUEST_ID
+        ) : this(operation.code, versionNumber, requestId)
+
+        private val groups: MutableList<MutableAttributeGroup> = mutableListOf()
+
+        init {
+            // All packets must have an operation attributes group with these initial attributes
+            putOperationAttributes(
+                Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE),
+                Types.attributesCharset.of(DEFAULT_CHARSET))
+        }
+
+        fun setVersionNumber(versionNumber: Int) = this.apply {
+            this.versionNumber = versionNumber
+        }
+
+        fun setRequestId(requestId: Int) = this.apply {
+            this.requestId = requestId
+        }
+
+        fun setCode(code: Int) = this.apply {
+            this.code = code
+        }
+
+        /** Append a new [AttributeGroup] after other groups. */
+        fun addGroup(group: AttributeGroup) = this.apply {
+            groups.add(group.toMutable())
+        }
+
+        /** Return the last group with the specified tag, creating it if necessary */
+        private fun getOrCreateGroup(tag: Tag) =
+            groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
+
+        /** Get or create a group with [tag] and add or replace [attributes] in it. */
+        fun putAttributes(tag: Tag, attributes: List<Attribute<*>>) = this.apply {
+            getOrCreateGroup(tag) += attributes
+        }
+
+        /** Get or create a group with [tag] and add or replace [attributes] in it. */
+        fun putAttributes(tag: Tag, vararg attributes: Attribute<*>) =
+            putAttributes(tag, attributes.toList())
+
+        /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
+        fun putOperationAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.operationAttributes, attributes.toList())
+
+        /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
+        fun putJobAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.jobAttributes, attributes.toList())
+
+        /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
+        fun putPrinterAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.printerAttributes, attributes.toList())
+
+        /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
+        fun putUnsupportedAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.unsupportedAttributes, attributes.toList())
+
+        /** Add a new [Tag.jobAttributes] group containing default attributes. */
+        @JvmOverloads
+        fun addJobAttributesGroup(
+            /** The job-id to be used to identify this job in future requests. */
+            jobId: Int,
+            /** The job-uri to be used as a target for future requests. */
+            jobUri: URI,
+            /** The current job-state. */
+            jobState: JobState,
+            /** A list of job-state-reasons, if any. */
+            jobStateReasons: List<String> = listOf(JobStateReason.none),
+            /** Other job attributes, if any. */
+            vararg attributes: Attribute<*>
+        ) = this.apply {
+            addGroup(MutableAttributeGroup(Tag.jobAttributes, listOf(
+                Types.jobId.of(jobId),
+                Types.jobUri.of(jobUri),
+                Types.jobState.of(jobState),
+                Types.jobStateReasons.of(jobStateReasons)) + attributes.toList()))
+        }
+
+        /** Construct and return an [IppPacket] containing all settings given to this [Builder]. */
+        fun build() = IppPacket(versionNumber, code, requestId,
+            // Strip out any empty unsupported-attributes or job-attributes groups.
+            groups.filterNot { (it.tag == Tag.unsupportedAttributes || it.tag == Tag.jobAttributes) && it.isEmpty() })
+    }
+
     companion object {
         /** Default version number for IPP packets (0x200 for IPP 2.0) */
         const val DEFAULT_VERSION_NUMBER = 0x0200
+
+        /** Default request ID */
+        const val DEFAULT_REQUEST_ID = 1
+
+        /** Default language to use in operation groups. */
+        const val DEFAULT_LANGUAGE = "en-us"
+
+        /** Default charset to use in operation groups. */
+        const val DEFAULT_CHARSET = "utf-8"
 
         @JvmStatic
         @Throws(IOException::class)
@@ -113,5 +227,141 @@ data class IppPacket constructor(
             ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
         fun read(input: InputStream) =
             (input as? IppInputStream ?: IppInputStream(input)).readPacket()
+
+        /** Return a Get-Printer-Attributes request [Builder]. */
+        @JvmStatic
+        fun getPrinterAttributes(
+            printerUri: URI,
+            /** Printer attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = Builder(Operation.getPrinterAttributes.code)
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putRequestedAttributes(types.toList())
+
+        /** If supplied types are not empty, attach them as requested attributes. */
+        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = this.apply {
+            if (types.isNotEmpty()) {
+                putAttributes(Tag.operationAttributes,
+                    Types.requestedAttributes.of(types.toList().map { it.name }))
+            }
+        }
+
+        /** Return a Validate-Job request [Builder]. */
+        @JvmStatic
+        fun validateJob(
+            printerUri: URI
+        ) = Builder(Operation.validateJob.code)
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+
+        /** Return a Print-Job request [Builder]. */
+        @JvmStatic
+        fun printJob(
+            printerUri: URI
+        ) = Builder(code = Operation.printJob.code)
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+
+        /** Return a Create-Job request [Builder]. */
+        @JvmStatic
+        fun createJob(
+            printerUri: URI
+        ) = Builder(Operation.createJob.code)
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+
+        /** Return a Get-Jobs request [Builder]. */
+        @JvmStatic
+        fun getJobs(
+            printerUri: URI,
+            /** Job attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = Builder(Operation.getJobs.code)
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putRequestedAttributes(types.toList())
+
+        /** Return a Send-Document request [Builder]. */
+        @JvmStatic
+        fun sendDocument(
+            printerUri: URI,
+            jobId: Int
+        ) = Builder(Operation.sendDocument.code)
+            .putAttributes(Tag.operationAttributes,
+                Types.printerUri.of(printerUri),
+                Types.jobId.of(jobId))
+
+        /** Return a Send-Document request [Builder] */
+        @JvmStatic
+        fun sendDocument(
+            jobUri: URI,
+            /** Job attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = Builder(Operation.sendDocument.code)
+            .putAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
+            .putRequestedAttributes(types.toList())
+
+        /** Return a Get-Job-Attributes request [Builder]. */
+        @JvmStatic
+        fun getJobAttributes(
+            printerUri: URI,
+            jobId: Int,
+            /** Job attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = Builder(Operation.getJobAttributes.code)
+            .putAttributes(Tag.operationAttributes,
+                Types.printerUri.of(printerUri),
+                Types.jobId.of(jobId))
+            .putRequestedAttributes(types.toList())
+
+        /** Return a Get-Job-Attributes request [Builder]. */
+        @JvmStatic
+        fun getJobAttributes(
+            jobUri: URI,
+            /** Types of interest, if any. */
+            vararg types: AttributeType<*>
+        ) = Builder(Operation.getJobAttributes.code)
+            .putAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
+            .putRequestedAttributes(types.toList())
+
+        /** Return a Cancel-Job request [Builder]. */
+        @JvmStatic
+        fun cancelJob(
+            printerUri: URI,
+            jobId: Int
+        ) = Builder(Operation.cancelJob.code)
+            .putAttributes(Tag.operationAttributes,
+                Types.printerUri.of(printerUri),
+                Types.jobId.of(jobId))
+
+        /** Return a Cancel-Job request [Builder]. */
+        @JvmStatic
+        fun cancelJob(
+            jobUri: URI
+        ) = Builder(Operation.cancelJob.code)
+            .putAttributes(Tag.operationAttributes,
+                Types.jobUri.of(jobUri))
+
+        /** Return a generic response [Builder]. */
+        @JvmStatic
+        fun response(
+            status: Status
+        ) = Builder(status.code)
+            .putAttributes(Tag.unsupportedAttributes)
+
+        /** Return a job-related response packet [Builder]. */
+        @JvmStatic
+        @JvmOverloads
+        @Suppress("LongParameterList") // All of these parameters required in Job responses.
+        fun jobResponse(
+            /** The status code for the request. */
+            status: Status,
+            /** The job-id to be used to identify this job in future requests. */
+            jobId: Int,
+            /** The job-uri to be used as a target for future requests. */
+            jobUri: URI,
+            /** The current job-state. */
+            jobState: JobState,
+            /** A list of job-state-reasons, if any. */
+            jobStateReasons: List<String> = listOf(JobStateReason.none)
+        ) = Builder(status.code)
+            .putAttributes(Tag.unsupportedAttributes)
+            .addJobAttributesGroup(jobId, jobUri, jobState, jobStateReasons)
     }
 }

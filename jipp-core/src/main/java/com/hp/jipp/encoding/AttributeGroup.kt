@@ -42,6 +42,10 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
         printer.close()
     }
 
+    /** Return a new [AttributeGroup] with additional attributes added to the end. */
+    operator fun plus(attributes: List<Attribute<*>>): AttributeGroup =
+        AttributeGroupImpl(tag, this + attributes)
+
     /** Return a copy of this attribute group in mutable form. */
     fun toMutable(): MutableAttributeGroup =
         mutableGroupOf(tag, this)
