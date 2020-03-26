@@ -55,8 +55,7 @@ def note(output):
 
 # Given a record, attempt to grab the referenced specification out of its xref.
 # Return the short id of the spec or None if not found.
-def parse_spec(record, target):
-    xref = record.find('{*}xref')
+def parse_spec(xref, target):
     if xref is None:
         return None
 
@@ -128,7 +127,7 @@ def parse_enum(record):
     enum = enums.setdefault(attribute, { 'name': attribute, 'values': { }, 'specs': [ ],
                                          'syntax': record.find('{*}syntax').text })
     fix_syntax(enum)
-    parse_spec(record, enum)
+    parse_spec(record.find('{*}xref'), enum)
 
     value = record.find('{*}value')
     if value is not None:
@@ -177,7 +176,7 @@ def parse_status_code(record):
     enum = enums.setdefault('status', { 'name': 'status', 'values': { }, 'specs': [ ], 'hex': True })
     value = record.find('{*}value').text
     name = record.find('{*}name').text
-    parse_spec(record, enum)
+    parse_spec(record.find('{*}xref'), enum)
     if name == "Unassigned" or name.startswith("Reserved") or '-' in value:
         return
     try:
@@ -196,7 +195,7 @@ def parse_keyword(record):
     keyword = keywords.setdefault(attribute, { 'name': attribute, 'values': [ ], 'specs': [ ],
                                                'syntax': record.find('{*}syntax').text })
     fix_syntax(keyword)
-    parse_spec(record, keyword)
+    parse_spec(record.find('{*}xref'), keyword)
 
     value = record.find('{*}value')
     if value is not None:
@@ -270,10 +269,15 @@ def assign_ref(ref, target):
         target['ref'] = m.group(1)
         return True
 
-    m = re.search("^Member attributes are the same as the \"([a-z-]+)\" (.*) attribute$", ref)
+    m = re.search("^Member attributes are the same as the \"([a-z-]+)\" (.*) attribute$", ref, re.IGNORECASE)
     if m and m.group(1) and m.group(2):
         target['ref_col'] = m.group(1)
         target['ref_group'] = m.group(2)
+        return True
+
+    m = re.search("^Member attributes are the same as \"([a-z-]+)\"$", ref, re.IGNORECASE)
+    if m and m.group(1):
+        target['ref_col'] = m.group(1)
         return True
 
     # e.g. "<Any Job Template attribute>"
@@ -284,10 +288,27 @@ def assign_ref(ref, target):
 
     return False
 
+crossover_attributes = {
+    'system-xri-supported': 'printer-xri-supported',
+    'system-contact-col': 'printer-contact-col',
+    'system-impressions-completed-col': 'job-impressions-col',
+    'system-media-sheets-completed-col': 'job-media-sheets-col',
+    'system-pages-completed-col': 'job-pages-col',
+    'printer-impressions-completed-col': 'job-impressions-col',
+    'printer-media-sheets-completed-col': 'job-media-sheets-col',
+    'printer-pages-completed-col': 'job-pages-col',
+}
+
 # Parse a single attribute record
 def parse_attribute(record):
     attr_name = record.find('{*}name').text
-    collection = attributes.setdefault(record.find('{*}collection').text, { })
+    member_name = record.find('{*}member_attribute')
+    submember_name = record.find('{*}sub-member_attribute')
+    syntax_name = record.find('{*}syntax').text
+    collection_name = record.find('{*}collection').text
+    xref = record.find('{*}xref')
+
+    collection = attributes.setdefault(collection_name, { })
 
     # Ignore (UnderReview) (Deprecated) etc
     if re.search("\(.*\)", attr_name):
@@ -301,22 +322,27 @@ def parse_attribute(record):
         return
 
     attr = collection.setdefault(attr_name, {
-        'name': attr_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text, 'members': { } } )
+        'name': attr_name, 'specs': [ ], 'syntax': syntax_name, 'members': { } } )
     fix_syntax(attr)
 
-    parse_spec(record, attr)
+    parse_spec(xref, attr)
 
-    member_name = record.find('{*}member_attribute')
     if member_name is not None:
         member_name = member_name.text
 
     # XML fix (no members referenced)
-    if member_name is None and attr_name == 'system-contact-col':
-        member_name = "Member attributes are the same as the printer-contact-col Printer Description attribute"
+    if member_name is None and attr_name in crossover_attributes:
+        member_name = '< Member attributes are the same as "%s" >' % crossover_attributes[attr_name]
 
-    submember_name = record.find('{*}sub-member_attribute')
     if submember_name is not None:
         submember_name = submember_name.text
+
+    if attr_name == 'printer-xri-requested':
+        if member_name:
+            warn("printer-xri-requested members are now specified and should be used")
+        attr['ref_col'] = 'printer-xri-supported'
+        note("printer-xir-requested: %s" % attr)
+        return
 
     if member_name is not None:
         if member_name.endswith('(extension)'):
@@ -338,12 +364,11 @@ def parse_attribute(record):
             return
 
         attr = attr['members'].setdefault(member_name, {
-            'name': member_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text,
-            'members': { }, 'inner': True
-        } )
+            'name': member_name, 'specs': [ ], 'syntax': syntax_name, 'members': { }, 'inner': True
+        })
         if submember_name is None:
             # Re-apply syntax if member appears again (probably "(extension)")
-            attr['syntax'] = record.find('{*}syntax').text
+            attr['syntax'] = syntax_name
         fix_syntax(attr)
 
         if submember_name is not None:
@@ -354,7 +379,7 @@ def parse_attribute(record):
                 return
 
             attr['members'].setdefault(submember_name, {
-                'name': submember_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text,
+                'name': submember_name, 'specs': [ ], 'syntax': syntax_name,
                 'members': { } } )
             fix_syntax(attr)
 
@@ -732,6 +757,9 @@ def fix_member(member, group_name):
     fix_syntax(member)
     fix_ktypes(member, member['syntax'], member['name'], group_name)
     if 'kintro' in member:
+        if member['syntax'] == 'dateTime':
+            if 'ktype' not in member:
+                member['ktype'] = 'Calendar'
         if member['syntax'] == 'collection':
             if 'ktype' not in member:
                 member['ktype'] = camel_class(member['name'])
@@ -887,12 +915,24 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif intro.startswith("OctetsType("):
         type['ktype'] = "ByteArray"
 
+def has_calendar(members):
+    for name in members:
+        if members[name]['ktype'] == 'Calendar':
+            note("TRUE: Members has %s" % members[name])
+            return True
+        if members[name]['members']:
+            if has_calendar(members[name]['members']):
+                note("TRUE: Members has %s" % members[name])
+                return True
+    return False
+
 def emit_code():
     env = Environment(loader=FileSystemLoader(proj_dir + 'bin'))
     env.filters['camel_class'] = camel_class
     env.filters['camel_member'] = camel_member
     env.filters['spaced_title'] = spaced_title
     env.filters['upper'] = upper
+    env.filters['has_calendar'] = has_calendar
 
     emit_kind(env, 'enum.kt.tmpl', enums, emit_enum)
     emit_kind(env, 'keyword.java.tmpl', keywords, emit_keyword)

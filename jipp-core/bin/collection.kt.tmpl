@@ -9,6 +9,9 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+{%- if collection.members | has_calendar %}
+import java.util.Calendar
+{%- endif %}
 
 {%- endif %}
 

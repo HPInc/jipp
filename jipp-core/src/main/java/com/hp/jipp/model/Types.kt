@@ -3192,6 +3192,11 @@ object Types {
      */
     @JvmField val printerImpressionsCompleted = IntType("printer-impressions-completed")
     /**
+     * "printer-impressions-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val printerImpressionsCompletedCol = JobImpressionsCol.Type("printer-impressions-completed-col")
+    /**
      * "printer-info" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
@@ -3232,6 +3237,11 @@ object Types {
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val printerMediaSheetsCompleted = IntType("printer-media-sheets-completed")
+    /**
+     * "printer-media-sheets-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val printerMediaSheetsCompletedCol = JobMediaSheetsCol.Type("printer-media-sheets-completed-col")
     /**
      * "printer-message-date-time" as defined in:
      * [RFC3380](http://www.iana.org/go/rfc3380).
@@ -3282,6 +3292,11 @@ object Types {
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val printerPagesCompleted = IntType("printer-pages-completed")
+    /**
+     * "printer-pages-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val printerPagesCompletedCol = JobPagesCol.Type("printer-pages-completed-col")
     /**
      * "printer-privacy-policy-uri" as defined in:
      * [IPPPRIVACY10](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippprivacy10-20180412.pdf).
@@ -3410,6 +3425,11 @@ object Types {
      * [PWG5100.21](https://ftp.pwg.org/pub/pwg/candidates/cs-ipp3d11-20190329-5100.21.pdf).
      */
     @JvmField val printerVolumeSupported = PrinterVolumeSupported.Type("printer-volume-supported")
+    /**
+     * "printer-xri-requested" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val printerXriRequested = PrinterXriSupported.Type("printer-xri-requested")
     /**
      * "printer-xri-supported" as defined in:
      * [RFC3380](http://www.iana.org/go/rfc3380).
@@ -3900,7 +3920,7 @@ object Types {
      * "system-contact-col" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
-    @JvmField val systemContactCol = SystemContactCol.Type("system-contact-col")
+    @JvmField val systemContactCol = PrinterContactCol.Type("system-contact-col")
     /**
      * "system-current-time" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
@@ -3942,6 +3962,11 @@ object Types {
      */
     @JvmField val systemImpressionsCompleted = IntType("system-impressions-completed")
     /**
+     * "system-impressions-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemImpressionsCompletedCol = JobImpressionsCol.Type("system-impressions-completed-col")
+    /**
      * "system-info" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
@@ -3967,6 +3992,11 @@ object Types {
      */
     @JvmField val systemMediaSheetsCompleted = IntType("system-media-sheets-completed")
     /**
+     * "system-media-sheets-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemMediaSheetsCompletedCol = JobMediaSheetsCol.Type("system-media-sheets-completed-col")
+    /**
      * "system-message-from-operator" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
@@ -3981,6 +4011,11 @@ object Types {
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val systemPagesCompleted = IntType("system-pages-completed")
+    /**
+     * "system-pages-completed-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemPagesCompletedCol = JobPagesCol.Type("system-pages-completed-col")
     /**
      * "system-resident-application-name" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
@@ -4088,6 +4123,11 @@ object Types {
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val systemUuid = UriType("system-uuid")
+    /**
+     * "system-xri-supported" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemXriSupported = PrinterXriSupported.Type("system-xri-supported")
     /**
      * "time-at-canceled" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
