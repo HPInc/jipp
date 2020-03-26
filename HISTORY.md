@@ -3,6 +3,7 @@
 ## 0.7.0
 * Stabilize `IppInputStream` and `IppOutputStream` APIs (#79).
 * Replace Kotlin DSL with Java-friendly IppPacket.Builder (#77).
+* Subclass `Tag` objects to prevent misuse (#82).
 
 ## 0.6.22
 * Handle PWG raster color space of 1 (RGB) (#72).
