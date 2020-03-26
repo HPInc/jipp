@@ -6,10 +6,10 @@ package com.hp.jipp.encoding
 import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 
 /**
- * An [AttributeGroup] which may be altered.
+ * An [AttributeGroup] which may be altered. Insertion order is preserved.
  *
  * Note:
- *   * the addition of any attribute will replace any existing attribute having the same type.
+ *   * the addition of any [Attribute] replaces any existing one with the same [AttributeType].
  *   * use [drop] or [minusAssign], not [remove].
  */
 @Suppress("TooManyFunctions")
@@ -20,10 +20,10 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     attributes: List<Attribute<*>> = listOf()
 ) : AttributeGroup, AbstractList<Attribute<*>>() {
 
-    private val map: LinkedHashMap<String, Attribute<out Any>> = linkedMapOf()
+    private val map: LinkedHashMap<String, Attribute<*>> = linkedMapOf()
 
     init {
-        map.putAll(attributes.map { it.name to it })
+        putAll(attributes)
     }
 
     override val size
@@ -31,73 +31,126 @@ open class MutableAttributeGroup @JvmOverloads constructor(
 
     /** Add or replace the attribute value for [type]. */
     inline operator fun <reified T : Any> set(type: AttributeType<T>, value: T) {
-        add(type.of(value))
+        put(type.of(value))
     }
 
     /** Add or replace the attribute value for [type]. */
     inline operator fun <reified T : Any> set(type: AttributeType<T>, values: List<T>) {
-        add(type.of(values))
+        put(type.of(values))
     }
 
-    operator fun plusAssign(attribute: Attribute<out Any>) = add(attribute)
+    /** Put [attribute] into this group */
+    operator fun plusAssign(attribute: Attribute<*>) = put(attribute)
 
-    operator fun plusAssign(attributes: Collection<Attribute<out Any>>) = addAll(attributes)
+    /** Put [attributes] into this group */
+    operator fun plusAssign(attributes: Collection<Attribute<*>>) = putAll(attributes)
 
+    /** Return the [Attribute] at [index]. */
     override fun get(index: Int): Attribute<*> = map.values.elementAt(index)
 
+    /** Return the [Attribute] having a type of [name]. */
     override operator fun get(name: String) =
         map[name]
 
+    /** Return the [Attribute] having [type] if any. */
     @Suppress("UNCHECKED_CAST") // We know type corresponds to T because that's all we allow in.
     override fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =
         map[type.name] as Attribute<T>?
 
-    /** Add attributes to this group. */
-    fun add(attribute: Attribute<out Any>) {
+    /** Put [attribute] into this group. */
+    fun <T : Any> put(attribute: Attribute<T>) {
         map[attribute.name] = attribute
     }
 
+    /** Put [attributes] into this group. */
+    fun put(vararg attributes: Attribute<*>) {
+        for (attribute in attributes) {
+            map[attribute.name] = attribute
+        }
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun <T : Any> put(attributeType: AttributeType<T>, value: T, vararg values: T) {
+        // Note: must be listOf here or we end up with List<Object> during vararg conversion
+        put(attributeType.of(listOf(value) + values.toList()))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(attributeType: NameType, value: String, vararg values: String) {
+        put(attributeType.ofStrings(listOf(value) + values.toList()))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(attributeType: TextType, value: String, vararg values: String) {
+        put(attributeType.ofStrings(listOf(value) + values.toList()))
+    }
+
+    /** Put [attributes] into this group. */
+    fun putAll(attributes: Collection<Attribute<*>>) {
+        attributes.forEach {
+            map[it.name] = it
+        }
+    }
+
+    @Deprecated("use put()", ReplaceWith("put(attribute)"))
+    fun addAll(@Suppress("UNUSED_PARAMETER") index: Int, attributes: List<Attribute<*>>) {
+        putAll(attributes)
+    }
+
+    @Deprecated("use put()", ReplaceWith("put(attribute)"))
+    fun add(@Suppress("UNUSED_PARAMETER") index: Int, attribute: Attribute<*>) {
+        put(attribute)
+    }
+
     /** Add attributes to this group. */
-    fun addAll(attributes: Collection<Attribute<out Any>>) {
-        attributes.forEach { add(it) }
+    @Deprecated("use put()", ReplaceWith("put(attributeType.of(value, values...))"))
+    fun add(attribute: Attribute<*>) {
+        put(attribute)
+    }
+
+    /** Add attributes to this group. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType.of(value, values...))"))
+    fun add(vararg attributes: Attribute<*>) {
+        putAll(attributes.toList())
+    }
+
+    /** Add attributes to this group. */
+    @Deprecated("use putAll()", ReplaceWith("putAll(attributes)"))
+    fun addAll(attributes: Collection<Attribute<*>>) {
+        putAll(attributes)
     }
 
     /** Add a list of attributes to append or replace in the current context. */
+    @Deprecated("use putAll()", ReplaceWith("putAll(toAdd)"))
     fun attr(toAdd: List<Attribute<*>>) {
-        addAll(toAdd)
+        putAll(toAdd)
     }
 
     /** Add one or more attributes to be appended or replaced in the current context. */
+    @Deprecated("use put()", ReplaceWith("put(attribute)"))
     fun attr(vararg attribute: Attribute<*>) {
-        attr(attribute.toList())
+        putAll(attribute.toList())
     }
 
     /** Add or replace an attribute to the group having one or more values. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
+    @Suppress("SpreadOperator")
     fun <T : Any> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
-        if (values.isEmpty()) {
-            // Note: must be listOf here or we end up with List<Object> during vararg conversion
-            attr(attributeType.of(listOf(value)))
-        } else {
-            attr(attributeType.of(listOf(value) + values.toList()))
-        }
+        put(attributeType, value, *values)
     }
 
     /** Add or replace an attribute to the group having one or more values. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
+    @Suppress("SpreadOperator")
     fun attr(attributeType: NameType, value: String, vararg values: String) {
-        if (values.isEmpty()) {
-            attr(attributeType.of(value))
-        } else {
-            attr(attributeType.ofStrings(listOf(value) + values.toList()))
-        }
+        put(attributeType, value, *values)
     }
 
     /** Add or replace an attribute to the group having one or more values. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
+    @Suppress("SpreadOperator")
     fun attr(attributeType: TextType, value: String, vararg values: String) {
-        if (values.isEmpty()) {
-            attr(attributeType.of(value))
-        } else {
-            attr(attributeType.ofStrings(listOf(value) + values.toList()))
-        }
+        put(attributeType, value, *values)
     }
 
     /** Remove an attribute of the specified [type], returning the removed attribute, if any. */

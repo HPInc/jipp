@@ -3,11 +3,9 @@ package sample;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -21,11 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.hp.jipp.encoding.AttributeGroup.groupOf;
-import static com.hp.jipp.encoding.Tag.*;
+import static com.hp.jipp.encoding.Tag.printerAttributes;
 import static com.hp.jipp.model.Types.*;
 
 class Main {
@@ -85,13 +81,9 @@ class Main {
             requested = requestedAttributes.of("all");
         }
 
-        IppPacket attributeRequest = new IppPacket(Operation.getPrinterAttributes, 1,
-                groupOf(operationAttributes,
-                        attributesCharset.of("utf-8"),
-                        attributesNaturalLanguage.of("en"),
-                        printerUri.of(uri),
-                        requestingUserName.of("jprint"),
-                        requested));
+        IppPacket attributeRequest = IppPacket.getPrinterAttributes(uri)
+                .addOperationAttributes(requestingUserName.of(CMD_NAME), requested)
+                .build();
 
         System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
         IppPacketData request = new IppPacketData(attributeRequest);
@@ -109,13 +101,11 @@ class Main {
         System.out.println("File is " + inputFile);
 
         // Query for supported document formats
-        IppPacket attributeRequest = new IppPacket(Operation.getPrinterAttributes, 1,
-                groupOf(operationAttributes,
-                        attributesCharset.of("utf-8"),
-                        attributesNaturalLanguage.of("en"),
-                        printerUri.of(uri),
+        IppPacket attributeRequest = IppPacket.getPrinterAttributes(uri)
+                .addOperationAttributes(
                         requestingUserName.of(CMD_NAME),
-                        requestedAttributes.of(documentFormatSupported.getName())));
+                        requestedAttributes.of(documentFormatSupported.getName()))
+                .build();
 
         System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
         IppPacketData request = new IppPacketData(attributeRequest);
@@ -129,13 +119,11 @@ class Main {
         }
 
         // Deliver the print request
-        IppPacket printRequest = new IppPacket(Operation.printJob, 2,
-                groupOf(operationAttributes,
-                        attributesCharset.of("utf-8"),
-                        attributesNaturalLanguage.of("en"),
-                        printerUri.of(uri),
+        IppPacket printRequest = IppPacket.printJob(uri)
+                .addOperationAttributes(
                         requestingUserName.of("jprint"),
-                        documentFormat.of(format)));
+                        documentFormat.of(format))
+                .build();
 
         System.out.println("Sending " + printRequest.prettyPrint(100, "  "));
         request = new IppPacketData(printRequest, new FileInputStream(inputFile));

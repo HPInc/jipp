@@ -3,9 +3,13 @@
 
 package com.hp.jipp.dsl
 
-import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeGroup.Companion.mutableGroupOf
+import com.hp.jipp.encoding.IppPacket
+import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_REQUEST_ID
 import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_VERSION_NUMBER
+import com.hp.jipp.encoding.MutableAttributeGroup
+import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
 
@@ -16,9 +20,10 @@ import com.hp.jipp.model.Status
  * [DEFAULT_VERSION_NUMBER] and its `requestId` is set to [DEFAULT_REQUEST_ID].
  */
 @Suppress("ClassName", "ClassNaming")
+@Deprecated("Use IppPacket builders")
 object ippPacket {
     /** The default request ID (1001), which can be overridden with `requestId = 123` */
-    const val DEFAULT_REQUEST_ID = 1001
+    @Suppress("DEPRECATION")
     operator fun invoke(
         operation: Operation,
         requestId: Int = DEFAULT_REQUEST_ID,
@@ -28,6 +33,7 @@ object ippPacket {
         build()
     }
 
+    @Suppress("DEPRECATION")
     operator fun invoke(
         status: Status,
         requestId: Int = DEFAULT_REQUEST_ID,
@@ -42,10 +48,11 @@ object ippPacket {
  * Context for building an IPP [IppPacket].
  */
 @IppDslMarker
+@Deprecated("Use IppPacket builders")
 class InPacket constructor(
     var versionNumber: Int = DEFAULT_VERSION_NUMBER,
     var code: Int,
-    var requestId: Int = ippPacket.DEFAULT_REQUEST_ID
+    var requestId: Int = DEFAULT_REQUEST_ID
 ) {
     private val groups = ArrayList<MutableAttributeGroup>()
 
@@ -108,6 +115,7 @@ class InPacket constructor(
 
 /** DSL for defining an [AttributeGroup]. */
 @Suppress("ClassName", "ClassNaming")
+@Deprecated("Use IppPacket builders")
 object group {
     operator fun invoke(tag: Tag, func: MutableAttributeGroup.() -> Unit) =
         mutableGroupOf(tag).apply { func() }.toGroup()
