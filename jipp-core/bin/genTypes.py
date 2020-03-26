@@ -591,6 +591,10 @@ def emit_attributes(env):
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
                     old_type['syntax'] = 'integer'
                     type = None
+                elif old_type.get('set', None) != type.get('set', None):
+                    # One is a set, one is not, so consider them both sets
+                    old_type['set'] = True
+                    type = None
                 elif no_specs(old_type) != no_specs(type):
                     warn("Type repeated with differences in " + group_name, [types[name], type])
                     type = None
