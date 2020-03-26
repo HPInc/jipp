@@ -310,6 +310,10 @@ def parse_attribute(record):
     if member_name is not None:
         member_name = member_name.text
 
+    # XML fix (no members referenced)
+    if member_name is None and attr_name == 'system-contact-col':
+        member_name = "Member attributes are the same as the printer-contact-col Printer Description attribute"
+
     submember_name = record.find('{*}sub-member_attribute')
     if submember_name is not None:
         submember_name = submember_name.text
@@ -592,7 +596,7 @@ def emit_attributes(env):
                     old_type['syntax'] = 'integer'
                     type = None
                 elif old_type.get('set', None) != type.get('set', None):
-                    # One is a set, one is not, so consider them both sets
+                    # One is a set, one is not (e.g. printer-service-type), so just consider them both sets
                     old_type['set'] = True
                     type = None
                 elif no_specs(old_type) != no_specs(type):

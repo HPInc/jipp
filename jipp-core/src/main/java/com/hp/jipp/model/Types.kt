@@ -3897,6 +3897,11 @@ object Types {
      */
     @JvmField val systemConfiguredResources = SystemConfiguredResources.Type("system-configured-resources")
     /**
+     * "system-contact-col" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemContactCol = SystemContactCol.Type("system-contact-col")
+    /**
      * "system-current-time" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
