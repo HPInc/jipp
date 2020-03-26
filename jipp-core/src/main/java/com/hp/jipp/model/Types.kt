@@ -149,12 +149,6 @@ object Types {
      */
     @JvmField val compressionAccepted = KeywordType("compression-accepted")
     /**
-     * "compression-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [Compression].
-     */
-    @JvmField val compressionSupplied = KeywordType("compression-supplied")
-    /**
      * "compression-supported" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      * May contain any keyword from [Compression].
@@ -260,12 +254,6 @@ object Types {
      * May contain any keyword from [CoveringName] or a name.
      */
     @JvmField val coveringNameSupported = KeywordOrNameType("covering-name-supported")
-    /**
-     * "current-page-order" as defined in:
-     * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
-     * May contain any keyword from [PageOrderReceived].
-     */
-    @JvmField val currentPageOrder = KeywordType("current-page-order")
     /**
      * "date-time-at-canceled" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
@@ -388,11 +376,6 @@ object Types {
      */
     @JvmField val documentCharsetDefault = StringType(Tag.charset, "document-charset-default")
     /**
-     * "document-charset-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentCharsetSupplied = StringType(Tag.charset, "document-charset-supplied")
-    /**
      * "document-charset-supported" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
      */
@@ -413,30 +396,6 @@ object Types {
      */
     @JvmField val documentDataWait = BooleanType("document-data-wait")
     /**
-     * "document-digital-signature" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [DocumentDigitalSignature].
-     */
-    @JvmField val documentDigitalSignature = KeywordType("document-digital-signature")
-    /**
-     * "document-digital-signature-default" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [DocumentDigitalSignature].
-     */
-    @JvmField val documentDigitalSignatureDefault = KeywordType("document-digital-signature-default")
-    /**
-     * "document-digital-signature-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [DocumentDigitalSignature].
-     */
-    @JvmField val documentDigitalSignatureSupplied = KeywordType("document-digital-signature-supplied")
-    /**
-     * "document-digital-signature-supported" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [DocumentDigitalSignature].
-     */
-    @JvmField val documentDigitalSignatureSupported = KeywordType("document-digital-signature-supported")
-    /**
      * "document-format" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
@@ -452,24 +411,8 @@ object Types {
      */
     @JvmField val documentFormatDefault = StringType(Tag.mimeMediaType, "document-format-default")
     /**
-     * "document-format-details" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatDetails = DocumentFormatDetails.Type("document-format-details")
-    /**
-     * "document-format-details-default" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatDetailsDefault = DocumentFormatDetails.Type("document-format-details-default")
-    /**
-     * "document-format-details-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatDetailsSupplied = DocumentFormatDetails.Type("document-format-details-supplied")
-    /**
      * "document-format-details-supported" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     * May contain any keyword from [DocumentFormatDetails.Name].
      */
     @JvmField val documentFormatDetailsSupported = KeywordType("document-format-details-supported")
     /**
@@ -483,11 +426,6 @@ object Types {
      */
     @JvmField val documentFormatReady = StringType(Tag.mimeMediaType, "document-format-ready")
     /**
-     * "document-format-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatSupplied = StringType(Tag.mimeMediaType, "document-format-supplied")
-    /**
      * "document-format-supported" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
@@ -498,21 +436,6 @@ object Types {
      * May contain any keyword from [DocumentFormatVaryingAttribute].
      */
     @JvmField val documentFormatVaryingAttributes = KeywordType("document-format-varying-attributes")
-    /**
-     * "document-format-version-default" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatVersionDefault = TextType("document-format-version-default")
-    /**
-     * "document-format-version-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatVersionSupplied = TextType("document-format-version-supplied")
-    /**
-     * "document-format-version-supported" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatVersionSupported = TextType("document-format-version-supported")
     /**
      * "document-job-id" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
@@ -529,11 +452,6 @@ object Types {
      */
     @JvmField val documentMessage = TextType("document-message")
     /**
-     * "document-message-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentMessageSupplied = TextType("document-message-supplied")
-    /**
      * "document-metadata" as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
      */
@@ -543,11 +461,6 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val documentName = NameType("document-name")
-    /**
-     * "document-name-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentNameSupplied = NameType("document-name-supplied")
     /**
      * "document-natural-language" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf),
@@ -559,11 +472,6 @@ object Types {
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
      */
     @JvmField val documentNaturalLanguageDefault = StringType(Tag.naturalLanguage, "document-natural-language-default")
-    /**
-     * "document-natural-language-supplied" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentNaturalLanguageSupplied = StringType(Tag.naturalLanguage, "document-natural-language-supplied")
     /**
      * "document-natural-language-supported" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
@@ -693,8 +601,7 @@ object Types {
     @JvmField val finishingsActual = Finishing.Type("finishings-actual")
     /**
      * "finishings-col" as defined in:
-     * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf),
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
+     * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf).
      */
     @JvmField val finishingsCol = FinishingsCol.Type("finishings-col")
     /**
@@ -1132,21 +1039,6 @@ object Types {
      */
     @JvmField val jobConstraintsSupported = JobConstraintsSupported.Type("job-constraints-supported")
     /**
-     * "job-copies" as defined in:
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
-     */
-    @JvmField val jobCopies = IntType("job-copies")
-    /**
-     * "job-cover-back" as defined in:
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
-     */
-    @JvmField val jobCoverBack = CoverBack.Type("job-cover-back")
-    /**
-     * "job-cover-front" as defined in:
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
-     */
-    @JvmField val jobCoverFront = CoverFront.Type("job-cover-front")
-    /**
      * "job-creation-attributes-supported" as defined in:
      * [PWG5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf).
      */
@@ -1239,11 +1131,6 @@ object Types {
      * May contain any keyword from [JobErrorSheet.Name].
      */
     @JvmField val jobErrorSheetSupported = KeywordType("job-error-sheet-supported")
-    /**
-     * "job-finishings-col" as defined in:
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
-     */
-    @JvmField val jobFinishingsCol = FinishingsCol.Type("job-finishings-col")
     /**
      * "job-history-attributes-configured" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
@@ -2299,7 +2186,7 @@ object Types {
     @JvmField val notifyLeaseDurationDefault = IntType("notify-lease-duration-default")
     /**
      * "notify-lease-duration-supported" as defined in:
-     * [RFC3995](http://www.iana.org/go/rfc3995).
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val notifyLeaseDurationSupported = IntOrIntRangeType("notify-lease-duration-supported")
     /**
@@ -2578,11 +2465,6 @@ object Types {
      */
     @JvmField val outputDevice = NameType("output-device")
     /**
-     * "output-device-actual" as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val outputDeviceActual = NameType("output-device-actual")
-    /**
      * "output-device-assigned" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
@@ -2685,29 +2567,11 @@ object Types {
      */
     @JvmField val pageDeliverySupported = KeywordType("page-delivery-supported")
     /**
-     * "page-order-received" as defined in:
+     * "page-order-received-actual" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      * May contain any keyword from [PageOrderReceived].
      */
-    @JvmField val pageOrderReceived = KeywordType("page-order-received")
-    /**
-     * "page-order-received-actual" as defined in:
-     * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
-     * May contain any keyword from [PageOrderReceived].
-     */
     @JvmField val pageOrderReceivedActual = KeywordType("page-order-received-actual")
-    /**
-     * "page-order-received-default" as defined in:
-     * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
-     * May contain any keyword from [PageOrderReceived].
-     */
-    @JvmField val pageOrderReceivedDefault = KeywordType("page-order-received-default")
-    /**
-     * "page-order-received-supported" as defined in:
-     * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
-     * May contain any keyword from [PageOrderReceived].
-     */
-    @JvmField val pageOrderReceivedSupported = KeywordType("page-order-received-supported")
     /**
      * "page-ranges" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
@@ -2758,16 +2622,6 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val pagesPerMinuteColor = IntType("pages-per-minute-color")
-    /**
-     * "pages-per-subset" as defined in:
-     * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
-     */
-    @JvmField val pagesPerSubset = IntType("pages-per-subset")
-    /**
-     * "pages-per-subset-supported" as defined in:
-     * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
-     */
-    @JvmField val pagesPerSubsetSupported = BooleanType("pages-per-subset-supported")
     /**
      * "parent-printers-supported" as defined in:
      * [RFC3998](http://www.iana.org/go/rfc3998).
@@ -3889,16 +3743,6 @@ object Types {
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */
     @JvmField val sheetCollate = KeywordType("sheet-collate")
-    /**
-     * "sheet-collate-actual" as defined in:
-     * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
-     */
-    @JvmField val sheetCollateActual = KeywordType("sheet-collate-actual")
-    /**
-     * "sheet-completed-copy-number" as defined in:
-     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
-     */
-    @JvmField val sheetCompletedCopyNumber = IntType("sheet-completed-copy-number")
     /**
      * "sides" as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).

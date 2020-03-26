@@ -93,6 +93,9 @@ def fix_syntax(item, syntax = None):
     # XML fix
     syntax = re.sub("\]\s+\[.*\]", "", syntax)
 
+    # XML fix: make ranges consistent
+    syntax = re.sub(' *: *',':', syntax)
+
     # Some strings we do not care about no matter where they occur
     syntax = syntax.replace("(MAX)", "")
     syntax = syntax.replace("type1", "")
@@ -284,13 +287,19 @@ def assign_ref(ref, target):
 # Parse a single attribute record
 def parse_attribute(record):
     attr_name = record.find('{*}name').text
-    collection_name = record.find('{*}collection').text
+    collection = attributes.setdefault(record.find('{*}collection').text, { })
 
     # Ignore (UnderReview) (Deprecated) etc
     if re.search("\(.*\)", attr_name):
+        attr_name = re.sub(' *\(.*\)', '', attr_name)
+        if attr_name in collection:
+            del collection[attr_name]
         return
 
-    collection = attributes.setdefault(collection_name, { })
+    # XML fix (listed twice)
+    if attr_name == 'job-finishings':
+        return
+
     attr = collection.setdefault(attr_name, {
         'name': attr_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text, 'members': { } } )
     fix_syntax(attr)
@@ -799,10 +808,10 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif re.search('^rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
         intro = "IntRangeType("
         type['ktype'] = 'IntRange'
-    elif re.search('^integer(\([0-9MINAX:-]*\)) | rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
+    elif re.search('^integer(\([0-9MINAX: -]*\)) | rangeOfInteger(\([0-9MINAX: -]*\))?$', syntax):
         intro = "IntOrIntRangeType("
         type['ktype'] = 'IntOrIntRange'
-    elif re.search('^integer(\([0-9MINAX:-]*\))?$', syntax):
+    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
         intro = "IntType("
         type['ktype'] = "Int"
     elif syntax == "boolean":
