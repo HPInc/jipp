@@ -25,11 +25,11 @@ class DslTest {
     @Test
     fun `java-style build`() {
         val packet = IppPacket.printJob(uri)
-            .addOperationAttributes(Types.requestingUserName.of("Test User"))
-            .addJobAttributes(Types.mediaCol.of(MediaCol(mediaSize = mediaSize)),
+            .putOperationAttributes(Types.requestingUserName.of("Test User"))
+            .putJobAttributes(Types.mediaCol.of(MediaCol(mediaSize = mediaSize)),
                 Types.documentMessage.of("A description of the document"))
-            .addPrinterAttributes(Types.bindingTypeSupported.of(BindingType.adhesive))
-            .addUnsupportedAttributes(Types.outputBin.noValue())
+            .putPrinterAttributes(Types.bindingTypeSupported.of(BindingType.adhesive))
+            .putUnsupportedAttributes(Types.outputBin.noValue())
             .build()
 
         val cycled = cycle(packet)
@@ -74,7 +74,7 @@ class DslTest {
     @Test
     fun intOrIntRange() {
         val packet = IppPacket.response(Status.successfulOk)
-            .addPrinterAttributes(Types.numberUpSupported.of(5..6))
+            .putPrinterAttributes(Types.numberUpSupported.of(5..6))
             .build()
         Assert.assertNotEquals(listOf<IntOrIntRange>(),
             packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
@@ -149,7 +149,7 @@ class DslTest {
     fun `extend a non-existent group`() {
         val packet = IppPacket.printJob(uri)
             // Extend a tag that's not there
-            .addPrinterAttributes(Types.jobAccountId.of("25"))
+            .putPrinterAttributes(Types.jobAccountId.of("25"))
             .build()
 
         assertEquals(Name("25"), packet.getValue(Tag.printerAttributes, Types.jobAccountId))

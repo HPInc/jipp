@@ -2,7 +2,6 @@ package sample;
 
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.IppPacket;
-import com.hp.jipp.encoding.Tag;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;
@@ -82,7 +81,7 @@ class Main {
         }
 
         IppPacket attributeRequest = IppPacket.getPrinterAttributes(uri)
-                .addOperationAttributes(requestingUserName.of(CMD_NAME), requested)
+                .putOperationAttributes(requestingUserName.of(CMD_NAME), requested)
                 .build();
 
         System.out.println("Sending " + attributeRequest.prettyPrint(100, "  "));
@@ -102,7 +101,7 @@ class Main {
 
         // Query for supported document formats
         IppPacket attributeRequest = IppPacket.getPrinterAttributes(uri)
-                .addOperationAttributes(
+                .putOperationAttributes(
                         requestingUserName.of(CMD_NAME),
                         requestedAttributes.of(documentFormatSupported.getName()))
                 .build();
@@ -120,7 +119,7 @@ class Main {
 
         // Deliver the print request
         IppPacket printRequest = IppPacket.printJob(uri)
-                .addOperationAttributes(
+                .putOperationAttributes(
                         requestingUserName.of("jprint"),
                         documentFormat.of(format))
                 .build();

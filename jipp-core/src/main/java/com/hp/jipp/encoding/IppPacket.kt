@@ -123,7 +123,7 @@ data class IppPacket constructor(
 
         init {
             // All packets must have an operation attributes group with these initial attributes
-            addOperationAttributes(
+            putOperationAttributes(
                 Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE),
                 Types.attributesCharset.of(DEFAULT_CHARSET))
         }
@@ -150,29 +150,29 @@ data class IppPacket constructor(
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun addAttributes(tag: Tag, attributes: List<Attribute<*>>) = this.apply {
+        fun putAttributes(tag: Tag, attributes: List<Attribute<*>>) = this.apply {
             getOrCreateGroup(tag) += attributes
         }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun addAttributes(tag: Tag, vararg attributes: Attribute<*>) =
-            addAttributes(tag, attributes.toList())
+        fun putAttributes(tag: Tag, vararg attributes: Attribute<*>) =
+            putAttributes(tag, attributes.toList())
 
         /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
-        fun addOperationAttributes(vararg attributes: Attribute<*>) =
-            addAttributes(Tag.operationAttributes, attributes.toList())
+        fun putOperationAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.operationAttributes, attributes.toList())
 
         /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
-        fun addJobAttributes(vararg attributes: Attribute<*>) =
-            addAttributes(Tag.jobAttributes, attributes.toList())
+        fun putJobAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.jobAttributes, attributes.toList())
 
         /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
-        fun addPrinterAttributes(vararg attributes: Attribute<*>) =
-            addAttributes(Tag.printerAttributes, attributes.toList())
+        fun putPrinterAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.printerAttributes, attributes.toList())
 
         /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
-        fun addUnsupportedAttributes(vararg attributes: Attribute<*>) =
-            addAttributes(Tag.unsupportedAttributes, attributes.toList())
+        fun putUnsupportedAttributes(vararg attributes: Attribute<*>) =
+            putAttributes(Tag.unsupportedAttributes, attributes.toList())
 
         /** Add a new [Tag.jobAttributes] group containing default attributes. */
         @JvmOverloads
@@ -235,13 +235,13 @@ data class IppPacket constructor(
             /** Printer attributes of interest. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.getPrinterAttributes.code)
-            .addAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
-            .attachRequestedAttributes(types.toList())
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putRequestedAttributes(types.toList())
 
         /** If supplied types are not empty, attach them as requested attributes. */
-        private fun Builder.attachRequestedAttributes(types: List<AttributeType<*>>) = this.apply {
+        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = this.apply {
             if (types.isNotEmpty()) {
-                addAttributes(Tag.operationAttributes,
+                putAttributes(Tag.operationAttributes,
                     Types.requestedAttributes.of(types.toList().map { it.name }))
             }
         }
@@ -251,21 +251,21 @@ data class IppPacket constructor(
         fun validateJob(
             printerUri: URI
         ) = Builder(Operation.validateJob.code)
-            .addAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
 
         /** Return a Print-Job request [Builder]. */
         @JvmStatic
         fun printJob(
             printerUri: URI
         ) = Builder(code = Operation.printJob.code)
-            .addAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
 
         /** Return a Create-Job request [Builder]. */
         @JvmStatic
         fun createJob(
             printerUri: URI
         ) = Builder(Operation.createJob.code)
-            .addAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
 
         /** Return a Get-Jobs request [Builder]. */
         @JvmStatic
@@ -274,8 +274,8 @@ data class IppPacket constructor(
             /** Job attributes of interest. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.getJobs.code)
-            .addAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
-            .attachRequestedAttributes(types.toList())
+            .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
+            .putRequestedAttributes(types.toList())
 
         /** Return a Send-Document request [Builder]. */
         @JvmStatic
@@ -283,7 +283,7 @@ data class IppPacket constructor(
             printerUri: URI,
             jobId: Int
         ) = Builder(Operation.sendDocument.code)
-            .addAttributes(Tag.operationAttributes,
+            .putAttributes(Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
                 Types.jobId.of(jobId))
 
@@ -294,8 +294,8 @@ data class IppPacket constructor(
             /** Job attributes of interest. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.sendDocument.code)
-            .addAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
-            .attachRequestedAttributes(types.toList())
+            .putAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
+            .putRequestedAttributes(types.toList())
 
         /** Return a Get-Job-Attributes request [Builder]. */
         @JvmStatic
@@ -305,10 +305,10 @@ data class IppPacket constructor(
             /** Job attributes of interest. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.getJobAttributes.code)
-            .addAttributes(Tag.operationAttributes,
+            .putAttributes(Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
                 Types.jobId.of(jobId))
-            .attachRequestedAttributes(types.toList())
+            .putRequestedAttributes(types.toList())
 
         /** Return a Get-Job-Attributes request [Builder]. */
         @JvmStatic
@@ -317,8 +317,8 @@ data class IppPacket constructor(
             /** Types of interest, if any. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.getJobAttributes.code)
-            .addAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
-            .attachRequestedAttributes(types.toList())
+            .putAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
+            .putRequestedAttributes(types.toList())
 
         /** Return a Cancel-Job request [Builder]. */
         @JvmStatic
@@ -326,7 +326,7 @@ data class IppPacket constructor(
             printerUri: URI,
             jobId: Int
         ) = Builder(Operation.cancelJob.code)
-            .addAttributes(Tag.operationAttributes,
+            .putAttributes(Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
                 Types.jobId.of(jobId))
 
@@ -335,7 +335,7 @@ data class IppPacket constructor(
         fun cancelJob(
             jobUri: URI
         ) = Builder(Operation.cancelJob.code)
-            .addAttributes(Tag.operationAttributes,
+            .putAttributes(Tag.operationAttributes,
                 Types.jobUri.of(jobUri))
 
         /** Return a generic response [Builder]. */
@@ -343,7 +343,7 @@ data class IppPacket constructor(
         fun response(
             status: Status
         ) = Builder(status.code)
-            .addAttributes(Tag.unsupportedAttributes)
+            .putAttributes(Tag.unsupportedAttributes)
 
         /** Return a job-related response packet [Builder]. */
         @JvmStatic
@@ -361,7 +361,7 @@ data class IppPacket constructor(
             /** A list of job-state-reasons, if any. */
             jobStateReasons: List<String> = listOf(JobStateReason.none)
         ) = Builder(status.code)
-            .addAttributes(Tag.unsupportedAttributes)
+            .putAttributes(Tag.unsupportedAttributes)
             .addJobAttributesGroup(jobId, jobUri, jobState, jobStateReasons)
     }
 }

@@ -69,7 +69,7 @@ public class AttributeGroupTest {
         IppPacket packet = IppPacket.jobResponse(Status.successfulOk, 1, URI.create("ipp://10.0.0.23/ipp/printer/job/1"),
                 JobState.pending,
                 Collections.singletonList(JobStateReason.accountClosed))
-                .addAttributes(operationAttributes, Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")))
+                .putAttributes(operationAttributes, Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")))
                 .build();
         packet = cycle(packet);
         AttributeGroup group = packet.get(operationAttributes);
