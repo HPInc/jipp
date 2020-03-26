@@ -30,18 +30,18 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
             if (tag == Tag.endOfAttributes) {
                 null
             } else {
-                if (!tag.isDelimiter) throw ParseError("Illegal delimiter $tag")
+                if (tag !is DelimiterTag) throw ParseError("Illegal delimiter $tag")
                 readAttributeGroup(tag)
             }
         } // Note: a null tag means there was no endOfAttributes tag (which is not valid) but we ignore it.
 
     /** Read and return the next [Tag] in the input if possible. */
-    internal fun readTag(): Tag? = read().takeIf { it >= 0 }?.let { Tag.fromInt(it) }
+    private fun readTag(): Tag? = read().takeIf { it >= 0 }?.let { Tag.fromInt(it) }
 
     /**
      * Read an entire attribute group if available in the input stream.
      */
-    internal fun readAttributeGroup(tag: Tag) =
+    internal fun readAttributeGroup(tag: DelimiterTag) =
         AttributeGroup.groupOf(tag, generateSequence { readNextAttribute() }.toList())
 
     /** Read the next attribute if present. */
@@ -65,20 +65,22 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
     internal fun readString() = String(readValueBytes())
 
     /** Read and return an attribute with all of its values, having its attribute name already. */
-    private fun readAnyAttribute(attributeName: String, initTag: Tag): Attribute<*> {
-        if (initTag.isOutOfBand) {
-            readValueBytes()
-            return EmptyAttribute(attributeName, initTag)
+    private fun readAnyAttribute(attributeName: String, initTag: Tag): Attribute<*> =
+        when (initTag) {
+            is OutOfBandTag -> {
+                readValueBytes()
+                EmptyAttribute(attributeName, initTag)
+            }
+            is ValueTag ->
+                IppStreams.codecs.firstOrNull { it.handlesTag(initTag) }?.let {
+                    UnknownAttribute(attributeName, listOf(readValue(it, initTag, attributeName)) +
+                        generateSequence { readNextValue(attributeName) })
+                } ?: throw ParseError("No codec found for tag $initTag")
+            else -> throw ParseError("invalid attribute tag $initTag")
         }
 
-        return IppStreams.codecs.firstOrNull { it.handlesTag(initTag) }?.let {
-            UnknownAttribute(attributeName, listOf(readValue(it, initTag, attributeName)) +
-                generateSequence { readNextValue(attributeName) })
-        } ?: throw ParseError("No codec found for tag $initTag")
-    }
-
     @Suppress("ReturnCount")
-    private fun <T : Any> readValue(codec: Codec<T>, tag: Tag, attributeName: String): Any {
+    private fun <T : Any> readValue(codec: Codec<T>, tag: ValueTag, attributeName: String): Any {
         // Apply a special case for enum values which we can match with all known [EnumTypes]
         if (tag == Tag.enumValue) {
             EnumTypes.all[attributeName]?.also {
@@ -126,12 +128,12 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
                 // Non-value tag or non-empty name means its a completely different attribute.
                 reset()
                 null
-            } else {
+            } else if (tag is ValueTag) {
                 val codec = IppStreams.tagToCodec[tag] // Fast lookup
                     ?: IppStreams.codecs.firstOrNull { it.handlesTag(tag) } // Slower, more thorough lookup
                     ?: throw ParseError("No codec found for tag $tag")
                 readValue(codec, tag, attributeName)
-            }
+            } else null
         }
     }
 

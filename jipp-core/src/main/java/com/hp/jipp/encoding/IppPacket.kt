@@ -146,16 +146,16 @@ data class IppPacket constructor(
         }
 
         /** Return the last group with the specified tag, creating it if necessary */
-        private fun getOrCreateGroup(tag: Tag) =
+        private fun getOrCreateGroup(tag: DelimiterTag) =
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun putAttributes(tag: Tag, attributes: List<Attribute<*>>) = this.apply {
+        fun putAttributes(tag: DelimiterTag, attributes: List<Attribute<*>>) = this.apply {
             getOrCreateGroup(tag) += attributes
         }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun putAttributes(tag: Tag, vararg attributes: Attribute<*>) =
+        fun putAttributes(tag: DelimiterTag, vararg attributes: Attribute<*>) =
             putAttributes(tag, attributes.toList())
 
         /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */

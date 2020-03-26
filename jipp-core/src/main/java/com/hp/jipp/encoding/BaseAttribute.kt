@@ -9,7 +9,7 @@ import com.hp.jipp.util.BuildError
 open class BaseAttribute<T : Any>(
     override val name: String,
     override val type: AttributeType<T>?,
-    final override val tag: Tag?,
+    final override val tag: OutOfBandTag?,
     private val values: List<T>
 ) : Attribute<T>, List<T> by values {
 
@@ -17,7 +17,7 @@ open class BaseAttribute<T : Any>(
     constructor(name: String, type: AttributeType<T>, values: Iterable<T>) : this(name, type, null, values.toList())
 
     /** Construct an empty (no-value) attribute for a specific attribute type. */
-    constructor(name: String, type: AttributeType<T>?, tag: Tag) : this(name, type, tag, emptyList())
+    constructor(name: String, type: AttributeType<T>?, tag: OutOfBandTag) : this(name, type, tag, emptyList())
 
     /** Construct an attribute with unknown attribute type, containing certain values. */
     constructor(name: String, values: List<T>) : this(name, null, null, values)

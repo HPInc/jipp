@@ -20,7 +20,7 @@ class IntOrIntRange private constructor(
     /** Constructs an object based on a single integer */
     constructor(value: Int) : this (value, value, true)
 
-    override val tag: Tag
+    override val tag: ValueTag
         get() = if (simpleInt) Tag.integerValue else Tag.rangeOfInteger
 
     /** An [Int] or [IntRange] value. */

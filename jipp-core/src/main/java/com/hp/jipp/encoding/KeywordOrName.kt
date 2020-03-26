@@ -23,7 +23,7 @@ data class KeywordOrName constructor(val name: Name?, val keyword: String?) : Ta
         if (name != null && keyword != null) throw IllegalArgumentException("both .name and .keyword are present")
     }
 
-    override val tag: Tag = name?.tag ?: Tag.keyword
+    override val tag: ValueTag = name?.tag ?: Tag.keyword
 
     override val value = name ?: keyword!!
 

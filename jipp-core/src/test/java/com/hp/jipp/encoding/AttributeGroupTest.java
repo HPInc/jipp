@@ -114,11 +114,6 @@ public class AttributeGroupTest {
                 Types.attributesCharset.of("utf-8"));
     }
 
-    @Test(expected = BuildError.class)
-    public void badDelimiter() throws Exception {
-        AttributeGroup group = groupOf(Tag.adminDefine);
-    }
-
     @Test
     public void get() throws Exception {
         AttributeGroup group = groupOf(operationAttributes,
@@ -147,9 +142,10 @@ public class AttributeGroupTest {
 
     @Test
     public void unknownAttribute() throws Exception {
+        ValueTag vendorTag = new ValueTag((byte)0x39, "vendor-enum");
         UnknownAttribute attr = new UnknownAttribute("vendor-state",
                 new UntypedEnum(3),
-                new OtherOctets(Tag.fromInt(0x39), new byte[] { 0x01 }));
+                new OtherOctets(vendorTag, new byte[] { 0x01 }));
         AttributeGroup group = cycle(groupOf(operationAttributes, attr));
         assertEquals(attr, group.get("vendor-state"));
     }

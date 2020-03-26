@@ -56,7 +56,7 @@ internal object IppStreams {
     val clsToCodec = codecs.map { it.cls to it }.toMap()
 
     /** Map for looking up codecs by [Tag]. */
-    val tagToCodec = Tag.all.map { tag -> tag to codecs.firstOrNull { it.handlesTag(tag) } }
+    val tagToCodec = Tag.valueTags.map { tag -> tag to codecs.firstOrNull { it.handlesTag(tag) } }
         .filter { it.second != null }
         .toMap()
 }
