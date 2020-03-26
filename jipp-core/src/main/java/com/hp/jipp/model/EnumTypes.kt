@@ -39,6 +39,7 @@ object EnumTypes {
         Types.printQualitySupported,
         SystemConfiguredResources.Types.resourceState,
         Types.resourceState,
+        Types.resourceStates,
         Types.documentState,
         Types.outputDeviceDocumentState,
         Types.jobState,

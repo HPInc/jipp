@@ -3748,6 +3748,11 @@ object Types {
      */
     @JvmField val resourceStateReasons = KeywordType("resource-state-reasons")
     /**
+     * "resource-states" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val resourceStates = ResourceState.Type("resource-states")
+    /**
      * "resource-string-version" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
@@ -4032,6 +4037,11 @@ object Types {
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
     @JvmField val systemConfigChangeTime = IntType("system-config-change-time")
+    /**
+     * "system-config-changes" as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
+     */
+    @JvmField val systemConfigChanges = IntType("system-config-changes")
     /**
      * "system-configured-printers" as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).

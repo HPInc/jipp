@@ -42,6 +42,7 @@ key_value_type_names = [
     'printer-supply'
 ]
 
+# Tell the user we didn't completely understand something
 def warn(output, object = None):
     global warns
     warns = warns + 1
@@ -52,7 +53,7 @@ def warn(output, object = None):
 def note(output):
     print "    NOTE: " + output
 
-# Given a record attempt to grab the referenced specification out of its xref.
+# Given a record, attempt to grab the referenced specification out of its xref.
 # Return the short id of the spec or None if not found.
 def parse_spec(record, target):
     xref = record.find('{*}xref')
@@ -82,11 +83,12 @@ def fix_syntax(item, syntax = None):
     if syntax is None:
         syntax = item['syntax']
 
-    # XML fix
+    # XML fix (it's an enum, not a keyword)
     if 'name' in item and item['name'] == 'input-orientation-requested':
         syntax = 'enum'
+
     # XML fix
-    syntax = syntax.replace("type2 num", "type2 enum")
+    syntax = syntax.replace("integer:0:MAX", "integer(0:MAX)")
 
     # XML fix
     syntax = re.sub("\]\s+\[.*\]", "", syntax)
@@ -138,12 +140,8 @@ def parse_enum(record):
                 value = "any " + m.group(1) + " enum value"
                 name = None
 
-    # XML fix: These are all grouped together in the XML
-    if enum['name'].startswith("job-finishings"):
-        enum['ref'] = 'finishings'
-
-    # XML fix: this has a strange value
     if enum['name'] == 'fetch-status-code':
+        # fetch-status-code defined as <All "status-code" value other than 'successful-ok'>
         enum['ref'] = 'status'
         return
 
@@ -234,7 +232,6 @@ def assign_ref(ref, target):
     ref = re.sub(' the "media-col"$', ' the "media-col" Job Template attribute', ref)
     ref = re.sub(' the "separator-sheets"$', ' the "separator-sheets" Job Template attribute', ref)
     ref = re.sub(' the "cover-back"$', ' the "cover-back" Job Template attribute', ref)
-    ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
     ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
 
     # A reference to a keyword
@@ -483,6 +480,7 @@ def emit_kind(env, template_name, items, emit_func):
         emit_func(template, item)
 
 def fuzzy_get(map, name):
+    # Given a map, look for name, or something like it, in map
     if name not in map:
         # XML fix: try to find the relevant keyword/enum by trimming
         if name.endswith("-default"):
@@ -505,6 +503,8 @@ def fuzzy_get(map, name):
             return fuzzy_get(map, "document-state")
         if name.endswith("-state"):
             return fuzzy_get(map, name + 's') # Try the plural
+        if name.endswith("-states") and name[:-1] in map: # Try without the plural
+            return map[name[:-1]]
         if name.startswith("output-device-"):
             return fuzzy_get(map, name[len("output-device-"):])
         # XML fix: job-error-sheet-supported needs to look for -type
@@ -731,10 +731,6 @@ def fix_member(member, group_name):
 # 'ktype_accessor' - a way to select out the primitive type from the member
 def fix_ktypes(type, syntax, name, group_name = ''):
     original_syntax = syntax
-
-    # XML fix: job-collation-type-actual should point to enum, not keyword
-    if name == "job-collation-type-actual" and syntax == "keyword":
-        syntax = "enum"
 
     # These is supposed to refer only to certain Media values but we cannot distinguish them easily.
     if name == 'media-key' or name == 'media-key-supported' or name == "media-size-name":
