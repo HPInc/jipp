@@ -188,9 +188,17 @@ def parse_status_code(record):
     except ValueError:
         warn("status code has non-integer value " + value)
 
+obsolete_keywords = [
+    'job-cover-back-supported',
+    'job-cover-front-supported'
+]
+
 # Parse a single keyword record
 def parse_keyword(record):
     attribute = record.find('{*}attribute').text
+
+    if attribute in obsolete_keywords:
+        return
 
     # XML Fix: proof-print-supported really should point to "< any proof-print member attribute name >"
     # But it's defined manually and correctly so no modification is required.
@@ -344,7 +352,6 @@ def parse_attribute(record):
         if member_name:
             warn("printer-xri-requested members are now specified and should be used")
         attr['ref_col'] = 'printer-xri-supported'
-        note("printer-xir-requested: %s" % attr)
         return
 
     if member_name is not None:
@@ -357,8 +364,6 @@ def parse_attribute(record):
             member_name = member_name[:-len('(obsolete)')]
             if member_name in attr['members']:
                 del attr['members'][member_name]
-            else:
-                warn(member_name + " is obsolete but couldn't remove it", attr)
             return
 
         if member_name.startswith('<'):
