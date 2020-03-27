@@ -42,6 +42,9 @@ key_value_type_names = [
     'printer-supply'
 ]
 
+def pretty(o):
+    return pp.pformat(o).replace('\n', '\n    ')
+
 # Tell the user we didn't completely understand something
 def warn(output, object = None):
     global warns
@@ -722,7 +725,13 @@ def emit_collection(env, type):
 
     if name in collections:
         if collections[name]['members'] != type['members']:
-            warn('Collection already exists with different members', [collections[name], type])
+            # Look at the new members in the un-emitted version: are they already represented?
+            for member_name in type['members']:
+                emitted_member = collections[name]['members'].get(member_name, None)
+                new_member = type['members'][member_name]
+                if emitted_member != new_member:
+                    warn("Collection %s has a mismatched member: emitted %s vs %s" % (name, emitted_member, new_member))
+            return
         else:
             # Already done a matching one so skip
             return
@@ -915,14 +924,13 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif intro.startswith("OctetsType("):
         type['ktype'] = "ByteArray"
 
+# Return true if any members require a Calendar import
 def has_calendar(members):
     for name in members:
         if members[name]['ktype'] == 'Calendar':
-            note("TRUE: Members has %s" % members[name])
             return True
         if members[name]['members']:
             if has_calendar(members[name]['members']):
-                note("TRUE: Members has %s" % members[name])
                 return True
     return False
 
