@@ -42,6 +42,10 @@ key_value_type_names = [
     'printer-supply'
 ]
 
+def pretty(o):
+    return pp.pformat(o).replace('\n', '\n    ')
+
+# Tell the user we didn't completely understand something
 def warn(output, object = None):
     global warns
     warns = warns + 1
@@ -52,10 +56,9 @@ def warn(output, object = None):
 def note(output):
     print "    NOTE: " + output
 
-# Given a record attempt to grab the referenced specification out of its xref.
+# Given a record, attempt to grab the referenced specification out of its xref.
 # Return the short id of the spec or None if not found.
-def parse_spec(record, target):
-    xref = record.find('{*}xref')
+def parse_spec(xref, target):
     if xref is None:
         return None
 
@@ -82,14 +85,18 @@ def fix_syntax(item, syntax = None):
     if syntax is None:
         syntax = item['syntax']
 
-    # XML fix
+    # XML fix (it's an enum, not a keyword)
     if 'name' in item and item['name'] == 'input-orientation-requested':
         syntax = 'enum'
+
     # XML fix
-    syntax = syntax.replace("type2 num", "type2 enum")
+    syntax = syntax.replace("integer:0:MAX", "integer(0:MAX)")
 
     # XML fix
     syntax = re.sub("\]\s+\[.*\]", "", syntax)
+
+    # XML fix: make ranges consistent
+    syntax = re.sub(' *: *',':', syntax)
 
     # Some strings we do not care about no matter where they occur
     syntax = syntax.replace("(MAX)", "")
@@ -123,7 +130,7 @@ def parse_enum(record):
     enum = enums.setdefault(attribute, { 'name': attribute, 'values': { }, 'specs': [ ],
                                          'syntax': record.find('{*}syntax').text })
     fix_syntax(enum)
-    parse_spec(record, enum)
+    parse_spec(record.find('{*}xref'), enum)
 
     value = record.find('{*}value')
     if value is not None:
@@ -138,12 +145,8 @@ def parse_enum(record):
                 value = "any " + m.group(1) + " enum value"
                 name = None
 
-    # XML fix: These are all grouped together in the XML
-    if enum['name'].startswith("job-finishings"):
-        enum['ref'] = 'finishings'
-
-    # XML fix: this has a strange value
     if enum['name'] == 'fetch-status-code':
+        # fetch-status-code defined as <All "status-code" value other than 'successful-ok'>
         enum['ref'] = 'status'
         return
 
@@ -176,7 +179,7 @@ def parse_status_code(record):
     enum = enums.setdefault('status', { 'name': 'status', 'values': { }, 'specs': [ ], 'hex': True })
     value = record.find('{*}value').text
     name = record.find('{*}name').text
-    parse_spec(record, enum)
+    parse_spec(record.find('{*}xref'), enum)
     if name == "Unassigned" or name.startswith("Reserved") or '-' in value:
         return
     try:
@@ -185,9 +188,17 @@ def parse_status_code(record):
     except ValueError:
         warn("status code has non-integer value " + value)
 
+obsolete_keywords = [
+    'job-cover-back-supported',
+    'job-cover-front-supported'
+]
+
 # Parse a single keyword record
 def parse_keyword(record):
     attribute = record.find('{*}attribute').text
+
+    if attribute in obsolete_keywords:
+        return
 
     # XML Fix: proof-print-supported really should point to "< any proof-print member attribute name >"
     # But it's defined manually and correctly so no modification is required.
@@ -195,7 +206,7 @@ def parse_keyword(record):
     keyword = keywords.setdefault(attribute, { 'name': attribute, 'values': [ ], 'specs': [ ],
                                                'syntax': record.find('{*}syntax').text })
     fix_syntax(keyword)
-    parse_spec(record, keyword)
+    parse_spec(record.find('{*}xref'), keyword)
 
     value = record.find('{*}value')
     if value is not None:
@@ -222,10 +233,10 @@ def assign_ref(ref, target):
     ref = re.sub(' ?>?$', '', ref)
 
     # Smash these into the Media type which has everything on earth
-    if ref == '"media" media or size keyword value' or \
-            ref == '"media" input tray keyword value' or \
-            ref == 'media size name value':
+    m = re.search('"media" (.*) value', ref)
+    if m:
         target['ref'] = 'media'
+        target['modifier'] = "any %s" % m.group(1)
         return True
 
     # XML fix: Correct some known irregularities
@@ -234,7 +245,6 @@ def assign_ref(ref, target):
     ref = re.sub(' the "media-col"$', ' the "media-col" Job Template attribute', ref)
     ref = re.sub(' the "separator-sheets"$', ' the "separator-sheets" Job Template attribute', ref)
     ref = re.sub(' the "cover-back"$', ' the "cover-back" Job Template attribute', ref)
-    ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
     ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
 
     # A reference to a keyword
@@ -270,10 +280,15 @@ def assign_ref(ref, target):
         target['ref'] = m.group(1)
         return True
 
-    m = re.search("^Member attributes are the same as the \"([a-z-]+)\" (.*) attribute$", ref)
+    m = re.search("^Member attributes are the same as the \"([a-z-]+)\" (.*) attribute$", ref, re.IGNORECASE)
     if m and m.group(1) and m.group(2):
         target['ref_col'] = m.group(1)
         target['ref_group'] = m.group(2)
+        return True
+
+    m = re.search("^Member attributes are the same as \"([a-z-]+)\"$", ref, re.IGNORECASE)
+    if m and m.group(1):
+        target['ref_col'] = m.group(1)
         return True
 
     # e.g. "<Any Job Template attribute>"
@@ -284,29 +299,60 @@ def assign_ref(ref, target):
 
     return False
 
+crossover_attributes = {
+    'system-xri-supported': 'printer-xri-supported',
+    'system-contact-col': 'printer-contact-col',
+    'system-impressions-completed-col': 'job-impressions-col',
+    'system-media-sheets-completed-col': 'job-media-sheets-col',
+    'system-pages-completed-col': 'job-pages-col',
+    'printer-impressions-completed-col': 'job-impressions-col',
+    'printer-media-sheets-completed-col': 'job-media-sheets-col',
+    'printer-pages-completed-col': 'job-pages-col',
+}
+
 # Parse a single attribute record
 def parse_attribute(record):
     attr_name = record.find('{*}name').text
+    member_name = record.find('{*}member_attribute')
+    submember_name = record.find('{*}sub-member_attribute')
+    syntax_name = record.find('{*}syntax').text
     collection_name = record.find('{*}collection').text
+    xref = record.find('{*}xref')
+
+    collection = attributes.setdefault(collection_name, { })
 
     # Ignore (UnderReview) (Deprecated) etc
     if re.search("\(.*\)", attr_name):
+        attr_name = re.sub(' *\(.*\)', '', attr_name)
+        if attr_name in collection:
+            del collection[attr_name]
         return
 
-    collection = attributes.setdefault(collection_name, { })
+    # XML fix (listed twice)
+    if attr_name == 'job-finishings':
+        return
+
     attr = collection.setdefault(attr_name, {
-        'name': attr_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text, 'members': { } } )
+        'name': attr_name, 'specs': [ ], 'syntax': syntax_name, 'members': { } } )
     fix_syntax(attr)
 
-    parse_spec(record, attr)
+    parse_spec(xref, attr)
 
-    member_name = record.find('{*}member_attribute')
     if member_name is not None:
         member_name = member_name.text
 
-    submember_name = record.find('{*}sub-member_attribute')
+    # XML fix (no members referenced)
+    if member_name is None and attr_name in crossover_attributes:
+        member_name = '< Member attributes are the same as "%s" >' % crossover_attributes[attr_name]
+
     if submember_name is not None:
         submember_name = submember_name.text
+
+    if attr_name == 'printer-xri-requested':
+        if member_name:
+            warn("printer-xri-requested members are now specified and should be used")
+        attr['ref_col'] = 'printer-xri-supported'
+        return
 
     if member_name is not None:
         if member_name.endswith('(extension)'):
@@ -318,8 +364,6 @@ def parse_attribute(record):
             member_name = member_name[:-len('(obsolete)')]
             if member_name in attr['members']:
                 del attr['members'][member_name]
-            else:
-                warn(member_name + " is obsolete but couldn't remove it", attr)
             return
 
         if member_name.startswith('<'):
@@ -328,12 +372,11 @@ def parse_attribute(record):
             return
 
         attr = attr['members'].setdefault(member_name, {
-            'name': member_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text,
-            'members': { }, 'inner': True
-        } )
+            'name': member_name, 'specs': [ ], 'syntax': syntax_name, 'members': { }, 'inner': True
+        })
         if submember_name is None:
             # Re-apply syntax if member appears again (probably "(extension)")
-            attr['syntax'] = record.find('{*}syntax').text
+            attr['syntax'] = syntax_name
         fix_syntax(attr)
 
         if submember_name is not None:
@@ -344,7 +387,7 @@ def parse_attribute(record):
                 return
 
             attr['members'].setdefault(submember_name, {
-                'name': submember_name, 'specs': [ ], 'syntax': record.find('{*}syntax').text,
+                'name': submember_name, 'specs': [ ], 'syntax': syntax_name,
                 'members': { } } )
             fix_syntax(attr)
 
@@ -483,6 +526,7 @@ def emit_kind(env, template_name, items, emit_func):
         emit_func(template, item)
 
 def fuzzy_get(map, name):
+    # Given a map, look for name, or something like it, in map
     if name not in map:
         # XML fix: try to find the relevant keyword/enum by trimming
         if name.endswith("-default"):
@@ -505,6 +549,8 @@ def fuzzy_get(map, name):
             return fuzzy_get(map, "document-state")
         if name.endswith("-state"):
             return fuzzy_get(map, name + 's') # Try the plural
+        if name.endswith("-states") and name[:-1] in map: # Try without the plural
+            return map[name[:-1]]
         if name.startswith("output-device-"):
             return fuzzy_get(map, name[len("output-device-"):])
         # XML fix: job-error-sheet-supported needs to look for -type
@@ -581,6 +627,10 @@ def emit_attributes(env):
                 elif set([type['syntax'], old_type['syntax']]) == set(['integer', 'integer(1:MAX)']):
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
                     old_type['syntax'] = 'integer'
+                    type = None
+                elif old_type.get('set', None) != type.get('set', None):
+                    # One is a set, one is not (e.g. printer-service-type), so just consider them both sets
+                    old_type['set'] = True
                     type = None
                 elif no_specs(old_type) != no_specs(type):
                     warn("Type repeated with differences in " + group_name, [types[name], type])
@@ -680,7 +730,13 @@ def emit_collection(env, type):
 
     if name in collections:
         if collections[name]['members'] != type['members']:
-            warn('Collection already exists with different members', [collections[name], type])
+            # Look at the new members in the un-emitted version: are they already represented?
+            for member_name in type['members']:
+                emitted_member = collections[name]['members'].get(member_name, None)
+                new_member = type['members'][member_name]
+                if emitted_member != new_member:
+                    warn("Collection %s has a mismatched member: emitted %s vs %s" % (name, emitted_member, new_member))
+            return
         else:
             # Already done a matching one so skip
             return
@@ -715,6 +771,9 @@ def fix_member(member, group_name):
     fix_syntax(member)
     fix_ktypes(member, member['syntax'], member['name'], group_name)
     if 'kintro' in member:
+        if member['syntax'] == 'dateTime':
+            if 'ktype' not in member:
+                member['ktype'] = 'Calendar'
         if member['syntax'] == 'collection':
             if 'ktype' not in member:
                 member['ktype'] = camel_class(member['name'])
@@ -725,16 +784,17 @@ def fix_member(member, group_name):
                     else:
                         fix_member(submember, '')
 
+def extra_kdoc(type):
+    if type and 'modifier' in type:
+        return " (%s)" % type['modifier']
+    return ""
+
 # For the type given, select decorators that help when generating code.
 # 'kintro' - string required to begin instantiation of the type
 # 'ktype' - the primitive type associated
 # 'ktype_accessor' - a way to select out the primitive type from the member
 def fix_ktypes(type, syntax, name, group_name = ''):
     original_syntax = syntax
-
-    # XML fix: job-collation-type-actual should point to enum, not keyword
-    if name == "job-collation-type-actual" and syntax == "keyword":
-        syntax = "enum"
 
     # These is supposed to refer only to certain Media values but we cannot distinguish them easily.
     if name == 'media-key' or name == 'media-key-supported' or name == "media-size-name":
@@ -752,19 +812,18 @@ def fix_ktypes(type, syntax, name, group_name = ''):
             if 'ref_members' in real_type:
                 intro = "KeywordType("
                 type['ktype'] = "String"
-                type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['ref_members']) + ".Name]."
+                type['kdoc'] = "May contain any keyword from [%s.Name]." % camel_class(real_type['ref_members'])
             elif syntax == 'keyword':
                 intro = "KeywordType("
                 type['ktype'] = "String"
                 if real_type['values']:
-                    type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "]."
+                    type['kdoc'] = "May contain any keyword from [%s]%s." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
                 elif 'kdoc' in real_type:
                     type['kdoc'] = real_type['kdoc']
-
             elif syntax == 'keyword | name':
                 intro = "KeywordOrNameType("
                 type['ktype'] = "KeywordOrName"
-                type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "] or a name."
+                type['kdoc'] = "May contain any keyword from [%s]%s or a name." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
         elif syntax == 'keyword':
             # No definition was given so fall back to Keyword
             intro = "KeywordType("
@@ -803,10 +862,10 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif re.search('^rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
         intro = "IntRangeType("
         type['ktype'] = 'IntRange'
-    elif re.search('^integer(\([0-9MINAX:-]*\)) | rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
+    elif re.search('^integer(\([0-9MINAX: -]*\)) | rangeOfInteger(\([0-9MINAX: -]*\))?$', syntax):
         intro = "IntOrIntRangeType("
         type['ktype'] = 'IntOrIntRange'
-    elif re.search('^integer(\([0-9MINAX:-]*\))?$', syntax):
+    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
         intro = "IntType("
         type['ktype'] = "Int"
     elif syntax == "boolean":
@@ -871,8 +930,20 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif intro.startswith("TextType("):
         type['ktype'] = "String"
         type['ktype_accessor'] = "value"
+        if type.get('set', False):
+            type['ksetof'] = 'ofStrings'
     elif intro.startswith("OctetsType("):
         type['ktype'] = "ByteArray"
+
+# Return true if any members require a Calendar import
+def has_calendar(members):
+    for name in members:
+        if members[name]['ktype'] == 'Calendar':
+            return True
+        if members[name]['members']:
+            if has_calendar(members[name]['members']):
+                return True
+    return False
 
 def emit_code():
     env = Environment(loader=FileSystemLoader(proj_dir + 'bin'))
@@ -880,6 +951,7 @@ def emit_code():
     env.filters['camel_member'] = camel_member
     env.filters['spaced_title'] = spaced_title
     env.filters['upper'] = upper
+    env.filters['has_calendar'] = has_calendar
 
     emit_kind(env, 'enum.kt.tmpl', enums, emit_enum)
     emit_kind(env, 'keyword.java.tmpl', keywords, emit_keyword)

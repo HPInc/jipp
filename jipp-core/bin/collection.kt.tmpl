@@ -9,6 +9,9 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+{%- if collection.members | has_calendar %}
+import java.util.Calendar
+{%- endif %}
 
 {%- endif %}
 
@@ -86,5 +89,6 @@ constructor(
 {%- for name, member in collection.members | dictsort %}{%- if member.kimpl %}
 
 {{ member.kimpl }}{%- endif %}{%- endfor %}
+    override fun toString() = "{{ collection.name | camel_class }}(${attributes.joinToString()})"
 }
 

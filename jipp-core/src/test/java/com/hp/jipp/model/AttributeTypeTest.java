@@ -5,9 +5,11 @@ package com.hp.jipp.model;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.model.Types.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 import com.hp.jipp.encoding.*;
+import com.hp.jipp.util.PrettyPrinter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -137,5 +139,19 @@ public class AttributeTypeTest {
                         Types.mediaColReady.of(readyList),
                         Types.mediaColDatabase.of(readyList) /* + other requested attributes */ ));
 
+    }
+
+    @Test
+    public void printMediaCol() {
+        MediaCol mediaType1 = new MediaCol();
+        mediaType1.setMediaSize(MediaSizes.parse(Media.naLetter8p5x11in));
+        mediaType1.setMediaLeftMargin(750);
+        mediaType1.setMediaRightMargin(750);
+        mediaType1.setMediaBottomMargin(750);
+        mediaType1.setMediaTopMargin(750);
+        mediaType1.setMediaSource(new KeywordOrName(MediaSource.main));
+        mediaType1.setMediaType(new KeywordOrName(MediaType.stationery));
+        String out = mediaType1.toString();
+        assertThat(out, containsString("media-left-margin=750"));
     }
 }

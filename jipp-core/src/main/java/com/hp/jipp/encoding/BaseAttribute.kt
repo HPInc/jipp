@@ -39,7 +39,11 @@ open class BaseAttribute<T : Any>(
     override fun getValue(): T? = if (values.isEmpty()) null else values[0]
 
     override fun toString() = if (tag == null) {
-        "$name = $values"
+        if (values.size != 1) {
+            "$name=$values"
+        } else {
+            "$name=${values[0]}"
+        }
     } else {
         "$name($tag)"
     }
