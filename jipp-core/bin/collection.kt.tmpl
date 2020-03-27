@@ -89,5 +89,6 @@ constructor(
 {%- for name, member in collection.members | dictsort %}{%- if member.kimpl %}
 
 {{ member.kimpl }}{%- endif %}{%- endfor %}
+    override fun toString() = "{{ collection.name | camel_class }}(${attributes.joinToString()})"
 }
 

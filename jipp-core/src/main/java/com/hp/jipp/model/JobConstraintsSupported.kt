@@ -50,4 +50,5 @@ constructor(
                 extractOne(attributes, Types.resolverName)?.value
             )
     }
+    override fun toString() = "JobConstraintsSupported(${attributes.joinToString()})"
 }

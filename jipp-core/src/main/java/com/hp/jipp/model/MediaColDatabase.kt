@@ -101,5 +101,7 @@ constructor(
                     extractOne(attributes, Types.mediaSourceFeedOrientation)
                 )
         }
+        override fun toString() = "MediaSourceProperties(${attributes.joinToString()})"
     }
+    override fun toString() = "MediaColDatabase(${attributes.joinToString()})"
 }

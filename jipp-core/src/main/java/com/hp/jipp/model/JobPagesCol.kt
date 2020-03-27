@@ -56,4 +56,5 @@ constructor(
                 extractOne(attributes, Types.monochrome)
             )
     }
+    override fun toString() = "JobPagesCol(${attributes.joinToString()})"
 }

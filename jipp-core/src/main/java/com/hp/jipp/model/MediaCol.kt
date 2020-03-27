@@ -248,6 +248,7 @@ constructor(
                     extractOne(attributes, Types.yDimension)
                 )
         }
+        override fun toString() = "MediaSize(${attributes.joinToString()})"
     }
 
     /**
@@ -300,5 +301,7 @@ constructor(
                     extractOne(attributes, Types.mediaSourceFeedOrientation)
                 )
         }
+        override fun toString() = "MediaSourceProperties(${attributes.joinToString()})"
     }
+    override fun toString() = "MediaCol(${attributes.joinToString()})"
 }

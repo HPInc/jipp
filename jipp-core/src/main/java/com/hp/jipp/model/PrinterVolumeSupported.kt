@@ -62,4 +62,5 @@ constructor(
                 extractOne(attributes, Types.zDimension)
             )
     }
+    override fun toString() = "PrinterVolumeSupported(${attributes.joinToString()})"
 }

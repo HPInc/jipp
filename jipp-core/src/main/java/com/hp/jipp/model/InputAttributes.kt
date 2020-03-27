@@ -223,5 +223,7 @@ constructor(
                     extractOne(attributes, Types.yOrigin)
                 )
         }
+        override fun toString() = "InputScanRegions(${attributes.joinToString()})"
     }
+    override fun toString() = "InputAttributes(${attributes.joinToString()})"
 }

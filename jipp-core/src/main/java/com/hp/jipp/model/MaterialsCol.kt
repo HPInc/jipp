@@ -145,4 +145,5 @@ constructor(
                 extractOne(attributes, Types.materialType)
             )
     }
+    override fun toString() = "MaterialsCol(${attributes.joinToString()})"
 }

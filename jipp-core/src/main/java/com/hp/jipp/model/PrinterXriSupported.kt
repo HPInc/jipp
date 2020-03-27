@@ -64,4 +64,5 @@ constructor(
                 extractOne(attributes, Types.xriUri)
             )
     }
+    override fun toString() = "PrinterXriSupported(${attributes.joinToString()})"
 }

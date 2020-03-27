@@ -71,4 +71,5 @@ constructor(
                 extractOne(attributes, Types.mediaCol)
             )
     }
+    override fun toString() = "JobErrorSheet(${attributes.joinToString()})"
 }

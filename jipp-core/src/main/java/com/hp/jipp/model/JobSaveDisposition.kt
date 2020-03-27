@@ -110,5 +110,7 @@ constructor(
                     extractOne(attributes, Types.saveName)?.value
                 )
         }
+        override fun toString() = "SaveInfo(${attributes.joinToString()})"
     }
+    override fun toString() = "JobSaveDisposition(${attributes.joinToString()})"
 }

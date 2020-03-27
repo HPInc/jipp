@@ -62,4 +62,5 @@ constructor(
                 extractOne(attributes, Types.requestPowerState)
             )
     }
+    override fun toString() = "PowerEventPolicyCol(${attributes.joinToString()})"
 }

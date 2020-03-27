@@ -62,4 +62,5 @@ constructor(
                 extractAll(attributes, Types.pages)
             )
     }
+    override fun toString() = "Overrides(${attributes.joinToString()})"
 }

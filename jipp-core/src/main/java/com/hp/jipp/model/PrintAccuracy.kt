@@ -69,4 +69,5 @@ constructor(
                 extractOne(attributes, Types.zAccuracy)
             )
     }
+    override fun toString() = "PrintAccuracy(${attributes.joinToString()})"
 }

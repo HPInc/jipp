@@ -80,4 +80,5 @@ constructor(
                 extractOne(attributes, Types.toName)?.value
             )
     }
+    override fun toString() = "CoverSheetInfo(${attributes.joinToString()})"
 }

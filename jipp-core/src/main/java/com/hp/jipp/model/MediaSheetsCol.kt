@@ -68,4 +68,5 @@ constructor(
                 extractOne(attributes, Types.monochrome)
             )
     }
+    override fun toString() = "MediaSheetsCol(${attributes.joinToString()})"
 }

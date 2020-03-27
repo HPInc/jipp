@@ -56,4 +56,5 @@ constructor(
                 extractOne(attributes, Types.yDimension)
             )
     }
+    override fun toString() = "MediaSizeSupported(${attributes.joinToString()})"
 }

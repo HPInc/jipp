@@ -97,4 +97,5 @@ constructor(
                 extractOne(attributes, Types.printerXriSupported)
             )
     }
+    override fun toString() = "SystemConfiguredPrinters(${attributes.joinToString()})"
 }

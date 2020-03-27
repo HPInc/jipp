@@ -69,4 +69,5 @@ constructor(
                 extractOne(attributes, Types.powerStateMessage)?.value
             )
     }
+    override fun toString() = "PowerLogCol(${attributes.joinToString()})"
 }

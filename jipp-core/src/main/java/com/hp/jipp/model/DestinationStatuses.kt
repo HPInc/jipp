@@ -65,4 +65,5 @@ constructor(
                 extractOne(attributes, Types.transmissionStatus)
             )
     }
+    override fun toString() = "DestinationStatuses(${attributes.joinToString()})"
 }

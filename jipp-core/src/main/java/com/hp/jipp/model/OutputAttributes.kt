@@ -56,4 +56,5 @@ constructor(
                 extractOne(attributes, Types.outputCompressionQualityFactor)
             )
     }
+    override fun toString() = "OutputAttributes(${attributes.joinToString()})"
 }

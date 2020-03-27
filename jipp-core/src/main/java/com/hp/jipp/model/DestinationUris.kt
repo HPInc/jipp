@@ -75,4 +75,5 @@ constructor(
                 extractOne(attributes, Types.t33Subaddress)
             )
     }
+    override fun toString() = "DestinationUris(${attributes.joinToString()})"
 }

@@ -62,4 +62,5 @@ constructor(
                 extractOne(attributes, Types.pdlInitFileName)?.value
             )
     }
+    override fun toString() = "PdlInitFile(${attributes.joinToString()})"
 }

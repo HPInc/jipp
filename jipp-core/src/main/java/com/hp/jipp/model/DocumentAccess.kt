@@ -75,4 +75,5 @@ constructor(
                 extractOne(attributes, Types.accessUserName)?.value
             )
     }
+    override fun toString() = "DocumentAccess(${attributes.joinToString()})"
 }

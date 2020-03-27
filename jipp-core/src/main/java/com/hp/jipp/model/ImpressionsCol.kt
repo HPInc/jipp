@@ -92,4 +92,5 @@ constructor(
                 extractOne(attributes, Types.monochromeTwoSided)
             )
     }
+    override fun toString() = "ImpressionsCol(${attributes.joinToString()})"
 }

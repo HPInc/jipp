@@ -69,4 +69,5 @@ constructor(
                 extractOne(attributes, Types.timeoutSeconds)
             )
     }
+    override fun toString() = "PowerTimeoutPolicyCol(${attributes.joinToString()})"
 }

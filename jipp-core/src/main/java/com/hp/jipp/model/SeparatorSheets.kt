@@ -65,4 +65,5 @@ constructor(
                 extractAll(attributes, Types.separatorSheetsType)
             )
     }
+    override fun toString() = "SeparatorSheets(${attributes.joinToString()})"
 }

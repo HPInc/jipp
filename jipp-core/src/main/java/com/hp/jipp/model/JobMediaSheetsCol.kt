@@ -68,4 +68,5 @@ constructor(
                 extractOne(attributes, Types.monochrome)
             )
     }
+    override fun toString() = "JobMediaSheetsCol(${attributes.joinToString()})"
 }

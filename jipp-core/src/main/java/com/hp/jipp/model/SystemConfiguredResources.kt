@@ -84,4 +84,5 @@ constructor(
                 extractOne(attributes, Types.resourceType)
             )
     }
+    override fun toString() = "SystemConfiguredResources(${attributes.joinToString()})"
 }

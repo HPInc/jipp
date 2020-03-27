@@ -51,4 +51,5 @@ constructor(
                 extractOne(attributes, Types.presetName)
             )
     }
+    override fun toString() = "JobPresetsSupported(${attributes.joinToString()})"
 }

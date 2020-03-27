@@ -62,4 +62,5 @@ constructor(
                 extractAll(attributes, Types.contactVcard)?.map { it.value }
             )
     }
+    override fun toString() = "PrinterContactCol(${attributes.joinToString()})"
 }

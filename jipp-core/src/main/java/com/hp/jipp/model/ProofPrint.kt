@@ -63,4 +63,5 @@ constructor(
                 extractOne(attributes, Types.proofPrintCopies)
             )
     }
+    override fun toString() = "ProofPrint(${attributes.joinToString()})"
 }

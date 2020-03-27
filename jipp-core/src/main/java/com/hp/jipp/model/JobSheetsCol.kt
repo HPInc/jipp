@@ -64,4 +64,5 @@ constructor(
                 extractOne(attributes, Types.mediaCol)
             )
     }
+    override fun toString() = "JobSheetsCol(${attributes.joinToString()})"
 }

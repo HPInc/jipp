@@ -62,4 +62,5 @@ constructor(
                 extractOne(attributes, Types.stateTransitionSeconds)
             )
     }
+    override fun toString() = "PowerStateTransitionsCol(${attributes.joinToString()})"
 }

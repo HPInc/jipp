@@ -92,4 +92,5 @@ constructor(
                 extractOne(attributes, Types.runOnce)
             )
     }
+    override fun toString() = "PowerCalendarPolicyCol(${attributes.joinToString()})"
 }

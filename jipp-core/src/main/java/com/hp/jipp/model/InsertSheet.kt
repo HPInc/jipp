@@ -70,4 +70,5 @@ constructor(
                 extractOne(attributes, Types.mediaCol)
             )
     }
+    override fun toString() = "InsertSheet(${attributes.joinToString()})"
 }

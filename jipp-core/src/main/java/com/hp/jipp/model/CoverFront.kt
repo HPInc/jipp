@@ -65,4 +65,5 @@ constructor(
                 extractOne(attributes, Types.mediaCol)
             )
     }
+    override fun toString() = "CoverFront(${attributes.joinToString()})"
 }

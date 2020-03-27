@@ -105,4 +105,5 @@ constructor(
                 extractOne(attributes, Types.destinationUri)
             )
     }
+    override fun toString() = "DestinationUriReady(${attributes.joinToString()})"
 }

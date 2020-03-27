@@ -74,4 +74,5 @@ constructor(
                 extractOne(attributes, Types.powerState)
             )
     }
+    override fun toString() = "PowerStateCapabilitiesCol(${attributes.joinToString()})"
 }

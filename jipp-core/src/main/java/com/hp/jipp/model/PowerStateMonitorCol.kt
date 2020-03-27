@@ -86,4 +86,5 @@ constructor(
                 extractOne(attributes, Types.powerUsageIsRmsWatts)
             )
     }
+    override fun toString() = "PowerStateMonitorCol(${attributes.joinToString()})"
 }

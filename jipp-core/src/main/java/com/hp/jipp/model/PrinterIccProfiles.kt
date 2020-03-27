@@ -56,4 +56,5 @@ constructor(
                 extractOne(attributes, Types.profileUrl)
             )
     }
+    override fun toString() = "PrinterIccProfiles(${attributes.joinToString()})"
 }

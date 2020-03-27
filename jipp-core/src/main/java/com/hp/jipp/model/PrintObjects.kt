@@ -121,6 +121,7 @@ constructor(
                     extractOne(attributes, Types.zOffset)
                 )
         }
+        override fun toString() = "ObjectOffset(${attributes.joinToString()})"
     }
 
     /**
@@ -175,5 +176,7 @@ constructor(
                     extractOne(attributes, Types.zDimension)
                 )
         }
+        override fun toString() = "ObjectSize(${attributes.joinToString()})"
     }
+    override fun toString() = "PrintObjects(${attributes.joinToString()})"
 }

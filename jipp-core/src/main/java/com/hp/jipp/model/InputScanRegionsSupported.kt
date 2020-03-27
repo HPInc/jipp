@@ -68,4 +68,5 @@ constructor(
                 extractOne(attributes, Types.yOrigin)
             )
     }
+    override fun toString() = "InputScanRegionsSupported(${attributes.joinToString()})"
 }
