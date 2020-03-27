@@ -822,8 +822,9 @@ object Types {
     /**
      * "input-media-supported" as defined in:
      * [PWG5100.15](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
+     * May contain any keyword from [Media] (any size name) or a name.
      */
-    @JvmField val inputMediaSupported = KeywordType("input-media-supported")
+    @JvmField val inputMediaSupported = KeywordOrNameType("input-media-supported")
     /**
      * "input-orientation-requested-supported" as defined in:
      * [PWG5100.15](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20131115-5100.15.pdf).
@@ -1915,13 +1916,15 @@ object Types {
     /**
      * "media-input-tray-check" as defined in:
      * [PWG5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf).
+     * May contain any keyword from [Media] (any input tray) or a name.
      */
-    @JvmField val mediaInputTrayCheck = KeywordType("media-input-tray-check")
+    @JvmField val mediaInputTrayCheck = KeywordOrNameType("media-input-tray-check")
     /**
      * "media-input-tray-check-actual" as defined in:
      * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     * May contain any keyword from [Media] or a name.
      */
-    @JvmField val mediaInputTrayCheckActual = KeywordType("media-input-tray-check-actual")
+    @JvmField val mediaInputTrayCheckActual = KeywordOrNameType("media-input-tray-check-actual")
     /**
      * "media-key-supported" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
@@ -1947,8 +1950,9 @@ object Types {
     /**
      * "media-ready" as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
+     * May contain any keyword from [Media] (any media or size) or a name.
      */
-    @JvmField val mediaReady = KeywordType("media-ready")
+    @JvmField val mediaReady = KeywordOrNameType("media-ready")
     /**
      * "media-recycled-supported" as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).

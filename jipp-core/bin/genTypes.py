@@ -233,10 +233,10 @@ def assign_ref(ref, target):
     ref = re.sub(' ?>?$', '', ref)
 
     # Smash these into the Media type which has everything on earth
-    if ref == '"media" media or size keyword value' or \
-            ref == '"media" input tray keyword value' or \
-            ref == 'media size name value':
+    m = re.search('"media" (.*) value', ref)
+    if m:
         target['ref'] = 'media'
+        target['modifier'] = "any %s" % m.group(1)
         return True
 
     # XML fix: Correct some known irregularities
@@ -784,6 +784,11 @@ def fix_member(member, group_name):
                     else:
                         fix_member(submember, '')
 
+def extra_kdoc(type):
+    if type and 'modifier' in type:
+        return " (%s)" % type['modifier']
+    return ""
+
 # For the type given, select decorators that help when generating code.
 # 'kintro' - string required to begin instantiation of the type
 # 'ktype' - the primitive type associated
@@ -807,19 +812,18 @@ def fix_ktypes(type, syntax, name, group_name = ''):
             if 'ref_members' in real_type:
                 intro = "KeywordType("
                 type['ktype'] = "String"
-                type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['ref_members']) + ".Name]."
+                type['kdoc'] = "May contain any keyword from [%s.Name]." % camel_class(real_type['ref_members'])
             elif syntax == 'keyword':
                 intro = "KeywordType("
                 type['ktype'] = "String"
                 if real_type['values']:
-                    type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "]."
+                    type['kdoc'] = "May contain any keyword from [%s]%s." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
                 elif 'kdoc' in real_type:
                     type['kdoc'] = real_type['kdoc']
-
             elif syntax == 'keyword | name':
                 intro = "KeywordOrNameType("
                 type['ktype'] = "KeywordOrName"
-                type['kdoc'] = "May contain any keyword from [" + camel_class(real_type['name']) + "] or a name."
+                type['kdoc'] = "May contain any keyword from [%s]%s or a name." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
         elif syntax == 'keyword':
             # No definition was given so fall back to Keyword
             intro = "KeywordType("

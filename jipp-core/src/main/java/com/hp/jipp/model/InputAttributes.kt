@@ -27,7 +27,8 @@ constructor(
     /** May contain any keyword from [InputFilmScanMode]. */
     var inputFilmScanMode: String? = null,
     var inputImagesToTransfer: Int? = null,
-    var inputMedia: String? = null,
+    /** May contain any keyword from [Media] (any size name) or a name. */
+    var inputMedia: KeywordOrName? = null,
     var inputOrientationRequested: Orientation? = null,
     var inputQuality: PrintQuality? = null,
     var inputResolution: Resolution? = null,
@@ -121,7 +122,7 @@ constructor(
         val inputContrast = IntType(Name.inputContrast)
         val inputFilmScanMode = KeywordType(Name.inputFilmScanMode)
         val inputImagesToTransfer = IntType(Name.inputImagesToTransfer)
-        val inputMedia = KeywordType(Name.inputMedia)
+        val inputMedia = KeywordOrNameType(Name.inputMedia)
         /**
          * "input-orientation-requested" member type.
          */

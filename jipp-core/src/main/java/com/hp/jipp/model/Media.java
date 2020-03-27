@@ -11,7 +11,7 @@ package com.hp.jipp.model;
 /**
  * Values applicable for "media" keywords (or names).
  *
- * Also used by: "media-default", "media-supported".
+ * Also used by: "input-media", "input-media-supported", "media-default", "media-input-tray-check", "media-ready", "media-supported".
  *
  * @see <a href="https://ftp.pwg.org/pub/pwg/ipp/registrations/apple-kaku1-20171002.txt">APPLE20171002</a>
  * @see <a href="https://ftp.pwg.org/pub/pwg/ipp/registrations/canon-media-20180329.txt">CANON20180329</a>
