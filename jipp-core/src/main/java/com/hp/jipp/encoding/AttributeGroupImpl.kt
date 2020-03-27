@@ -11,14 +11,11 @@ import java.util.HashSet
  */
 @Suppress("TooManyFunctions") // Necessary
 internal class AttributeGroupImpl(
-    override val tag: Tag,
+    override val tag: DelimiterTag,
     private val attributes: List<Attribute<*>>
 ) : AttributeGroup, List<Attribute<*>> by attributes {
 
     init {
-        if (!tag.isDelimiter) {
-            throw BuildError("Group tag $tag must be a delimiter")
-        }
         // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
         // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
         val names = HashSet<String>()

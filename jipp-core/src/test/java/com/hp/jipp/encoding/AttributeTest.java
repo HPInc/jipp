@@ -103,12 +103,6 @@ public class AttributeTest {
     @Test
     public void failEmpty() {
         try {
-            Types.attributesCharset.empty(Tag.octetString);
-            fail("Didn't throw build error");
-        } catch (BuildError ignored) {
-        }
-
-        try {
             new BaseAttribute<>("name", null, null, Collections.<String>emptyList());
             fail("Didn't throw build error");
         } catch (BuildError ignored) {

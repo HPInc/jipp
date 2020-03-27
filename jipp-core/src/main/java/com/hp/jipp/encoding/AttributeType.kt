@@ -23,7 +23,7 @@ interface AttributeType<T : Any> {
     /** Return an empty attribute (containing no values) for this type but substituting a tag. */
     fun empty(
         /** Out-of-bound tag */
-        tag: Tag
+        tag: OutOfBandTag
     ): Attribute<T> {
         val self = this
         return BaseAttribute(self.name, this@AttributeType, tag)
@@ -41,10 +41,11 @@ interface AttributeType<T : Any> {
     /**
      * Convert an attribute of a different type to use [T], if possible.
      */
-    fun coerce(attribute: Attribute<*>): Attribute<T>? =
-        if (attribute.tag != null) {
+    fun coerce(attribute: Attribute<*>): Attribute<T>? {
+        val tag = attribute.tag
+        return if (tag is OutOfBandTag) {
             // Allow coercion of empty attributes (having an out-of-band tag)
-            empty(attribute.tag!!)
+            empty(tag)
         } else {
             val coercedValues = attribute.mapNotNull { coerce(it) }
             if (coercedValues.isNotEmpty()) {
@@ -53,6 +54,7 @@ interface AttributeType<T : Any> {
                 null
             }
         }
+    }
 
     /**
      * Convert any single value to [T], if possible.

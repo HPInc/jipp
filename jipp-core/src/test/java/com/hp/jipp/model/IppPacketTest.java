@@ -5,6 +5,7 @@ package com.hp.jipp.model;
 
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.DelimiterTag;
 import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.encoding.OtherString;
@@ -117,15 +118,17 @@ public class IppPacketTest {
 
     @Test
     public void readMultiEmptyAttributeGroupPacket() throws IOException {
+        // reserved but legal
+        DelimiterTag otherAttributes = new DelimiterTag((byte)0x08, "other-attributes");
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes),
                 groupOf(Tag.jobAttributes),
-                groupOf(Tag.fromInt((byte)0x08))); // reserved but legal
+                groupOf(otherAttributes));
         packet = cycle(packet);
         assertEquals(3, packet.getAttributeGroups().size());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
         assertEquals(Tag.jobAttributes, packet.getAttributeGroups().get(1).getTag());
-        assertEquals(Tag.fromInt(0x08), packet.getAttributeGroups().get(2).getTag());
+        assertEquals(otherAttributes, packet.getAttributeGroups().get(2).getTag());
     }
 
     @Test

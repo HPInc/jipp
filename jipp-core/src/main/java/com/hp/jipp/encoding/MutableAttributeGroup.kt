@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 @Suppress("TooManyFunctions")
 open class MutableAttributeGroup @JvmOverloads constructor(
     /** Tag for this group. */
-    override var tag: Tag,
+    override var tag: DelimiterTag,
     /** Initial attributes for this group, if any. */
     attributes: List<Attribute<*>> = listOf()
 ) : AttributeGroup, AbstractList<Attribute<*>>() {

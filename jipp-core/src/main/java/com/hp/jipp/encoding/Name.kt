@@ -9,7 +9,7 @@ package com.hp.jipp.encoding
 data class Name(override val value: String, val lang: String?) : TaggedValue(), Stringable {
     constructor(value: String) : this(value, null)
 
-    override val tag: Tag = if (lang == null) Tag.nameWithoutLanguage else Tag.nameWithLanguage
+    override val tag = if (lang == null) Tag.nameWithoutLanguage else Tag.nameWithLanguage
 
     override fun asString() = value
 
