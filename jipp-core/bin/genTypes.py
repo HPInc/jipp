@@ -930,6 +930,8 @@ def fix_ktypes(type, syntax, name, group_name = ''):
     elif intro.startswith("TextType("):
         type['ktype'] = "String"
         type['ktype_accessor'] = "value"
+        if type.get('set', False):
+            type['ksetof'] = 'ofStrings'
     elif intro.startswith("OctetsType("):
         type['ktype'] = "ByteArray"
 

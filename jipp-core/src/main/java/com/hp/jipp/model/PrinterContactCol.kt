@@ -29,7 +29,7 @@ constructor(
         listOfNotNull(
             contactName?.let { Types.contactName.of(it) },
             contactUri?.let { Types.contactUri.of(it) },
-            contactVcard?.let { Types.contactVcard.of(it) }
+            contactVcard?.let { Types.contactVcard.ofStrings(it) }
         )
     }
 
