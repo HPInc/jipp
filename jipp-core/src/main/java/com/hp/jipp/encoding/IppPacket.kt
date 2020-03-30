@@ -202,16 +202,16 @@ data class IppPacket constructor(
     }
 
     companion object {
-        /** Default version number for IPP packets (0x200 for IPP 2.0) */
+        /** Default version number for IPP packets (0x200 for IPP 2.0). */
         const val DEFAULT_VERSION_NUMBER = 0x0200
 
-        /** Default request ID */
+        /** Default request ID (1). */
         const val DEFAULT_REQUEST_ID = 1
 
-        /** Default language to use in operation groups. */
+        /** Default language to use in operation groups ("en-us"). */
         const val DEFAULT_LANGUAGE = "en-us"
 
-        /** Default charset to use in operation groups. */
+        /** Default charset to use in operation groups ("utf-8"). */
         const val DEFAULT_CHARSET = "utf-8"
 
         @JvmStatic
