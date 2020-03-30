@@ -43,39 +43,16 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerCalendarPolicyCol>(PowerCalendarPolicyCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "calendar-id" member name */
-        const val calendarId = "calendar-id"
-        /** "day-of-month" member name */
-        const val dayOfMonth = "day-of-month"
-        /** "day-of-week" member name */
-        const val dayOfWeek = "day-of-week"
-        /** "hour" member name */
-        const val hour = "hour"
-        /** "minute" member name */
-        const val minute = "minute"
-        /** "month" member name */
-        const val month = "month"
-        /** "request-power-state" member name */
-        const val requestPowerState = "request-power-state"
-        /** "run-once" member name */
-        const val runOnce = "run-once"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val calendarId = IntType(Name.calendarId)
-        val dayOfMonth = IntType(Name.dayOfMonth)
-        val dayOfWeek = IntType(Name.dayOfWeek)
-        val hour = IntType(Name.hour)
-        val minute = IntType(Name.minute)
-        val month = IntType(Name.month)
-        val requestPowerState = KeywordType(Name.requestPowerState)
-        val runOnce = BooleanType(Name.runOnce)
+        @JvmField val calendarId = IntType("calendar-id")
+        @JvmField val dayOfMonth = IntType("day-of-month")
+        @JvmField val dayOfWeek = IntType("day-of-week")
+        @JvmField val hour = IntType("hour")
+        @JvmField val minute = IntType("minute")
+        @JvmField val month = IntType("month")
+        @JvmField val requestPowerState = KeywordType("request-power-state")
+        @JvmField val runOnce = BooleanType("run-once")
     }
 
     /** Defines types for each member of [PowerCalendarPolicyCol] */

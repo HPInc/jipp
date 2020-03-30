@@ -31,21 +31,10 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterIccProfiles>(PrinterIccProfiles)
-
-    /** All member names as strings. */
-    object Name {
-        /** "profile-name" member name */
-        const val profileName = "profile-name"
-        /** "profile-url" member name */
-        const val profileUrl = "profile-url"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val profileName = NameType(Name.profileName)
-        val profileUrl = UriType(Name.profileUrl)
+        @JvmField val profileName = NameType("profile-name")
+        @JvmField val profileUrl = UriType("profile-url")
     }
 
     /** Defines types for each member of [PrinterIccProfiles] */

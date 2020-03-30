@@ -6,10 +6,12 @@ package com.hp.jipp.encoding
 import com.hp.jipp.util.ParseError
 import java.net.URI
 
-/** An attribute type for `uri` attributes. */
-open class UriType(override val name: String) : AttributeType<URI> {
-    override fun coerce(value: Any) =
-        value as? URI
+/** An [AttributeType] for a [URI] value. */
+open class UriType(name: String) : AttributeTypeImpl<URI>(name, URI::class.java) {
+    /** An [AttributeType] for multiple [URI] values. */
+    class Set(name: String) : UriType(name), AttributeSetType<URI> {
+        override fun toString() = "UriType.Set($name)"
+    }
 
     override fun toString() = "UriType($name)"
 

@@ -3,34 +3,41 @@
 
 package com.hp.jipp.model;
 
-import static com.hp.jipp.encoding.AttributeGroup.groupOf;
-import static com.hp.jipp.model.Types.*;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
-
-import com.hp.jipp.encoding.*;
-import com.hp.jipp.util.PrettyPrinter;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import static com.hp.jipp.encoding.Cycler.*;
-
+import com.hp.jipp.encoding.Attribute;
+import com.hp.jipp.encoding.AttributeGroup;
+import com.hp.jipp.encoding.IntOrIntRange;
+import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.encoding.KeywordOrName;
+import com.hp.jipp.encoding.MediaSizes;
+import com.hp.jipp.encoding.Resolution;
+import com.hp.jipp.encoding.ResolutionUnit;
+import com.hp.jipp.encoding.StringType;
+import com.hp.jipp.encoding.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import kotlin.ranges.IntRange;
+import org.junit.Test;
+
+import static com.hp.jipp.encoding.AttributeGroup.groupOf;
+import static com.hp.jipp.encoding.Cycler.cycle;
+import static com.hp.jipp.model.Types.attributesNaturalLanguage;
+import static com.hp.jipp.model.Types.copiesSupported;
+import static com.hp.jipp.model.Types.operationsSupported;
+import static com.hp.jipp.model.Types.printerResolutionDefault;
+import static com.hp.jipp.model.Types.stitchingOffsetSupported;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeTypeTest {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
     @Test
     public void naturalLanguage() throws Exception {
-        Attribute<String> attribute = cycle(attributesNaturalLanguage,
+        Attribute<String> attribute = cycle(Types.attributesNaturalLanguage,
                 attributesNaturalLanguage.of("en"));
         assertEquals(Collections.singletonList("en"), attribute.strings());
     }
@@ -39,7 +46,7 @@ public class AttributeTypeTest {
     public void naturalLanguageFromGroup() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
                 attributesNaturalLanguage.of("en")));
-        Attribute<String> attribute = group.get(attributesNaturalLanguage);
+        Attribute<String> attribute = group.get(Types.attributesNaturalLanguage);
         assertEquals(Collections.singletonList("en"), attribute.strings());
     }
 
@@ -47,14 +54,13 @@ public class AttributeTypeTest {
     public void ignoreBadNameNaturalLanguage() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes,
                 new StringType(Tag.naturalLanguage, "attributes-NATURAL-language").of("en")));
-        assertNull(group.get(attributesNaturalLanguage));
+        assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
     @Test
     public void enumAttributeType() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.printerAttributes,
-                operationsSupported.of(Operation.cancelJob,
-                        Operation.createJob)));
+                Types.operationsSupported.of(Operation.cancelJob, Operation.createJob)));
         System.out.println(group);
         assertEquals(Arrays.asList(Operation.cancelJob, Operation.createJob),
                 group.get(operationsSupported));
@@ -62,14 +68,14 @@ public class AttributeTypeTest {
 
     @Test
     public void rangeOfIntegers() throws Exception {
-        IntRange range = cycle(copiesSupported, copiesSupported.of(new IntRange(0, 99))).get(0);
+        IntRange range = cycle(copiesSupported, Types.copiesSupported.of(new IntRange(0, 99))).get(0);
         assertEquals(0, range.getFirst());
         assertEquals(99, range.getLast());
     }
 
     @Test
     public void resolution() throws Exception {
-        Resolution resolution = cycle(printerResolutionDefault, printerResolutionDefault.of(
+        Resolution resolution = cycle(printerResolutionDefault, Types.printerResolutionDefault.of(
                 new Resolution(300, 600, ResolutionUnit.dotsPerInch))).get(0);
         assertEquals(300, resolution.getCrossFeedResolution());
         assertEquals(600, resolution.getFeedResolution());
@@ -81,7 +87,6 @@ public class AttributeTypeTest {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.unknown());
         assertEquals(0, attribute.size());
-        assertEquals(Tag.unknown, attribute.getTag());
         assertTrue(attribute.isUnknown());
     }
 
@@ -90,7 +95,6 @@ public class AttributeTypeTest {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.noValue());
         assertEquals(0, attribute.size());
-        assertEquals(Tag.noValue, attribute.getTag());
         assertTrue(attribute.isNoValue());
     }
 
@@ -99,19 +103,18 @@ public class AttributeTypeTest {
         JobState.Type jobStateType = new JobState.Type("job-state");
         Attribute<JobState> attribute = cycle(jobStateType, jobStateType.unsupported());
         assertEquals(0, attribute.size());
-        assertEquals(Tag.unsupported, attribute.getTag());
         assertTrue(attribute.isUnsupported());
     }
 
     @Test
     public void intOrRangeType() throws Exception {
         Attribute<?> attribute = cycle(
-                stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
+                Types.stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
         // We get the raw types here because we didn't use the type to cycle
         assertEquals(Arrays.asList(5, new IntRange(7, 10)), attribute);
 
         Attribute<?> attribute2 = cycle(stitchingOffsetSupported,
-                stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
+                Types.stitchingOffsetSupported.of(new IntOrIntRange(5), new IntOrIntRange(7, 10)));
         assertEquals(new IntOrIntRange(5), attribute2.get(0));
         assertEquals(new IntOrIntRange(7, 10), attribute2.get(1));
         assertEquals(Arrays.asList(new IntOrIntRange(5), new IntOrIntRange(7, 10)), attribute2);
@@ -138,7 +141,6 @@ public class AttributeTypeTest {
                 groupOf(Tag.printerAttributes,
                         Types.mediaColReady.of(readyList),
                         Types.mediaColDatabase.of(readyList) /* + other requested attributes */ ));
-
     }
 
     @Test

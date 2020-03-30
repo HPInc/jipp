@@ -32,8 +32,11 @@ data class Operation(override val code: Int, override val name: String) : Enum()
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [Operation] attributes */
+    /** An [AttributeType] for a [Operation] attribute. */
     class Type(name: String) : EnumType<Operation>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [Operation] attributes. */
+    class SetType(name: String) : EnumType.Set<Operation>(name, { get(it) })
 
     object Code {
         const val printJob = 0x0002

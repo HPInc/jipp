@@ -4,14 +4,16 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.util.ParseError
-import java.util.* // ktlint-disable
+import java.util.Calendar
+import java.util.TimeZone
 
-/** An attribute type based on [Calendar] type. */
+/** An [AttributeType] for a DateTime value represented as a [Calendar] object. */
 @Suppress("MagicNumber")
-open class DateTimeType(override val name: String) : AttributeType<Calendar> {
-
-    override fun coerce(value: Any) =
-        value as? Calendar
+open class DateTimeType(name: String) : AttributeTypeImpl<Calendar>(name, Calendar::class.java) {
+    /** An [AttributeType] for multiple DateTime values represented as [Calendar] objects. */
+    class Set(name: String) : DateTimeType(name), AttributeSetType<Calendar> {
+        override fun toString() = "DateTimeType.Set($name)"
+    }
 
     override fun toString() = "DateTimeType($name)"
 

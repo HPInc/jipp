@@ -32,21 +32,10 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobSaveDisposition>(JobSaveDisposition)
-
-    /** All member names as strings. */
-    object Name {
-        /** "save-disposition" member name */
-        const val saveDisposition = "save-disposition"
-        /** "save-info" member name */
-        const val saveInfo = "save-info"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val saveDisposition = KeywordType(Name.saveDisposition)
-        val saveInfo = SaveInfo.Type(Name.saveInfo)
+        @JvmField val saveDisposition = KeywordType("save-disposition")
+        @JvmField val saveInfo = AttributeCollection.SetType("save-info", SaveInfo)
     }
 
     /** Defines types for each member of [JobSaveDisposition] */
@@ -81,24 +70,11 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<SaveInfo>(SaveInfo)
-
-        /** All member names as strings. */
-        object Name {
-            /** "save-document-format" member name */
-            const val saveDocumentFormat = "save-document-format"
-            /** "save-location" member name */
-            const val saveLocation = "save-location"
-            /** "save-name" member name */
-            const val saveName = "save-name"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val saveDocumentFormat = StringType(Tag.mimeMediaType, Name.saveDocumentFormat)
-            val saveLocation = UriType(Name.saveLocation)
-            val saveName = NameType(Name.saveName)
+            @JvmField val saveDocumentFormat = StringType(Tag.mimeMediaType, "save-document-format")
+            @JvmField val saveLocation = UriType("save-location")
+            @JvmField val saveName = NameType("save-name")
         }
 
         /** Defines types for each member of [SaveInfo] */

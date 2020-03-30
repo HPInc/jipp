@@ -36,24 +36,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<SeparatorSheets>(SeparatorSheets)
-
-    /** All member names as strings. */
-    object Name {
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-        /** "separator-sheets-type" member name */
-        const val separatorSheetsType = "separator-sheets-type"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
-        val separatorSheetsType = KeywordType(Name.separatorSheetsType)
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
+        @JvmField val separatorSheetsType = KeywordType.Set("separator-sheets-type")
     }
 
     /** Defines types for each member of [SeparatorSheets] */

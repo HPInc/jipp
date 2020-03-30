@@ -4,11 +4,22 @@
 package com.hp.jipp.encoding
 
 /**
- * An attribute type for `name` or `keyword` values.
+ * An [AttributeType] for a [Name] or keyword value.
  *
  * See [RFC8011 Section 5.1.3](https://tools.ietf.org/html/rfc8011#section-5.1.3).
  */
-class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName> {
+open class KeywordOrNameType(name: String) : AttributeTypeImpl<KeywordOrName>(name, KeywordOrName::class.java) {
+    /** An [AttributeType] for multiple [Name] and keyword values. */
+    class Set(name: String) : KeywordOrNameType(name), AttributeSetType<KeywordOrName> {
+        /** Return an [Attribute] containing keyword values as given. */
+        fun of(value: String, vararg values: String) = of((listOf(value) + values).map { KeywordOrName(it) })
+
+        /** Return an [Attribute] containing one or more values of type [KeywordOrName]. */
+        fun of(value: Name, vararg values: Name): Attribute<KeywordOrName> =
+            of((listOf(value) + values).map { KeywordOrName(it) })
+
+        override fun toString() = "KeywordOrNameType.Set($name)"
+    }
 
     override fun coerce(value: Any): KeywordOrName? =
         when (value) {
@@ -17,6 +28,14 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
             is String -> KeywordOrName(value)
             else -> null
         }
+
+    /** Return an [Attribute] containing a single value of type [KeywordOrName]. */
+    fun of(value: String): Attribute<KeywordOrName> =
+        of(KeywordOrName(value))
+
+    /** Return an [Attribute] containing a single value of type [KeywordOrName]. */
+    fun of(value: Name): Attribute<KeywordOrName> =
+        of(KeywordOrName(value))
 
     /**
      * A form of this [AttributeType] that represents all incoming Name and Keyword data as [String] objects.
@@ -34,20 +53,6 @@ class KeywordOrNameType(override val name: String) : AttributeType<KeywordOrName
                 }
         }
     }
-
-    /** Return an attribute containing values as keywords .*/
-    fun of(vararg keywords: String) = of(keywords.map { KeywordOrName(it) })
-
-    /** Return an attribute containing values as keywords. */
-    fun of(vararg names: Name) = of(names.map { KeywordOrName(it) })
-
-    /** Return an attribute containing values interpreted as keywords. */
-    fun ofKeywords(values: Iterable<String>) = of(values.map { KeywordOrName(Name(it)) })
-
-    /** Return an attribute containing values as text strings (without language). */
-    fun ofNames(values: Iterable<String>) = of(values.map { KeywordOrName(Name(it)) })
-
-    override fun toString() = "KeywordOrNameType($name)"
 
     companion object {
         val codec = Codec<KeywordOrName>({ false }, {

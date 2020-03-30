@@ -1,6 +1,7 @@
 package com.hp.jipp.encoding;
 
 import java.io.IOException;
+import java.util.Arrays;
 import kotlin.ranges.IntRange;
 import org.junit.Test;
 
@@ -9,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class IntRangeTypeTest {
-    private IntRangeType rangeType = new IntRangeType("range-only");
-    private IntOrIntRangeType rangeOrIntType = new IntOrIntRangeType("range-or-int");
+    private IntRangeType.Set rangeType = new IntRangeType.Set("range-only");
+    private IntOrIntRangeType.Set rangeOrIntType = new IntOrIntRangeType.Set("range-or-int");
 
     @Test
     public void simpleRange() throws IOException {
@@ -30,7 +31,7 @@ public class IntRangeTypeTest {
 
     @Test
     public void rangeOrInt() throws IOException {
-        Attribute<IntOrIntRange> ranges = cycle(rangeOrIntType, rangeOrIntType.of(5));
+        Attribute<IntOrIntRange> ranges = cycle(rangeOrIntType, rangeOrIntType.of(new IntOrIntRange(5)));
         assertTrue(ranges.getValue().getSimpleInt());
         assertEquals(5, ranges.getValue().getRange().getEndInclusive().intValue());
     }

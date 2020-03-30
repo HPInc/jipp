@@ -576,6 +576,160 @@ def fuzzy_get(map, name):
         return None
     return map[name]
 
+# For the type given, select decorators that help when generating code.
+# 'kintro' - string required to begin instantiation of the type
+# 'ktype' - the primitive type associated
+# 'ktype_accessor' - a way to select out the primitive type from the member
+def fix_ktypes(type, syntax, name, group_name = ''):
+    original_syntax = syntax
+
+    # These is supposed to refer only to certain Media values but we cannot distinguish them easily.
+    if name == 'media-key' or name == 'media-key-supported' or name == "media-size-name":
+        name = 'media'
+
+    if syntax is None:
+        warn("Type has no syntax", type)
+        return None
+
+    set = ".Set" if type.get('set', None) else ""
+
+    # Look for known keyword/enum reference
+    intro = None
+    if syntax == 'keyword' or syntax == 'keyword | name':
+        real_type = fuzzy_get(keywords, name)
+        if real_type:
+            if 'ref_members' in real_type:
+                intro = 'KeywordType%s(' % set
+                type['ktype'] = "String"
+                type['kdoc'] = "May contain any keyword from [%s.Name]." % camel_class(real_type['ref_members'])
+            elif syntax == 'keyword':
+                intro = 'KeywordType%s(' % set
+                type['ktype'] = "String"
+                if real_type['values']:
+                    type['kdoc'] = "May contain %s from [%s]." % (keyword_desc(keywords.get(name, None)), camel_class(real_type['name']))
+                elif 'kdoc' in real_type:
+                    type['kdoc'] = real_type['kdoc']
+            elif syntax == 'keyword | name':
+                intro = 'KeywordOrNameType%s(' % set
+                type['ktype'] = 'KeywordOrName'
+                type['kalt'] = [ 'String', 'Name' ]
+                type['kdoc'] = "May contain %s from [%s] or a name." % (keyword_desc(keywords.get(name, None)), camel_class(real_type['name']))
+        elif syntax == 'keyword':
+            # No definition was given so fall back to Keyword
+            intro = 'KeywordType%s(' % set
+            type['ktype'] = "String"
+        elif syntax == 'keyword | name':
+            intro = 'KeywordOrNameType%s(' % set
+            type['ktype'] = "String"
+
+    if syntax == 'enum':
+        real_type = fuzzy_get(enums, name)
+        if real_type:
+            intro = camel_class(real_type['name']) + '.%sType(' % set[1:]
+            type['ktype'] = camel_class(real_type['name'])
+            if group_name:
+                if 'krefs' not in real_type:
+                    real_type['krefs'] = []
+                if group_name == 'types':
+                    kref = 'Types.' + camel_member(name)
+                else:
+                    # These are enum types found in collections
+                    kref = camel_class_path(group_name) + '.Types.' + camel_member(name)
+                if kref not in real_type['krefs']:
+                    real_type['krefs'].append(kref)
+
+    if name in key_value_type_names:
+        # Catch this before octetString
+        intro = 'KeyValuesType%s(' % set
+        syntax = "keyValues"
+        type['ktype'] = 'KeyValues'
+        type['kref'] = camel_class_path(group_name) + '.' + camel_member(name)
+        key_values[name] = type
+
+    # Look for other known references
+    if re.search('^uri(\([0-9]+\))?$', syntax):
+        intro = 'UriType%s(' % set
+        type['ktype'] = "java.net.URI"
+    elif re.search('^rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
+        intro = 'IntRangeType%s(' % set
+        type['ktype'] = 'IntRange'
+    elif re.search('^integer(\([0-9MINAX: -]*\)) | rangeOfInteger(\([0-9MINAX: -]*\))?$', syntax):
+        intro = 'IntOrIntRangeType%s(' % set
+        type['ktype'] = 'IntOrIntRange'
+        type['kalt'] = [ 'Int', 'IntRange' ]
+    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
+        intro = 'IntType%s(' % set
+        type['ktype'] = "Int"
+    elif syntax == "boolean":
+        intro = 'BooleanType%s(' % set
+        type['ktype'] = "Boolean"
+    elif syntax == "charset":
+        intro = 'StringType%s(Tag.charset, ' % set
+        type['ktype'] = "String"
+    elif syntax == "mimeMediaType":
+        intro = 'StringType%s(Tag.mimeMediaType, ' % set
+        type['ktype'] = "String"
+    elif syntax == "naturalLanguage":
+        intro = 'StringType%s(Tag.naturalLanguage, ' % set
+    elif syntax == "resolution":
+        intro = 'ResolutionType%s(' % set
+        type['ktype'] = 'Resolution'
+    elif syntax == "collection":
+        if 'ref_col' in type:
+            name = type['ref_col']
+        else:
+            name = type['name']
+
+        # Some collections are beyond our ability to model cleanly, having too many possibilities
+        if name == 'destination-attributes' or name == 'preferred-attributes':
+            intro = 'UntypedCollection.%sType(' % set[1:]
+            type['ktype'] = 'UntypedCollection'
+        else:
+            intro = 'AttributeCollection.%sType(' % set[1:]
+            type['koutro'] = ", %s" % camel_class(name)
+            type['ktype'] = camel_class(name)
+            if not 'inner' in type:
+                # Non-inner collection references must be fulfilled later
+                pending_collections[name] = type
+    elif syntax == "dateTime":
+        intro = 'DateTimeType%s(' % set
+        type['ktype'] = "java.util.Calendar"
+    elif syntax == 'name':
+        intro = 'NameType%s(' % set
+    elif re.search('^name\(([0-9]+)\)$', syntax):
+        m = re.search('name\(([0-9]+)\)', syntax) # ignore max (for now)
+        intro = 'NameType%s(' % set
+    elif syntax == 'text':
+        intro = 'TextType%s(' % set
+    elif syntax == 'uriScheme':
+        intro = 'StringType%s(Tag.uriScheme, ' % set
+    elif re.search('^text\(([0-9]+)\)$', syntax):
+        m = re.search('text\(([0-9]+)\)', syntax) # ignore max (for now)
+        intro = 'TextType%s(' % set
+    elif syntax == 'octetString':
+        intro = 'OctetsType%s(' % set
+    elif re.search('^octetString\(([0-9]+)\)$', syntax):
+        m = re.search('octetString\(([0-9]+)\)', syntax) # ignore max (for now)
+        intro = 'OctetsType%s(' % set
+
+    if not intro:
+        warn("No type for attribute " + name + " with syntax '" + original_syntax + "'", type)
+        return
+
+    type['kintro'] = intro
+    if intro.startswith("StringType"):
+        type['ktype'] = "String"
+    elif intro.startswith("NameType"):
+        type['ktype'] = "String"
+        type['ktype_accessor'] = "value"
+        type['kbase'] = "Name"
+    elif intro.startswith("TextType"):
+        type['ktype'] = "String"
+        type['ktype_accessor'] = "value"
+        type['kbase'] = "Text"
+    elif intro.startswith("OctetsType"):
+        type['ktype'] = "ByteArray"
+
 def emit_attributes(env):
     # Pass 1: Look for collection types that have both ref and members
     for group in attributes.values():
@@ -649,7 +803,6 @@ def emit_attributes(env):
                 #     continue
 
     # Pass 6: Emit all types into a single huge class
-    template = env.get_template('types.kt.tmpl')
     type_list = []
     for typeName, type in sorted(types.items(), key=lambda (k, v): k):
         fix_ktypes(type, type['syntax'], type['name'], 'types')
@@ -664,6 +817,7 @@ def emit_attributes(env):
         type_list.append(type)
 
     with open(prep_file('types'), 'w') as file:
+        template = env.get_template('types.kt.tmpl')
         file.write(rstrip_all(template.render(
             types=type_list,
             app=os.path.basename(sys.argv[0]),
@@ -777,7 +931,7 @@ def fix_member(member, group_name):
     if 'kintro' in member:
         if member['syntax'] == 'dateTime':
             if 'ktype' not in member:
-                member['ktype'] = 'Calendar'
+                member['ktype'] = 'java.util.Calendar'
         if member['syntax'] == 'collection':
             if 'ktype' not in member:
                 member['ktype'] = camel_class(member['name'])
@@ -788,166 +942,10 @@ def fix_member(member, group_name):
                     else:
                         fix_member(submember, '')
 
-def extra_kdoc(type):
+def keyword_desc(type):
     if type and 'modifier' in type:
-        return " (%s)" % type['modifier']
-    return ""
-
-# For the type given, select decorators that help when generating code.
-# 'kintro' - string required to begin instantiation of the type
-# 'ktype' - the primitive type associated
-# 'ktype_accessor' - a way to select out the primitive type from the member
-def fix_ktypes(type, syntax, name, group_name = ''):
-    original_syntax = syntax
-
-    # These is supposed to refer only to certain Media values but we cannot distinguish them easily.
-    if name == 'media-key' or name == 'media-key-supported' or name == "media-size-name":
-        name = 'media'
-
-    if syntax is None:
-        warn("Type has no syntax", type)
-        return None
-
-    # Look for known keyword/enum reference
-    intro = None
-    if syntax == 'keyword' or syntax == 'keyword | name':
-        real_type = fuzzy_get(keywords, name)
-        if real_type:
-            if 'ref_members' in real_type:
-                intro = "KeywordType("
-                type['ktype'] = "String"
-                type['kdoc'] = "May contain any keyword from [%s.Name]." % camel_class(real_type['ref_members'])
-            elif syntax == 'keyword':
-                intro = "KeywordType("
-                type['ktype'] = "String"
-                if real_type['values']:
-                    type['kdoc'] = "May contain any keyword from [%s]%s." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
-                elif 'kdoc' in real_type:
-                    type['kdoc'] = real_type['kdoc']
-            elif syntax == 'keyword | name':
-                intro = "KeywordOrNameType("
-                type['ktype'] = "KeywordOrName"
-                type['kdoc'] = "May contain any keyword from [%s]%s or a name." % (camel_class(real_type['name']), extra_kdoc(keywords.get(name, None)))
-        elif syntax == 'keyword':
-            # No definition was given so fall back to Keyword
-            intro = "KeywordType("
-            type['ktype'] = "String"
-        elif syntax == 'keyword | name':
-            intro = "KeywordType("
-            type['ktype'] = "String"
-
-    if syntax == 'enum':
-        real_type = fuzzy_get(enums, name)
-        if real_type:
-            intro = camel_class(real_type['name']) + ".Type("
-            type['ktype'] = camel_class(real_type['name'])
-            if group_name:
-                if 'krefs' not in real_type:
-                    real_type['krefs'] = []
-                if group_name == 'types':
-                    kref = 'Types.' + camel_member(name)
-                else:
-                    # These are enum types found in collections
-                    kref = camel_class_path(group_name) + '.Types.' + camel_member(name)
-                if kref not in real_type['krefs']:
-                    real_type['krefs'].append(kref)
-
-    if name in key_value_type_names:
-        # Catch this before octetString
-        intro = "KeyValuesType("
-        syntax = "keyValues"
-        type['kref'] = camel_class_path(group_name) + '.' + camel_member(name)
-        key_values[name] = type
-
-    # Look for other known references
-    if re.search('^uri(\([0-9]+\))?$', syntax):
-        intro = "UriType("
-        type['ktype'] = "java.net.URI"
-    elif re.search('^rangeOfInteger(\([0-9MINAX:-]*\))?$', syntax):
-        intro = "IntRangeType("
-        type['ktype'] = 'IntRange'
-    elif re.search('^integer(\([0-9MINAX: -]*\)) | rangeOfInteger(\([0-9MINAX: -]*\))?$', syntax):
-        intro = "IntOrIntRangeType("
-        type['ktype'] = 'IntOrIntRange'
-    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
-        intro = "IntType("
-        type['ktype'] = "Int"
-    elif syntax == "boolean":
-        intro = "BooleanType("
-        type['ktype'] = "Boolean"
-    elif syntax == "charset":
-        intro = "StringType(Tag.charset, "
-        type['ktype'] = "String"
-    elif syntax == "mimeMediaType":
-        intro = "StringType(Tag.mimeMediaType, "
-        type['ktype'] = "String"
-    elif syntax == "naturalLanguage":
-        intro = "StringType(Tag.naturalLanguage, "
-    elif syntax == "resolution":
-        intro = "ResolutionType("
-        type['ktype'] = 'Resolution'
-    elif syntax == "collection":
-        if 'ref_col' in type:
-            name = type['ref_col']
-        else:
-            name = type['name']
-
-        # Some collections are beyond our ability to model cleanly, having too many possibilities
-        if name == 'destination-attributes' or name == 'preferred-attributes':
-            intro = 'UntypedCollection.Type('
-            type['ktype'] = 'UntypedCollection'
-        else:
-            intro = camel_class(name) + '.Type('
-            if not 'inner' in type:
-                # Non-inner collection references must be fulfilled later
-                pending_collections[name] = type
-    elif syntax == "dateTime":
-        intro = "DateTimeType("
-    elif syntax == 'name':
-        intro = "NameType("
-    elif re.search('^name\(([0-9]+)\)$', syntax):
-        m = re.search('name\(([0-9]+)\)', syntax) # ignore max (for now)
-        intro = "NameType("
-    elif syntax == 'text':
-        intro = "TextType("
-    elif syntax == 'uriScheme':
-        intro = "StringType(Tag.uriScheme, "
-    elif re.search('^text\(([0-9]+)\)$', syntax):
-        m = re.search('text\(([0-9]+)\)', syntax) # ignore max (for now)
-        intro = "TextType("
-    elif syntax == 'octetString':
-        intro = "OctetsType("
-    elif re.search('^octetString\(([0-9]+)\)$', syntax):
-        m = re.search('octetString\(([0-9]+)\)', syntax) # ignore max (for now)
-        intro = "OctetsType("
-
-    if not intro:
-        warn("No type for attribute " + name + " with syntax '" + original_syntax + "'", type)
-        return
-
-    type['kintro'] = intro
-    if intro.startswith("StringType("):
-        type['ktype'] = "String"
-    elif intro.startswith("NameType("):
-        type['ktype'] = "String"
-        type['ktype_accessor'] = "value"
-    elif intro.startswith("TextType("):
-        type['ktype'] = "String"
-        type['ktype_accessor'] = "value"
-        if type.get('set', False):
-            type['ksetof'] = 'ofStrings'
-    elif intro.startswith("OctetsType("):
-        type['ktype'] = "ByteArray"
-
-# Return true if any members require a Calendar import
-def has_calendar(members):
-    for name in members:
-        if members[name]['ktype'] == 'Calendar':
-            return True
-        if members[name]['members']:
-            if has_calendar(members[name]['members']):
-                return True
-    return False
+        return "%s keyword" % type['modifier']
+    return "any keyword"
 
 def emit_code():
     env = Environment(loader=FileSystemLoader(proj_dir + 'bin'))
@@ -955,7 +953,6 @@ def emit_code():
     env.filters['camel_member'] = camel_member
     env.filters['spaced_title'] = spaced_title
     env.filters['upper'] = upper
-    env.filters['has_calendar'] = has_calendar
 
     emit_kind(env, 'enum.kt.tmpl', enums, emit_enum)
     emit_kind(env, 'keyword.java.tmpl', keywords, emit_keyword)

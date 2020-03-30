@@ -133,8 +133,7 @@ public class IppPacketTest {
 
     @Test
     public void writeSingleAttributePacket() throws IOException {
-        Attribute<String> simpleAttribute = new StringType(Tag.charset, "attributes-charset")
-                .of("us-ascii");
+        Attribute<String> simpleAttribute = new StringType(Tag.charset, "attributes-charset").of("us-ascii");
 
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, simpleAttribute));
@@ -199,7 +198,7 @@ public class IppPacketTest {
                 groupOf(Tag.operationAttributes, attributesCharset));
         packet = cycle(original);
 
-        Attribute readAttribute = packet.getAttributeGroups().get(0).get(0);
+        Attribute<?> readAttribute = packet.getAttributeGroups().get(0).get(0);
         assertEquals("attributes-charset", readAttribute.getName());
         assertEquals(new OtherString(Tag.charset, "us-ascii"), readAttribute.get(0));
         assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharsetType));
@@ -207,8 +206,8 @@ public class IppPacketTest {
 
     @Test
     public void writeMultiValueAttributePacket() throws IOException {
-        Attribute<String> multiValueAttribute = new StringType(Tag.charset, "attributes-charset")
-                .of("us-ascii", "utf-8");
+        Attribute<String> multiValueAttribute = new StringType.Set(Tag.charset, "attributes-charset")
+                .of(Arrays.asList("us-ascii", "utf-8")); // Illegal
 
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
                 groupOf(Tag.operationAttributes, multiValueAttribute));
@@ -245,14 +244,14 @@ public class IppPacketTest {
     @Test
     public void readMultiValueAttributePacket() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii")));
         packet = cycle(packet);
 
         assertEquals(Operation.getJobAttributes, packet.getOperation());
         assertEquals(777, packet.getRequestId());
         assertEquals(Tag.operationAttributes, packet.getAttributeGroups().get(0).getTag());
-        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(attributesCharset);
-        assertEquals(Arrays.asList("us-ascii", "utf-8"), attribute.strings());
+        Attribute<String> attribute = packet.getAttributeGroups().get(0).get(Types.attributesCharset);
+        assertEquals(Collections.singletonList("us-ascii"), attribute.strings());
     }
 
     @Test
@@ -270,7 +269,7 @@ public class IppPacketTest {
     @Test
     public void getValue() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 777,
-                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii")));
         packet = cycle(packet);
 
         // Wrong group
@@ -280,22 +279,22 @@ public class IppPacketTest {
         assertNull(packet.getValue(Tag.operationAttributes, attributesNaturalLanguage));
 
         // All good!
-        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, attributesCharset));
+        assertEquals("us-ascii", packet.getValue(Tag.operationAttributes, Types.attributesCharset));
     }
 
     @Test
     public void getValues() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii", "utf-8")));
+                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii")));
         packet = cycle(packet);
 
         // Wrong group
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.jobAttributes, attributesCharset));
+                packet.getValues(Tag.jobAttributes, Types.attributesCharset));
 
         // Wrong attr
-        assertEquals(Arrays.asList("us-ascii", "utf-8"),
-                packet.getStrings(Tag.operationAttributes, attributesCharset));
+        assertEquals(Collections.singletonList("us-ascii"),
+                packet.getStrings(Tag.operationAttributes, Types.attributesCharset));
 
         // All good!
         assertEquals(Collections.emptyList(),
@@ -305,7 +304,7 @@ public class IppPacketTest {
     @Test
     public void printCorrectly() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
-                groupOf(Tag.printerAttributes, operationsSupported.of(Operation.createJob)));
+                groupOf(Tag.printerAttributes, Types.operationsSupported.of(Operation.createJob)));
         packet = cycle(packet);
         System.out.println(packet.toString());
         assertTrue(packet.toString().contains(Operation.createJob.getName()));
@@ -314,7 +313,8 @@ public class IppPacketTest {
     @Test
     public void getStrings() throws IOException {
         packet = new IppPacket(0x0102, Operation.holdJob.getCode(), 0x50607,
-                groupOf(Tag.printerAttributes, operationsSupported.of(Operation.createJob), Types.foldingDirectionSupported.noValue()));
+                groupOf(Tag.printerAttributes, Types.operationsSupported.of(Operation.createJob),
+                        Types.foldingDirectionSupported.noValue()));
         packet = cycle(packet);
         assertEquals("Create-Job(5)", packet.getString(Tag.printerAttributes, operationsSupported));
         assertNull(packet.getString(Tag.unsupportedAttributes, Types.foldingDirectionSupported));
@@ -448,5 +448,15 @@ public class IppPacketTest {
         assertEquals(uri, packet.getValue(Tag.operationAttributes, Types.printerUri));
         assertEquals(3, packet.getValue(Tag.operationAttributes, Types.jobId).intValue());
         assertEquals(Operation.cancelJob, packet.getOperation());
+    }
+
+    @Test
+    public void packetEquality() throws IOException {
+        packet = IppPacket.cancelJob(uri).putOperationAttributes(Types.requestedAttributes.unknown()).build();
+        IppPacket packet2 = cycle(packet);
+        assertEquals(packet, packet2);
+
+        IppPacket packet3 = IppPacket.cancelJob(uri).putOperationAttributes(Types.requestedAttributes.noValue()).build();
+        assertNotEquals(packet, packet3);
     }
 }

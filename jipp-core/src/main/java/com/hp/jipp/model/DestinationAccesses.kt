@@ -38,30 +38,13 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationAccesses>(DestinationAccesses)
-
-    /** All member names as strings. */
-    object Name {
-        /** "access-oauth-token" member name */
-        const val accessOauthToken = "access-oauth-token"
-        /** "access-oauth-uri" member name */
-        const val accessOauthUri = "access-oauth-uri"
-        /** "access-password" member name */
-        const val accessPassword = "access-password"
-        /** "access-pin" member name */
-        const val accessPin = "access-pin"
-        /** "access-user-name" member name */
-        const val accessUserName = "access-user-name"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val accessOauthToken = OctetsType(Name.accessOauthToken)
-        val accessOauthUri = UriType(Name.accessOauthUri)
-        val accessPassword = TextType(Name.accessPassword)
-        val accessPin = TextType(Name.accessPin)
-        val accessUserName = TextType(Name.accessUserName)
+        @JvmField val accessOauthToken = OctetsType.Set("access-oauth-token")
+        @JvmField val accessOauthUri = UriType("access-oauth-uri")
+        @JvmField val accessPassword = TextType("access-password")
+        @JvmField val accessPin = TextType("access-pin")
+        @JvmField val accessUserName = TextType("access-user-name")
     }
 
     /** Defines types for each member of [DestinationAccesses] */

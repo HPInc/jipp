@@ -33,24 +33,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerStateTransitionsCol>(PowerStateTransitionsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "end-power-state" member name */
-        const val endPowerState = "end-power-state"
-        /** "start-power-state" member name */
-        const val startPowerState = "start-power-state"
-        /** "state-transition-seconds" member name */
-        const val stateTransitionSeconds = "state-transition-seconds"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val endPowerState = KeywordType(Name.endPowerState)
-        val startPowerState = KeywordType(Name.startPowerState)
-        val stateTransitionSeconds = IntType(Name.stateTransitionSeconds)
+        @JvmField val endPowerState = KeywordType("end-power-state")
+        @JvmField val startPowerState = KeywordType("start-power-state")
+        @JvmField val stateTransitionSeconds = IntType("state-transition-seconds")
     }
 
     /** Defines types for each member of [PowerStateTransitionsCol] */

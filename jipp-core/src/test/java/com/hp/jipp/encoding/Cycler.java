@@ -55,7 +55,6 @@ public class Cycler {
     }
 
     static <T> void coverList(List<T> list, T firstValue, T notPresentValue) {
-
         assertFalse(list.isEmpty());
         assertTrue(list.contains(firstValue));
         assertEquals(0, list.indexOf(firstValue));

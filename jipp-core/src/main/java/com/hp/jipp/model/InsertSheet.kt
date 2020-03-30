@@ -37,27 +37,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<InsertSheet>(InsertSheet)
-
-    /** All member names as strings. */
-    object Name {
-        /** "insert-after-page-number" member name */
-        const val insertAfterPageNumber = "insert-after-page-number"
-        /** "insert-count" member name */
-        const val insertCount = "insert-count"
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val insertAfterPageNumber = IntType(Name.insertAfterPageNumber)
-        val insertCount = IntType(Name.insertCount)
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
+        @JvmField val insertAfterPageNumber = IntType("insert-after-page-number")
+        @JvmField val insertCount = IntType("insert-count")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [InsertSheet] */

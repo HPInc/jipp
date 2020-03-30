@@ -4,17 +4,18 @@
 package com.hp.jipp.encoding
 
 /**
- * A type of attribute which is most clearly represented as a [String]. Note: may be used
- * to get a more convenient representation of types which may contain combinations of Name,
- * Keyword, Text, etc.
+ * An [AttributeType] for a value best represented as a [String].
  */
-open class StringType(val tag: Tag, override val name: String) : AttributeType<String> {
+open class StringType(val tag: Tag, name: String) : AttributeTypeImpl<String>(name, String::class.java) {
+    /** An [AttributeType] for values best represented as a [String]. */
+    class Set(tag: Tag, name: String) : StringType(tag, name), AttributeSetType<String> {
+        override fun toString() = "StringType.Set($name)"
+    }
+
     override fun coerce(value: Any) =
         when (value) {
             is String -> value
             is OtherString -> value.value
             else -> null
         }
-
-    override fun toString() = "StringType($name)"
 }

@@ -26,8 +26,11 @@ data class Status(override val code: Int, override val name: String) : Enum() {
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [Status] attributes */
+    /** An [AttributeType] for a [Status] attribute. */
     class Type(name: String) : EnumType<Status>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [Status] attributes. */
+    class SetType(name: String) : EnumType.Set<Status>(name, { get(it) })
 
     object Code {
         const val successfulOk = 0x0000

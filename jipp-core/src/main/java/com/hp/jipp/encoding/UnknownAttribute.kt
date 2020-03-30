@@ -10,13 +10,18 @@ package com.hp.jipp.encoding
 class UnknownAttribute(
     name: String,
     values: List<Any>
-) : BaseAttribute<Any>(name, values) {
+) : AttributeImpl<Any>(name, Type(name), values) {
 
     /** Provide values as varargs. */
     constructor(name: String, value: Any, vararg values: Any) : this(name, listOf(value) + values)
 
-    /** An unknown attribute type. */
+    /** An unknown [AttributeType]. */
     class Type(override val name: String) : AttributeType<Any> {
+        override fun coerce(value: Any): Any? = value
+    }
+
+    /** An unknown [AttributeType] carrying multiple values. */
+    class SetType(override val name: String) : AttributeSetType<Any> {
         override fun coerce(value: Any): Any? = value
     }
 }

@@ -16,12 +16,13 @@ import static org.junit.Assert.assertNull;
  */
 public class TextTest {
 
-    private TextType jobTextType = new TextType("job-name");
+    private TextType.Set jobTextType = new TextType.Set("job-name");
+    private Attribute<Text> jobTextType(Text job) { return jobTextType.of(job); }
+    private Attribute<Text> jobTextType(String job) { return jobTextType.of(new Text(job)); }
 
     @Test
     public void withoutLanguage() throws IOException {
-        Attribute<Text> jobTextAttr = jobTextType.of(new Text("my job"));
-        assertEquals(Tag.textWithoutLanguage, jobTextAttr.getValue().getTag());
+        Attribute<Text> jobTextAttr = jobTextType("my job");
         Attribute<Text> result = cycle(jobTextType, jobTextAttr);
         assertEquals("my job", result.get(0).getValue());
         assertNull(result.get(0).getLang());
@@ -29,17 +30,15 @@ public class TextTest {
 
     @Test
     public void simpleStrings() throws IOException {
-        Attribute<Text> jobTextAttr = jobTextType.of("my job");
-        assertEquals(Tag.textWithoutLanguage, jobTextAttr.getValue().getTag());
+        Attribute<Text> jobTextAttr = jobTextType("my job2");
         Attribute<Text> result = cycle(jobTextType, jobTextAttr);
-        assertEquals("my job", result.get(0).getValue());
+        assertEquals("my job2", result.get(0).getValue());
         assertNull(result.get(0).getLang());
     }
 
     @Test
     public void withLanguage() throws IOException {
-        Attribute<Text> jobTextAttr = jobTextType.of(new Text("my job", "en"));
-        assertEquals(Tag.textWithLanguage, jobTextAttr.getValue().getTag());
+        Attribute<Text> jobTextAttr = jobTextType(new Text("my job", "en"));
         Attribute<Text> result = cycle(jobTextType, jobTextAttr);
         assertEquals("my job", result.getValue().getValue());
         assertEquals("en", result.getValue().getLang());
@@ -54,7 +53,7 @@ public class TextTest {
 
     @Test
     public void ofStrings() throws IOException {
-        Attribute<Text> attr = jobTextType.ofStrings(Arrays.asList("one", "two"));
+        Attribute<Text> attr = jobTextType.of("one", "two");
         assertEquals(jobTextType.of(new Text("one"), new Text("two")), attr);
     }
 

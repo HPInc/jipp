@@ -9,7 +9,7 @@ class KeyValues(
     /** Pairs of key/values. */
     val pairs: Map<String, String> = linkedMapOf(),
     /**
-     * The original string representation, if known. If present this exact string will be written instead of
+     * The original string representation, if known. If present, this exact string will be written instead of
      * the content in [pairs]. This may differ from the calculated representation from [pairs] due to
      * implementations which append a final ";".
      *
@@ -51,7 +51,7 @@ class KeyValues(
                 .toMap(), combined)
 
         /** Convert an array of items (key1, value1, ...) into pairs of items. */
-        internal fun fromPairs(keyValues: Array<out String>) =
+        fun fromPairs(keyValues: Array<out String>) =
             keyValues.toList().windowed(2, 2).map { it[0] to it[1] }.toMap()
     }
 

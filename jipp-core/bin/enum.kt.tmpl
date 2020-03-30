@@ -18,8 +18,11 @@ data class {{ enum.name | camel_class }}(override val code: Int, override val na
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [{{ enum.name | camel_class }}] attributes */
+    /** An [AttributeType] for a [{{ enum.name | camel_class }}] attribute. */
     class Type(name: String) : EnumType<{{ enum.name | camel_class }}>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [{{ enum.name | camel_class }}] attributes. */
+    class SetType(name: String) : EnumType.Set<{{ enum.name | camel_class }}>(name, { get(it) })
 
     object Code {
 {%- for name, value in enum['values'] | dictsort(false, 'value') %}

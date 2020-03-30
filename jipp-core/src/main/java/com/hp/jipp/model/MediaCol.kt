@@ -88,87 +88,32 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MediaCol>(MediaCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "media-back-coating" member name */
-        const val mediaBackCoating = "media-back-coating"
-        /** "media-bottom-margin" member name */
-        const val mediaBottomMargin = "media-bottom-margin"
-        /** "media-color" member name */
-        const val mediaColor = "media-color"
-        /** "media-front-coating" member name */
-        const val mediaFrontCoating = "media-front-coating"
-        /** "media-grain" member name */
-        const val mediaGrain = "media-grain"
-        /** "media-hole-count" member name */
-        const val mediaHoleCount = "media-hole-count"
-        /** "media-info" member name */
-        const val mediaInfo = "media-info"
-        /** "media-key" member name */
-        const val mediaKey = "media-key"
-        /** "media-left-margin" member name */
-        const val mediaLeftMargin = "media-left-margin"
-        /** "media-order-count" member name */
-        const val mediaOrderCount = "media-order-count"
-        /** "media-pre-printed" member name */
-        const val mediaPrePrinted = "media-pre-printed"
-        /** "media-recycled" member name */
-        const val mediaRecycled = "media-recycled"
-        /** "media-right-margin" member name */
-        const val mediaRightMargin = "media-right-margin"
-        /** "media-size" member name */
-        const val mediaSize = "media-size"
-        /** "media-size-name" member name */
-        const val mediaSizeName = "media-size-name"
-        /** "media-source" member name */
-        const val mediaSource = "media-source"
-        /** "media-source-properties" member name */
-        const val mediaSourceProperties = "media-source-properties"
-        /** "media-thickness" member name */
-        const val mediaThickness = "media-thickness"
-        /** "media-tooth" member name */
-        const val mediaTooth = "media-tooth"
-        /** "media-top-margin" member name */
-        const val mediaTopMargin = "media-top-margin"
-        /** "media-top-offset" member name */
-        const val mediaTopOffset = "media-top-offset"
-        /** "media-tracking" member name */
-        const val mediaTracking = "media-tracking"
-        /** "media-type" member name */
-        const val mediaType = "media-type"
-        /** "media-weight-metric" member name */
-        const val mediaWeightMetric = "media-weight-metric"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val mediaBackCoating = KeywordOrNameType(Name.mediaBackCoating)
-        val mediaBottomMargin = IntType(Name.mediaBottomMargin)
-        val mediaColor = KeywordOrNameType(Name.mediaColor)
-        val mediaFrontCoating = KeywordOrNameType(Name.mediaFrontCoating)
-        val mediaGrain = KeywordOrNameType(Name.mediaGrain)
-        val mediaHoleCount = IntType(Name.mediaHoleCount)
-        val mediaInfo = TextType(Name.mediaInfo)
-        val mediaKey = KeywordOrNameType(Name.mediaKey)
-        val mediaLeftMargin = IntType(Name.mediaLeftMargin)
-        val mediaOrderCount = IntType(Name.mediaOrderCount)
-        val mediaPrePrinted = KeywordOrNameType(Name.mediaPrePrinted)
-        val mediaRecycled = KeywordOrNameType(Name.mediaRecycled)
-        val mediaRightMargin = IntType(Name.mediaRightMargin)
-        val mediaSize = MediaSize.Type(Name.mediaSize)
-        val mediaSizeName = KeywordOrNameType(Name.mediaSizeName)
-        val mediaSource = KeywordOrNameType(Name.mediaSource)
-        val mediaSourceProperties = MediaSourceProperties.Type(Name.mediaSourceProperties)
-        val mediaThickness = IntType(Name.mediaThickness)
-        val mediaTooth = KeywordOrNameType(Name.mediaTooth)
-        val mediaTopMargin = IntType(Name.mediaTopMargin)
-        val mediaTopOffset = IntType(Name.mediaTopOffset)
-        val mediaTracking = KeywordType(Name.mediaTracking)
-        val mediaType = KeywordOrNameType(Name.mediaType)
-        val mediaWeightMetric = IntType(Name.mediaWeightMetric)
+        @JvmField val mediaBackCoating = KeywordOrNameType("media-back-coating")
+        @JvmField val mediaBottomMargin = IntType("media-bottom-margin")
+        @JvmField val mediaColor = KeywordOrNameType("media-color")
+        @JvmField val mediaFrontCoating = KeywordOrNameType("media-front-coating")
+        @JvmField val mediaGrain = KeywordOrNameType("media-grain")
+        @JvmField val mediaHoleCount = IntType("media-hole-count")
+        @JvmField val mediaInfo = TextType("media-info")
+        @JvmField val mediaKey = KeywordOrNameType("media-key")
+        @JvmField val mediaLeftMargin = IntType("media-left-margin")
+        @JvmField val mediaOrderCount = IntType("media-order-count")
+        @JvmField val mediaPrePrinted = KeywordOrNameType("media-pre-printed")
+        @JvmField val mediaRecycled = KeywordOrNameType("media-recycled")
+        @JvmField val mediaRightMargin = IntType("media-right-margin")
+        @JvmField val mediaSize = AttributeCollection.Type("media-size", MediaSize)
+        @JvmField val mediaSizeName = KeywordOrNameType("media-size-name")
+        @JvmField val mediaSource = KeywordOrNameType("media-source")
+        @JvmField val mediaSourceProperties = AttributeCollection.Type("media-source-properties", MediaSourceProperties)
+        @JvmField val mediaThickness = IntType("media-thickness")
+        @JvmField val mediaTooth = KeywordOrNameType("media-tooth")
+        @JvmField val mediaTopMargin = IntType("media-top-margin")
+        @JvmField val mediaTopOffset = IntType("media-top-offset")
+        @JvmField val mediaTracking = KeywordType("media-tracking")
+        @JvmField val mediaType = KeywordOrNameType("media-type")
+        @JvmField val mediaWeightMetric = IntType("media-weight-metric")
     }
 
     /** Defines types for each member of [MediaCol] */
@@ -223,21 +168,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<MediaSize>(MediaSize)
-
-        /** All member names as strings. */
-        object Name {
-            /** "x-dimension" member name */
-            const val xDimension = "x-dimension"
-            /** "y-dimension" member name */
-            const val yDimension = "y-dimension"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val xDimension = IntType(Name.xDimension)
-            val yDimension = IntType(Name.yDimension)
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
         }
 
         /** Defines types for each member of [MediaSize] */
@@ -273,24 +207,13 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<MediaSourceProperties>(MediaSourceProperties)
-
-        /** All member names as strings. */
-        object Name {
-            /** "media-source-feed-direction" member name */
-            const val mediaSourceFeedDirection = "media-source-feed-direction"
-            /** "media-source-feed-orientation" member name */
-            const val mediaSourceFeedOrientation = "media-source-feed-orientation"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val mediaSourceFeedDirection = KeywordType(Name.mediaSourceFeedDirection)
+            @JvmField val mediaSourceFeedDirection = KeywordType("media-source-feed-direction")
             /**
              * "media-source-feed-orientation" member type.
              */
-            val mediaSourceFeedOrientation = Orientation.Type(Name.mediaSourceFeedOrientation)
+            @JvmField val mediaSourceFeedOrientation = Orientation.Type("media-source-feed-orientation")
         }
 
         /** Defines types for each member of [MediaSourceProperties] */

@@ -18,8 +18,11 @@ data class SystemState(override val code: Int, override val name: String) : Enum
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [SystemState] attributes */
+    /** An [AttributeType] for a [SystemState] attribute. */
     class Type(name: String) : EnumType<SystemState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [SystemState] attributes. */
+    class SetType(name: String) : EnumType.Set<SystemState>(name, { get(it) })
 
     object Code {
         const val idle = 3

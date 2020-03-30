@@ -3,10 +3,30 @@
 
 package com.hp.jipp.encoding
 
-/** Attribute type for attributes whose values are either integers or [IntRange] objects */
-class IntOrIntRangeType(
-    override val name: String
-) : AttributeType<IntOrIntRange> {
+/** An [AttributeType] for a [Int] or [IntRange] value. */
+open class IntOrIntRangeType(
+    name: String
+) : AttributeTypeImpl<IntOrIntRange>(name, IntOrIntRange::class.java) {
+    /** An [AttributeType] for multiple [Name] and keyword values. */
+    class Set(name: String) : IntOrIntRangeType(name), AttributeSetType<IntOrIntRange> {
+        /** Return an [Attribute] containing [IntRange]s as given. */
+        fun of(value: IntRange, vararg values: IntRange) =
+            of((listOf(value) + values.toList()).map { IntOrIntRange(it) })
+
+        /** Return an [Attribute] containing [Int]s as given. */
+        fun of(value: Int, vararg values: Int) =
+            of((listOf(value) + values.toList()).map { IntOrIntRange(it) })
+
+        override fun toString() = "IntOrIntRangeType.Set($name)"
+    }
+
+    /** Return an [Attribute] containing a single value of type [IntOrIntRange]. */
+    fun of(value: Int): Attribute<IntOrIntRange> =
+        of(IntOrIntRange(value))
+
+    /** Return an [Attribute] containing a single value of type [IntOrIntRange]. */
+    fun of(value: IntRange): Attribute<IntOrIntRange> =
+        of(IntOrIntRange(value))
 
     override fun coerce(value: Any) =
         when (value) {
@@ -15,20 +35,6 @@ class IntOrIntRangeType(
             is IntOrIntRange -> value
             else -> null
         }
-
-    /** Return an attribute containing the supplied integer value(s) */
-    fun ofIntegers(integers: Iterable<Int>) = of(integers.map { IntOrIntRange(it) })
-
-    /** Return an attribute containing the supplied integer value(s) */
-    fun of(vararg integers: Int) = ofIntegers(integers.toList())
-
-    /** Return an attribute containing the supplied range(s) */
-    fun ofRanges(ranges: Iterable<IntRange>) = of(ranges.map { IntOrIntRange(it) })
-
-    /** Return an attribute containing the supplied range(s) */
-    fun of(vararg ranges: IntRange) = ofRanges(ranges.toList())
-
-    override fun toString() = "IntOrIntRangeType($name)"
 
     companion object {
         val codec = Codec<IntOrIntRange>({ false }, {

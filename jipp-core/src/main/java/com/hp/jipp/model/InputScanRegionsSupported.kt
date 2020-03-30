@@ -35,27 +35,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<InputScanRegionsSupported>(InputScanRegionsSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "x-dimension" member name */
-        const val xDimension = "x-dimension"
-        /** "x-origin" member name */
-        const val xOrigin = "x-origin"
-        /** "y-dimension" member name */
-        const val yDimension = "y-dimension"
-        /** "y-origin" member name */
-        const val yOrigin = "y-origin"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val xDimension = IntRangeType(Name.xDimension)
-        val xOrigin = IntRangeType(Name.xOrigin)
-        val yDimension = IntRangeType(Name.yDimension)
-        val yOrigin = IntRangeType(Name.yOrigin)
+        @JvmField val xDimension = IntRangeType("x-dimension")
+        @JvmField val xOrigin = IntRangeType("x-origin")
+        @JvmField val yDimension = IntRangeType("y-dimension")
+        @JvmField val yOrigin = IntRangeType("y-origin")
     }
 
     /** Defines types for each member of [InputScanRegionsSupported] */

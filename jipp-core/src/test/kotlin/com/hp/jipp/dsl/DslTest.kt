@@ -122,7 +122,7 @@ class DslTest {
             operationAttributes {
                 // Try a variety of accessors
                 this += Types.attributesCharset.of("utf-8")
-                this[Types.attributesNaturalLanguage] = "en"
+                this += Types.attributesNaturalLanguage.of("en")
             }
             extend(Tag.operationAttributes) {
                 add(Types.printerUri.of(uri))

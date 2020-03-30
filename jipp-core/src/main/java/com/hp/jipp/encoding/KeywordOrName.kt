@@ -6,7 +6,7 @@ package com.hp.jipp.encoding
 import java.lang.IllegalArgumentException
 
 /**
- * Describes an object which may contain either a name [Name] or a keyword [String].
+ * Describes an object which may contain either a [Name] or a keyword ([String]).
  *
  * See [RFC8011 Section 5.1.3](https://tools.ietf.org/html/rfc8011#section-5.1.3).
  */

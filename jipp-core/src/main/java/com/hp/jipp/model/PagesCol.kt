@@ -31,21 +31,10 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PagesCol>(PagesCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "full-color" member name */
-        const val fullColor = "full-color"
-        /** "monochrome" member name */
-        const val monochrome = "monochrome"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val fullColor = IntType(Name.fullColor)
-        val monochrome = IntType(Name.monochrome)
+        @JvmField val fullColor = IntType("full-color")
+        @JvmField val monochrome = IntType("monochrome")
     }
 
     /** Defines types for each member of [PagesCol] */

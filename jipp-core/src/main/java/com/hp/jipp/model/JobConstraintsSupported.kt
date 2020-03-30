@@ -29,18 +29,9 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobConstraintsSupported>(JobConstraintsSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "resolver-name" member name */
-        const val resolverName = "resolver-name"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val resolverName = NameType(Name.resolverName)
+        @JvmField val resolverName = NameType("resolver-name")
     }
 
     /** Defines types for each member of [JobConstraintsSupported] */

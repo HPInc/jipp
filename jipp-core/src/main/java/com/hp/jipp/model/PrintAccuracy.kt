@@ -36,27 +36,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrintAccuracy>(PrintAccuracy)
-
-    /** All member names as strings. */
-    object Name {
-        /** "accuracy-units" member name */
-        const val accuracyUnits = "accuracy-units"
-        /** "x-accuracy" member name */
-        const val xAccuracy = "x-accuracy"
-        /** "y-accuracy" member name */
-        const val yAccuracy = "y-accuracy"
-        /** "z-accuracy" member name */
-        const val zAccuracy = "z-accuracy"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val accuracyUnits = KeywordType(Name.accuracyUnits)
-        val xAccuracy = IntType(Name.xAccuracy)
-        val yAccuracy = IntType(Name.yAccuracy)
-        val zAccuracy = IntType(Name.zAccuracy)
+        @JvmField val accuracyUnits = KeywordType("accuracy-units")
+        @JvmField val xAccuracy = IntType("x-accuracy")
+        @JvmField val yAccuracy = IntType("y-accuracy")
+        @JvmField val zAccuracy = IntType("z-accuracy")
     }
 
     /** Defines types for each member of [PrintAccuracy] */

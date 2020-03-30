@@ -34,24 +34,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<ProofPrint>(ProofPrint)
-
-    /** All member names as strings. */
-    object Name {
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-        /** "proof-print-copies" member name */
-        const val proofPrintCopies = "proof-print-copies"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
-        val proofPrintCopies = IntType(Name.proofPrintCopies)
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
+        @JvmField val proofPrintCopies = IntType("proof-print-copies")
     }
 
     /** Defines types for each member of [ProofPrint] */

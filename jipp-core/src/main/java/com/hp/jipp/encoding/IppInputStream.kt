@@ -69,10 +69,10 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
         when (initTag) {
             is OutOfBandTag -> {
                 readValueBytes()
-                EmptyAttribute(attributeName, initTag)
+                EmptyAttribute<Nothing>(attributeName, initTag)
             }
             is ValueTag ->
-                IppStreams.codecs.firstOrNull { it.handlesTag(initTag) }?.let {
+                IppStreams.codecs.find { it.handlesTag(initTag) }?.let {
                     UnknownAttribute(attributeName, listOf(readValue(it, initTag, attributeName)) +
                         generateSequence { readNextValue(attributeName) })
                 } ?: throw ParseError("No codec found for tag $initTag")

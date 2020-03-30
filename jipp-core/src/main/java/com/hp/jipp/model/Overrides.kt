@@ -33,24 +33,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<Overrides>(Overrides)
-
-    /** All member names as strings. */
-    object Name {
-        /** "document-copies" member name */
-        const val documentCopies = "document-copies"
-        /** "document-numbers" member name */
-        const val documentNumbers = "document-numbers"
-        /** "pages" member name */
-        const val pages = "pages"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val documentCopies = IntRangeType(Name.documentCopies)
-        val documentNumbers = IntRangeType(Name.documentNumbers)
-        val pages = IntRangeType(Name.pages)
+        @JvmField val documentCopies = IntRangeType.Set("document-copies")
+        @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
+        @JvmField val pages = IntRangeType.Set("pages")
     }
 
     /** Defines types for each member of [Overrides] */

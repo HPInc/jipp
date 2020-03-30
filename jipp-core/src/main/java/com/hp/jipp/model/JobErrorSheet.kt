@@ -38,27 +38,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobErrorSheet>(JobErrorSheet)
-
-    /** All member names as strings. */
-    object Name {
-        /** "job-error-sheet-type" member name */
-        const val jobErrorSheetType = "job-error-sheet-type"
-        /** "job-error-sheet-when" member name */
-        const val jobErrorSheetWhen = "job-error-sheet-when"
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val jobErrorSheetType = KeywordOrNameType(Name.jobErrorSheetType)
-        val jobErrorSheetWhen = KeywordType(Name.jobErrorSheetWhen)
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
+        @JvmField val jobErrorSheetType = KeywordOrNameType("job-error-sheet-type")
+        @JvmField val jobErrorSheetWhen = KeywordType("job-error-sheet-when")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobErrorSheet] */

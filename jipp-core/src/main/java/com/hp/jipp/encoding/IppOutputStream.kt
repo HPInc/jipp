@@ -54,12 +54,13 @@ class IppOutputStream(outputStream: OutputStream) : DataOutputStream(outputStrea
 
     /** Write [attribute] to this stream. */
     private fun write(attribute: Attribute<*>, name: String = attribute.name) {
-        attribute.tag?.also {
+        val type = attribute.type
+        if (type is EmptyAttributeType) {
             // Write the out-of-band tag
-            write(it)
+            write(type.tag)
             writeStringValue(name)
             writeShort(0) // 0 value length = no values
-        } ?: run {
+        } else {
             writeValueAttribute(attribute, name)
         }
     }

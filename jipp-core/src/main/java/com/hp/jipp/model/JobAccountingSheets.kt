@@ -39,27 +39,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobAccountingSheets>(JobAccountingSheets)
-
-    /** All member names as strings. */
-    object Name {
-        /** "job-accounting-output-bin" member name */
-        const val jobAccountingOutputBin = "job-accounting-output-bin"
-        /** "job-accounting-sheets-type" member name */
-        const val jobAccountingSheetsType = "job-accounting-sheets-type"
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val jobAccountingOutputBin = KeywordOrNameType(Name.jobAccountingOutputBin)
-        val jobAccountingSheetsType = KeywordOrNameType(Name.jobAccountingSheetsType)
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
+        @JvmField val jobAccountingOutputBin = KeywordOrNameType("job-accounting-output-bin")
+        @JvmField val jobAccountingSheetsType = KeywordOrNameType("job-accounting-sheets-type")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobAccountingSheets] */

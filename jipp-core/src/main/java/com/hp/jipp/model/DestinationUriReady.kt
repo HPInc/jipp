@@ -48,45 +48,18 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationUriReady>(DestinationUriReady)
-
-    /** All member names as strings. */
-    object Name {
-        /** "destination-attributes" member name */
-        const val destinationAttributes = "destination-attributes"
-        /** "destination-attributes-supported" member name */
-        const val destinationAttributesSupported = "destination-attributes-supported"
-        /** "destination-info" member name */
-        const val destinationInfo = "destination-info"
-        /** "destination-is-directory" member name */
-        const val destinationIsDirectory = "destination-is-directory"
-        /** "destination-mandatory-access-attributes" member name */
-        const val destinationMandatoryAccessAttributes = "destination-mandatory-access-attributes"
-        /** "destination-name" member name */
-        const val destinationName = "destination-name"
-        /** "destination-oauth-scope" member name */
-        const val destinationOauthScope = "destination-oauth-scope"
-        /** "destination-oauth-token" member name */
-        const val destinationOauthToken = "destination-oauth-token"
-        /** "destination-oauth-uri" member name */
-        const val destinationOauthUri = "destination-oauth-uri"
-        /** "destination-uri" member name */
-        const val destinationUri = "destination-uri"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
-        val destinationAttributesSupported = KeywordType(Name.destinationAttributesSupported)
-        val destinationInfo = TextType(Name.destinationInfo)
-        val destinationIsDirectory = BooleanType(Name.destinationIsDirectory)
-        val destinationMandatoryAccessAttributes = KeywordType(Name.destinationMandatoryAccessAttributes)
-        val destinationName = NameType(Name.destinationName)
-        val destinationOauthScope = OctetsType(Name.destinationOauthScope)
-        val destinationOauthToken = OctetsType(Name.destinationOauthToken)
-        val destinationOauthUri = UriType(Name.destinationOauthUri)
-        val destinationUri = UriType(Name.destinationUri)
+        @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
+        @JvmField val destinationAttributesSupported = KeywordType.Set("destination-attributes-supported")
+        @JvmField val destinationInfo = TextType("destination-info")
+        @JvmField val destinationIsDirectory = BooleanType("destination-is-directory")
+        @JvmField val destinationMandatoryAccessAttributes = KeywordType.Set("destination-mandatory-access-attributes")
+        @JvmField val destinationName = NameType("destination-name")
+        @JvmField val destinationOauthScope = OctetsType.Set("destination-oauth-scope")
+        @JvmField val destinationOauthToken = OctetsType.Set("destination-oauth-token")
+        @JvmField val destinationOauthUri = UriType("destination-oauth-uri")
+        @JvmField val destinationUri = UriType("destination-uri")
     }
 
     /** Defines types for each member of [DestinationUriReady] */

@@ -43,39 +43,16 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<ImpressionsCol>(ImpressionsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "blank" member name */
-        const val blank = "blank"
-        /** "blank-two-sided" member name */
-        const val blankTwoSided = "blank-two-sided"
-        /** "full-color" member name */
-        const val fullColor = "full-color"
-        /** "full-color-two-sided" member name */
-        const val fullColorTwoSided = "full-color-two-sided"
-        /** "highlight-color" member name */
-        const val highlightColor = "highlight-color"
-        /** "highlight-color-two-sided" member name */
-        const val highlightColorTwoSided = "highlight-color-two-sided"
-        /** "monochrome" member name */
-        const val monochrome = "monochrome"
-        /** "monochrome-two-sided" member name */
-        const val monochromeTwoSided = "monochrome-two-sided"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val blank = IntType(Name.blank)
-        val blankTwoSided = IntType(Name.blankTwoSided)
-        val fullColor = IntType(Name.fullColor)
-        val fullColorTwoSided = IntType(Name.fullColorTwoSided)
-        val highlightColor = IntType(Name.highlightColor)
-        val highlightColorTwoSided = IntType(Name.highlightColorTwoSided)
-        val monochrome = IntType(Name.monochrome)
-        val monochromeTwoSided = IntType(Name.monochromeTwoSided)
+        @JvmField val blank = IntType("blank")
+        @JvmField val blankTwoSided = IntType("blank-two-sided")
+        @JvmField val fullColor = IntType("full-color")
+        @JvmField val fullColorTwoSided = IntType("full-color-two-sided")
+        @JvmField val highlightColor = IntType("highlight-color")
+        @JvmField val highlightColorTwoSided = IntType("highlight-color-two-sided")
+        @JvmField val monochrome = IntType("monochrome")
+        @JvmField val monochromeTwoSided = IntType("monochrome-two-sided")
     }
 
     /** Defines types for each member of [ImpressionsCol] */

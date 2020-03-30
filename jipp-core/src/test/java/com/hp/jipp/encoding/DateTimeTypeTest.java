@@ -1,16 +1,15 @@
 package com.hp.jipp.encoding;
 
-import org.junit.Test;
-
+import com.hp.jipp.model.Types;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
+import org.junit.Test;
 
 import static com.hp.jipp.encoding.Cycler.cycle;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DateTimeTypeTest {
-    private DateTimeType type = new DateTimeType("date-time");
 
     @Test
     public void now() throws IOException {
@@ -20,7 +19,7 @@ public class DateTimeTypeTest {
         // Set a timezone without a daylight savings bit because that really can't be encoded either
         calendar.setTimeZone(TimeZone.getTimeZone("GMT-8000"));
 
-        Attribute<Calendar> dateTime = cycle(type, type.of(calendar));
+        Attribute<Calendar> dateTime = cycle(Types.jobHoldUntilTime, Types.jobHoldUntilTime.of(calendar));
         assertEquals(calendar.getTime(), dateTime.getValue().getTime());
     }
 }

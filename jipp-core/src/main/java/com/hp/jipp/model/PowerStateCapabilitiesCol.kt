@@ -37,30 +37,13 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerStateCapabilitiesCol>(PowerStateCapabilitiesCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "can-accept-jobs" member name */
-        const val canAcceptJobs = "can-accept-jobs"
-        /** "can-process-jobs" member name */
-        const val canProcessJobs = "can-process-jobs"
-        /** "power-active-watts" member name */
-        const val powerActiveWatts = "power-active-watts"
-        /** "power-inactive-watts" member name */
-        const val powerInactiveWatts = "power-inactive-watts"
-        /** "power-state" member name */
-        const val powerState = "power-state"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val canAcceptJobs = BooleanType(Name.canAcceptJobs)
-        val canProcessJobs = BooleanType(Name.canProcessJobs)
-        val powerActiveWatts = IntType(Name.powerActiveWatts)
-        val powerInactiveWatts = IntType(Name.powerInactiveWatts)
-        val powerState = KeywordType(Name.powerState)
+        @JvmField val canAcceptJobs = BooleanType("can-accept-jobs")
+        @JvmField val canProcessJobs = BooleanType("can-process-jobs")
+        @JvmField val powerActiveWatts = IntType("power-active-watts")
+        @JvmField val powerInactiveWatts = IntType("power-inactive-watts")
+        @JvmField val powerState = KeywordType("power-state")
     }
 
     /** Defines types for each member of [PowerStateCapabilitiesCol] */

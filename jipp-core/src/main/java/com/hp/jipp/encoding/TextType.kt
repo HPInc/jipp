@@ -4,22 +4,24 @@
 package com.hp.jipp.encoding
 
 /**
- * An attribute type for `text` types, which can be encoded with either [Tag.textWithoutLanguage] or
- * [Tag.textWithLanguage].
+ * An [AttributeType] for a [Text] value.
  *
  * See [RFC8011 Section 5.1.2](https://tools.ietf.org/html/rfc8011#section-5.1.2).
  */
-open class TextType(override val name: String) : AttributeType<Text> {
-    override fun coerce(value: Any) =
-        value as? Text
+open class TextType(override val name: String) : AttributeTypeImpl<Text>(name, Text::class.java) {
+    /** An [AttributeType] for multiple [Text] values. */
+    class Set(name: String) : TextType(name), AttributeSetType<Text> {
+        /** Return an [Attribute] containing [Text] of values given (without language). */
+        fun of(value: String, vararg values: String) = of((listOf(value) + values).map { Text(it) })
 
-    /** Return an attribute containing values as text strings (without language) */
-    fun of(vararg values: String) = of(values.map { Text(it) })
+        /** Return an [Attribute] containing [Text] of values given (without language). */
+        fun ofStrings(values: Iterable<String>) = of(values.map { Text(it) })
 
-    /** Return an attribute containing values as text strings (without language) */
-    fun ofStrings(values: Iterable<String>) = of(values.map { Text(it) })
+        override fun toString() = "TextType.Set($name)"
+    }
 
-    override fun toString() = "TextType($name)"
+    /** Return an [Attribute] of a [Text] from [value] (without language). */
+    fun of(value: String) = of(Text(value))
 
     companion object {
         val codec = Codec({ it == Tag.textWithLanguage || it == Tag.textWithoutLanguage }, {

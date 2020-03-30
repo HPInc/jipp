@@ -14,12 +14,32 @@ interface AttributeCollection : PrettyPrintable {
     }
 
     /**
-     * An [AttributeType] for a specific [AttributeCollection] subclass.
+     * An [AttributeType] for a value of an [AttributeCollection] subclass.
      *
      * Note: subclasses may only represent recognizable data types in the type. If additional data is required,
      * it may be necessary to extract the original attribute list using an [UntypedCollection] instance.
      */
-    abstract class Type<T : AttributeCollection>(private val converter: Converter<T>) : AttributeType<T> {
+    class Type<T : AttributeCollection>(
+        override val name: String,
+        private val converter: Converter<T>
+    ) : AttributeType<T> {
+        override fun coerce(value: Any): T? =
+            when (value) {
+                is AttributeCollection -> converter.convert(value.attributes)
+                else -> null
+            }
+    }
+
+    /**
+     * An [AttributeType] for a multiple values of an [AttributeCollection] subclass.
+     *
+     * Note: subclasses may only represent recognizable data types in the type. If additional data is required,
+     * it may be necessary to extract the original attribute list using an [UntypedCollection] instance.
+     */
+    class SetType<T : AttributeCollection>(
+        override val name: String,
+        private val converter: Converter<T>
+    ) : AttributeSetType<T> {
         override fun coerce(value: Any): T? =
             when (value) {
                 is AttributeCollection -> converter.convert(value.attributes)

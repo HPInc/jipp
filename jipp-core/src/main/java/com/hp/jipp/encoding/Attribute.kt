@@ -10,30 +10,28 @@ import java.text.SimpleDateFormat
 import java.util.* // ktlint-disable
 
 /**
- * An IPP attribute, which is a named list of 0 or more values. Values are parsed into the most natural Java type that
- * can encode the supplied data.
+ * An IPP attribute, which is a named, ordered list of 0 or more values.
+ *
+ * Values are parsed into the most natural Java type that can encode the supplied data.
  */
 interface Attribute<T : Any> : PrettyPrintable, List<T> {
     /** The name of the attribute. */
     val name: String
 
-    /** An out-of-band tag, present only when there are no values. */
-    val tag: OutOfBandTag?
-
-    /** Attribute type used to encode the attribute, if known. */
-    val type: AttributeType<T>?
+    /** Attribute type. */
+    val type: AttributeType<T>
 
     /** Return values in string form. */
     fun strings(): List<String> = map { if (it is Stringable) it.asString() else it.toString() }
 
     /** True if the tag for this attribute is [Tag.unknown] */
-    fun isUnknown() = tag == Tag.unknown
+    fun isUnknown() = (type as? EmptyAttributeType)?.tag == Tag.unknown
 
     /** True if the tag for this attribute is [Tag.noValue] */
-    fun isNoValue() = tag == Tag.noValue
+    fun isNoValue() = (type as? EmptyAttributeType)?.tag == Tag.noValue
 
     /** True if the tag for this attribute is [Tag.unsupported] */
-    fun isUnsupported() = tag == Tag.unsupported
+    fun isUnsupported() = (type as? EmptyAttributeType)?.tag == Tag.unsupported
 
     /** Returns the first value in the attribute if present. */
     fun getValue(): T?

@@ -31,21 +31,10 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MediaSizeSupported>(MediaSizeSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "x-dimension" member name */
-        const val xDimension = "x-dimension"
-        /** "y-dimension" member name */
-        const val yDimension = "y-dimension"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val xDimension = IntOrIntRangeType(Name.xDimension)
-        val yDimension = IntOrIntRangeType(Name.yDimension)
+        @JvmField val xDimension = IntOrIntRangeType("x-dimension")
+        @JvmField val yDimension = IntOrIntRangeType("y-dimension")
     }
 
     /** Defines types for each member of [MediaSizeSupported] */

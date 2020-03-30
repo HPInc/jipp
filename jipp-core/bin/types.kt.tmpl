@@ -17,11 +17,11 @@ object Types {
 
 {%- for type in types %}
     /**
-     * "{{ type.name }}" as defined in:{%- for spec in type.specs | sort %}
+     * "{{ type.name }}" type as defined in:{%- for spec in type.specs | sort %}
      * [{{ spec | upper }}]({{ specs[spec] }}){{ "," if not loop.last }}{%- endfor%}.{%- if type.kdoc %}
      * {{ type.kdoc }}{%- endif %}
      */
-    @JvmField val {{ type.name | camel_member }} = {{ type.kintro }}"{{ type.name }}")
+    @JvmField val {{ type.name | camel_member }} = {{ type.kintro }}"{{ type.name }}"{{ type.koutro }})
 {%- endfor %}
 }
 

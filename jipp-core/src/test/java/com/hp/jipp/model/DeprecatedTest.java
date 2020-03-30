@@ -18,6 +18,7 @@ import static com.hp.jipp.encoding.AttributeGroup.mutableGroupOf;
 import static com.hp.jipp.encoding.Tag.operationAttributes;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @SuppressWarnings("deprecation")
 public class DeprecatedTest {
@@ -45,6 +46,10 @@ public class DeprecatedTest {
     public void readFromInputStream() throws IOException {
         packet.write(out);
         IppPacket readPacket = IppPacket.read(new ByteArrayInputStream(out.toByteArray()));
+        assertEquals(packet.getAttributeGroups().get(0).get(0).getValue(), readPacket.getAttributeGroups().get(0).get(0).getValue());
+        assertEquals(packet.getAttributeGroups().get(0).get(0), readPacket.getAttributeGroups().get(0).get(0));
+        assertEquals(packet.getAttributeGroups().get(0), readPacket.getAttributeGroups().get(0));
+        assertEquals(packet.getAttributeGroups(), readPacket.getAttributeGroups());
         assertEquals(packet, readPacket);
     }
 

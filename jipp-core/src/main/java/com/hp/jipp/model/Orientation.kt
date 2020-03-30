@@ -19,8 +19,11 @@ data class Orientation(override val code: Int, override val name: String) : Enum
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [Orientation] attributes */
+    /** An [AttributeType] for a [Orientation] attribute. */
     class Type(name: String) : EnumType<Orientation>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [Orientation] attributes. */
+    class SetType(name: String) : EnumType.Set<Orientation>(name, { get(it) })
 
     object Code {
         const val portrait = 3

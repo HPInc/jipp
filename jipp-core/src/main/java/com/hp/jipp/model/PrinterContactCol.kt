@@ -29,28 +29,15 @@ constructor(
         listOfNotNull(
             contactName?.let { Types.contactName.of(it) },
             contactUri?.let { Types.contactUri.of(it) },
-            contactVcard?.let { Types.contactVcard.ofStrings(it) }
+            contactVcard?.let { Types.contactVcard.of(it.map { v -> Text(v) }) }
         )
-    }
-
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterContactCol>(PrinterContactCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "contact-name" member name */
-        const val contactName = "contact-name"
-        /** "contact-uri" member name */
-        const val contactUri = "contact-uri"
-        /** "contact-vcard" member name */
-        const val contactVcard = "contact-vcard"
     }
 
     /** Types for each member attribute. */
     object Types {
-        val contactName = NameType(Name.contactName)
-        val contactUri = UriType(Name.contactUri)
-        val contactVcard = TextType(Name.contactVcard)
+        @JvmField val contactName = NameType("contact-name")
+        @JvmField val contactUri = UriType("contact-uri")
+        @JvmField val contactVcard = TextType.Set("contact-vcard")
     }
 
     /** Defines types for each member of [PrinterContactCol] */

@@ -1,9 +1,8 @@
 package com.hp.jipp.encoding;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.Arrays;
+import org.junit.Test;
 
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static org.junit.Assert.assertEquals;
@@ -41,12 +40,11 @@ import static org.junit.Assert.assertNull;
  */
 public class NameTest {
 
-    private NameType jobNameType = new NameType("job-name");
+    private NameType.Set jobNameType = new NameType.Set("job-name");
 
     @Test
     public void withoutLanguage() throws IOException {
         Attribute<Name> jobNameAttr = jobNameType.of(new Name("my job"));
-        assertEquals(Tag.nameWithoutLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
         assertEquals("my job", result.get(0).getValue());
         assertNull(result.get(0).getLang());
@@ -55,7 +53,6 @@ public class NameTest {
     @Test
     public void simpleStrings() throws IOException {
         Attribute<Name> jobNameAttr = jobNameType.of("my job");
-        assertEquals(Tag.nameWithoutLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
         assertEquals("my job", result.get(0).getValue());
         assertNull(result.get(0).getLang());
@@ -64,7 +61,6 @@ public class NameTest {
     @Test
     public void withLanguage() throws IOException {
         Attribute<Name> jobNameAttr = jobNameType.of(new Name("my job", "en"));
-        assertEquals(Tag.nameWithLanguage, jobNameAttr.getValue().getTag());
         Attribute<Name> result = cycle(jobNameType, jobNameAttr);
         assertEquals("my job", result.getValue().getValue());
         assertEquals("en", result.getValue().getLang());

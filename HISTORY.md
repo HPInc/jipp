@@ -7,6 +7,7 @@
 * Update types for IANA registrations as of 2020-02-20 (#83).
 * Remove useless types from `.model` package (#47).
 * Cleaner `toString()` output for collection types (#28).
+* Only allow multiple attribute values when permitted by the spec (#29).
 
 ## 0.6.22
 * Handle PWG raster color space of 1 (RGB) (#72).

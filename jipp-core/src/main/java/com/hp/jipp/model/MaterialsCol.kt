@@ -64,63 +64,24 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MaterialsCol>(MaterialsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "material-amount" member name */
-        const val materialAmount = "material-amount"
-        /** "material-amount-units" member name */
-        const val materialAmountUnits = "material-amount-units"
-        /** "material-color" member name */
-        const val materialColor = "material-color"
-        /** "material-diameter" member name */
-        const val materialDiameter = "material-diameter"
-        /** "material-diameter-tolerance" member name */
-        const val materialDiameterTolerance = "material-diameter-tolerance"
-        /** "material-fill-density" member name */
-        const val materialFillDensity = "material-fill-density"
-        /** "material-key" member name */
-        const val materialKey = "material-key"
-        /** "material-name" member name */
-        const val materialName = "material-name"
-        /** "material-nozzle-diameter" member name */
-        const val materialNozzleDiameter = "material-nozzle-diameter"
-        /** "material-purpose" member name */
-        const val materialPurpose = "material-purpose"
-        /** "material-rate" member name */
-        const val materialRate = "material-rate"
-        /** "material-rate-units" member name */
-        const val materialRateUnits = "material-rate-units"
-        /** "material-retraction" member name */
-        const val materialRetraction = "material-retraction"
-        /** "material-shell-thickness" member name */
-        const val materialShellThickness = "material-shell-thickness"
-        /** "material-temperature" member name */
-        const val materialTemperature = "material-temperature"
-        /** "material-type" member name */
-        const val materialType = "material-type"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val materialAmount = IntType(Name.materialAmount)
-        val materialAmountUnits = KeywordType(Name.materialAmountUnits)
-        val materialColor = KeywordType(Name.materialColor)
-        val materialDiameter = IntType(Name.materialDiameter)
-        val materialDiameterTolerance = IntType(Name.materialDiameterTolerance)
-        val materialFillDensity = IntType(Name.materialFillDensity)
-        val materialKey = KeywordType(Name.materialKey)
-        val materialName = NameType(Name.materialName)
-        val materialNozzleDiameter = IntType(Name.materialNozzleDiameter)
-        val materialPurpose = KeywordType(Name.materialPurpose)
-        val materialRate = IntType(Name.materialRate)
-        val materialRateUnits = KeywordType(Name.materialRateUnits)
-        val materialRetraction = BooleanType(Name.materialRetraction)
-        val materialShellThickness = IntType(Name.materialShellThickness)
-        val materialTemperature = IntOrIntRangeType(Name.materialTemperature)
-        val materialType = KeywordOrNameType(Name.materialType)
+        @JvmField val materialAmount = IntType("material-amount")
+        @JvmField val materialAmountUnits = KeywordType("material-amount-units")
+        @JvmField val materialColor = KeywordType("material-color")
+        @JvmField val materialDiameter = IntType("material-diameter")
+        @JvmField val materialDiameterTolerance = IntType("material-diameter-tolerance")
+        @JvmField val materialFillDensity = IntType("material-fill-density")
+        @JvmField val materialKey = KeywordType("material-key")
+        @JvmField val materialName = NameType("material-name")
+        @JvmField val materialNozzleDiameter = IntType("material-nozzle-diameter")
+        @JvmField val materialPurpose = KeywordType.Set("material-purpose")
+        @JvmField val materialRate = IntType("material-rate")
+        @JvmField val materialRateUnits = KeywordType("material-rate-units")
+        @JvmField val materialRetraction = BooleanType("material-retraction")
+        @JvmField val materialShellThickness = IntType("material-shell-thickness")
+        @JvmField val materialTemperature = IntOrIntRangeType("material-temperature")
+        @JvmField val materialType = KeywordOrNameType("material-type")
     }
 
     /** Defines types for each member of [MaterialsCol] */

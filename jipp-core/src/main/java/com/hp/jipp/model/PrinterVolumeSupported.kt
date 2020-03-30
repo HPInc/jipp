@@ -33,24 +33,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterVolumeSupported>(PrinterVolumeSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "x-dimension" member name */
-        const val xDimension = "x-dimension"
-        /** "y-dimension" member name */
-        const val yDimension = "y-dimension"
-        /** "z-dimension" member name */
-        const val zDimension = "z-dimension"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val xDimension = IntType(Name.xDimension)
-        val yDimension = IntType(Name.yDimension)
-        val zDimension = IntType(Name.zDimension)
+        @JvmField val xDimension = IntType("x-dimension")
+        @JvmField val yDimension = IntType("y-dimension")
+        @JvmField val zDimension = IntType("z-dimension")
     }
 
     /** Defines types for each member of [PrinterVolumeSupported] */

@@ -33,27 +33,14 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationStatuses>(DestinationStatuses)
-
-    /** All member names as strings. */
-    object Name {
-        /** "destination-uri" member name */
-        const val destinationUri = "destination-uri"
-        /** "images-completed" member name */
-        const val imagesCompleted = "images-completed"
-        /** "transmission-status" member name */
-        const val transmissionStatus = "transmission-status"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val destinationUri = UriType(Name.destinationUri)
-        val imagesCompleted = IntType(Name.imagesCompleted)
+        @JvmField val destinationUri = UriType("destination-uri")
+        @JvmField val imagesCompleted = IntType("images-completed")
         /**
          * "transmission-status" member type.
          */
-        val transmissionStatus = TransmissionStatus.Type(Name.transmissionStatus)
+        @JvmField val transmissionStatus = TransmissionStatus.Type("transmission-status")
     }
 
     /** Defines types for each member of [DestinationStatuses] */

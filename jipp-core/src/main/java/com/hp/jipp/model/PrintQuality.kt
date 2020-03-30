@@ -18,8 +18,11 @@ data class PrintQuality(override val code: Int, override val name: String) : Enu
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [PrintQuality] attributes */
+    /** An [AttributeType] for a [PrintQuality] attribute. */
     class Type(name: String) : EnumType<PrintQuality>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [PrintQuality] attributes. */
+    class SetType(name: String) : EnumType.Set<PrintQuality>(name, { get(it) })
 
     object Code {
         const val draft = 3

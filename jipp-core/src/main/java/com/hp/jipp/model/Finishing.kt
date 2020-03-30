@@ -22,8 +22,11 @@ data class Finishing(override val code: Int, override val name: String) : Enum()
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [Finishing] attributes */
+    /** An [AttributeType] for a [Finishing] attribute. */
     class Type(name: String) : EnumType<Finishing>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [Finishing] attributes. */
+    class SetType(name: String) : EnumType.Set<Finishing>(name, { get(it) })
 
     object Code {
         const val none = 3

@@ -36,27 +36,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerTimeoutPolicyCol>(PowerTimeoutPolicyCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "start-power-state" member name */
-        const val startPowerState = "start-power-state"
-        /** "timeout-id" member name */
-        const val timeoutId = "timeout-id"
-        /** "timeout-predicate" member name */
-        const val timeoutPredicate = "timeout-predicate"
-        /** "timeout-seconds" member name */
-        const val timeoutSeconds = "timeout-seconds"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val startPowerState = KeywordType(Name.startPowerState)
-        val timeoutId = IntType(Name.timeoutId)
-        val timeoutPredicate = KeywordType(Name.timeoutPredicate)
-        val timeoutSeconds = IntType(Name.timeoutSeconds)
+        @JvmField val startPowerState = KeywordType("start-power-state")
+        @JvmField val timeoutId = IntType("timeout-id")
+        @JvmField val timeoutPredicate = KeywordType("timeout-predicate")
+        @JvmField val timeoutSeconds = IntType("timeout-seconds")
     }
 
     /** Defines types for each member of [PowerTimeoutPolicyCol] */

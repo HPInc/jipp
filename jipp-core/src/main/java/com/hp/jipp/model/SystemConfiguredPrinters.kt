@@ -45,42 +45,19 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<SystemConfiguredPrinters>(SystemConfiguredPrinters)
-
-    /** All member names as strings. */
-    object Name {
-        /** "printer-id" member name */
-        const val printerId = "printer-id"
-        /** "printer-info" member name */
-        const val printerInfo = "printer-info"
-        /** "printer-is-accepting-jobs" member name */
-        const val printerIsAcceptingJobs = "printer-is-accepting-jobs"
-        /** "printer-name" member name */
-        const val printerName = "printer-name"
-        /** "printer-service-type" member name */
-        const val printerServiceType = "printer-service-type"
-        /** "printer-state" member name */
-        const val printerState = "printer-state"
-        /** "printer-state-reasons" member name */
-        const val printerStateReasons = "printer-state-reasons"
-        /** "printer-xri-supported" member name */
-        const val printerXriSupported = "printer-xri-supported"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val printerId = IntType(Name.printerId)
-        val printerInfo = TextType(Name.printerInfo)
-        val printerIsAcceptingJobs = BooleanType(Name.printerIsAcceptingJobs)
-        val printerName = NameType(Name.printerName)
-        val printerServiceType = KeywordType(Name.printerServiceType)
+        @JvmField val printerId = IntType("printer-id")
+        @JvmField val printerInfo = TextType("printer-info")
+        @JvmField val printerIsAcceptingJobs = BooleanType("printer-is-accepting-jobs")
+        @JvmField val printerName = NameType("printer-name")
+        @JvmField val printerServiceType = KeywordType("printer-service-type")
         /**
          * "printer-state" member type.
          */
-        val printerState = PrinterState.Type(Name.printerState)
-        val printerStateReasons = KeywordType(Name.printerStateReasons)
-        val printerXriSupported = PrinterXriSupported.Type(Name.printerXriSupported)
+        @JvmField val printerState = PrinterState.Type("printer-state")
+        @JvmField val printerStateReasons = KeywordType.Set("printer-state-reasons")
+        @JvmField val printerXriSupported = AttributeCollection.Type("printer-xri-supported", PrinterXriSupported)
     }
 
     /** Defines types for each member of [SystemConfiguredPrinters] */

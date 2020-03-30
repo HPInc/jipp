@@ -41,36 +41,15 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerStateMonitorCol>(PowerStateMonitorCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "current-month-kwh" member name */
-        const val currentMonthKwh = "current-month-kwh"
-        /** "current-watts" member name */
-        const val currentWatts = "current-watts"
-        /** "lifetime-kwh" member name */
-        const val lifetimeKwh = "lifetime-kwh"
-        /** "meters-are-actual" member name */
-        const val metersAreActual = "meters-are-actual"
-        /** "power-state" member name */
-        const val powerState = "power-state"
-        /** "power-state-message" member name */
-        const val powerStateMessage = "power-state-message"
-        /** "power-usage-is-rms-watts" member name */
-        const val powerUsageIsRmsWatts = "power-usage-is-rms-watts"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val currentMonthKwh = IntType(Name.currentMonthKwh)
-        val currentWatts = IntType(Name.currentWatts)
-        val lifetimeKwh = IntType(Name.lifetimeKwh)
-        val metersAreActual = BooleanType(Name.metersAreActual)
-        val powerState = KeywordType(Name.powerState)
-        val powerStateMessage = TextType(Name.powerStateMessage)
-        val powerUsageIsRmsWatts = BooleanType(Name.powerUsageIsRmsWatts)
+        @JvmField val currentMonthKwh = IntType("current-month-kwh")
+        @JvmField val currentWatts = IntType("current-watts")
+        @JvmField val lifetimeKwh = IntType("lifetime-kwh")
+        @JvmField val metersAreActual = BooleanType("meters-are-actual")
+        @JvmField val powerState = KeywordType("power-state")
+        @JvmField val powerStateMessage = TextType("power-state-message")
+        @JvmField val powerUsageIsRmsWatts = BooleanType("power-usage-is-rms-watts")
     }
 
     /** Defines types for each member of [PowerStateMonitorCol] */

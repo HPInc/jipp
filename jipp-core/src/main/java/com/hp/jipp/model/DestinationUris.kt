@@ -38,30 +38,13 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<DestinationUris>(DestinationUris)
-
-    /** All member names as strings. */
-    object Name {
-        /** "destination-attributes" member name */
-        const val destinationAttributes = "destination-attributes"
-        /** "destination-uri" member name */
-        const val destinationUri = "destination-uri"
-        /** "post-dial-string" member name */
-        const val postDialString = "post-dial-string"
-        /** "pre-dial-string" member name */
-        const val preDialString = "pre-dial-string"
-        /** "t33-subaddress" member name */
-        const val t33Subaddress = "t33-subaddress"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val destinationAttributes = UntypedCollection.Type(Name.destinationAttributes)
-        val destinationUri = UriType(Name.destinationUri)
-        val postDialString = TextType(Name.postDialString)
-        val preDialString = TextType(Name.preDialString)
-        val t33Subaddress = IntType(Name.t33Subaddress)
+        @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
+        @JvmField val destinationUri = UriType("destination-uri")
+        @JvmField val postDialString = TextType("post-dial-string")
+        @JvmField val preDialString = TextType("pre-dial-string")
+        @JvmField val t33Subaddress = IntType("t33-subaddress")
     }
 
     /** Defines types for each member of [DestinationUris] */

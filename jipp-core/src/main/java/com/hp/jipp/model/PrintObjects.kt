@@ -35,27 +35,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrintObjects>(PrintObjects)
-
-    /** All member names as strings. */
-    object Name {
-        /** "document-number" member name */
-        const val documentNumber = "document-number"
-        /** "object-offset" member name */
-        const val objectOffset = "object-offset"
-        /** "object-size" member name */
-        const val objectSize = "object-size"
-        /** "object-uuid" member name */
-        const val objectUuid = "object-uuid"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val documentNumber = IntType(Name.documentNumber)
-        val objectOffset = ObjectOffset.Type(Name.objectOffset)
-        val objectSize = ObjectSize.Type(Name.objectSize)
-        val objectUuid = UriType(Name.objectUuid)
+        @JvmField val documentNumber = IntType("document-number")
+        @JvmField val objectOffset = AttributeCollection.Type("object-offset", ObjectOffset)
+        @JvmField val objectSize = AttributeCollection.Type("object-size", ObjectSize)
+        @JvmField val objectUuid = UriType("object-uuid")
     }
 
     /** Defines types for each member of [PrintObjects] */
@@ -92,24 +77,11 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<ObjectOffset>(ObjectOffset)
-
-        /** All member names as strings. */
-        object Name {
-            /** "x-offset" member name */
-            const val xOffset = "x-offset"
-            /** "y-offset" member name */
-            const val yOffset = "y-offset"
-            /** "z-offset" member name */
-            const val zOffset = "z-offset"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val xOffset = IntType(Name.xOffset)
-            val yOffset = IntType(Name.yOffset)
-            val zOffset = IntType(Name.zOffset)
+            @JvmField val xOffset = IntType("x-offset")
+            @JvmField val yOffset = IntType("y-offset")
+            @JvmField val zOffset = IntType("z-offset")
         }
 
         /** Defines types for each member of [ObjectOffset] */
@@ -147,24 +119,11 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<ObjectSize>(ObjectSize)
-
-        /** All member names as strings. */
-        object Name {
-            /** "x-dimension" member name */
-            const val xDimension = "x-dimension"
-            /** "y-dimension" member name */
-            const val yDimension = "y-dimension"
-            /** "z-dimension" member name */
-            const val zDimension = "z-dimension"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val xDimension = IntType(Name.xDimension)
-            val yDimension = IntType(Name.yDimension)
-            val zDimension = IntType(Name.zDimension)
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
+            @JvmField val zDimension = IntType("z-dimension")
         }
 
         /** Defines types for each member of [ObjectSize] */

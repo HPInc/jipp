@@ -40,36 +40,17 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<SystemConfiguredResources>(SystemConfiguredResources)
-
-    /** All member names as strings. */
-    object Name {
-        /** "resource-format" member name */
-        const val resourceFormat = "resource-format"
-        /** "resource-id" member name */
-        const val resourceId = "resource-id"
-        /** "resource-info" member name */
-        const val resourceInfo = "resource-info"
-        /** "resource-name" member name */
-        const val resourceName = "resource-name"
-        /** "resource-state" member name */
-        const val resourceState = "resource-state"
-        /** "resource-type" member name */
-        const val resourceType = "resource-type"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val resourceFormat = StringType(Tag.mimeMediaType, Name.resourceFormat)
-        val resourceId = IntType(Name.resourceId)
-        val resourceInfo = TextType(Name.resourceInfo)
-        val resourceName = NameType(Name.resourceName)
+        @JvmField val resourceFormat = StringType(Tag.mimeMediaType, "resource-format")
+        @JvmField val resourceId = IntType("resource-id")
+        @JvmField val resourceInfo = TextType("resource-info")
+        @JvmField val resourceName = NameType("resource-name")
         /**
          * "resource-state" member type.
          */
-        val resourceState = ResourceState.Type(Name.resourceState)
-        val resourceType = KeywordType(Name.resourceType)
+        @JvmField val resourceState = ResourceState.Type("resource-state")
+        @JvmField val resourceType = KeywordType("resource-type")
     }
 
     /** Defines types for each member of [SystemConfiguredResources] */

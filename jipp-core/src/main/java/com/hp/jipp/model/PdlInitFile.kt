@@ -33,24 +33,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PdlInitFile>(PdlInitFile)
-
-    /** All member names as strings. */
-    object Name {
-        /** "pdl-init-file-entry" member name */
-        const val pdlInitFileEntry = "pdl-init-file-entry"
-        /** "pdl-init-file-location" member name */
-        const val pdlInitFileLocation = "pdl-init-file-location"
-        /** "pdl-init-file-name" member name */
-        const val pdlInitFileName = "pdl-init-file-name"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val pdlInitFileEntry = NameType(Name.pdlInitFileEntry)
-        val pdlInitFileLocation = UriType(Name.pdlInitFileLocation)
-        val pdlInitFileName = NameType(Name.pdlInitFileName)
+        @JvmField val pdlInitFileEntry = NameType("pdl-init-file-entry")
+        @JvmField val pdlInitFileLocation = UriType("pdl-init-file-location")
+        @JvmField val pdlInitFileName = NameType("pdl-init-file-name")
     }
 
     /** Defines types for each member of [PdlInitFile] */

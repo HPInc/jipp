@@ -3,8 +3,13 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute type containing [Resolution] values. */
+/** An [AttributeType] for a [Resolution] value. */
 open class ResolutionType(override val name: String) : AttributeType<Resolution> {
+    /** An [AttributeType] for multiple [Resolution] values. */
+    class Set(name: String) : ResolutionType(name), AttributeSetType<Resolution> {
+        override fun toString() = "ResolutionType.Set($name)"
+    }
+
     override fun coerce(value: Any) =
         value as? Resolution
 

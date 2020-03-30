@@ -4,22 +4,24 @@
 package com.hp.jipp.encoding
 
 /**
- * An attribute type for `name` types, which can be encoded with either [Tag.nameWithoutLanguage] or
- * [Tag.nameWithLanguage].
+ * An [AttributeType] for a [Name] value.
  *
  * See [RFC8011 Section 5.1.3](https://tools.ietf.org/html/rfc8011#section-5.1.3).
  */
-open class NameType(override val name: String) : AttributeType<Name> {
-    override fun coerce(value: Any) =
-        value as? Name
+open class NameType(name: String) : AttributeTypeImpl<Name>(name, Name::class.java) {
+    /** An [AttributeType] for multiple [Name] values. */
+    class Set(name: String) : NameType(name), AttributeSetType<Name> {
+        /** Return an [Attribute] containing [Name] values from values given (without language). */
+        fun of(value: String, vararg values: String) = of((listOf(value) + values).map { Name(it) })
 
-    /** Return an attribute containing values as text strings (without language) */
-    fun of(vararg values: String) = of(values.map { Name(it) })
+        /** Return an [Attribute] containing [Name] values from values given (without language). */
+        fun ofStrings(values: Iterable<String>) = of(values.map { Name(it) })
 
-    /** Return an attribute containing values as text strings (without language) */
-    fun ofStrings(values: Iterable<String>) = of(values.map { Name(it) })
+        override fun toString() = "NameType.Set($name)"
+    }
 
-    override fun toString() = "NameType($name)"
+    /** Return an [Attribute] of this type. */
+    fun of(value: String) = of(Name(value))
 
     companion object {
         val codec = Codec({ it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage }, {

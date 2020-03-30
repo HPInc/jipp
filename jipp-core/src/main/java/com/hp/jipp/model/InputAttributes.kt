@@ -27,7 +27,7 @@ constructor(
     /** May contain any keyword from [InputFilmScanMode]. */
     var inputFilmScanMode: String? = null,
     var inputImagesToTransfer: Int? = null,
-    /** May contain any keyword from [Media] (any size name) or a name. */
+    /** May contain any size name keyword from [Media] or a name. */
     var inputMedia: KeywordOrName? = null,
     var inputOrientationRequested: Orientation? = null,
     var inputQuality: PrintQuality? = null,
@@ -69,75 +69,32 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<InputAttributes>(InputAttributes)
-
-    /** All member names as strings. */
-    object Name {
-        /** "input-auto-scaling" member name */
-        const val inputAutoScaling = "input-auto-scaling"
-        /** "input-auto-skew-correction" member name */
-        const val inputAutoSkewCorrection = "input-auto-skew-correction"
-        /** "input-brightness" member name */
-        const val inputBrightness = "input-brightness"
-        /** "input-color-mode" member name */
-        const val inputColorMode = "input-color-mode"
-        /** "input-content-type" member name */
-        const val inputContentType = "input-content-type"
-        /** "input-contrast" member name */
-        const val inputContrast = "input-contrast"
-        /** "input-film-scan-mode" member name */
-        const val inputFilmScanMode = "input-film-scan-mode"
-        /** "input-images-to-transfer" member name */
-        const val inputImagesToTransfer = "input-images-to-transfer"
-        /** "input-media" member name */
-        const val inputMedia = "input-media"
-        /** "input-orientation-requested" member name */
-        const val inputOrientationRequested = "input-orientation-requested"
-        /** "input-quality" member name */
-        const val inputQuality = "input-quality"
-        /** "input-resolution" member name */
-        const val inputResolution = "input-resolution"
-        /** "input-scaling-height" member name */
-        const val inputScalingHeight = "input-scaling-height"
-        /** "input-scaling-width" member name */
-        const val inputScalingWidth = "input-scaling-width"
-        /** "input-scan-regions" member name */
-        const val inputScanRegions = "input-scan-regions"
-        /** "input-sharpness" member name */
-        const val inputSharpness = "input-sharpness"
-        /** "input-sides" member name */
-        const val inputSides = "input-sides"
-        /** "input-source" member name */
-        const val inputSource = "input-source"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val inputAutoScaling = BooleanType(Name.inputAutoScaling)
-        val inputAutoSkewCorrection = BooleanType(Name.inputAutoSkewCorrection)
-        val inputBrightness = IntType(Name.inputBrightness)
-        val inputColorMode = KeywordType(Name.inputColorMode)
-        val inputContentType = KeywordType(Name.inputContentType)
-        val inputContrast = IntType(Name.inputContrast)
-        val inputFilmScanMode = KeywordType(Name.inputFilmScanMode)
-        val inputImagesToTransfer = IntType(Name.inputImagesToTransfer)
-        val inputMedia = KeywordOrNameType(Name.inputMedia)
+        @JvmField val inputAutoScaling = BooleanType("input-auto-scaling")
+        @JvmField val inputAutoSkewCorrection = BooleanType("input-auto-skew-correction")
+        @JvmField val inputBrightness = IntType("input-brightness")
+        @JvmField val inputColorMode = KeywordType("input-color-mode")
+        @JvmField val inputContentType = KeywordType("input-content-type")
+        @JvmField val inputContrast = IntType("input-contrast")
+        @JvmField val inputFilmScanMode = KeywordType("input-film-scan-mode")
+        @JvmField val inputImagesToTransfer = IntType("input-images-to-transfer")
+        @JvmField val inputMedia = KeywordOrNameType("input-media")
         /**
          * "input-orientation-requested" member type.
          */
-        val inputOrientationRequested = Orientation.Type(Name.inputOrientationRequested)
+        @JvmField val inputOrientationRequested = Orientation.Type("input-orientation-requested")
         /**
          * "input-quality" member type.
          */
-        val inputQuality = PrintQuality.Type(Name.inputQuality)
-        val inputResolution = ResolutionType(Name.inputResolution)
-        val inputScalingHeight = IntType(Name.inputScalingHeight)
-        val inputScalingWidth = IntType(Name.inputScalingWidth)
-        val inputScanRegions = InputScanRegions.Type(Name.inputScanRegions)
-        val inputSharpness = IntType(Name.inputSharpness)
-        val inputSides = KeywordType(Name.inputSides)
-        val inputSource = KeywordType(Name.inputSource)
+        @JvmField val inputQuality = PrintQuality.Type("input-quality")
+        @JvmField val inputResolution = ResolutionType("input-resolution")
+        @JvmField val inputScalingHeight = IntType("input-scaling-height")
+        @JvmField val inputScalingWidth = IntType("input-scaling-width")
+        @JvmField val inputScanRegions = AttributeCollection.SetType("input-scan-regions", InputScanRegions)
+        @JvmField val inputSharpness = IntType("input-sharpness")
+        @JvmField val inputSides = KeywordType("input-sides")
+        @JvmField val inputSource = KeywordType("input-source")
     }
 
     /** Defines types for each member of [InputAttributes] */
@@ -190,27 +147,12 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<InputScanRegions>(InputScanRegions)
-
-        /** All member names as strings. */
-        object Name {
-            /** "x-dimension" member name */
-            const val xDimension = "x-dimension"
-            /** "x-origin" member name */
-            const val xOrigin = "x-origin"
-            /** "y-dimension" member name */
-            const val yDimension = "y-dimension"
-            /** "y-origin" member name */
-            const val yOrigin = "y-origin"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val xDimension = IntType(Name.xDimension)
-            val xOrigin = IntType(Name.xOrigin)
-            val yDimension = IntType(Name.yDimension)
-            val yOrigin = IntType(Name.yOrigin)
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val xOrigin = IntType("x-origin")
+            @JvmField val yDimension = IntType("y-dimension")
+            @JvmField val yOrigin = IntType("y-origin")
         }
 
         /** Defines types for each member of [InputScanRegions] */

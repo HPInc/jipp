@@ -39,33 +39,14 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<CoverSheetInfo>(CoverSheetInfo)
-
-    /** All member names as strings. */
-    object Name {
-        /** "from-name" member name */
-        const val fromName = "from-name"
-        /** "logo" member name */
-        const val logo = "logo"
-        /** "message" member name */
-        const val message = "message"
-        /** "organization-name" member name */
-        const val organizationName = "organization-name"
-        /** "subject" member name */
-        const val subject = "subject"
-        /** "to-name" member name */
-        const val toName = "to-name"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val fromName = TextType(Name.fromName)
-        val logo = UriType(Name.logo)
-        val message = TextType(Name.message)
-        val organizationName = TextType(Name.organizationName)
-        val subject = TextType(Name.subject)
-        val toName = TextType(Name.toName)
+        @JvmField val fromName = TextType("from-name")
+        @JvmField val logo = UriType("logo")
+        @JvmField val message = TextType("message")
+        @JvmField val organizationName = TextType("organization-name")
+        @JvmField val subject = TextType("subject")
+        @JvmField val toName = TextType("to-name")
     }
 
     /** Defines types for each member of [CoverSheetInfo] */

@@ -3,12 +3,12 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute type containing [IntRange] values. */
-open class IntRangeType(override val name: String) : AttributeType<IntRange> {
-    override fun coerce(value: Any) =
-        value as? IntRange
-
-    override fun toString() = "IntRangeType($name)"
+/** An [AttributeType] for an [IntRange] value. */
+open class IntRangeType(name: String) : AttributeTypeImpl<IntRange>(name, IntRange::class.java) {
+    /** An [AttributeType] for multiple [IntRange] values. */
+    class Set(name: String) : IntRangeType(name), AttributeSetType<IntRange> {
+        override fun toString() = "IntRangeType.Set($name)"
+    }
 
     companion object {
         val codec = Codec(Tag.rangeOfInteger, {

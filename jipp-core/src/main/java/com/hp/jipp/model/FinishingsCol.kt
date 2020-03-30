@@ -58,57 +58,22 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<FinishingsCol>(FinishingsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "baling" member name */
-        const val baling = "baling"
-        /** "binding" member name */
-        const val binding = "binding"
-        /** "coating" member name */
-        const val coating = "coating"
-        /** "covering" member name */
-        const val covering = "covering"
-        /** "finishing-template" member name */
-        const val finishingTemplate = "finishing-template"
-        /** "folding" member name */
-        const val folding = "folding"
-        /** "imposition-template" member name */
-        const val impositionTemplate = "imposition-template"
-        /** "laminating" member name */
-        const val laminating = "laminating"
-        /** "media-sheets-supported" member name */
-        const val mediaSheetsSupported = "media-sheets-supported"
-        /** "media-size" member name */
-        const val mediaSize = "media-size"
-        /** "media-size-name" member name */
-        const val mediaSizeName = "media-size-name"
-        /** "punching" member name */
-        const val punching = "punching"
-        /** "stitching" member name */
-        const val stitching = "stitching"
-        /** "trimming" member name */
-        const val trimming = "trimming"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val baling = Baling.Type(Name.baling)
-        val binding = Binding.Type(Name.binding)
-        val coating = Coating.Type(Name.coating)
-        val covering = Covering.Type(Name.covering)
-        val finishingTemplate = KeywordOrNameType(Name.finishingTemplate)
-        val folding = Folding.Type(Name.folding)
-        val impositionTemplate = KeywordOrNameType(Name.impositionTemplate)
-        val laminating = Laminating.Type(Name.laminating)
-        val mediaSheetsSupported = IntRangeType(Name.mediaSheetsSupported)
-        val mediaSize = MediaSize.Type(Name.mediaSize)
-        val mediaSizeName = KeywordType(Name.mediaSizeName)
-        val punching = Punching.Type(Name.punching)
-        val stitching = Stitching.Type(Name.stitching)
-        val trimming = Trimming.Type(Name.trimming)
+        @JvmField val baling = AttributeCollection.Type("baling", Baling)
+        @JvmField val binding = AttributeCollection.Type("binding", Binding)
+        @JvmField val coating = AttributeCollection.Type("coating", Coating)
+        @JvmField val covering = AttributeCollection.Type("covering", Covering)
+        @JvmField val finishingTemplate = KeywordOrNameType("finishing-template")
+        @JvmField val folding = AttributeCollection.SetType("folding", Folding)
+        @JvmField val impositionTemplate = KeywordOrNameType("imposition-template")
+        @JvmField val laminating = AttributeCollection.Type("laminating", Laminating)
+        @JvmField val mediaSheetsSupported = IntRangeType("media-sheets-supported")
+        @JvmField val mediaSize = AttributeCollection.Type("media-size", MediaSize)
+        @JvmField val mediaSizeName = KeywordType("media-size-name")
+        @JvmField val punching = AttributeCollection.Type("punching", Punching)
+        @JvmField val stitching = AttributeCollection.Type("stitching", Stitching)
+        @JvmField val trimming = AttributeCollection.SetType("trimming", Trimming)
     }
 
     /** Defines types for each member of [FinishingsCol] */
@@ -155,21 +120,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Baling>(Baling)
-
-        /** All member names as strings. */
-        object Name {
-            /** "baling-type" member name */
-            const val balingType = "baling-type"
-            /** "baling-when" member name */
-            const val balingWhen = "baling-when"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val balingType = KeywordOrNameType(Name.balingType)
-            val balingWhen = KeywordType(Name.balingWhen)
+            @JvmField val balingType = KeywordOrNameType("baling-type")
+            @JvmField val balingWhen = KeywordType("baling-when")
         }
 
         /** Defines types for each member of [Baling] */
@@ -206,21 +160,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Binding>(Binding)
-
-        /** All member names as strings. */
-        object Name {
-            /** "binding-reference-edge" member name */
-            const val bindingReferenceEdge = "binding-reference-edge"
-            /** "binding-type" member name */
-            const val bindingType = "binding-type"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val bindingReferenceEdge = KeywordType(Name.bindingReferenceEdge)
-            val bindingType = KeywordOrNameType(Name.bindingType)
+            @JvmField val bindingReferenceEdge = KeywordType("binding-reference-edge")
+            @JvmField val bindingType = KeywordOrNameType("binding-type")
         }
 
         /** Defines types for each member of [Binding] */
@@ -257,21 +200,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Coating>(Coating)
-
-        /** All member names as strings. */
-        object Name {
-            /** "coating-sides" member name */
-            const val coatingSides = "coating-sides"
-            /** "coating-type" member name */
-            const val coatingType = "coating-type"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val coatingSides = KeywordType(Name.coatingSides)
-            val coatingType = KeywordOrNameType(Name.coatingType)
+            @JvmField val coatingSides = KeywordType("coating-sides")
+            @JvmField val coatingType = KeywordOrNameType("coating-type")
         }
 
         /** Defines types for each member of [Coating] */
@@ -305,18 +237,9 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Covering>(Covering)
-
-        /** All member names as strings. */
-        object Name {
-            /** "covering-name" member name */
-            const val coveringName = "covering-name"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val coveringName = KeywordOrNameType(Name.coveringName)
+            @JvmField val coveringName = KeywordOrNameType("covering-name")
         }
 
         /** Defines types for each member of [Covering] */
@@ -354,24 +277,11 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Folding>(Folding)
-
-        /** All member names as strings. */
-        object Name {
-            /** "folding-direction" member name */
-            const val foldingDirection = "folding-direction"
-            /** "folding-offset" member name */
-            const val foldingOffset = "folding-offset"
-            /** "folding-reference-edge" member name */
-            const val foldingReferenceEdge = "folding-reference-edge"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val foldingDirection = KeywordType(Name.foldingDirection)
-            val foldingOffset = IntType(Name.foldingOffset)
-            val foldingReferenceEdge = KeywordType(Name.foldingReferenceEdge)
+            @JvmField val foldingDirection = KeywordType("folding-direction")
+            @JvmField val foldingOffset = IntType("folding-offset")
+            @JvmField val foldingReferenceEdge = KeywordType("folding-reference-edge")
         }
 
         /** Defines types for each member of [Folding] */
@@ -409,21 +319,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Laminating>(Laminating)
-
-        /** All member names as strings. */
-        object Name {
-            /** "laminating-sides" member name */
-            const val laminatingSides = "laminating-sides"
-            /** "laminating-type" member name */
-            const val laminatingType = "laminating-type"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val laminatingSides = KeywordType(Name.laminatingSides)
-            val laminatingType = KeywordOrNameType(Name.laminatingType)
+            @JvmField val laminatingSides = KeywordType("laminating-sides")
+            @JvmField val laminatingType = KeywordOrNameType("laminating-type")
         }
 
         /** Defines types for each member of [Laminating] */
@@ -458,21 +357,10 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<MediaSize>(MediaSize)
-
-        /** All member names as strings. */
-        object Name {
-            /** "x-dimension" member name */
-            const val xDimension = "x-dimension"
-            /** "y-dimension" member name */
-            const val yDimension = "y-dimension"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val xDimension = IntType(Name.xDimension)
-            val yDimension = IntType(Name.yDimension)
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
         }
 
         /** Defines types for each member of [MediaSize] */
@@ -510,24 +398,11 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Punching>(Punching)
-
-        /** All member names as strings. */
-        object Name {
-            /** "punching-locations" member name */
-            const val punchingLocations = "punching-locations"
-            /** "punching-offset" member name */
-            const val punchingOffset = "punching-offset"
-            /** "punching-reference-edge" member name */
-            const val punchingReferenceEdge = "punching-reference-edge"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val punchingLocations = IntType(Name.punchingLocations)
-            val punchingOffset = IntType(Name.punchingOffset)
-            val punchingReferenceEdge = KeywordType(Name.punchingReferenceEdge)
+            @JvmField val punchingLocations = IntType.Set("punching-locations")
+            @JvmField val punchingOffset = IntType("punching-offset")
+            @JvmField val punchingReferenceEdge = KeywordType("punching-reference-edge")
         }
 
         /** Defines types for each member of [Punching] */
@@ -571,30 +446,13 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Stitching>(Stitching)
-
-        /** All member names as strings. */
-        object Name {
-            /** "stitching-angle" member name */
-            const val stitchingAngle = "stitching-angle"
-            /** "stitching-locations" member name */
-            const val stitchingLocations = "stitching-locations"
-            /** "stitching-method" member name */
-            const val stitchingMethod = "stitching-method"
-            /** "stitching-offset" member name */
-            const val stitchingOffset = "stitching-offset"
-            /** "stitching-reference-edge" member name */
-            const val stitchingReferenceEdge = "stitching-reference-edge"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val stitchingAngle = IntType(Name.stitchingAngle)
-            val stitchingLocations = IntType(Name.stitchingLocations)
-            val stitchingMethod = KeywordType(Name.stitchingMethod)
-            val stitchingOffset = IntType(Name.stitchingOffset)
-            val stitchingReferenceEdge = KeywordType(Name.stitchingReferenceEdge)
+            @JvmField val stitchingAngle = IntType("stitching-angle")
+            @JvmField val stitchingLocations = IntType.Set("stitching-locations")
+            @JvmField val stitchingMethod = KeywordType("stitching-method")
+            @JvmField val stitchingOffset = IntType("stitching-offset")
+            @JvmField val stitchingReferenceEdge = KeywordType("stitching-reference-edge")
         }
 
         /** Defines types for each member of [Stitching] */
@@ -639,27 +497,12 @@ constructor(
             )
         }
 
-        /** Type for attributes of this collection */
-        class Type(override val name: String) : AttributeCollection.Type<Trimming>(Trimming)
-
-        /** All member names as strings. */
-        object Name {
-            /** "trimming-offset" member name */
-            const val trimmingOffset = "trimming-offset"
-            /** "trimming-reference-edge" member name */
-            const val trimmingReferenceEdge = "trimming-reference-edge"
-            /** "trimming-type" member name */
-            const val trimmingType = "trimming-type"
-            /** "trimming-when" member name */
-            const val trimmingWhen = "trimming-when"
-        }
-
         /** Types for each member attribute. */
         object Types {
-            val trimmingOffset = IntType(Name.trimmingOffset)
-            val trimmingReferenceEdge = KeywordType(Name.trimmingReferenceEdge)
-            val trimmingType = KeywordOrNameType(Name.trimmingType)
-            val trimmingWhen = KeywordType(Name.trimmingWhen)
+            @JvmField val trimmingOffset = IntType("trimming-offset")
+            @JvmField val trimmingReferenceEdge = KeywordType("trimming-reference-edge")
+            @JvmField val trimmingType = KeywordOrNameType("trimming-type")
+            @JvmField val trimmingWhen = KeywordType("trimming-when")
         }
 
         /** Defines types for each member of [Trimming] */

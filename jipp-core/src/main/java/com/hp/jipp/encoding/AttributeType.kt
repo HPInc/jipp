@@ -4,30 +4,18 @@
 package com.hp.jipp.encoding
 
 /**
- * A named attribute type which may be used to construct [Attribute] objects containing values of type [T].
+ * A named attribute type which may be used to construct [Attribute] objects containing 0 or one values of type [T].
  */
 interface AttributeType<T : Any> {
     val name: String
 
-    /** Return an attribute containing one or more values of type [T]. */
-    fun of(values: Iterable<T>): Attribute<T> {
-        val self = this
-        return BaseAttribute(self.name, this, values)
-    }
-
-    /** Return an attribute containing supplied values. */
-    fun of(value: T, vararg values: T): Attribute<T> {
-        return of(listOf(value) + values.toList())
-    }
+    /** Return an [Attribute] of this type containing a single value. */
+    fun of(value: T): Attribute<T> =
+        AttributeImpl(name, this, listOf(value))
 
     /** Return an empty attribute (containing no values) for this type but substituting a tag. */
-    fun empty(
-        /** Out-of-bound tag */
-        tag: OutOfBandTag
-    ): Attribute<T> {
-        val self = this
-        return BaseAttribute(self.name, this@AttributeType, tag)
-    }
+    fun empty(tag: OutOfBandTag) =
+        EmptyAttribute<T>(name, tag)
 
     /** Return a "no-value" attribute of this type. */
     fun noValue() = empty(Tag.noValue)
@@ -42,14 +30,14 @@ interface AttributeType<T : Any> {
      * Convert an attribute of a different type to use [T], if possible.
      */
     fun coerce(attribute: Attribute<*>): Attribute<T>? {
-        val tag = attribute.tag
-        return if (tag is OutOfBandTag) {
+        val otherType = attribute.type
+        return if (otherType is EmptyAttributeType) {
             // Allow coercion of empty attributes (having an out-of-band tag)
-            empty(tag)
+            empty(otherType.tag)
         } else {
             val coercedValues = attribute.mapNotNull { coerce(it) }
             if (coercedValues.isNotEmpty()) {
-                of(coercedValues)
+                AttributeImpl(name, this, coercedValues)
             } else {
                 null
             }

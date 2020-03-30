@@ -29,21 +29,11 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     override val size
         get() = map.size
 
-    /** Add or replace the attribute value for [type]. */
-    inline operator fun <reified T : Any> set(type: AttributeType<T>, value: T) {
-        put(type.of(value))
-    }
-
-    /** Add or replace the attribute value for [type]. */
-    inline operator fun <reified T : Any> set(type: AttributeType<T>, values: List<T>) {
-        put(type.of(values))
-    }
-
     /** Put [attribute] into this group */
     operator fun plusAssign(attribute: Attribute<*>) = put(attribute)
 
     /** Put [attributes] into this group */
-    operator fun plusAssign(attributes: Collection<Attribute<*>>) = putAll(attributes)
+    operator fun plusAssign(attributes: Iterable<Attribute<*>>) = putAll(attributes)
 
     /** Return the [Attribute] at [index]. */
     override fun get(index: Int): Attribute<*> = map.values.elementAt(index)
@@ -69,24 +59,8 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         }
     }
 
-    /** Add or replace an attribute to the group having one or more values. */
-    fun <T : Any> put(attributeType: AttributeType<T>, value: T, vararg values: T) {
-        // Note: must be listOf here or we end up with List<Object> during vararg conversion
-        put(attributeType.of(listOf(value) + values.toList()))
-    }
-
-    /** Add or replace an attribute to the group having one or more values. */
-    fun put(attributeType: NameType, value: String, vararg values: String) {
-        put(attributeType.ofStrings(listOf(value) + values.toList()))
-    }
-
-    /** Add or replace an attribute to the group having one or more values. */
-    fun put(attributeType: TextType, value: String, vararg values: String) {
-        put(attributeType.ofStrings(listOf(value) + values.toList()))
-    }
-
     /** Put [attributes] into this group. */
-    fun putAll(attributes: Collection<Attribute<*>>) {
+    fun putAll(attributes: Iterable<Attribute<*>>) {
         attributes.forEach {
             map[it.name] = it
         }
@@ -116,7 +90,7 @@ open class MutableAttributeGroup @JvmOverloads constructor(
 
     /** Add attributes to this group. */
     @Deprecated("use putAll()", ReplaceWith("putAll(attributes)"))
-    fun addAll(attributes: Collection<Attribute<*>>) {
+    fun addAll(attributes: Iterable<Attribute<*>>) {
         putAll(attributes)
     }
 
@@ -132,25 +106,40 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         putAll(attribute.toList())
     }
 
-    /** Add or replace an attribute to the group having one or more values. */
+    /** Add or replace an attribute having one value to the group. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value)"))
+    fun <T : Any> attr(attributeType: AttributeType<T>, value: T) {
+        put(attributeType.of(value))
+    }
+
+    /** Add or replace an attribute having one or more values to the group. */
     @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
-    @Suppress("SpreadOperator")
-    fun <T : Any> attr(attributeType: AttributeType<T>, value: T, vararg values: T) {
-        put(attributeType, value, *values)
+    fun <T : Any> attr(attributeType: AttributeSetType<T>, value: T, vararg values: T) {
+        put(attributeType.of(listOf(value) + values.toList()))
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value)"))
+    fun attr(nameType: NameType, value: String) {
+        put(nameType.of(value))
     }
 
     /** Add or replace an attribute to the group having one or more values. */
     @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
-    @Suppress("SpreadOperator")
-    fun attr(attributeType: NameType, value: String, vararg values: String) {
-        put(attributeType, value, *values)
+    fun attr(nameType: NameType.Set, value: String, vararg values: String) {
+        put(nameType.of((listOf(value) + values.toList()).map { Name(it) }))
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    @Deprecated("use put()", ReplaceWith("put(attributeType, value)"))
+    fun attr(textType: TextType, value: String) {
+        put(textType.of(value))
     }
 
     /** Add or replace an attribute to the group having one or more values. */
     @Deprecated("use put()", ReplaceWith("put(attributeType, value, values)"))
-    @Suppress("SpreadOperator")
-    fun attr(attributeType: TextType, value: String, vararg values: String) {
-        put(attributeType, value, *values)
+    fun attr(textType: TextType.Set, value: String, vararg values: String) {
+        put(textType.of((listOf(value) + values.toList()).map { Text(it) }))
     }
 
     /** Remove an attribute of the specified [type], returning the removed attribute, if any. */

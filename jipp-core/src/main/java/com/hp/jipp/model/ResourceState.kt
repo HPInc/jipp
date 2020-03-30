@@ -18,8 +18,11 @@ data class ResourceState(override val code: Int, override val name: String) : En
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [ResourceState] attributes */
+    /** An [AttributeType] for a [ResourceState] attribute. */
     class Type(name: String) : EnumType<ResourceState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [ResourceState] attributes. */
+    class SetType(name: String) : EnumType.Set<ResourceState>(name, { get(it) })
 
     object Code {
         const val pending = 3

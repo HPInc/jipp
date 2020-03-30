@@ -35,27 +35,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerStateCountersCol>(PowerStateCountersCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "hibernate-transitions" member name */
-        const val hibernateTransitions = "hibernate-transitions"
-        /** "on-transitions" member name */
-        const val onTransitions = "on-transitions"
-        /** "standby-transitions" member name */
-        const val standbyTransitions = "standby-transitions"
-        /** "suspend-transitions" member name */
-        const val suspendTransitions = "suspend-transitions"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val hibernateTransitions = IntType(Name.hibernateTransitions)
-        val onTransitions = IntType(Name.onTransitions)
-        val standbyTransitions = IntType(Name.standbyTransitions)
-        val suspendTransitions = IntType(Name.suspendTransitions)
+        @JvmField val hibernateTransitions = IntType("hibernate-transitions")
+        @JvmField val onTransitions = IntType("on-transitions")
+        @JvmField val standbyTransitions = IntType("standby-transitions")
+        @JvmField val suspendTransitions = IntType("suspend-transitions")
     }
 
     /** Defines types for each member of [PowerStateCountersCol] */

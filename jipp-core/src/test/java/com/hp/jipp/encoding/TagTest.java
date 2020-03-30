@@ -2,7 +2,6 @@ package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

@@ -8,7 +8,6 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
-import java.util.Calendar
 
 /**
  * Data object corresponding to a "power-log-col" collection as defined in:
@@ -19,7 +18,7 @@ data class PowerLogCol
 constructor(
     var logId: Int? = null,
     var powerState: String? = null,
-    var powerStateDateTime: Calendar? = null,
+    var powerStateDateTime: java.util.Calendar? = null,
     var powerStateMessage: String? = null
 ) : AttributeCollection {
 
@@ -36,27 +35,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerLogCol>(PowerLogCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "log-id" member name */
-        const val logId = "log-id"
-        /** "power-state" member name */
-        const val powerState = "power-state"
-        /** "power-state-date-time" member name */
-        const val powerStateDateTime = "power-state-date-time"
-        /** "power-state-message" member name */
-        const val powerStateMessage = "power-state-message"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val logId = IntType(Name.logId)
-        val powerState = KeywordType(Name.powerState)
-        val powerStateDateTime = DateTimeType(Name.powerStateDateTime)
-        val powerStateMessage = TextType(Name.powerStateMessage)
+        @JvmField val logId = IntType("log-id")
+        @JvmField val powerState = KeywordType("power-state")
+        @JvmField val powerStateDateTime = DateTimeType("power-state-date-time")
+        @JvmField val powerStateMessage = TextType("power-state-message")
     }
 
     /** Defines types for each member of [PowerLogCol] */

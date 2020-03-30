@@ -3,12 +3,24 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute type based on [Enum] type of [T]*/
+/** An [AttributeType] for an [Enum] value. */
 open class EnumType<T : Enum>(
     override val name: String,
     val factory: (code: Int) -> T
 ) : AttributeType<T> {
-    fun of(vararg values: Int) = of(values.map { factory(it) })
+    /** An [AttributeType] for multiple [Enum] values. */
+    open class Set<T : Enum>(
+        name: String,
+        factory: (code: Int) -> T
+    ) : EnumType<T>(name, factory), AttributeSetType<T> {
+        /** Return an [Attribute] of this type with multiple values. */
+        fun of(value: Int, vararg values: Int) =
+            of((listOf(value) + values.toList()).map { factory(it) })
+
+        override fun toString() = "EnumType.Set($name)"
+    }
+
+    fun of(value: Int) = of(factory(value))
 
     override fun coerce(value: Any) =
         when (value) {

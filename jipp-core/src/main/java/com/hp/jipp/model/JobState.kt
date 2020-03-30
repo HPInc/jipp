@@ -18,8 +18,11 @@ data class JobState(override val code: Int, override val name: String) : Enum() 
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [JobState] attributes */
+    /** An [AttributeType] for a [JobState] attribute. */
     class Type(name: String) : EnumType<JobState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [JobState] attributes. */
+    class SetType(name: String) : EnumType.Set<JobState>(name, { get(it) })
 
     object Code {
         const val pending = 3

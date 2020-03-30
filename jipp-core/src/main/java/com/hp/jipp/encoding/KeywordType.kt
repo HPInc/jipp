@@ -3,10 +3,12 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute type containing keyword values as [String]s. */
-open class KeywordType(override val name: String) : AttributeType<String> {
-    override fun coerce(value: Any) =
-        value as? String
+/** An [AttributeType] for a keyword value, represented as a [String]. */
+open class KeywordType(name: String) : AttributeTypeImpl<String>(name, String::class.java) {
+    /** An [AttributeType] for keywords, represented as [String]s. */
+    class Set(name: String) : KeywordType(name), AttributeSetType<String> {
+        override fun toString() = "KeywordType.Set($name)"
+    }
 
     override fun toString() = "KeywordType($name)"
 

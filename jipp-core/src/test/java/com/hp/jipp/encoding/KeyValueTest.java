@@ -4,15 +4,23 @@
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.Status;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import kotlin.Pair;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.*;
-
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KeyValueTest {
 
@@ -21,20 +29,21 @@ public class KeyValueTest {
     @Test
     public void empty() throws Exception {
         KeyValues value = new KeyValues();
-        @SuppressWarnings("unchecked") Attribute<KeyValues> attribute = keyValuesType.of(value);
+        Attribute<KeyValues> attribute = keyValuesType.of(value);
         assertEquals(value.getPairs(), cycle(keyValuesType, attribute).getValue().getPairs());
     }
+
 
     @Test
     public void notEmpty() throws Exception {
         KeyValues value = new KeyValues("one", "oneValue", "two", "twoValue");
-        Attribute<KeyValues> attribute = keyValuesType.of(Collections.singletonList(value));
+        Attribute<KeyValues> attribute = keyValuesType.of(value);
         assertEquals(value, cycle(keyValuesType, attribute).getValue());
     }
 
     @Test
     public void construct() throws Exception {
-        Attribute<KeyValues> attribute = keyValuesType.of("one", "oneValue", "two", "twoValue");
+        Attribute<KeyValues> attribute = keyValuesType.of(new KeyValues("one", "oneValue", "two", "twoValue"));
         assertEquals(attribute.getValue(), cycle(keyValuesType, attribute).getValue());
     }
 
@@ -99,7 +108,7 @@ public class KeyValueTest {
 
     @Test
     public void localPacket() throws IOException {
-        Attribute<KeyValues> kv = keyValuesType.of("one", "oneValue", "two", "twoValue");
+        Attribute<KeyValues> kv = keyValuesType.of(new KeyValues("one", "oneValue", "two", "twoValue"));
         // Note: NOT cycled
         IppPacket packet = new IppPacket(Status.successfulOk, 0x50607, groupOf(Tag.printerAttributes,
                 kv));

@@ -35,24 +35,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PrinterXriSupported>(PrinterXriSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "xri-authentication" member name */
-        const val xriAuthentication = "xri-authentication"
-        /** "xri-security" member name */
-        const val xriSecurity = "xri-security"
-        /** "xri-uri" member name */
-        const val xriUri = "xri-uri"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val xriAuthentication = KeywordType(Name.xriAuthentication)
-        val xriSecurity = KeywordType(Name.xriSecurity)
-        val xriUri = UriType(Name.xriUri)
+        @JvmField val xriAuthentication = KeywordType("xri-authentication")
+        @JvmField val xriSecurity = KeywordType("xri-security")
+        @JvmField val xriUri = UriType("xri-uri")
     }
 
     /** Defines types for each member of [PrinterXriSupported] */

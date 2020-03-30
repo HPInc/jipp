@@ -8,7 +8,9 @@ import org.junit.Test
 class EnumTest {
     /** An enumeration of possible printer states  */
     data class Sample constructor(override val code: Int, override val name: String) : Enum() {
-        class Type(name: String) : EnumType<Sample>(name, { get(it) })
+        // class Type(name: String) : EnumType<Sample>(name, { get(it) })
+        class SetType(name: String) : EnumType.Set<Sample>(name, { get(it) })
+
         companion object {
             @JvmField val One = Sample(1, "one")
             @JvmField val Two = Sample(2, "two")
@@ -19,10 +21,9 @@ class EnumTest {
         }
     }
 
-    private var mySample = Sample.Type("my-sample")
+    private var mySample = Sample.SetType("my-sample")
 
-    @Test
-    @Throws(Exception::class)
+    @Test @Throws(Exception::class)
     fun sample() {
         assertEquals(listOf(Sample.One), cycle(mySample, mySample.of(Sample.One)))
     }
@@ -38,6 +39,6 @@ class EnumTest {
     @Throws(Exception::class)
     fun fetchFromGroup() {
         assertEquals(listOf(Sample.Two, Sample.Three),
-                cycle(groupOf(Tag.jobAttributes, mySample.of(Sample.Two, Sample.Three)))[mySample])
+                cycle(groupOf(Tag.jobAttributes, mySample.of(listOf(Sample.Two, Sample.Three))))[mySample])
     }
 }

@@ -335,8 +335,7 @@ data class IppPacket constructor(
         fun cancelJob(
             jobUri: URI
         ) = Builder(Operation.cancelJob.code)
-            .putAttributes(Tag.operationAttributes,
-                Types.jobUri.of(jobUri))
+            .putAttributes(Tag.operationAttributes, Types.jobUri.of(jobUri))
 
         /** Return a generic response [Builder]. */
         @JvmStatic

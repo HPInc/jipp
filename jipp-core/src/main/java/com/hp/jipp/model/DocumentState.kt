@@ -19,8 +19,11 @@ data class DocumentState(override val code: Int, override val name: String) : En
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [DocumentState] attributes */
+    /** An [AttributeType] for a [DocumentState] attribute. */
     class Type(name: String) : EnumType<DocumentState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [DocumentState] attributes. */
+    class SetType(name: String) : EnumType.Set<DocumentState>(name, { get(it) })
 
     object Code {
         const val pending = 3

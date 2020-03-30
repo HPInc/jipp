@@ -4,11 +4,11 @@ import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.FinishingsCol;
 import com.hp.jipp.model.FoldingDirection;
 import com.hp.jipp.model.FoldingReferenceEdge;
+import com.hp.jipp.model.Types;
 import com.hp.jipp.util.KotlinTest;
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
+import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
@@ -29,12 +29,12 @@ public class CollectionTest {
     @Test
     public void finishingsEmpty() throws Exception {
         FinishingsCol empty = new FinishingsCol();
-        assertEquals(empty, cycle(finishingsColActual, finishingsColActual.of(empty)).get(0));
+        assertEquals(empty, cycle(Types.finishingsColActual, finishingsColActual.of(empty)).get(0));
     }
 
     @Test
     public void finishings() throws Exception {
-        FinishingsCol received = cycle(finishingsColActual, finishingsColActual.of(finishingsCol)).get(0);
+        FinishingsCol received = cycle(Types.finishingsColActual, finishingsColActual.of(finishingsCol)).get(0);
         assertEquals(finishingsCol, received);
     }
 
@@ -43,10 +43,10 @@ public class CollectionTest {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
 
         // We can use an untypedColType to extract the full data received for the attribute
-        UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
+        UntypedCollection.Type untypedColType = new UntypedCollection.Type(Types.finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);
         for (Attribute<?> attribute : untyped.getAttributes()) {
-            if (attribute.getName().equals(FinishingsCol.Name.covering)) return;
+            if (attribute.getName().equals(FinishingsCol.Types.covering.getName())) return;
         }
         fail("No covering attribute found");
     }
@@ -55,7 +55,7 @@ public class CollectionTest {
     public void untypedCover() throws Exception {
         AttributeGroup group = cycle(groupOf(Tag.operationAttributes, finishingsColActual.of(finishingsCol)));
         // We can use an untypedColType to extract the full data received for the attribute
-        UntypedCollection.Type untypedColType = new UntypedCollection.Type(finishingsColActual.getName());
+        UntypedCollection.Type untypedColType = new UntypedCollection.Type(Types.finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);
         KotlinTest.cover(untyped, untyped.copy(untyped.getAttributes()), untyped.copy(Collections.emptyList()));
     }

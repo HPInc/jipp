@@ -2,24 +2,20 @@ package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.DocumentState;
 import com.hp.jipp.model.Types;
-import com.hp.jipp.util.BuildError;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.junit.Assert.*;
-
-import static com.hp.jipp.encoding.Cycler.*;
-
-import kotlin.text.Charsets;
+import static com.hp.jipp.encoding.Cycler.coverList;
+import static com.hp.jipp.encoding.Cycler.cycle;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 public class AttributeTest {
-
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -39,24 +35,8 @@ public class AttributeTest {
         cycle(new UnknownAttribute("multi", Arrays.asList(new UntypedEnum(5), true)));
     }
 
-    @SuppressWarnings("unchecked")
     @Test public void emptyAttr() throws IOException {
-        cycle(new EmptyAttribute("out-of-band", Tag.unknown));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test public void unknownAttr() throws IOException {
-        assertEquals(Tag.unknown, cycle(Attributes.unknown("unknown-attribute")).getTag());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test public void unsupportedAttr() throws IOException {
-        assertEquals(Tag.unsupported, cycle(Attributes.unsupported("unsupported-attribute")).getTag());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test public void noValueAttr() throws IOException {
-        assertEquals(Tag.noValue, cycle(Attributes.noValue("no-value-attribute")).getTag());
+        cycle(new EmptyAttribute<Void>("out-of-band", Tag.unknown));
     }
 
     @Test public void coerceAttr() {
@@ -69,27 +49,27 @@ public class AttributeTest {
 
     @Test
     public void equality() {
-        Attribute<String> charsetAttr = Types.attributesCharset.of("one", "two", "three");
-        Attribute<String> charsetAttr2 = Types.attributesCharset.of("one", "two", "three");
+        Attribute<String> charsetAttr = Types.attributesCharset.of("one");
+        Attribute<String> charsetAttr2 = Types.attributesCharset.of("one");
         assertEquals(charsetAttr, charsetAttr);
         assertEquals(charsetAttr, charsetAttr2);
         assertNotEquals(charsetAttr, 5);
         assertNotEquals(charsetAttr, Types.attributesCharset.empty(Tag.unsupported));
-        assertNotEquals(charsetAttr, Types.attributesNaturalLanguage.of("one", "two", "three"));
+        assertNotEquals(charsetAttr, Types.attributesNaturalLanguage.of("one"));
 
         // Different metadata means different object:
-        Attribute<String> natLangAttr = Types.attributesNaturalLanguage.of("one", "two", "three");
+        Attribute<String> natLangAttr = Types.attributesNaturalLanguage.of("one");
         assertNotEquals(charsetAttr, natLangAttr);
 
         // equals must be symmetric with equivalent List
-        assertEquals(Arrays.asList("one", "two", "three"), charsetAttr);
-        assertEquals(charsetAttr, Arrays.asList("one", "two", "three"));
-        assertEquals(Arrays.asList("one", "two", "three").hashCode(), charsetAttr.hashCode());
+        assertEquals(Collections.singletonList("one"), charsetAttr);
+        assertEquals(charsetAttr, Collections.singletonList("one"));
+        assertEquals(Collections.singletonList("one").hashCode(), charsetAttr.hashCode());
     }
 
     @Test
     public void collectionOperations() {
-        Attribute<String> attr = Types.attributesCharset.of("one", "two", "three");
+        Attribute<String> attr = Types.attributesCharset.of("one");
         coverList(attr, "one", "four");
     }
 
@@ -98,14 +78,5 @@ public class AttributeTest {
         Attribute<String> empty = Types.attributesCharset.empty(Tag.unsupported);
         assertEquals("attributes-charset(unsupported)", empty.toString());
         assertNull(empty.getValue());
-    }
-
-    @Test
-    public void failEmpty() {
-        try {
-            new BaseAttribute<>("name", null, null, Collections.<String>emptyList());
-            fail("Didn't throw build error");
-        } catch (BuildError ignored) {
-        }
     }
 }

@@ -35,27 +35,12 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<MediaSheetsCol>(MediaSheetsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "blank" member name */
-        const val blank = "blank"
-        /** "full-color" member name */
-        const val fullColor = "full-color"
-        /** "highlight-color" member name */
-        const val highlightColor = "highlight-color"
-        /** "monochrome" member name */
-        const val monochrome = "monochrome"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val blank = IntType(Name.blank)
-        val fullColor = IntType(Name.fullColor)
-        val highlightColor = IntType(Name.highlightColor)
-        val monochrome = IntType(Name.monochrome)
+        @JvmField val blank = IntType("blank")
+        @JvmField val fullColor = IntType("full-color")
+        @JvmField val highlightColor = IntType("highlight-color")
+        @JvmField val monochrome = IntType("monochrome")
     }
 
     /** Defines types for each member of [MediaSheetsCol] */

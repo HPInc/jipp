@@ -18,8 +18,11 @@ data class PrinterState(override val code: Int, override val name: String) : Enu
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [PrinterState] attributes */
+    /** An [AttributeType] for a [PrinterState] attribute. */
     class Type(name: String) : EnumType<PrinterState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [PrinterState] attributes. */
+    class SetType(name: String) : EnumType.Set<PrinterState>(name, { get(it) })
 
     object Code {
         const val idle = 3

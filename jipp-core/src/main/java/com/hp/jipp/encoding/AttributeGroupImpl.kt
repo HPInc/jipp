@@ -9,7 +9,6 @@ import java.util.HashSet
 /**
  * An implementation of [AttributeGroup].
  */
-@Suppress("TooManyFunctions") // Necessary
 internal class AttributeGroupImpl(
     override val tag: DelimiterTag,
     private val attributes: List<Attribute<*>>

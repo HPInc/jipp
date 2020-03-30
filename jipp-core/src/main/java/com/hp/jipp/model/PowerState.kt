@@ -18,8 +18,11 @@ data class PowerState(override val code: Int, override val name: String) : Enum(
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [PowerState] attributes */
+    /** An [AttributeType] for a [PowerState] attribute. */
     class Type(name: String) : EnumType<PowerState>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [PowerState] attributes. */
+    class SetType(name: String) : EnumType.Set<PowerState>(name, { get(it) })
 
     object Code {
         const val on = 20

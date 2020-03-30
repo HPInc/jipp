@@ -33,24 +33,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<PowerEventPolicyCol>(PowerEventPolicyCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "event-id" member name */
-        const val eventId = "event-id"
-        /** "event-name" member name */
-        const val eventName = "event-name"
-        /** "request-power-state" member name */
-        const val requestPowerState = "request-power-state"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val eventId = IntType(Name.eventId)
-        val eventName = NameType(Name.eventName)
-        val requestPowerState = KeywordType(Name.requestPowerState)
+        @JvmField val eventId = IntType("event-id")
+        @JvmField val eventName = NameType("event-name")
+        @JvmField val requestPowerState = KeywordType("request-power-state")
     }
 
     /** Defines types for each member of [PowerEventPolicyCol] */

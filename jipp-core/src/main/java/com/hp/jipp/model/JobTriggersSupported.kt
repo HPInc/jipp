@@ -30,18 +30,9 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobTriggersSupported>(JobTriggersSupported)
-
-    /** All member names as strings. */
-    object Name {
-        /** "preset-name" member name */
-        const val presetName = "preset-name"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val presetName = KeywordOrNameType(Name.presetName)
+        @JvmField val presetName = KeywordOrNameType("preset-name")
     }
 
     /** Defines types for each member of [JobTriggersSupported] */

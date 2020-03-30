@@ -18,8 +18,11 @@ data class TransmissionStatus(override val code: Int, override val name: String)
 
     override fun toString() = super.toString()
 
-    /** An attribute type for [TransmissionStatus] attributes */
+    /** An [AttributeType] for a [TransmissionStatus] attribute. */
     class Type(name: String) : EnumType<TransmissionStatus>(name, { get(it) })
+
+    /** An [AttributeType] for multiple [TransmissionStatus] attributes. */
+    class SetType(name: String) : EnumType.Set<TransmissionStatus>(name, { get(it) })
 
     object Code {
         const val pending = 3

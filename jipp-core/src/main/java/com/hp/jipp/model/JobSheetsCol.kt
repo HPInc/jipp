@@ -35,24 +35,11 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<JobSheetsCol>(JobSheetsCol)
-
-    /** All member names as strings. */
-    object Name {
-        /** "job-sheets" member name */
-        const val jobSheets = "job-sheets"
-        /** "media" member name */
-        const val media = "media"
-        /** "media-col" member name */
-        const val mediaCol = "media-col"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val jobSheets = KeywordOrNameType(Name.jobSheets)
-        val media = KeywordOrNameType(Name.media)
-        val mediaCol = MediaCol.Type(Name.mediaCol)
+        @JvmField val jobSheets = KeywordOrNameType("job-sheets")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobSheetsCol] */

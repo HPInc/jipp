@@ -31,21 +31,10 @@ constructor(
         )
     }
 
-    /** Type for attributes of this collection */
-    class Type(override val name: String) : AttributeCollection.Type<OutputAttributes>(OutputAttributes)
-
-    /** All member names as strings. */
-    object Name {
-        /** "noise-removal" member name */
-        const val noiseRemoval = "noise-removal"
-        /** "output-compression-quality-factor" member name */
-        const val outputCompressionQualityFactor = "output-compression-quality-factor"
-    }
-
     /** Types for each member attribute. */
     object Types {
-        val noiseRemoval = IntType(Name.noiseRemoval)
-        val outputCompressionQualityFactor = IntType(Name.outputCompressionQualityFactor)
+        @JvmField val noiseRemoval = IntType("noise-removal")
+        @JvmField val outputCompressionQualityFactor = IntType("output-compression-quality-factor")
     }
 
     /** Defines types for each member of [OutputAttributes] */
