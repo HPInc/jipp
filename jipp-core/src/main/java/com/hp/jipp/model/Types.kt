@@ -2366,7 +2366,7 @@ object Types {
      * "number-up-supported" type as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
-    @JvmField val numberUpSupported = IntOrIntRangeType("number-up-supported")
+    @JvmField val numberUpSupported = IntOrIntRangeType.Set("number-up-supported")
     /**
      * "oauth-authorization-scope" type as defined in:
      * [IPP20190521](https://ftp.pwg.org/pub/pwg/ipp/registrations/ippwg-oauth-authorization-scope-20190521.txt).

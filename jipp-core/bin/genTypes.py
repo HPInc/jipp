@@ -81,6 +81,11 @@ def parse_spec(xref, target):
     if spec is not None and spec not in target['specs']:
         target['specs'].append(spec)
 
+# XML Fix
+set_attributes = [
+    'number-up-supported'
+]
+
 def fix_syntax(item, syntax = None):
     if syntax is None:
         syntax = item['syntax']
@@ -104,7 +109,7 @@ def fix_syntax(item, syntax = None):
     syntax = syntax.replace("type2", "")
     syntax = re.sub('\[.*\]$','', syntax) # XML fix
     syntax = syntax.replace("1set Of", "1setOf") # XML fix
-    if '1setOf' in syntax:
+    if '1setOf' in syntax or item.get('name', None) in set_attributes:
         syntax = syntax.replace("1setOf", "")
         item['set'] = True
     syntax = syntax.strip()

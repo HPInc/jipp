@@ -150,7 +150,7 @@ data class IppPacket constructor(
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun putAttributes(tag: DelimiterTag, attributes: List<Attribute<*>>) = this.apply {
+        fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = this.apply {
             getOrCreateGroup(tag) += attributes
         }
 
@@ -159,20 +159,36 @@ data class IppPacket constructor(
             putAttributes(tag, attributes.toList())
 
         /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
+        fun putOperationAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.operationAttributes, attributes)
+
+        /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
         fun putOperationAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.operationAttributes, attributes.toList())
+            putOperationAttributes(attributes.toList())
+
+        /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
+        fun putJobAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.jobAttributes, attributes)
 
         /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
         fun putJobAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.jobAttributes, attributes.toList())
+            putJobAttributes(attributes.toList())
+
+        /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
+        fun putPrinterAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.printerAttributes, attributes)
 
         /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
         fun putPrinterAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.printerAttributes, attributes.toList())
+            putPrinterAttributes(attributes.toList())
+
+        /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
+        fun putUnsupportedAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.unsupportedAttributes, attributes)
 
         /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
         fun putUnsupportedAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.unsupportedAttributes, attributes.toList())
+            putUnsupportedAttributes(attributes.toList())
 
         /** Add a new [Tag.jobAttributes] group containing default attributes. */
         @JvmOverloads
