@@ -3,7 +3,7 @@
 
 package com.hp.jipp.encoding
 
-/** Type for attributes with no values. */
+/** Type for [Attribute]s with no values. */
 open class EmptyAttributeType<T : Any>(
     override val name: String,
     val tag: OutOfBandTag

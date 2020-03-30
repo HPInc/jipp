@@ -14,7 +14,7 @@ interface AttributeType<T : Any> {
         AttributeImpl(name, this, listOf(value))
 
     /** Return an empty attribute (containing no values) for this type but substituting a tag. */
-    fun empty(tag: OutOfBandTag) =
+    fun empty(tag: OutOfBandTag): Attribute<T> =
         EmptyAttribute<T>(name, tag)
 
     /** Return a "no-value" attribute of this type. */

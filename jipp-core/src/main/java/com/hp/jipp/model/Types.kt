@@ -411,11 +411,6 @@ object Types {
      */
     @JvmField val documentFormatDefault = StringType(Tag.mimeMediaType, "document-format-default")
     /**
-     * "document-format-details-supported" type as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatDetailsSupported = KeywordType.Set("document-format-details-supported")
-    /**
      * "document-format-detected" type as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */

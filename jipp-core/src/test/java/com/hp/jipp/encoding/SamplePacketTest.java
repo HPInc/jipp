@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
+import static com.hp.jipp.encoding.Cycler.cycle;
 import static org.junit.Assert.assertEquals;
 
 public class SamplePacketTest {
@@ -38,15 +39,11 @@ public class SamplePacketTest {
                         Types.requestingUserName.of(user),
                         Types.requestedAttributes.of(keywords),
                         Types.whichJobs.of(WhichJobs.fetchable),
-                        Types.myJobs.of(true)));
+                        Types.myJobs.of(true)),
+                groupOf(Tag.unsupportedAttributes,
+                        Attributes.unknown(Types.systemFirmwareName.getName())));
 
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (IppOutputStream output = new IppOutputStream(bytes)) {
-            output.write(packet);
-        }
-        IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
-
-        IppPacket inPacket = input.readPacket();
+        IppPacket inPacket = cycle(packet);
         String expected =
                 "IppPacket(v=0x200, c=Get-Jobs(10), r=0x7b) {\n" +
                 "  operation-attributes {\n" +
@@ -57,7 +54,8 @@ public class SamplePacketTest {
                 "    requested-attributes = [ job-name, job-id, job-state, job-originating-user-name,\n" +
                 "      job-uri, copies, job-media-sheets, job-media-sheets-completed ],\n" +
                 "    which-jobs = fetchable,\n" +
-                "    my-jobs = true } }";
+                "    my-jobs = true },\n" +
+                "  unsupported-attributes { system-firmware-name (unknown) } }";
         assertEquals(expected, inPacket.prettyPrint(90, "  "));
     }
 }

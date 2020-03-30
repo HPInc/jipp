@@ -38,7 +38,7 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
 
     override fun print(printer: PrettyPrinter) {
         when (size) {
-            0 -> printer.open(PrettyPrinter.SILENT, name)
+            0 -> printer.open(PrettyPrinter.SILENT, name + (this as? EmptyAttribute)?.let { " (${it.tag})" })
             1 -> printer.open(PrettyPrinter.KEY_VALUE, "$name =")
             else -> printer.open(PrettyPrinter.ARRAY, "$name =")
         }

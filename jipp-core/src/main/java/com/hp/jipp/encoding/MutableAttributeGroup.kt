@@ -47,6 +47,11 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     override fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =
         map[type.name] as Attribute<T>?
 
+    /** Assign an attribute from its native value type. */
+    operator fun <T : Any> set(type: AttributeType<T>, value: T) {
+        map[type.name] = type.of(value)
+    }
+
     /** Put [attribute] into this group. */
     fun <T : Any> put(attribute: Attribute<T>) {
         map[attribute.name] = attribute
@@ -175,6 +180,7 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         // Note: tag is not included because we might need to hash this with other List objects
         return map.values.stringinate().hashCode()
     }
+
     override fun toString(): String {
         return "MutableAttributeGroup($tag, ${map.values})"
     }

@@ -193,7 +193,16 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutableAddMultiple() throws Exception {
+    public void mutablePutSingle() {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"));
+        mutableGroup.set(Types.attributesCharset, "utf-16");
+        assertEquals(1, mutableGroup.size());
+        assertEquals("utf-16", mutableGroup.get(Types.attributesCharset).getValue());
+    }
+
+    @Test
+    public void mutablePutMultiple() throws Exception {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         mutableGroup.put(Types.attributesCharset.of("utf-8"),

@@ -12,9 +12,6 @@ open class AttributeImpl<T : Any>(
     private val values: List<T>
 ) : Attribute<T>, List<T> by values {
 
-    /** Construct an empty (no-value) attribute for a specific attribute type. */
-    constructor(name: String, type: EmptyAttributeType<T>) : this(name, type, emptyList())
-
     init {
         if (values.isEmpty() && type !is EmptyAttributeType) {
             throw BuildError("Attribute must have values or an out-of-band tag")
@@ -36,9 +33,9 @@ open class AttributeImpl<T : Any>(
         } else when (other) {
             is Attribute<*> -> {
                 val otherType = other.type
-                if (otherType is EmptyAttributeType<*> || type is EmptyAttributeType<*>) {
+                if (otherType is EmptyAttributeType || type is EmptyAttributeType) {
                     // If either is empty then they must both be empty and have the same tag
-                    otherType is EmptyAttributeType<*> && type is EmptyAttributeType<*> &&
+                    otherType is EmptyAttributeType && type is EmptyAttributeType &&
                         otherType.tag == type.tag
                 } else {
                     // Otherwise just make sure their names, type names, and values align

@@ -11,7 +11,7 @@ package com.hp.jipp.model;
 /**
  * Values applicable for "printer-settable-attributes-supported" keywords.
  *
- * @see <a href="">RFC3380</a>
+ * @see <a href="http://www.iana.org/go/rfc3380">RFC3380</a>
  */
 public class PrinterSettableAttributesSupported {
     public static final String none = "none";
