@@ -20,8 +20,6 @@ object EnumTypes {
         DestinationStatuses.Types.transmissionStatus,
         MediaCol.MediaSourceProperties.Types.mediaSourceFeedOrientation,
         InputAttributes.Types.inputOrientationRequested,
-        MediaColReady.MediaSourceProperties.Types.mediaSourceFeedOrientation,
-        MediaColDatabase.MediaSourceProperties.Types.mediaSourceFeedOrientation,
         Types.inputOrientationRequestedSupported,
         Types.orientationRequested,
         Types.orientationRequestedActual,

@@ -310,6 +310,8 @@ crossover_attributes = {
     'printer-pages-completed-col': 'job-pages-col',
 }
 
+ignored_attributes = [ 'media-col-ready', 'media-col-database' ]
+
 # Parse a single attribute record
 def parse_attribute(record):
     attr_name = record.find('{*}name').text
@@ -580,12 +582,14 @@ def emit_attributes(env):
         for type in group.values():
             if 'ref_col' in type and type['ref_col'] and type['members']:
                 referent = attributes[type['ref_group']][type['ref_col']]
+                # Push members over to referent
                 for new_member in type['members'].values():
                     if new_member['name'] in referent['members'] and \
                             referent['members'][new_member['name']] != new_member:
                         warn("Collection type already has different member " + new_member['name'], referent)
                 else:
-                        referent['members'][new_member['name']] = new_member
+                    referent['members'][new_member['name']] = new_member
+                type['members'] = { }
 
     # Pass 2: Emit collection types having members
     for group in attributes.values():
