@@ -47,6 +47,31 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     override fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =
         map[type.name] as Attribute<T>?
 
+    /** Assign an attribute from its native value type. */
+    operator fun <T : Any> set(type: AttributeType<T>, value: T) {
+        map[type.name] = type.of(value)
+    }
+
+    /** Assign an attribute with multiple values from its native value type. */
+    operator fun <T : Any> set(type: AttributeSetType<T>, values: Iterable<T>) {
+        map[type.name] = type.of(values)
+    }
+
+    /** Assign an attribute from its native value type. */
+    fun <T : Any> put(type: AttributeType<T>, value: T) {
+        map[type.name] = type.of(value)
+    }
+
+    /** Assign an attribute from one or more values. */
+    fun <T : Any> put(type: AttributeSetType<T>, values: Iterable<T>) {
+        map[type.name] = type.of(values)
+    }
+
+    /** Assign an attribute from one or more values. */
+    fun <T : Any> put(type: AttributeSetType<T>, value: T, vararg values: T) {
+        map[type.name] = type.of(listOf(value) + values)
+    }
+
     /** Put [attribute] into this group. */
     fun <T : Any> put(attribute: Attribute<T>) {
         map[attribute.name] = attribute
@@ -57,6 +82,36 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         for (attribute in attributes) {
             map[attribute.name] = attribute
         }
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    fun put(type: NameType, value: String) {
+        put(type.of(value))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(type: NameType.Set, value: String, vararg values: String) {
+        put(type.of((listOf(value) + values.toList()).map { Name(it) }))
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    fun put(type: KeywordOrNameType, value: String) {
+        put(type.of(value))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(type: KeywordOrNameType.Set, value: String, vararg values: String) {
+        put(type.of((listOf(value) + values.toList()).map { KeywordOrName(it) }))
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    fun put(textType: TextType, value: String) {
+        put(textType.of(value))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(textType: TextType.Set, value: String, vararg values: String) {
+        put(textType.of((listOf(value) + values.toList()).map { Text(it) }))
     }
 
     /** Put [attributes] into this group. */
@@ -175,6 +230,7 @@ open class MutableAttributeGroup @JvmOverloads constructor(
         // Note: tag is not included because we might need to hash this with other List objects
         return map.values.stringinate().hashCode()
     }
+
     override fun toString(): String {
         return "MutableAttributeGroup($tag, ${map.values})"
     }

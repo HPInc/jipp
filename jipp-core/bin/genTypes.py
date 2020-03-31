@@ -57,7 +57,6 @@ def note(output):
     print "    NOTE: " + output
 
 # Given a record, attempt to grab the referenced specification out of its xref.
-# Return the short id of the spec or None if not found.
 def parse_spec(xref, target):
     if xref is None:
         return None
@@ -76,10 +75,16 @@ def parse_spec(xref, target):
         warn("unparseable spec reference " + etree.tostring(xref))
     else:
         if spec not in specs:
-            specs[spec] = uri
+            specs[spec.lower()] = uri
+            specs[spec.upper()] = uri
 
     if spec is not None and spec not in target['specs']:
         target['specs'].append(spec)
+
+# XML Fix
+set_attributes = [
+    'number-up-supported'
+]
 
 def fix_syntax(item, syntax = None):
     if syntax is None:
@@ -104,7 +109,7 @@ def fix_syntax(item, syntax = None):
     syntax = syntax.replace("type2", "")
     syntax = re.sub('\[.*\]$','', syntax) # XML fix
     syntax = syntax.replace("1set Of", "1setOf") # XML fix
-    if '1setOf' in syntax:
+    if '1setOf' in syntax or item.get('name', None) in set_attributes:
         syntax = syntax.replace("1setOf", "")
         item['set'] = True
     syntax = syntax.strip()
@@ -188,9 +193,10 @@ def parse_status_code(record):
     except ValueError:
         warn("status code has non-integer value " + value)
 
+# XML Fix
 obsolete_keywords = [
     'job-cover-back-supported',
-    'job-cover-front-supported'
+    'job-cover-front-supported',
 ]
 
 # Parse a single keyword record
@@ -310,7 +316,10 @@ crossover_attributes = {
     'printer-pages-completed-col': 'job-pages-col',
 }
 
-ignored_attributes = [ 'media-col-ready', 'media-col-database' ]
+ignored_attributes = [
+    # XML Fix (obsolete or maybe just deprecated)
+    'document-format-details-supported',
+]
 
 # Parse a single attribute record
 def parse_attribute(record):
@@ -330,8 +339,7 @@ def parse_attribute(record):
             del collection[attr_name]
         return
 
-    # XML fix (listed twice)
-    if attr_name == 'job-finishings':
+    if attr_name in ignored_attributes:
         return
 
     attr = collection.setdefault(attr_name, {

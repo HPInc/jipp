@@ -128,29 +128,29 @@ data class IppPacket constructor(
                 Types.attributesCharset.of(DEFAULT_CHARSET))
         }
 
-        fun setVersionNumber(versionNumber: Int) = this.apply {
+        fun setVersionNumber(versionNumber: Int) = apply {
             this.versionNumber = versionNumber
         }
 
-        fun setRequestId(requestId: Int) = this.apply {
+        fun setRequestId(requestId: Int) = apply {
             this.requestId = requestId
         }
 
-        fun setCode(code: Int) = this.apply {
+        fun setCode(code: Int) = apply {
             this.code = code
         }
 
         /** Append a new [AttributeGroup] after other groups. */
-        fun addGroup(group: AttributeGroup) = this.apply {
+        fun addGroup(group: AttributeGroup) = apply {
             groups.add(group.toMutable())
         }
 
         /** Return the last group with the specified tag, creating it if necessary */
-        private fun getOrCreateGroup(tag: DelimiterTag) =
+        fun getOrCreateGroup(tag: DelimiterTag) =
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun putAttributes(tag: DelimiterTag, attributes: List<Attribute<*>>) = this.apply {
+        fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = apply {
             getOrCreateGroup(tag) += attributes
         }
 
@@ -159,20 +159,36 @@ data class IppPacket constructor(
             putAttributes(tag, attributes.toList())
 
         /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
+        fun putOperationAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.operationAttributes, attributes)
+
+        /** Get the [Tag.operationAttributes] group and add or replace [attributes] in it. */
         fun putOperationAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.operationAttributes, attributes.toList())
+            putOperationAttributes(attributes.toList())
+
+        /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
+        fun putJobAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.jobAttributes, attributes)
 
         /** Get or create the [Tag.jobAttributes] group and add or replace [attributes] in it. */
         fun putJobAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.jobAttributes, attributes.toList())
+            putJobAttributes(attributes.toList())
+
+        /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
+        fun putPrinterAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.printerAttributes, attributes)
 
         /** Get or create the [Tag.printerAttributes] group and add or replace [attributes] in it. */
         fun putPrinterAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.printerAttributes, attributes.toList())
+            putPrinterAttributes(attributes.toList())
+
+        /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
+        fun putUnsupportedAttributes(attributes: Iterable<Attribute<*>>) =
+            putAttributes(Tag.unsupportedAttributes, attributes)
 
         /** Get or create the [Tag.unsupportedAttributes] group and add or replace [attributes] in it. */
         fun putUnsupportedAttributes(vararg attributes: Attribute<*>) =
-            putAttributes(Tag.unsupportedAttributes, attributes.toList())
+            putUnsupportedAttributes(attributes.toList())
 
         /** Add a new [Tag.jobAttributes] group containing default attributes. */
         @JvmOverloads
@@ -187,7 +203,7 @@ data class IppPacket constructor(
             jobStateReasons: List<String> = listOf(JobStateReason.none),
             /** Other job attributes, if any. */
             vararg attributes: Attribute<*>
-        ) = this.apply {
+        ) = apply {
             addGroup(MutableAttributeGroup(Tag.jobAttributes, listOf(
                 Types.jobId.of(jobId),
                 Types.jobUri.of(jobUri),
@@ -202,16 +218,16 @@ data class IppPacket constructor(
     }
 
     companion object {
-        /** Default version number for IPP packets (0x200 for IPP 2.0) */
+        /** Default version number for IPP packets (0x200 for IPP 2.0). */
         const val DEFAULT_VERSION_NUMBER = 0x0200
 
-        /** Default request ID */
+        /** Default request ID (1). */
         const val DEFAULT_REQUEST_ID = 1
 
-        /** Default language to use in operation groups. */
+        /** Default language to use in operation groups ("en-us"). */
         const val DEFAULT_LANGUAGE = "en-us"
 
-        /** Default charset to use in operation groups. */
+        /** Default charset to use in operation groups ("utf-8"). */
         const val DEFAULT_CHARSET = "utf-8"
 
         @JvmStatic
@@ -233,13 +249,21 @@ data class IppPacket constructor(
         fun getPrinterAttributes(
             printerUri: URI,
             /** Printer attributes of interest. */
-            vararg types: AttributeType<*>
+            types: Iterable<AttributeType<*>>
         ) = Builder(Operation.getPrinterAttributes.code)
             .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
             .putRequestedAttributes(types.toList())
 
+        /** Return a Get-Printer-Attributes request [Builder]. */
+        @JvmStatic
+        fun getPrinterAttributes(
+            printerUri: URI,
+            /** Printer attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = getPrinterAttributes(printerUri, types.toList())
+
         /** If supplied types are not empty, attach them as requested attributes. */
-        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = this.apply {
+        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = apply {
             if (types.isNotEmpty()) {
                 putAttributes(Tag.operationAttributes,
                     Types.requestedAttributes.of(types.toList().map { it.name }))

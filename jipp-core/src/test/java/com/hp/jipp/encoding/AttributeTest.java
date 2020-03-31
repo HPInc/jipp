@@ -47,6 +47,14 @@ public class AttributeTest {
         ), documentStateType.coerce(intAttr));
     }
 
+    @Test public void emptyAttrs() throws IOException {
+        // Different ways to get to the same empty attributes
+        assertEquals(new IntType("novalue-type").unknown(), cycle(Attributes.unknown("unknown-type")));
+        assertEquals(new IntType("novalue-type").noValue(), cycle(Attributes.noValue("novalue-type")));
+        assertEquals(new IntType("unsupported-type").unsupported(),
+                cycle(Attributes.unsupported("unsupported-type")));
+    }
+
     @Test
     public void equality() {
         Attribute<String> charsetAttr = Types.attributesCharset.of("one");

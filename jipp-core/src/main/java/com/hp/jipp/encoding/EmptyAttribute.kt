@@ -3,8 +3,8 @@
 
 package com.hp.jipp.encoding
 
-/** An attribute consisting only of an out-of-band tag and no values. */
+/** An [Attribute] consisting only of an out-of-band tag and no values. */
 class EmptyAttribute<T : Any>(
     name: String,
-    tag: OutOfBandTag
-) : AttributeImpl<T>(name, EmptyAttributeType<T>(name, tag))
+    val tag: OutOfBandTag
+) : AttributeImpl<T>(name, EmptyAttributeType<T>(name, tag), listOf())

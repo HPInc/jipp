@@ -29,7 +29,7 @@ import sun.nio.cs.StreamEncoder
  *
  * See also: https://wwwimages2.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf
  */
-@Suppress("LargeClass") // Clearer for now to have it all in one place
+@Suppress("LargeClass", "TooManyFunctions") // Clearer for now to have it all in one place
 class PclmWriter(
     /** Destination for encoded PCLM stream */
     private val outputStream: OutputStream,
@@ -143,7 +143,8 @@ class PclmWriter(
         // Write the page content stream object
         pdObject {
             val contentStream = CharArrayWriter()
-            contentStream.write("${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 ${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 cm\n")
+            contentStream.write("${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 " +
+                "${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 cm\n")
             contentStream.write("/P <</MCID 0>> BDC q\n")
 
             for (swath in swaths) {
@@ -227,7 +228,7 @@ class PclmWriter(
         if (forceNonBlank) return renderBytes
 
         // Check to see if blank
-        val blank: Byte = 0xFF.toByte()
+        val blank: Byte = BLANK
         return if (renderBytes.firstOrNull { it != blank } == null) {
             // All bytes are blank so return an empty array
             ByteArray(0)
@@ -313,6 +314,7 @@ class PclmWriter(
     }
 
     private companion object {
+        private const val BLANK = 0xFF.toByte()
         private const val POINTS_PER_INCH: Int = 72
         private const val CATALOG_OBJECT_NUMBER = 1
         private const val PAGE_TREE_OBJECT_NUMBER = CATALOG_OBJECT_NUMBER + 1

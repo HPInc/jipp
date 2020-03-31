@@ -54,8 +54,8 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
     companion object {
         /** Return a fixed group of attributes. */
         @JvmStatic
-        fun groupOf(tag: DelimiterTag, attributes: List<Attribute<*>>): AttributeGroup =
-            AttributeGroupImpl(tag, attributes)
+        fun groupOf(tag: DelimiterTag, attributes: Iterable<Attribute<*>>): AttributeGroup =
+            AttributeGroupImpl(tag, attributes.toList())
 
         /** Return a fixed group of attributes. */
         @JvmStatic
@@ -64,8 +64,8 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
 
         /** Return a mutable group of attributes. */
         @JvmStatic
-        fun mutableGroupOf(tag: DelimiterTag, attributes: List<Attribute<*>>): MutableAttributeGroup =
-            MutableAttributeGroup(tag, attributes)
+        fun mutableGroupOf(tag: DelimiterTag, attributes: Iterable<Attribute<*>>): MutableAttributeGroup =
+            MutableAttributeGroup(tag, attributes.toList())
 
         /** Return a mutable group of attributes. */
         @JvmStatic

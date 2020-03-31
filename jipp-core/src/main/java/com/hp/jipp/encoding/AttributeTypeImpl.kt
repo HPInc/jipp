@@ -3,6 +3,7 @@
 
 package com.hp.jipp.encoding
 
+/** A base implementation of [AttributeType]. */
 open class AttributeTypeImpl<T : Any>(
     override val name: String,
     private val cls: Class<T>

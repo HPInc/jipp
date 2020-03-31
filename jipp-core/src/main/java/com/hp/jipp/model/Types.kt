@@ -411,11 +411,6 @@ object Types {
      */
     @JvmField val documentFormatDefault = StringType(Tag.mimeMediaType, "document-format-default")
     /**
-     * "document-format-details-supported" type as defined in:
-     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
-     */
-    @JvmField val documentFormatDetailsSupported = KeywordType.Set("document-format-details-supported")
-    /**
      * "document-format-detected" type as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */
@@ -2371,7 +2366,7 @@ object Types {
      * "number-up-supported" type as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
-    @JvmField val numberUpSupported = IntOrIntRangeType("number-up-supported")
+    @JvmField val numberUpSupported = IntOrIntRangeType.Set("number-up-supported")
     /**
      * "oauth-authorization-scope" type as defined in:
      * [IPP20190521](https://ftp.pwg.org/pub/pwg/ipp/registrations/ippwg-oauth-authorization-scope-20190521.txt).

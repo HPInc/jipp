@@ -1,9 +1,12 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.DocumentState;
 import com.hp.jipp.model.IdentifyAction;
+import com.hp.jipp.model.ImpositionTemplate;
 import com.hp.jipp.model.JobState;
 import com.hp.jipp.model.JobStateReason;
+import com.hp.jipp.model.MediaCol;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
@@ -193,13 +196,29 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutableAddMultiple() throws Exception {
+    public void mutablePutSingle() {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"));
+        mutableGroup.set(Types.attributesCharset, "utf-16");
+        assertEquals(1, mutableGroup.size());
+        assertEquals("utf-16", mutableGroup.get(Types.attributesCharset).getValue());
+    }
+
+    @Test
+    public void mutablePutMultiple() throws Exception {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         mutableGroup.put(Types.attributesCharset.of("utf-8"),
                 Types.attributesNaturalLanguage.of("sp"));
         assertEquals("sp", mutableGroup.getValue(Types.attributesNaturalLanguage));
         assertEquals(Collections.singletonList("utf-8"), mutableGroup.getValues(Types.attributesCharset));
+    }
+
+    @Test
+    public void mutableSetMultiple() throws Exception {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes);
+        mutableGroup.set(Types.mediaColDatabase, Arrays.asList(new MediaCol(), new MediaCol()));
+        assertEquals(2, mutableGroup.get(Types.mediaColDatabase).size());
     }
 
     @Test
@@ -229,6 +248,39 @@ public class AttributeGroupTest {
         assertNull(mutableGroup.get(Types.documentFormat.getName()));
         assertThat(mutableGroup.toString(), startsWith("MutableAttributeGroup"));
         mutableGroup.setTag(Tag.jobAttributes);
+    }
+
+    @Test
+    public void mutableGroupPutOperations() {
+        MutableAttributeGroup group = mutableGroupOf(operationAttributes);
+
+        group.put(Types.documentCharsetSupported, Arrays.asList("utf-8", "utf-16"));
+        assertEquals(Arrays.asList("utf-8", "utf-16"), group.get(Types.documentCharsetSupported));
+
+        group.put(Types.documentCharsetSupported, "utf-16", "utf-8");
+        assertEquals(Arrays.asList("utf-16", "utf-8"), group.get(Types.documentCharsetSupported));
+
+        group.put(Types.documentCharsetSupported, "utf-32");
+        assertEquals(Collections.singletonList("utf-32"), group.get(Types.documentCharsetSupported));
+
+        group.put(Types.jobDetailedStatusMessages, "all", "good");
+        assertEquals(Arrays.asList("all", "good"), group.getStrings(Types.jobDetailedStatusMessages));
+
+        group.put(Types.jobDetailedStatusMessages, "one");
+        assertEquals(Collections.singletonList("one"), group.getStrings(Types.jobDetailedStatusMessages));
+
+        group.put(Types.outputDeviceSupported, "all", "good");
+        assertEquals(Arrays.asList("all", "good"), group.getStrings(Types.outputDeviceSupported));
+
+        group.put(Types.outputDeviceSupported, "one");
+        assertEquals(Collections.singletonList("one"), group.getStrings(Types.outputDeviceSupported));
+
+        group.put(Types.coveringNameSupported, CoveringName.plain, CoveringName.preCut);
+        assertEquals(Arrays.asList(CoveringName.plain, CoveringName.preCut),
+                group.getStrings(Types.coveringNameSupported));
+
+        group.put(Types.impositionTemplateDefault, ImpositionTemplate.signature);
+        assertEquals(ImpositionTemplate.signature, group.getString(Types.impositionTemplateDefault));
     }
 
     @Test
