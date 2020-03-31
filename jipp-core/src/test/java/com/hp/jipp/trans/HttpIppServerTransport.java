@@ -1,5 +1,7 @@
 package com.hp.jipp.trans;
 
+import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.encoding.IppOutputStream;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;

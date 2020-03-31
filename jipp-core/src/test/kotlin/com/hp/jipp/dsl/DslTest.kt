@@ -2,6 +2,8 @@ package com.hp.jipp.dsl
 
 import com.hp.jipp.encoding.Cycler.cycle
 import com.hp.jipp.encoding.IntOrIntRange
+import com.hp.jipp.encoding.IppPacket
+import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_REQUEST_ID
 import com.hp.jipp.encoding.MediaSizes
 import com.hp.jipp.encoding.Name
 import com.hp.jipp.encoding.Tag
@@ -11,8 +13,6 @@ import com.hp.jipp.model.MediaCol
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
 import com.hp.jipp.model.Types
-import com.hp.jipp.trans.IppPacket
-import com.hp.jipp.trans.IppPacket.Companion.DEFAULT_REQUEST_ID
 import java.net.URI
 import org.junit.Assert
 import org.junit.Assert.assertEquals

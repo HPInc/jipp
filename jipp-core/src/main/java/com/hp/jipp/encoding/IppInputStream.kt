@@ -1,18 +1,8 @@
 // Copyright 2017 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.trans
+package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.Attribute
-import com.hp.jipp.encoding.AttributeGroup
-import com.hp.jipp.encoding.Codec
-import com.hp.jipp.encoding.DelimiterTag
-import com.hp.jipp.encoding.EmptyAttribute
-import com.hp.jipp.encoding.KeyValues
-import com.hp.jipp.encoding.OutOfBandTag
-import com.hp.jipp.encoding.Tag
-import com.hp.jipp.encoding.UnknownAttribute
-import com.hp.jipp.encoding.ValueTag
 import com.hp.jipp.model.EnumTypes
 import com.hp.jipp.model.KeyValuesTypes
 import com.hp.jipp.util.ParseError

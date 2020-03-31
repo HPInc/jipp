@@ -1,7 +1,7 @@
 package com.hp.jipp.trans;
 
 import com.hp.jipp.encoding.Tag;
-import com.hp.jipp.trans.IppPacket;
+import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.util.KotlinTest;
 import org.junit.Test;

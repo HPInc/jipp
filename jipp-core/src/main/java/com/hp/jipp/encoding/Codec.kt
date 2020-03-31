@@ -3,9 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.trans.IppInputStream
-import com.hp.jipp.trans.IppOutputStream
-
 /** Reads/writes values of [T]. */
 interface Codec<T> {
     val cls: Class<T>

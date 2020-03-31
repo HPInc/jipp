@@ -1,5 +1,7 @@
 package com.hp.jipp.trans
 
+import com.hp.jipp.encoding.IppInputStream
+import com.hp.jipp.encoding.IppOutputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream

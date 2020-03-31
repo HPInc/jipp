@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.trans.IppStreams
-
 /**
  * An [AttributeType] for a [Name] value.
  *

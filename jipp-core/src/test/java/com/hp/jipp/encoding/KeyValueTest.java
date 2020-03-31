@@ -4,7 +4,6 @@
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.Status;
-import com.hp.jipp.trans.IppPacket;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

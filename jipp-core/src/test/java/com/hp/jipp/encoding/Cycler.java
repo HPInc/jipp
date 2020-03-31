@@ -1,9 +1,6 @@
 
 package com.hp.jipp.encoding;
 
-import com.hp.jipp.trans.IppPacket;
-import com.hp.jipp.trans.IppInputStream;
-import com.hp.jipp.trans.IppOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

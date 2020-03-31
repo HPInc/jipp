@@ -1,27 +1,7 @@
 // Copyright 2020 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.trans
-
-import com.hp.jipp.encoding.BooleanType
-import com.hp.jipp.encoding.Codec
-import com.hp.jipp.encoding.CollectionType
-import com.hp.jipp.encoding.DateTimeType
-import com.hp.jipp.encoding.EnumType
-import com.hp.jipp.encoding.IntOrIntRangeType
-import com.hp.jipp.encoding.IntRangeType
-import com.hp.jipp.encoding.IntType
-import com.hp.jipp.encoding.KeyValues
-import com.hp.jipp.encoding.KeywordOrNameType
-import com.hp.jipp.encoding.KeywordType
-import com.hp.jipp.encoding.NameType
-import com.hp.jipp.encoding.OctetsType
-import com.hp.jipp.encoding.OtherOctets
-import com.hp.jipp.encoding.OtherString
-import com.hp.jipp.encoding.ResolutionType
-import com.hp.jipp.encoding.Tag
-import com.hp.jipp.encoding.TextType
-import com.hp.jipp.encoding.UriType
+package com.hp.jipp.encoding
 
 /** Utility object for reading/writing IPP protocol elements. */
 internal object IppStreams {

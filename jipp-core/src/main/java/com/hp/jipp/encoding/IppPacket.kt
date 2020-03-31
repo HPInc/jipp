@@ -1,20 +1,17 @@
 // Copyright 2017 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.trans
+package com.hp.jipp.encoding
 
-import com.hp.jipp.encoding.Attribute
-import com.hp.jipp.encoding.AttributeGroup
-import com.hp.jipp.encoding.AttributeType
-import com.hp.jipp.encoding.DelimiterTag
-import com.hp.jipp.encoding.MutableAttributeGroup
-import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.JobState
 import com.hp.jipp.model.JobStateReason
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
 import com.hp.jipp.model.Types
 import com.hp.jipp.util.PrettyPrinter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.URI
 
 /**
@@ -74,6 +71,15 @@ data class IppPacket constructor(
     /** Make a copy of this packet but replace with the supplied attribute groups */
     fun withAttributeGroups(attributeGroups: List<AttributeGroup>): IppPacket =
         copy(attributeGroups = attributeGroups)
+
+    /** Write this packet to the [OutputStream] as per RFC2910.  */
+    @Throws(IOException::class)
+    @Deprecated("use IppInputStream.write()",
+        ReplaceWith("write()", "com.hp.jipp.encoding.IppInputStream"))
+    fun write(output: OutputStream) {
+        val ippOutput = IppOutputStream(output)
+        ippOutput.write(this)
+    }
 
     /** Return a pretty-printed version of this packet (including separators and line breaks) */
     fun prettyPrint(maxWidth: Int, indent: String) = PrettyPrinter(prefix(), PrettyPrinter.OBJECT, indent, maxWidth)
@@ -223,6 +229,20 @@ data class IppPacket constructor(
 
         /** Default charset to use in operation groups ("utf-8"). */
         const val DEFAULT_CHARSET = "utf-8"
+
+        @JvmStatic
+        @Throws(IOException::class)
+        @Deprecated("use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
+        fun parse(input: InputStream): IppPacket =
+            (input as? IppInputStream ?: IppInputStream(input)).readPacket()
+
+        @JvmStatic
+        @Throws(IOException::class)
+        @Deprecated("use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
+        fun read(input: InputStream) =
+            (input as? IppInputStream ?: IppInputStream(input)).readPacket()
 
         /** Return a Get-Printer-Attributes request [Builder]. */
         @JvmStatic

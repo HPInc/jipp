@@ -3,8 +3,6 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.trans.IppStreams
-
 /** An [AttributeType] for a [Resolution] value. */
 open class ResolutionType(override val name: String) : AttributeType<Resolution> {
     /** An [AttributeType] for multiple [Resolution] values. */
