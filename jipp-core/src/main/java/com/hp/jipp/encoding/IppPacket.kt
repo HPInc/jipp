@@ -149,6 +149,26 @@ data class IppPacket constructor(
         fun getOrCreateGroup(tag: DelimiterTag) =
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
+        /** Update operation attributes with [buildGroup]. */
+        fun operationAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
+            getOrCreateGroup(Tag.operationAttributes).buildGroup()
+        }
+
+        /** Update printer attributes with [buildGroup]. */
+        fun printerAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
+            getOrCreateGroup(Tag.printerAttributes).buildGroup()
+        }
+
+        /** Update job attributes with [buildGroup]. */
+        fun jobAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
+            getOrCreateGroup(Tag.jobAttributes).buildGroup()
+        }
+
+        /** Update unsupported attributes with [buildGroup]. */
+        fun unsupportedAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
+            getOrCreateGroup(Tag.unsupportedAttributes).buildGroup()
+        }
+
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
         fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = apply {
             getOrCreateGroup(tag) += attributes
