@@ -107,12 +107,14 @@ data class IppPacket constructor(
         var versionNumber: Int = DEFAULT_VERSION_NUMBER,
         var requestId: Int = DEFAULT_REQUEST_ID
     ) {
+        @JvmOverloads
         constructor(
             status: Status,
             versionNumber: Int = DEFAULT_VERSION_NUMBER,
             requestId: Int = DEFAULT_REQUEST_ID
         ) : this(status.code, versionNumber, requestId)
 
+        @JvmOverloads
         constructor(
             operation: Operation,
             versionNumber: Int = DEFAULT_VERSION_NUMBER,

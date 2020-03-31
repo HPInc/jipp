@@ -56,7 +56,7 @@ constructor(
         {%- endfor %}
     }
 
-    /** Defines types for each member of [{{ collection.name | camel_class }}] */
+    /** Defines types for each member of [{{ collection.name | camel_class }}]. */
     companion object : AttributeCollection.Converter<{{ collection.name | camel_class }}> {
         override fun convert(attributes: List<Attribute<*>>): {{ collection.name | camel_class }} =
             {{ collection.name | camel_class }}(
