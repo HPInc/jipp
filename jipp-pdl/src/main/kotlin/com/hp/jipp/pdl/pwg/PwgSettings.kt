@@ -96,6 +96,7 @@ data class PwgSettings @JvmOverloads constructor(
                 else -> PwgHeader.Orientation.Portrait
             }
 
+        @Suppress("ComplexMethod")
         private fun String.toPwgMediaPosition() =
             when (this) {
                 MediaSource.alternate -> PwgHeader.MediaPosition.Alternate

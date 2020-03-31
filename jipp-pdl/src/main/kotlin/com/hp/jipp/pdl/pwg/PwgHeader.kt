@@ -13,6 +13,7 @@ import java.io.OutputStream
  * All elements of a PWG Raster header as described in section 4.3 of
  * [PWG-5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf).
  */
+@Suppress("MagicNumber")
 data class PwgHeader(
     val mediaColor: String = "",
     val mediaType: String = "",
@@ -232,6 +233,7 @@ data class PwgHeader(
         }
     }
 
+    @Suppress("ComplexMethod")
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -323,7 +325,6 @@ data class PwgHeader(
         const val MAX_VENDOR_DATA_SIZE = 1088
         const val HEADER_SIZE = 1796
         const val WHITE = 0xFFFFFF
-
         private const val CSTRING_LENGTH = 64
 
         /**
@@ -332,6 +333,7 @@ data class PwgHeader(
          * The input stream MUST contain 1796 octets. It MAY contain invalid enums (which will be silently converted
          * to default values).
          */
+        @Suppress("ComplexMethod")
         fun read(input: InputStream): PwgHeader =
             ((input as? DataInputStream) ?: DataInputStream(input)).run {
                 // Discard the initial PwgRaster string
