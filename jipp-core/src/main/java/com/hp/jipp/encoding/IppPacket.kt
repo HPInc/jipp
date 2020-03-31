@@ -53,15 +53,15 @@ data class IppPacket constructor(
         attributeGroups.firstOrNull { it.tag == groupDelimiter }
 
     /** Return all values found within the specified group and having the same attribute type */
-    fun <T : Any> getValues(groupDelimiter: Tag, type: AttributeType<T>): List<T> =
-        this[groupDelimiter]?.get(type) ?: listOf()
+    fun <T : Any> getValues(groupDelimiter: Tag, type: AttributeSetType<T>): List<T> =
+        this[groupDelimiter]?.getValues(type) ?: listOf()
 
     /** Return the first value within the group of [groupDelimiter] and [type]. */
     fun <T : Any> getValue(groupDelimiter: Tag, type: AttributeType<T>): T? =
         this[groupDelimiter]?.get(type)?.get(0)
 
     /** Return the string form of any attribute values within the group of [groupDelimiter] and [type]. */
-    fun <T : Any> getStrings(groupDelimiter: Tag, type: AttributeType<T>): List<String> =
+    fun <T : Any> getStrings(groupDelimiter: Tag, type: AttributeSetType<T>): List<String> =
         this[groupDelimiter]?.getStrings(type) ?: listOf()
 
     /** Return the string form of the first attribute value within the group of [groupDelimiter] and [type]. */

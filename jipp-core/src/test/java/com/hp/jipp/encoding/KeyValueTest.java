@@ -112,7 +112,7 @@ public class KeyValueTest {
         // Note: NOT cycled
         IppPacket packet = new IppPacket(Status.successfulOk, 0x50607, groupOf(Tag.printerAttributes,
                 kv));
-        assertEquals(kv, packet.getValues(Tag.printerAttributes, keyValuesType));
+        assertEquals(kv.getValue(), packet.getValue(Tag.printerAttributes, keyValuesType));
     }
 
     private void coverUnmodifiableMap(Map<String, String> map) {

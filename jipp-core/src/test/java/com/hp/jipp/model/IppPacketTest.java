@@ -289,20 +289,20 @@ public class IppPacketTest {
     @Test
     public void getValues() throws IOException {
         packet = new IppPacket(0x0102, Operation.getJobAttributes.getCode(), 777,
-                groupOf(Tag.operationAttributes, attributesCharset.of("us-ascii")));
+                groupOf(Tag.operationAttributes, Types.compressionSupported.of(Compression.gzip)));
         packet = cycle(packet);
 
         // Wrong group
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.jobAttributes, Types.attributesCharset));
+                packet.getValues(Tag.jobAttributes, Types.compressionSupported));
 
         // Wrong attr
-        assertEquals(Collections.singletonList("us-ascii"),
-                packet.getStrings(Tag.operationAttributes, Types.attributesCharset));
-
-        // All good!
         assertEquals(Collections.emptyList(),
-                packet.getValues(Tag.operationAttributes, attributesNaturalLanguage));
+                packet.getValues(Tag.operationAttributes, Types.finishings));
+
+        // All good
+        assertEquals(Collections.singletonList(Compression.gzip),
+                packet.getStrings(Tag.operationAttributes, Types.compressionSupported));
     }
 
     @Test
