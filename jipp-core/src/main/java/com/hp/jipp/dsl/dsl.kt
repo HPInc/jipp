@@ -6,13 +6,13 @@ package com.hp.jipp.dsl
 import com.hp.jipp.encoding.AttributeGroup
 import com.hp.jipp.encoding.AttributeGroup.Companion.mutableGroupOf
 import com.hp.jipp.encoding.DelimiterTag
-import com.hp.jipp.encoding.IppPacket
-import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_REQUEST_ID
-import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_VERSION_NUMBER
 import com.hp.jipp.encoding.MutableAttributeGroup
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
+import com.hp.jipp.trans.IppPacket
+import com.hp.jipp.trans.IppPacket.Companion.DEFAULT_REQUEST_ID
+import com.hp.jipp.trans.IppPacket.Companion.DEFAULT_VERSION_NUMBER
 
 @DslMarker annotation class IppDslMarker
 

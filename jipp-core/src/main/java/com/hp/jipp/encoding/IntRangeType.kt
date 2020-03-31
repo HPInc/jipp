@@ -3,6 +3,8 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.trans.IppStreams
+
 /** An [AttributeType] for an [IntRange] value. */
 open class IntRangeType(name: String) : AttributeTypeImpl<IntRange>(name, IntRange::class.java) {
     /** An [AttributeType] for multiple [IntRange] values. */

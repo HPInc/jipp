@@ -6,7 +6,7 @@ package com.hp.jipp.model;
 import com.hp.jipp.encoding.Attribute;
 import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IntOrIntRange;
-import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.trans.IppPacket;
 import com.hp.jipp.encoding.KeywordOrName;
 import com.hp.jipp.encoding.MediaSizes;
 import com.hp.jipp.encoding.Resolution;

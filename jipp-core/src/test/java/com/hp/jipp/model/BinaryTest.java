@@ -1,8 +1,8 @@
 package com.hp.jipp.model;
 
-import com.hp.jipp.encoding.IppInputStream;
-import com.hp.jipp.encoding.IppOutputStream;
-import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.trans.IppInputStream;
+import com.hp.jipp.trans.IppOutputStream;
+import com.hp.jipp.trans.IppPacket;
 import kotlin.io.FilesKt;
 import org.junit.Test;
 

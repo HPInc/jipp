@@ -1,7 +1,7 @@
 package sample;
 
 import com.hp.jipp.encoding.Attribute;
-import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.trans.IppPacket;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.trans.IppClientTransport;
 import com.hp.jipp.trans.IppPacketData;

@@ -1,7 +1,8 @@
 package sample;
 
-import com.hp.jipp.encoding.IppInputStream;
+import com.hp.jipp.trans.IppInputStream;
 import com.hp.jipp.trans.IppClientTransport;
+import com.hp.jipp.trans.IppOutputStream;
 import com.hp.jipp.trans.IppPacketData;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +35,7 @@ class HttpIppClientTransport implements IppClientTransport {
 
         // Copy IppPacket to the output stream
         try (OutputStream output = connection.getOutputStream()) {
-            request.getPacket().write(new DataOutputStream(output));
+            new IppOutputStream(output).write(request.getPacket());
             InputStream extraData = request.getData();
             if (extraData != null) {
                 copy(extraData, output);

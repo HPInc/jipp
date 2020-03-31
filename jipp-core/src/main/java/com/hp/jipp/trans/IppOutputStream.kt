@@ -1,8 +1,13 @@
 // Copyright 2017 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
-package com.hp.jipp.encoding
+package com.hp.jipp.trans
 
+import com.hp.jipp.encoding.Attribute
+import com.hp.jipp.encoding.AttributeGroup
+import com.hp.jipp.encoding.EmptyAttributeType
+import com.hp.jipp.encoding.StringType
+import com.hp.jipp.encoding.Tag
 import com.hp.jipp.util.BuildError
 import java.io.DataOutputStream
 import java.io.OutputStream

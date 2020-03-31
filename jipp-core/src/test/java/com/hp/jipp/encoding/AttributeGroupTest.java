@@ -9,6 +9,7 @@ import com.hp.jipp.model.JobStateReason;
 import com.hp.jipp.model.MediaCol;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
+import com.hp.jipp.trans.IppPacket;
 import com.hp.jipp.util.BuildError;
 import java.io.IOException;
 import java.net.URI;

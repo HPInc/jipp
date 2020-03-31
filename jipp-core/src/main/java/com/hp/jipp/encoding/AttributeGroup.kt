@@ -3,6 +3,7 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.trans.IppInputStream
 import com.hp.jipp.util.PrettyPrintable
 import com.hp.jipp.util.PrettyPrinter
 import java.io.IOException
@@ -78,7 +79,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
         @JvmStatic
         @Throws(IOException::class)
         @Deprecated("Use IppInputStream.read()",
-            ReplaceWith("readAttributeGroup()", "com.hp.jipp.encoding.IppInputStream"))
+            ReplaceWith("readAttributeGroup()", "com.hp.jipp.trans.IppInputStream"))
         fun read(input: IppInputStream, groupTag: DelimiterTag) =
             input.readAttributeGroup(groupTag)
     }

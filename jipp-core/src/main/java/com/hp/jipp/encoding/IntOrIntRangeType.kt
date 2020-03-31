@@ -3,6 +3,8 @@
 
 package com.hp.jipp.encoding
 
+import com.hp.jipp.trans.IppStreams
+
 /** An [AttributeType] for a [Int] or [IntRange] value. */
 open class IntOrIntRangeType(
     name: String

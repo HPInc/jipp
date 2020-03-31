@@ -3,6 +3,7 @@ package com.hp.jipp.encoding;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.model.WhichJobs;
+import com.hp.jipp.trans.IppPacket;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
