@@ -29,6 +29,11 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     override val size
         get() = map.size
 
+    /** Allow a DSL-like syntax where the contents of this group can be mutated. */
+    operator fun invoke(mutator: MutableAttributeGroup.() -> Unit) = apply {
+        mutator()
+    }
+
     /** Put [attribute] into this group */
     operator fun plusAssign(attribute: Attribute<*>) = put(attribute)
 

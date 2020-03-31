@@ -126,8 +126,24 @@ data class IppPacket constructor(
         init {
             // All packets must have an operation attributes group with these initial attributes
             putOperationAttributes(
-                Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE),
-                Types.attributesCharset.of(DEFAULT_CHARSET))
+                Types.attributesCharset.of(DEFAULT_CHARSET),
+                Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE))
+        }
+
+        var status
+            get() = Status[code]
+            set(value) { code = value.code }
+
+        fun setStatus(status: Status) = apply {
+            this.status = status
+        }
+
+        var operation
+            get() = Operation[code]
+            set(value) { code = value.code }
+
+        fun setOperation(operation: Operation) = apply {
+            this.operation = operation
         }
 
         fun setVersionNumber(versionNumber: Int) = apply {
@@ -147,33 +163,35 @@ data class IppPacket constructor(
             groups.add(group.toMutable())
         }
 
-        /** Return the last group with the specified tag, creating it if necessary */
-        fun getOrCreateGroup(tag: DelimiterTag) =
+        /** Look up or create a group for [tag] and populate it with [func]. */
+        fun group(tag: DelimiterTag) =
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
-        /** Update operation attributes with [buildGroup]. */
-        fun operationAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
-            getOrCreateGroup(Tag.operationAttributes).buildGroup()
-        }
+        /** Return the last [Tag.operationAttributes] group, creating it if necessary. */
+        val operationAttributes
+            get() = group(Tag.operationAttributes)
 
-        /** Update printer attributes with [buildGroup]. */
-        fun printerAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
-            getOrCreateGroup(Tag.printerAttributes).buildGroup()
-        }
+        /** Return the last [Tag.printerAttributes] group, creating it if necessary. */
+        val printerAttributes
+            get() = group(Tag.printerAttributes)
 
-        /** Update job attributes with [buildGroup]. */
-        fun jobAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
-            getOrCreateGroup(Tag.jobAttributes).buildGroup()
-        }
+        /** Return the last [Tag.jobAttributes] group, creating it if necessary. */
+        val jobAttributes
+            get() = group(Tag.jobAttributes)
 
-        /** Update unsupported attributes with [buildGroup]. */
-        fun unsupportedAttributes(buildGroup: MutableAttributeGroup.() -> Unit) = apply {
-            getOrCreateGroup(Tag.unsupportedAttributes).buildGroup()
-        }
+        /** Return the last [Tag.unsupportedAttributes] group, creating it if necessary. */
+        val unsupportedAttributes
+            get() = group(Tag.unsupportedAttributes)
+
+        /** Look up or create a group for [tag] and populate it with [func]. */
+        @Suppress("DEPRECATION")
+        @Deprecated("Use .group", ReplaceWith("group(tag, func)"))
+        fun extend(tag: DelimiterTag, func: MutableAttributeGroup.() -> Unit) =
+            group(tag).apply { func() }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
         fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = apply {
-            getOrCreateGroup(tag) += attributes
+            group(tag) += attributes
         }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */

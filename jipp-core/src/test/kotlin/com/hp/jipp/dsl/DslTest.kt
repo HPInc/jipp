@@ -18,6 +18,7 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+/** Test for some Kotlin-specific and some deprecated elements */
 class DslTest {
     private val uri = URI.create("ipp://192.168.0.101:631/ipp/print")
     private val mediaSize = MediaSizes.parse(Media.naLetter8p5x11in)!!
@@ -26,6 +27,7 @@ class DslTest {
     fun `java-style build`() {
         val packet = IppPacket.printJob(uri)
             .putOperationAttributes(Types.requestingUserName.of("Test User"))
+            .setOperation(Operation.createJob)
             .putJobAttributes(Types.mediaCol.of(MediaCol(mediaSize = mediaSize)),
                 Types.documentMessage.of("A description of the document"))
             .putPrinterAttributes(Types.bindingTypeSupported.of(BindingType.adhesive))
@@ -33,7 +35,7 @@ class DslTest {
             .build()
 
         val cycled = cycle(packet)
-
+        assertEquals(Operation.createJob, cycled.operation)
         assertEquals("utf-8", cycled.getValue(Tag.operationAttributes, Types.attributesCharset))
         assertEquals(mediaSize, cycled.getValue(Tag.jobAttributes, Types.mediaCol)!!.mediaSize)
         assertEquals(listOf(BindingType.adhesive), cycled.getValues(Tag.printerAttributes, Types.bindingTypeSupported))
@@ -45,6 +47,7 @@ class DslTest {
     @Suppress("DEPRECATION")
     fun packetTest() {
         val packet = ippPacket(Operation.printJob) {
+            operation = Operation.getJobAttributes
             operationAttributes {
                 attr(Types.attributesCharset, "utf-8")
                 attr(Types.attributesNaturalLanguage, "en")
@@ -63,12 +66,20 @@ class DslTest {
             }
         }
         val cycled = cycle(packet)
-
+        assertEquals(Operation.getJobAttributes, cycled.operation)
         assertEquals("utf-8", cycled.getValue(Tag.operationAttributes, Types.attributesCharset))
         assertEquals(mediaSize, cycled.getValue(Tag.jobAttributes, Types.mediaCol)!!.mediaSize)
         assertEquals(listOf(BindingType.adhesive), cycled.getValues(Tag.printerAttributes, Types.bindingTypeSupported))
         assertEquals(Types.outputBin.noValue(), cycled[Tag.unsupportedAttributes]?.get(Types.outputBin))
         assertEquals("A description of the document", cycled[Tag.jobAttributes]?.getValue(Types.documentMessage)?.value)
+    }
+
+    @Test
+    fun setStatus() {
+        val packet = IppPacket.Builder(Operation.printJob)
+            .setStatus(Status.clientErrorCharsetNotSupported)
+            .build()
+        assertEquals(Status.clientErrorCharsetNotSupported, packet.status)
     }
 
     @Test

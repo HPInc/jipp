@@ -6,19 +6,16 @@ import com.hp.jipp.encoding.IppPacket;
 import com.hp.jipp.encoding.MutableAttributeGroup;
 import com.hp.jipp.encoding.Name;
 import com.hp.jipp.encoding.Tag;
-import java.util.Collections;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.AttributeGroup.mutableGroupOf;
 import static com.hp.jipp.encoding.Tag.operationAttributes;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 @SuppressWarnings("deprecation")
 public class DeprecatedTest {

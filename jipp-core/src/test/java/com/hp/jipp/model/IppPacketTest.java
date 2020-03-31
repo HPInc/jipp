@@ -8,7 +8,6 @@ import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.DelimiterTag;
 import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppPacket;
-import com.hp.jipp.encoding.MutableAttributeGroup;
 import com.hp.jipp.encoding.Name;
 import com.hp.jipp.encoding.OtherString;
 import com.hp.jipp.encoding.StringType;
@@ -20,8 +19,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,13 +29,13 @@ import static com.hp.jipp.encoding.Cycler.toBytes;
 import static com.hp.jipp.model.Types.attributesCharset;
 import static com.hp.jipp.model.Types.attributesNaturalLanguage;
 import static com.hp.jipp.model.Types.operationsSupported;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.containsString;
 
 public class IppPacketTest {
     private URI uri = URI.create("ipp://192.168.0.101:631/ipp/print");
@@ -466,24 +463,27 @@ public class IppPacketTest {
 
    @Test
    public void attributeGroupBuilders() throws IOException {
-        packet = cycle(IppPacket.createJob(uri)
-                .operationAttributes(attributes -> {
-                    attributes.put(Types.requestingUserName.of("tester"));
-                    return null;
-                })
-                .jobAttributes(attributes -> {
-                    attributes.put(Types.copies.of(12));
-                    return null;
-                })
-                .printerAttributes(attributes -> {
-                    attributes.put(Types.printerName.of("Test Printer"));
-                    return null;
-                })
-                .unsupportedAttributes(attributes -> {
-                    attributes.put(Types.finishingsCol.unknown());
-                    return null;
-                })
-                .build());
+        IppPacket.Builder builder = IppPacket.createJob(uri);
+
+        // Looks nasty but lets us use the kotlin endpoints.
+        builder.getOperationAttributes().invoke(attributes -> {
+           attributes.put(Types.requestingUserName.of("tester"));
+           return null;
+        });
+        builder.getJobAttributes().invoke(attributes -> {
+           attributes.put(Types.copies.of(12));
+           return null;
+        });
+        builder.getPrinterAttributes().invoke(attributes -> {
+           attributes.put(Types.printerName.of("Test Printer"));
+           return null;
+        });
+        builder.getUnsupportedAttributes().invoke(attributes -> {
+           attributes.put(Types.finishingsCol.unknown());
+           return null;
+        });
+
+        packet = cycle(builder.build());
         assertEquals("tester", packet.getString(Tag.operationAttributes, Types.requestingUserName));
         assertEquals(Integer.valueOf(12), packet.getValue(Tag.jobAttributes, Types.copies));
         assertEquals(new Name("Test Printer"), packet.getValue(Tag.printerAttributes, Types.printerName));
