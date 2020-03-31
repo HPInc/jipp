@@ -85,13 +85,23 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     }
 
     /** Add or replace an attribute having one value to the group. */
-    fun put(nameType: NameType, value: String) {
-        put(nameType.of(value))
+    fun put(type: NameType, value: String) {
+        put(type.of(value))
     }
 
     /** Add or replace an attribute to the group having one or more values. */
-    fun put(nameType: NameType.Set, value: String, vararg values: String) {
-        put(nameType.of((listOf(value) + values.toList()).map { Name(it) }))
+    fun put(type: NameType.Set, value: String, vararg values: String) {
+        put(type.of((listOf(value) + values.toList()).map { Name(it) }))
+    }
+
+    /** Add or replace an attribute having one value to the group. */
+    fun put(type: KeywordOrNameType, value: String) {
+        put(type.of(value))
+    }
+
+    /** Add or replace an attribute to the group having one or more values. */
+    fun put(type: KeywordOrNameType.Set, value: String, vararg values: String) {
+        put(type.of((listOf(value) + values.toList()).map { KeywordOrName(it) }))
     }
 
     /** Add or replace an attribute having one value to the group. */

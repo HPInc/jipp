@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /** Identifies a color space which describes how each pixel of image data is encoded */
+@Suppress("MagicNumber")
 enum class ColorSpace(val bytesPerPixel: Int) {
     /** Three bytes per pixel: Red, Green, Blue */
     Rgb(3),

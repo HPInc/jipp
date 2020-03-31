@@ -128,29 +128,29 @@ data class IppPacket constructor(
                 Types.attributesCharset.of(DEFAULT_CHARSET))
         }
 
-        fun setVersionNumber(versionNumber: Int) = this.apply {
+        fun setVersionNumber(versionNumber: Int) = apply {
             this.versionNumber = versionNumber
         }
 
-        fun setRequestId(requestId: Int) = this.apply {
+        fun setRequestId(requestId: Int) = apply {
             this.requestId = requestId
         }
 
-        fun setCode(code: Int) = this.apply {
+        fun setCode(code: Int) = apply {
             this.code = code
         }
 
         /** Append a new [AttributeGroup] after other groups. */
-        fun addGroup(group: AttributeGroup) = this.apply {
+        fun addGroup(group: AttributeGroup) = apply {
             groups.add(group.toMutable())
         }
 
         /** Return the last group with the specified tag, creating it if necessary */
-        private fun getOrCreateGroup(tag: DelimiterTag) =
+        fun getOrCreateGroup(tag: DelimiterTag) =
             groups.findLast { it.tag == tag } ?: MutableAttributeGroup(tag).also { groups.add(it) }
 
         /** Get or create a group with [tag] and add or replace [attributes] in it. */
-        fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = this.apply {
+        fun putAttributes(tag: DelimiterTag, attributes: Iterable<Attribute<*>>) = apply {
             getOrCreateGroup(tag) += attributes
         }
 
@@ -203,7 +203,7 @@ data class IppPacket constructor(
             jobStateReasons: List<String> = listOf(JobStateReason.none),
             /** Other job attributes, if any. */
             vararg attributes: Attribute<*>
-        ) = this.apply {
+        ) = apply {
             addGroup(MutableAttributeGroup(Tag.jobAttributes, listOf(
                 Types.jobId.of(jobId),
                 Types.jobUri.of(jobUri),
@@ -249,13 +249,21 @@ data class IppPacket constructor(
         fun getPrinterAttributes(
             printerUri: URI,
             /** Printer attributes of interest. */
-            vararg types: AttributeType<*>
+            types: Iterable<AttributeType<*>>
         ) = Builder(Operation.getPrinterAttributes.code)
             .putAttributes(Tag.operationAttributes, Types.printerUri.of(printerUri))
             .putRequestedAttributes(types.toList())
 
+        /** Return a Get-Printer-Attributes request [Builder]. */
+        @JvmStatic
+        fun getPrinterAttributes(
+            printerUri: URI,
+            /** Printer attributes of interest. */
+            vararg types: AttributeType<*>
+        ) = getPrinterAttributes(printerUri, types.toList())
+
         /** If supplied types are not empty, attach them as requested attributes. */
-        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = this.apply {
+        private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = apply {
             if (types.isNotEmpty()) {
                 putAttributes(Tag.operationAttributes,
                     Types.requestedAttributes.of(types.toList().map { it.name }))

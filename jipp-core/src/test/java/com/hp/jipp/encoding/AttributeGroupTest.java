@@ -1,7 +1,9 @@
 package com.hp.jipp.encoding;
 
+import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.DocumentState;
 import com.hp.jipp.model.IdentifyAction;
+import com.hp.jipp.model.ImpositionTemplate;
 import com.hp.jipp.model.JobState;
 import com.hp.jipp.model.JobStateReason;
 import com.hp.jipp.model.MediaCol;
@@ -272,6 +274,13 @@ public class AttributeGroupTest {
 
         group.put(Types.outputDeviceSupported, "one");
         assertEquals(Collections.singletonList("one"), group.getStrings(Types.outputDeviceSupported));
+
+        group.put(Types.coveringNameSupported, CoveringName.plain, CoveringName.preCut);
+        assertEquals(Arrays.asList(CoveringName.plain, CoveringName.preCut),
+                group.getStrings(Types.coveringNameSupported));
+
+        group.put(Types.impositionTemplateDefault, ImpositionTemplate.signature);
+        assertEquals(ImpositionTemplate.signature, group.getString(Types.impositionTemplateDefault));
     }
 
     @Test
