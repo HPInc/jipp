@@ -49,7 +49,7 @@ dependencies {
 ```
 URI uri = URI.create("http://192.168.1.100:631/ipp/print");
 IppPacket printRequest = IppPacket.printJob(uri)
-        .putOperationAttribute(documentFormat.of("application/pdf")))
+        .putOperationAttributes(documentFormat.of("application/pdf")))
         .build();
 transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inputFile)));
 ```
