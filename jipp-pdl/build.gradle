@@ -77,7 +77,7 @@ publishing {
 
             pom {
                 name = project.name
-                description 'PWG-Raster and PCLm conversions'
+                description = 'PWG-Raster and PCLm conversions'
                 url = 'https://github.com/hpinc/jipp'
                 organization {
                     name = 'HP Development Company, L.P.'
@@ -98,6 +98,12 @@ publishing {
                     url = 'https://github.com/HPInc/jipp'
                     connection = 'scm:git:git://github.com/HPInc/jipp.git'
                     developerConnection = 'scm:git:ssh://git@github.com:HPInc/jipp.git'
+                }
+                developers {
+                    developer {
+                        name = 'Glade Diviney'
+                        email = 'glade.diviney@hp.com'
+                    }
                 }
             }
         }

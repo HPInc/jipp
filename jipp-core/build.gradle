@@ -137,6 +137,12 @@ publishing {
                     connection = 'scm:git:git://github.com/HPInc/jipp.git'
                     developerConnection = 'scm:git:ssh://git@github.com:HPInc/jipp.git'
                 }
+                developers {
+                    developer {
+                        name = 'Glade Diviney'
+                        email = 'glade.diviney@hp.com'
+                    }
+                }
             }
         }
     }
