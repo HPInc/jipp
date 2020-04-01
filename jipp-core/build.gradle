@@ -110,8 +110,8 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.name
             from components.java
+            artifactId = project.name
 
             pom {
                 name = project.name

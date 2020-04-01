@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.7.1
+No changes.
+
 ## 0.7.0
 * Stabilize `IppInputStream` and `IppOutputStream` APIs (#79).
 * Replace Kotlin DSL with Java-friendly IppPacket.Builder (#77).
