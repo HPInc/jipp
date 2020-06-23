@@ -44,7 +44,8 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
 
     /** Return a new [AttributeGroup] with additional attributes added to the end. */
     operator fun plus(attributes: List<Attribute<*>>): AttributeGroup =
-        AttributeGroupImpl(tag, this + attributes)
+        AttributeGroupImpl(tag, (map { it.type to it }.toMap() + attributes.map { it.type to it }
+            .toMap()).values.toList())
 
     /** Return a copy of this attribute group in mutable form. */
     fun toMutable(): MutableAttributeGroup =

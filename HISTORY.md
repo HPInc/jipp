@@ -2,6 +2,7 @@
 
 ## 0.7.2
 * Remove use of `.sun` packages (#90).
+* Fix use of `.plus` operator between `AttributeGroup`s (#88).
 
 ## 0.7.0 - 0.7.1
 * Stabilize `IppInputStream` and `IppOutputStream` APIs (#79).

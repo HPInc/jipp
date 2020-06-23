@@ -7,6 +7,7 @@ import com.hp.jipp.model.ImpositionTemplate;
 import com.hp.jipp.model.JobState;
 import com.hp.jipp.model.JobStateReason;
 import com.hp.jipp.model.MediaCol;
+import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.BuildError;
@@ -116,14 +117,14 @@ public class AttributeGroupTest {
     }
 
     @Test(expected = BuildError.class)
-    public void duplicateName() throws Exception {
+    public void duplicateName() {
         groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"),
                 Types.attributesCharset.of("utf-8"));
     }
 
     @Test
-    public void get() throws Exception {
+    public void get() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         // Get by attribute type
@@ -134,7 +135,7 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void getValues() throws Exception {
+    public void getValues() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         assertEquals(Arrays.asList("utf-8"), group.getValues(Types.attributesCharset));
@@ -142,14 +143,14 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void getStrings() throws Exception {
+    public void getStrings() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.printerName.of("myprinter"));
         assertEquals(Collections.singletonList("myprinter"), group.getStrings(Types.printerName));
     }
 
     @Test
-    public void unknownAttribute() throws Exception {
+    public void unknownAttribute() throws IOException {
         ValueTag vendorTag = new ValueTag((byte)0x39, "vendor-enum");
         UnknownAttribute attr = new UnknownAttribute("vendor-state",
                 new UntypedEnum(3),
@@ -159,14 +160,14 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void cover() throws Exception {
+    public void cover() {
         coverList(groupOf(operationAttributes, Types.attributesCharset.of("utf-8")),
                 Types.attributesCharset.of("utf-8"),
                 Types.attributesCharset.of("utf-16"));
     }
 
     @Test
-    public void equality() throws Exception {
+    public void equality() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         List<Attribute<String>> attributes = Collections.singletonList(Types.attributesCharset.of("utf-8"));
@@ -182,7 +183,7 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutableEquality() throws Exception {
+    public void mutableEquality() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
@@ -205,7 +206,7 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutablePutMultiple() throws Exception {
+    public void mutablePutMultiple() {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         mutableGroup.put(Types.attributesCharset.of("utf-8"),
@@ -215,14 +216,14 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutableSetMultiple() throws Exception {
+    public void mutableSetMultiple() {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes);
         mutableGroup.set(Types.mediaColDatabase, Arrays.asList(new MediaCol(), new MediaCol()));
         assertEquals(2, mutableGroup.get(Types.mediaColDatabase).size());
     }
 
     @Test
-    public void mutableGroupOperations() throws Exception {
+    public void mutableGroupOperations() {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         assertTrue(mutableGroup.contains(Types.attributesCharset.of("utf-8")));
@@ -248,6 +249,21 @@ public class AttributeGroupTest {
         assertNull(mutableGroup.get(Types.documentFormat.getName()));
         assertThat(mutableGroup.toString(), startsWith("MutableAttributeGroup"));
         mutableGroup.setTag(Tag.jobAttributes);
+    }
+
+    @Test
+    public void groupPlus() {
+        AttributeGroup group = groupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"),
+                Types.operationsSupported.of(Operation.printJob),
+                Types.documentFormatSupported.of("application/octet-stream"));
+
+        AttributeGroup group2 = group.plus(groupOf(operationAttributes, Types.operationsSupported.of(Operation.fetchJob)));
+
+        List<Attribute<?>> all = new ArrayList<>();
+        all.addAll(group2);
+        assertEquals(Types.documentFormatSupported.getName(), all.get(2).getName());
+        assertEquals(Types.operationsSupported.of(Operation.fetchJob), all.get(1));
     }
 
     @Test
@@ -297,7 +313,7 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void minus() throws Exception {
+    public void minus() {
         Attribute<Name> printerName = Types.printerName.of("jim");
         MutableAttributeGroup mutableGroup = mutableGroupOf(printerAttributes, printerName);
         mutableGroup.minusAssign(Types.printerName);
