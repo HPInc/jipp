@@ -16,7 +16,6 @@ import java.io.OutputStream
 import java.io.Writer
 import java.util.zip.DeflaterOutputStream
 import kotlin.math.roundToInt
-import sun.nio.cs.StreamEncoder
 
 /**
  * Writes a document using PCLm page description language as specified in "Wi-Fi Peer-to-Peer
@@ -36,8 +35,6 @@ class PclmWriter(
     /** PCLM Settings to use when writing. */
     private val settings: PclmSettings
 ) : Writer() {
-    private val encoder = StreamEncoder.forOutputStreamWriter(outputStream, this, null as String?)
-
     /** Tracks the number of bytes written to the output stream so far */
     private var written: Int = 0
 
@@ -48,18 +45,16 @@ class PclmWriter(
     private val crossReferences = ArrayList<Int>()
 
     override fun flush() {
-        encoder.flush()
         outputStream.flush()
     }
 
     override fun close() {
-        encoder.close()
         outputStream.close()
     }
 
-    override fun write(chars: CharArray?, offset: Int, length: Int) {
+    override fun write(chars: CharArray, offset: Int, length: Int) {
         written += length
-        encoder.write(chars, offset, length)
+        outputStream.write(String(chars).toByteArray(), offset, length)
     }
 
     /** Write a complete document in PCLm format */

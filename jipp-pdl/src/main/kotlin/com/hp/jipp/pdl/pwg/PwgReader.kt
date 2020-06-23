@@ -7,9 +7,9 @@ import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.util.NullOutputStream
+import com.hp.jipp.pdl.util.TeeInputStream
 import com.hp.jipp.pdl.util.WrappedByteArrayOutputStream
 import com.hp.jipp.util.toHexString
-import com.sun.xml.internal.messaging.saaj.util.TeeInputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream

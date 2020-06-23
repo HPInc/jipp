@@ -120,9 +120,6 @@ class Main {
                 format = extensionTypes.get(fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase());
             }
         }
-        if (format == null) {
-            format = extensionTypes.get("pdf");
-        }
 
         File inputFile = new File(fileName);
         if (!inputFile.isFile()) {

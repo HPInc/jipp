@@ -1,9 +1,9 @@
 # History of Changes
 
-## 0.7.1
-No changes.
+## 0.7.2
+* Remove use of `.sun` packages (#90).
 
-## 0.7.0
+## 0.7.0 - 0.7.1
 * Stabilize `IppInputStream` and `IppOutputStream` APIs (#79).
 * Replace Kotlin DSL with Java-friendly IppPacket.Builder (#77).
 * Subclass `Tag` objects to prevent misuse (#82).

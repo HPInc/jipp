@@ -1,8 +1,11 @@
 package com.hp.jipp.model;
 
+import com.hp.jipp.encoding.AttributeGroup;
 import com.hp.jipp.encoding.IppInputStream;
 import com.hp.jipp.encoding.IppOutputStream;
 import com.hp.jipp.encoding.IppPacket;
+import com.hp.jipp.encoding.Tag;
+import java.io.FileInputStream;
 import kotlin.io.FilesKt;
 import org.junit.Test;
 
@@ -51,7 +54,7 @@ public class BinaryTest {
     }
 
     private String getResource(String path) {
-        URL url = getClass().getClassLoader().getResource("printer");
+        URL url = getClass().getClassLoader().getResource(path);
         if (url != null) return url.getPath();
 
         // If running in AndroidStudio, manually adjust path
@@ -67,6 +70,26 @@ public class BinaryTest {
             if (file.isDirectory()) getBinFiles(files, file);
             else if (file.getName().endsWith(".bin")) {
                 files.add(file);
+            }
+        }
+    }
+
+    @Test
+    public void checkOne() throws IOException {
+        // Try to decode some improperly encoded values:
+        String path = getResource("printer/HP_OfficeJet_Pro_8710/HP_OfficeJet_Pro_8710.Get-Printer-Attributes.rsp.bin");
+        System.out.println(path);
+        File binFile = new File(path);
+        IppInputStream input = new IppInputStream(new FileInputStream(binFile));
+        IppPacket packet = input.readPacket();
+        for (AttributeGroup group : packet.getAttributeGroups()) {
+            if (group.getTag() == Tag.printerAttributes) {
+                System.out.println(group.get("finishings-col-supported"));
+                System.out.println(group.getValue(Types.finishingsColSupported));
+                System.out.println(group.get("printer-finisher-description"));
+                System.out.println(group.getValue(Types.printerFinisherDescription));
+                System.out.println(group.get("job-pages-per-set-supported"));
+                System.out.println(group.getValue(Types.jobPagesPerSetSupported));
             }
         }
     }
