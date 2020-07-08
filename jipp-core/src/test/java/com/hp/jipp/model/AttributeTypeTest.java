@@ -13,6 +13,7 @@ import com.hp.jipp.encoding.Resolution;
 import com.hp.jipp.encoding.ResolutionUnit;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -121,7 +122,7 @@ public class AttributeTypeTest {
     }
 
     @Test
-    public void mediaColTypeTest() {
+    public void mediaColTypeTest() throws IOException {
         MediaCol mediaType1 = new MediaCol();
         mediaType1.setMediaSize(MediaSizes.parse(Media.naLetter8p5x11in));
         mediaType1.setMediaLeftMargin(750);
@@ -141,6 +142,9 @@ public class AttributeTypeTest {
                 groupOf(Tag.printerAttributes,
                         Types.mediaColReady.of(readyList),
                         Types.mediaColDatabase.of(readyList) /* + other requested attributes */ ));
+
+        MediaCol first = cycle(packet).get(Tag.printerAttributes).get(Types.mediaColReady).get(0);
+        assertEquals(mediaType1, first);
     }
 
     @Test

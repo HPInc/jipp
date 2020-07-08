@@ -39,8 +39,8 @@ In short:
 1. Add the current version of JIPP to your project
 ```
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.7.2'
-    compile 'com.hp.jipp:jipp-pdl:0.7.2' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.7.3'
+    compile 'com.hp.jipp:jipp-pdl:0.7.3' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -57,7 +57,7 @@ transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inpu
 ## Sample Applications
 
 ### jprint
-A very basic use case is demonstrated by the `jprint` sample app. To run it:
+Demonstrates a very simple print engine. To run:
 
 ```
 # build the app
@@ -72,7 +72,7 @@ jprint-*/bin/jprint -p sample.pdf ipp://192.168.1.102:631/ipp/print
 ```
 
 ### jrender
-An example of rendering a PDF to PWG-Raster or PCLm. To run it:
+An example of rendering a PDF to PWG-Raster or PCLm. To run:
 
 ```
 # build the app
@@ -97,7 +97,7 @@ See [HISTORY.md](HISTORY.md) for more details.
 
 ## Dependencies
 
-`jipp-core`'s only dependencies are JDK 6+ and the current Kotlin runtime.
+`jipp-core`'s only dependencies are JDK 8+ and the current Kotlin runtime.
 
 ## Building
 

@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.7.3
+* Fix type coercion for `MutableAttributeGroup` (#91).
+
 ## 0.7.2
 * Remove use of `.sun` packages (#90).
 * Fix use of `.plus` operator between `AttributeGroup`s (#88).

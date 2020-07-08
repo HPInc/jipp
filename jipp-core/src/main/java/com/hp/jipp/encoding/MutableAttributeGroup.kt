@@ -50,7 +50,7 @@ open class MutableAttributeGroup @JvmOverloads constructor(
     /** Return the [Attribute] having [type] if any. */
     @Suppress("UNCHECKED_CAST") // We know type corresponds to T because that's all we allow in.
     override fun <T : Any> get(type: AttributeType<T>): Attribute<T>? =
-        map[type.name] as Attribute<T>?
+        map[type.name]?.let { type.coerce(it) }
 
     /** Assign an attribute from its native value type. */
     operator fun <T : Any> set(type: AttributeType<T>, value: T) {
