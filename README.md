@@ -75,7 +75,7 @@ jprint-*/bin/jprint -p sample.pdf ipp://192.168.1.102:631/ipp/print
 ### jrender
 An example of rendering a PDF to PWG-Raster or PCLm. To run:
 
-```
+```bash
 # build the app
 ./gradlew jrender:build
 
