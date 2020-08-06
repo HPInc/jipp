@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # * Reads registrations from http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml
 # * Converts them into Kotlin files
 # * Emits warnings during conversions
 #
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from lxml import etree
 import copy
 import re
@@ -49,12 +49,12 @@ def pretty(o):
 def warn(output, object = None):
     global warns
     warns = warns + 1
-    print "WARN: " + output
+    print("WARN: " + output)
     if object is not None:
-        print('    ' + pp.pformat(object).replace('\n', '\n    '))
+        print(('    ' + pp.pformat(object).replace('\n', '\n    ')))
 
 def note(output):
-    print "    NOTE: " + output
+    print("    NOTE: " + output)
 
 # Given a record, attempt to grab the referenced specification out of its xref.
 def parse_spec(xref, target):
@@ -518,7 +518,7 @@ def emit_enum(template, enum):
 
 def emit_kind(env, template_name, items, emit_func):
     template = env.get_template(template_name)
-    for item in items.values():
+    for item in list(items.values()):
         if 'bad' in item:
             continue
 
@@ -528,7 +528,7 @@ def emit_kind(env, template_name, items, emit_func):
             continue
 
         item['refs'] = []
-        for ref_item in items.values():
+        for ref_item in list(items.values()):
             if 'ref' in ref_item and ref_item['ref'] == item['name']:
                 # Many but not of these refs will be found in Types.*
                 item['refs'].append(ref_item['name'])
@@ -740,12 +740,12 @@ def fix_ktypes(type, syntax, name, group_name = ''):
 
 def emit_attributes(env):
     # Pass 1: Look for collection types that have both ref and members
-    for group in attributes.values():
-        for type in group.values():
+    for group in list(attributes.values()):
+        for type in list(group.values()):
             if 'ref_col' in type and type['ref_col'] and type['members']:
                 referent = attributes[type['ref_group']][type['ref_col']]
                 # Push members over to referent
-                for new_member in type['members'].values():
+                for new_member in list(type['members'].values()):
                     if new_member['name'] in referent['members'] and \
                             referent['members'][new_member['name']] != new_member:
                         warn("Collection type already has different member " + new_member['name'], referent)
@@ -754,19 +754,19 @@ def emit_attributes(env):
                 type['members'] = { }
 
     # Pass 2: Emit collection types having members
-    for group in attributes.values():
-        for type in group.values():
+    for group in list(attributes.values()):
+        for type in list(group.values()):
             if type['members']:
                 emit_collection(env, type)
 
     # Pass 3: handle any collections without members or refs
-    for group in attributes.values():
-        for type in group.values():
+    for group in list(attributes.values()):
+        for type in list(group.values()):
             if type['syntax'] == 'collection':
                 handle_collection_ref(group, type)
 
     # Pass 4: Warn about any collection references that have not been handled
-    for key, value in pending_collections.items():
+    for key, value in list(pending_collections.items()):
         if key not in collections:
             warn("Collection " + key + " referenced but not found", value)
         elif 'emitted' not in collections[key]:
@@ -774,8 +774,8 @@ def emit_attributes(env):
 
     # Pass 5: Make sure types have consistent definitions
     types = { }
-    for group_name, values in attributes.items():
-        for name, type in values.items():
+    for group_name, values in list(attributes.items()):
+        for name, type in list(values.items()):
             if name in types:
                 # Update the old type with new data or warn
                 old_type = types[name]
@@ -812,14 +812,14 @@ def emit_attributes(env):
 
     # Pass 6: Emit all types into a single huge class
     type_list = []
-    for typeName, type in sorted(types.items(), key=lambda (k, v): k):
+    for typeName, type in sorted(list(types.items()), key=lambda k_v: k_v[0]):
         fix_ktypes(type, type['syntax'], type['name'], 'types')
         if 'kintro' not in type:
             # fix_ktypes already warns
             continue
 
         # Fix members
-        for member in type['members'].values():
+        for member in list(type['members'].values()):
             fix_member(member, '')
 
         type_list.append(type)
@@ -909,7 +909,7 @@ def emit_collection(env, type):
     collections[name] = type
 
     type = copy.deepcopy(type)
-    for member in type['members'].values():
+    for member in list(type['members'].values()):
         fix_member(member, name)
         if 'ktype' not in member:
             warn("Collection " + name + ' member ' + member['name'] + ' has no ktype for ' +
@@ -944,7 +944,7 @@ def fix_member(member, group_name):
             if 'ktype' not in member:
                 member['ktype'] = camel_class(member['name'])
             if member['members']:
-                for submember in member['members'].values():
+                for submember in list(member['members'].values()):
                     if group_name:
                         fix_member(submember, group_name + '.' + member['name'])
                     else:
@@ -969,13 +969,13 @@ def emit_code():
 
     with open(prep_file('Enum-Types'), 'w') as file:
         file.write(rstrip_all(env.get_template('enums.kt.tmpl').render(
-            enums=[kref for enum in enums.values() if 'krefs' in enum for kref in enum['krefs'] ],
+            enums=[kref for enum in list(enums.values()) if 'krefs' in enum for kref in enum['krefs'] ],
             app=os.path.basename(sys.argv[0]),
             updated=updated)))
 
     with open(prep_file('Key-Values-Types'), 'w') as file:
         file.write(rstrip_all(env.get_template('keyvalues.kt.tmpl').render(
-            types=key_values.values(),
+            types=list(key_values.values()),
             app=os.path.basename(sys.argv[0]),
             updated=updated)))
 
@@ -987,7 +987,7 @@ if not os.path.exists(os.path.dirname(xml_file)):
 
 # Fetch the file into xml_file if necessary
 if not os.path.isfile(xml_file):
-    urllib.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
+    urllib.request.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
 
 # Parse from file
 tree = etree.parse(xml_file)
@@ -1054,7 +1054,7 @@ attributes['Job Template']['finishings-col']['members']['media-size'] = \
 emit_code()
 
 if warns:
-    print "WARNINGS: " + str(warns)
+    print("WARNINGS: " + str(warns))
 else:
-    print "No warnings"
+    print("No warnings")
 
