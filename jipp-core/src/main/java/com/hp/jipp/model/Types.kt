@@ -3081,6 +3081,11 @@ object Types {
      */
     @JvmField val printerCreationAttributesSupported = KeywordType.Set("printer-creation-attributes-supported")
     /**
+     * "printer-current-time" type as defined in:
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val printerCurrentTime = DateTimeType("printer-current-time")
+    /**
      * "printer-darkness-configured" type as defined in:
      * [IPPLABEL](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ipplabel10-20200213.pdf).
      */

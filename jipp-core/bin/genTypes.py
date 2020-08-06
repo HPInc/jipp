@@ -121,6 +121,9 @@ def fix_syntax(item, syntax = None):
     if syntax.startswith('(') and not syntax.endswith(')'):
         return fix_syntax(item, syntax[1:])
 
+    syntax = re.sub("([^ ])\|", r"\1 |", syntax)
+    syntax = re.sub("\|([^ ])", r"| \1", syntax)
+
     if " | " in syntax:
         # Ignore no-value and unknown since those are accepted everywhere
         parts = sorted([fix_syntax({}, part.strip()) for part in syntax.split("|")])
