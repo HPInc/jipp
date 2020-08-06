@@ -46,7 +46,7 @@ public class CollectionTest {
         UntypedCollection.Type untypedColType = new UntypedCollection.Type(Types.finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);
         for (Attribute<?> attribute : untyped.getAttributes()) {
-            if (attribute.getName().equals(FinishingsCol.Types.covering.getName())) return;
+            if (attribute.getName().equals(FinishingsCol.covering.getName())) return;
         }
         fail("No covering attribute found");
     }

@@ -1,5 +1,6 @@
 package com.hp.jipp.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -45,6 +46,29 @@ public class PrettyTest {
         printer.open(PrettyPrinter.ARRAY);
         printer.add(4, 5, 6);
         assertEquals("Test {\n  XXX,\n  YYY,\n  ZZZ,\n  [ 4, 5, 6 ] }", printer.print());
+    }
+
+    class NamedPrintable<T> implements PrettyPrintable {
+        String name;
+        T value;
+        NamedPrintable(String name, T value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        @Override
+        public void print(@NotNull PrettyPrinter printer) {
+            printer.open(PrettyPrinter.SILENT, name + " = ");
+            printer.add(value);
+        }
+    }
+
+    @Test
+    public void namedInner() {
+        printer = new PrettyPrinter("Test", PrettyPrinter.OBJECT, "  ", 16);
+        printer.open(PrettyPrinter.OBJECT, "AAA");
+        printer.add(new NamedPrintable<>("BBB", 5));
+        assertEquals("Test {\n  AAA {\n    BBB = 5 } }", printer.print());
     }
 
     @Test

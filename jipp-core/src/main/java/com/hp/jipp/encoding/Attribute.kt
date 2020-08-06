@@ -45,7 +45,7 @@ interface Attribute<T : Any> : PrettyPrintable, List<T> {
 
         forEach {
             when (it) {
-                is PrettyPrintable -> it.print(printer)
+                is PrettyPrintable -> printer.add(it)
                 else -> printer.add(toPrintable(it))
             }
         }

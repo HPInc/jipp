@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
@@ -350,5 +351,20 @@ public class AttributeGroupTest {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         assertEquals("operation-attributes { attributes-charset = utf-8 }",mutableGroup.prettyPrint(120,"    "));
+    }
+
+    @Ignore // See issue #26
+    @Test
+    public void prettyPrint2() {
+        MediaCol mediaCol = new MediaCol();
+        MediaCol.MediaSize mediaSize = new MediaCol.MediaSize();
+        mediaSize.setXDimension(1000);
+        mediaSize.setYDimension(2000);
+        mediaCol.setMediaSize(mediaSize);
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"),
+                Types.operationsSupported.of(Operation.getJobAttributes, Operation.getJobs),
+                Types.mediaCol.of(mediaCol));
+        assertEquals("operation-attributes {\n  attributes-charset = utf-8,\n  operations-supported = [\n    Get-Job-Attributes(9),\n    Get-Jobs(10) ],\n  media-col = {\n    media-size = { x-dimension = 1000, y-dimension = 2000 } } }",mutableGroup.prettyPrint(60,"  "));
     }
 }

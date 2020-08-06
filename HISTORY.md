@@ -1,5 +1,10 @@
 # History of Changes
 
+## 0.7.4
+* Support pretty print of `AttributeGroup`s (#94).
+* Remove Types object from `AttributeCollection` subtypes (#92).
+* Update to 2020-06-20 registered IANA types (#93).
+
 ## 0.7.3
 * Fix type coercion for `MutableAttributeGroup` (#91).
 
