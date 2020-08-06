@@ -28,30 +28,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            documentNumber?.let { Types.documentNumber.of(it) },
-            objectOffset?.let { Types.objectOffset.of(it) },
-            objectSize?.let { Types.objectSize.of(it) },
-            objectUuid?.let { Types.objectUuid.of(it) }
+            documentNumber?.let { PrintObjects.documentNumber.of(it) },
+            objectOffset?.let { PrintObjects.objectOffset.of(it) },
+            objectSize?.let { PrintObjects.objectSize.of(it) },
+            objectUuid?.let { PrintObjects.objectUuid.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val documentNumber = IntType("document-number")
-        @JvmField val objectOffset = AttributeCollection.Type("object-offset", ObjectOffset)
-        @JvmField val objectSize = AttributeCollection.Type("object-size", ObjectSize)
-        @JvmField val objectUuid = UriType("object-uuid")
     }
 
     /** Defines types for each member of [PrintObjects]. */
     companion object : AttributeCollection.Converter<PrintObjects> {
         override fun convert(attributes: List<Attribute<*>>): PrintObjects =
             PrintObjects(
-                extractOne(attributes, Types.documentNumber),
-                extractOne(attributes, Types.objectOffset),
-                extractOne(attributes, Types.objectSize),
-                extractOne(attributes, Types.objectUuid)
+                extractOne(attributes, documentNumber),
+                extractOne(attributes, objectOffset),
+                extractOne(attributes, objectSize),
+                extractOne(attributes, objectUuid)
             )
+        @JvmField val documentNumber = IntType("document-number")
+        @JvmField val objectOffset = AttributeCollection.Type("object-offset", ObjectOffset)
+        @JvmField val objectSize = AttributeCollection.Type("object-size", ObjectSize)
+        @JvmField val objectUuid = UriType("object-uuid")
     }
 
     /**
@@ -71,27 +67,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                xOffset?.let { Types.xOffset.of(it) },
-                yOffset?.let { Types.yOffset.of(it) },
-                zOffset?.let { Types.zOffset.of(it) }
+                xOffset?.let { ObjectOffset.xOffset.of(it) },
+                yOffset?.let { ObjectOffset.yOffset.of(it) },
+                zOffset?.let { ObjectOffset.zOffset.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val xOffset = IntType("x-offset")
-            @JvmField val yOffset = IntType("y-offset")
-            @JvmField val zOffset = IntType("z-offset")
         }
 
         /** Defines types for each member of [ObjectOffset]. */
         companion object : AttributeCollection.Converter<ObjectOffset> {
             override fun convert(attributes: List<Attribute<*>>): ObjectOffset =
                 ObjectOffset(
-                    extractOne(attributes, Types.xOffset),
-                    extractOne(attributes, Types.yOffset),
-                    extractOne(attributes, Types.zOffset)
+                    extractOne(attributes, xOffset),
+                    extractOne(attributes, yOffset),
+                    extractOne(attributes, zOffset)
                 )
+            @JvmField val xOffset = IntType("x-offset")
+            @JvmField val yOffset = IntType("y-offset")
+            @JvmField val zOffset = IntType("z-offset")
         }
         override fun toString() = "ObjectOffset(${attributes.joinToString()})"
     }
@@ -113,27 +105,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                xDimension?.let { Types.xDimension.of(it) },
-                yDimension?.let { Types.yDimension.of(it) },
-                zDimension?.let { Types.zDimension.of(it) }
+                xDimension?.let { ObjectSize.xDimension.of(it) },
+                yDimension?.let { ObjectSize.yDimension.of(it) },
+                zDimension?.let { ObjectSize.zDimension.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val xDimension = IntType("x-dimension")
-            @JvmField val yDimension = IntType("y-dimension")
-            @JvmField val zDimension = IntType("z-dimension")
         }
 
         /** Defines types for each member of [ObjectSize]. */
         companion object : AttributeCollection.Converter<ObjectSize> {
             override fun convert(attributes: List<Attribute<*>>): ObjectSize =
                 ObjectSize(
-                    extractOne(attributes, Types.xDimension),
-                    extractOne(attributes, Types.yDimension),
-                    extractOne(attributes, Types.zDimension)
+                    extractOne(attributes, xDimension),
+                    extractOne(attributes, yDimension),
+                    extractOne(attributes, zDimension)
                 )
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
+            @JvmField val zDimension = IntType("z-dimension")
         }
         override fun toString() = "ObjectSize(${attributes.joinToString()})"
     }

@@ -30,27 +30,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            media?.let { Types.media.of(it) },
-            mediaCol?.let { Types.mediaCol.of(it) },
-            separatorSheetsType?.let { Types.separatorSheetsType.of(it) }
+            media?.let { SeparatorSheets.media.of(it) },
+            mediaCol?.let { SeparatorSheets.mediaCol.of(it) },
+            separatorSheetsType?.let { SeparatorSheets.separatorSheetsType.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val media = KeywordOrNameType("media")
-        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
-        @JvmField val separatorSheetsType = KeywordType.Set("separator-sheets-type")
     }
 
     /** Defines types for each member of [SeparatorSheets]. */
     companion object : AttributeCollection.Converter<SeparatorSheets> {
         override fun convert(attributes: List<Attribute<*>>): SeparatorSheets =
             SeparatorSheets(
-                extractOne(attributes, Types.media),
-                extractOne(attributes, Types.mediaCol),
-                extractAll(attributes, Types.separatorSheetsType)
+                extractOne(attributes, media),
+                extractOne(attributes, mediaCol),
+                extractAll(attributes, separatorSheetsType)
             )
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
+        @JvmField val separatorSheetsType = KeywordType.Set("separator-sheets-type")
     }
     override fun toString() = "SeparatorSheets(${attributes.joinToString()})"
 }

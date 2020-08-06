@@ -29,33 +29,29 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            canAcceptJobs?.let { Types.canAcceptJobs.of(it) },
-            canProcessJobs?.let { Types.canProcessJobs.of(it) },
-            powerActiveWatts?.let { Types.powerActiveWatts.of(it) },
-            powerInactiveWatts?.let { Types.powerInactiveWatts.of(it) },
-            powerState?.let { Types.powerState.of(it) }
+            canAcceptJobs?.let { PowerStateCapabilitiesCol.canAcceptJobs.of(it) },
+            canProcessJobs?.let { PowerStateCapabilitiesCol.canProcessJobs.of(it) },
+            powerActiveWatts?.let { PowerStateCapabilitiesCol.powerActiveWatts.of(it) },
+            powerInactiveWatts?.let { PowerStateCapabilitiesCol.powerInactiveWatts.of(it) },
+            powerState?.let { PowerStateCapabilitiesCol.powerState.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val canAcceptJobs = BooleanType("can-accept-jobs")
-        @JvmField val canProcessJobs = BooleanType("can-process-jobs")
-        @JvmField val powerActiveWatts = IntType("power-active-watts")
-        @JvmField val powerInactiveWatts = IntType("power-inactive-watts")
-        @JvmField val powerState = KeywordType("power-state")
     }
 
     /** Defines types for each member of [PowerStateCapabilitiesCol]. */
     companion object : AttributeCollection.Converter<PowerStateCapabilitiesCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerStateCapabilitiesCol =
             PowerStateCapabilitiesCol(
-                extractOne(attributes, Types.canAcceptJobs),
-                extractOne(attributes, Types.canProcessJobs),
-                extractOne(attributes, Types.powerActiveWatts),
-                extractOne(attributes, Types.powerInactiveWatts),
-                extractOne(attributes, Types.powerState)
+                extractOne(attributes, canAcceptJobs),
+                extractOne(attributes, canProcessJobs),
+                extractOne(attributes, powerActiveWatts),
+                extractOne(attributes, powerInactiveWatts),
+                extractOne(attributes, powerState)
             )
+        @JvmField val canAcceptJobs = BooleanType("can-accept-jobs")
+        @JvmField val canProcessJobs = BooleanType("can-process-jobs")
+        @JvmField val powerActiveWatts = IntType("power-active-watts")
+        @JvmField val powerInactiveWatts = IntType("power-inactive-watts")
+        @JvmField val powerState = KeywordType("power-state")
     }
     override fun toString() = "PowerStateCapabilitiesCol(${attributes.joinToString()})"
 }

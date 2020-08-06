@@ -26,24 +26,20 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            noiseRemoval?.let { Types.noiseRemoval.of(it) },
-            outputCompressionQualityFactor?.let { Types.outputCompressionQualityFactor.of(it) }
+            noiseRemoval?.let { OutputAttributes.noiseRemoval.of(it) },
+            outputCompressionQualityFactor?.let { OutputAttributes.outputCompressionQualityFactor.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val noiseRemoval = IntType("noise-removal")
-        @JvmField val outputCompressionQualityFactor = IntType("output-compression-quality-factor")
     }
 
     /** Defines types for each member of [OutputAttributes]. */
     companion object : AttributeCollection.Converter<OutputAttributes> {
         override fun convert(attributes: List<Attribute<*>>): OutputAttributes =
             OutputAttributes(
-                extractOne(attributes, Types.noiseRemoval),
-                extractOne(attributes, Types.outputCompressionQualityFactor)
+                extractOne(attributes, noiseRemoval),
+                extractOne(attributes, outputCompressionQualityFactor)
             )
+        @JvmField val noiseRemoval = IntType("noise-removal")
+        @JvmField val outputCompressionQualityFactor = IntType("output-compression-quality-factor")
     }
     override fun toString() = "OutputAttributes(${attributes.joinToString()})"
 }

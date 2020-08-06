@@ -26,24 +26,20 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            fullColor?.let { Types.fullColor.of(it) },
-            monochrome?.let { Types.monochrome.of(it) }
+            fullColor?.let { JobPagesCol.fullColor.of(it) },
+            monochrome?.let { JobPagesCol.monochrome.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val fullColor = IntType("full-color")
-        @JvmField val monochrome = IntType("monochrome")
     }
 
     /** Defines types for each member of [JobPagesCol]. */
     companion object : AttributeCollection.Converter<JobPagesCol> {
         override fun convert(attributes: List<Attribute<*>>): JobPagesCol =
             JobPagesCol(
-                extractOne(attributes, Types.fullColor),
-                extractOne(attributes, Types.monochrome)
+                extractOne(attributes, fullColor),
+                extractOne(attributes, monochrome)
             )
+        @JvmField val fullColor = IntType("full-color")
+        @JvmField val monochrome = IntType("monochrome")
     }
     override fun toString() = "JobPagesCol(${attributes.joinToString()})"
 }

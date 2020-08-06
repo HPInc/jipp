@@ -34,19 +34,30 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            printerId?.let { Types.printerId.of(it) },
-            printerInfo?.let { Types.printerInfo.of(it) },
-            printerIsAcceptingJobs?.let { Types.printerIsAcceptingJobs.of(it) },
-            printerName?.let { Types.printerName.of(it) },
-            printerServiceType?.let { Types.printerServiceType.of(it) },
-            printerState?.let { Types.printerState.of(it) },
-            printerStateReasons?.let { Types.printerStateReasons.of(it) },
-            printerXriSupported?.let { Types.printerXriSupported.of(it) }
+            printerId?.let { SystemConfiguredPrinters.printerId.of(it) },
+            printerInfo?.let { SystemConfiguredPrinters.printerInfo.of(it) },
+            printerIsAcceptingJobs?.let { SystemConfiguredPrinters.printerIsAcceptingJobs.of(it) },
+            printerName?.let { SystemConfiguredPrinters.printerName.of(it) },
+            printerServiceType?.let { SystemConfiguredPrinters.printerServiceType.of(it) },
+            printerState?.let { SystemConfiguredPrinters.printerState.of(it) },
+            printerStateReasons?.let { SystemConfiguredPrinters.printerStateReasons.of(it) },
+            printerXriSupported?.let { SystemConfiguredPrinters.printerXriSupported.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [SystemConfiguredPrinters]. */
+    companion object : AttributeCollection.Converter<SystemConfiguredPrinters> {
+        override fun convert(attributes: List<Attribute<*>>): SystemConfiguredPrinters =
+            SystemConfiguredPrinters(
+                extractOne(attributes, printerId),
+                extractOne(attributes, printerInfo)?.value,
+                extractOne(attributes, printerIsAcceptingJobs),
+                extractOne(attributes, printerName)?.value,
+                extractOne(attributes, printerServiceType),
+                extractOne(attributes, printerState),
+                extractAll(attributes, printerStateReasons),
+                extractOne(attributes, printerXriSupported)
+            )
         @JvmField val printerId = IntType("printer-id")
         @JvmField val printerInfo = TextType("printer-info")
         @JvmField val printerIsAcceptingJobs = BooleanType("printer-is-accepting-jobs")
@@ -58,21 +69,6 @@ constructor(
         @JvmField val printerState = PrinterState.Type("printer-state")
         @JvmField val printerStateReasons = KeywordType.Set("printer-state-reasons")
         @JvmField val printerXriSupported = AttributeCollection.Type("printer-xri-supported", PrinterXriSupported)
-    }
-
-    /** Defines types for each member of [SystemConfiguredPrinters]. */
-    companion object : AttributeCollection.Converter<SystemConfiguredPrinters> {
-        override fun convert(attributes: List<Attribute<*>>): SystemConfiguredPrinters =
-            SystemConfiguredPrinters(
-                extractOne(attributes, Types.printerId),
-                extractOne(attributes, Types.printerInfo)?.value,
-                extractOne(attributes, Types.printerIsAcceptingJobs),
-                extractOne(attributes, Types.printerName)?.value,
-                extractOne(attributes, Types.printerServiceType),
-                extractOne(attributes, Types.printerState),
-                extractAll(attributes, Types.printerStateReasons),
-                extractOne(attributes, Types.printerXriSupported)
-            )
     }
     override fun toString() = "SystemConfiguredPrinters(${attributes.joinToString()})"
 }

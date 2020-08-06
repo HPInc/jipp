@@ -45,27 +45,46 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            materialAmount?.let { Types.materialAmount.of(it) },
-            materialAmountUnits?.let { Types.materialAmountUnits.of(it) },
-            materialColor?.let { Types.materialColor.of(it) },
-            materialDiameter?.let { Types.materialDiameter.of(it) },
-            materialDiameterTolerance?.let { Types.materialDiameterTolerance.of(it) },
-            materialFillDensity?.let { Types.materialFillDensity.of(it) },
-            materialKey?.let { Types.materialKey.of(it) },
-            materialName?.let { Types.materialName.of(it) },
-            materialNozzleDiameter?.let { Types.materialNozzleDiameter.of(it) },
-            materialPurpose?.let { Types.materialPurpose.of(it) },
-            materialRate?.let { Types.materialRate.of(it) },
-            materialRateUnits?.let { Types.materialRateUnits.of(it) },
-            materialRetraction?.let { Types.materialRetraction.of(it) },
-            materialShellThickness?.let { Types.materialShellThickness.of(it) },
-            materialTemperature?.let { Types.materialTemperature.of(it) },
-            materialType?.let { Types.materialType.of(it) }
+            materialAmount?.let { MaterialsCol.materialAmount.of(it) },
+            materialAmountUnits?.let { MaterialsCol.materialAmountUnits.of(it) },
+            materialColor?.let { MaterialsCol.materialColor.of(it) },
+            materialDiameter?.let { MaterialsCol.materialDiameter.of(it) },
+            materialDiameterTolerance?.let { MaterialsCol.materialDiameterTolerance.of(it) },
+            materialFillDensity?.let { MaterialsCol.materialFillDensity.of(it) },
+            materialKey?.let { MaterialsCol.materialKey.of(it) },
+            materialName?.let { MaterialsCol.materialName.of(it) },
+            materialNozzleDiameter?.let { MaterialsCol.materialNozzleDiameter.of(it) },
+            materialPurpose?.let { MaterialsCol.materialPurpose.of(it) },
+            materialRate?.let { MaterialsCol.materialRate.of(it) },
+            materialRateUnits?.let { MaterialsCol.materialRateUnits.of(it) },
+            materialRetraction?.let { MaterialsCol.materialRetraction.of(it) },
+            materialShellThickness?.let { MaterialsCol.materialShellThickness.of(it) },
+            materialTemperature?.let { MaterialsCol.materialTemperature.of(it) },
+            materialType?.let { MaterialsCol.materialType.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [MaterialsCol]. */
+    companion object : AttributeCollection.Converter<MaterialsCol> {
+        override fun convert(attributes: List<Attribute<*>>): MaterialsCol =
+            MaterialsCol(
+                extractOne(attributes, materialAmount),
+                extractOne(attributes, materialAmountUnits),
+                extractOne(attributes, materialColor),
+                extractOne(attributes, materialDiameter),
+                extractOne(attributes, materialDiameterTolerance),
+                extractOne(attributes, materialFillDensity),
+                extractOne(attributes, materialKey),
+                extractOne(attributes, materialName)?.value,
+                extractOne(attributes, materialNozzleDiameter),
+                extractAll(attributes, materialPurpose),
+                extractOne(attributes, materialRate),
+                extractOne(attributes, materialRateUnits),
+                extractOne(attributes, materialRetraction),
+                extractOne(attributes, materialShellThickness),
+                extractOne(attributes, materialTemperature),
+                extractOne(attributes, materialType)
+            )
         @JvmField val materialAmount = IntType("material-amount")
         @JvmField val materialAmountUnits = KeywordType("material-amount-units")
         @JvmField val materialColor = KeywordType("material-color")
@@ -82,29 +101,6 @@ constructor(
         @JvmField val materialShellThickness = IntType("material-shell-thickness")
         @JvmField val materialTemperature = IntOrIntRangeType("material-temperature")
         @JvmField val materialType = KeywordOrNameType("material-type")
-    }
-
-    /** Defines types for each member of [MaterialsCol]. */
-    companion object : AttributeCollection.Converter<MaterialsCol> {
-        override fun convert(attributes: List<Attribute<*>>): MaterialsCol =
-            MaterialsCol(
-                extractOne(attributes, Types.materialAmount),
-                extractOne(attributes, Types.materialAmountUnits),
-                extractOne(attributes, Types.materialColor),
-                extractOne(attributes, Types.materialDiameter),
-                extractOne(attributes, Types.materialDiameterTolerance),
-                extractOne(attributes, Types.materialFillDensity),
-                extractOne(attributes, Types.materialKey),
-                extractOne(attributes, Types.materialName)?.value,
-                extractOne(attributes, Types.materialNozzleDiameter),
-                extractAll(attributes, Types.materialPurpose),
-                extractOne(attributes, Types.materialRate),
-                extractOne(attributes, Types.materialRateUnits),
-                extractOne(attributes, Types.materialRetraction),
-                extractOne(attributes, Types.materialShellThickness),
-                extractOne(attributes, Types.materialTemperature),
-                extractOne(attributes, Types.materialType)
-            )
     }
     override fun toString() = "MaterialsCol(${attributes.joinToString()})"
 }

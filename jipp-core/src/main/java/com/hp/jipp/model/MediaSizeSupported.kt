@@ -26,24 +26,20 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            xDimension?.let { Types.xDimension.of(it) },
-            yDimension?.let { Types.yDimension.of(it) }
+            xDimension?.let { MediaSizeSupported.xDimension.of(it) },
+            yDimension?.let { MediaSizeSupported.yDimension.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val xDimension = IntOrIntRangeType("x-dimension")
-        @JvmField val yDimension = IntOrIntRangeType("y-dimension")
     }
 
     /** Defines types for each member of [MediaSizeSupported]. */
     companion object : AttributeCollection.Converter<MediaSizeSupported> {
         override fun convert(attributes: List<Attribute<*>>): MediaSizeSupported =
             MediaSizeSupported(
-                extractOne(attributes, Types.xDimension),
-                extractOne(attributes, Types.yDimension)
+                extractOne(attributes, xDimension),
+                extractOne(attributes, yDimension)
             )
+        @JvmField val xDimension = IntOrIntRangeType("x-dimension")
+        @JvmField val yDimension = IntOrIntRangeType("y-dimension")
     }
     override fun toString() = "MediaSizeSupported(${attributes.joinToString()})"
 }

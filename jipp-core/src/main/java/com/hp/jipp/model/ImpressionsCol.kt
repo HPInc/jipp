@@ -32,19 +32,30 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            blank?.let { Types.blank.of(it) },
-            blankTwoSided?.let { Types.blankTwoSided.of(it) },
-            fullColor?.let { Types.fullColor.of(it) },
-            fullColorTwoSided?.let { Types.fullColorTwoSided.of(it) },
-            highlightColor?.let { Types.highlightColor.of(it) },
-            highlightColorTwoSided?.let { Types.highlightColorTwoSided.of(it) },
-            monochrome?.let { Types.monochrome.of(it) },
-            monochromeTwoSided?.let { Types.monochromeTwoSided.of(it) }
+            blank?.let { ImpressionsCol.blank.of(it) },
+            blankTwoSided?.let { ImpressionsCol.blankTwoSided.of(it) },
+            fullColor?.let { ImpressionsCol.fullColor.of(it) },
+            fullColorTwoSided?.let { ImpressionsCol.fullColorTwoSided.of(it) },
+            highlightColor?.let { ImpressionsCol.highlightColor.of(it) },
+            highlightColorTwoSided?.let { ImpressionsCol.highlightColorTwoSided.of(it) },
+            monochrome?.let { ImpressionsCol.monochrome.of(it) },
+            monochromeTwoSided?.let { ImpressionsCol.monochromeTwoSided.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [ImpressionsCol]. */
+    companion object : AttributeCollection.Converter<ImpressionsCol> {
+        override fun convert(attributes: List<Attribute<*>>): ImpressionsCol =
+            ImpressionsCol(
+                extractOne(attributes, blank),
+                extractOne(attributes, blankTwoSided),
+                extractOne(attributes, fullColor),
+                extractOne(attributes, fullColorTwoSided),
+                extractOne(attributes, highlightColor),
+                extractOne(attributes, highlightColorTwoSided),
+                extractOne(attributes, monochrome),
+                extractOne(attributes, monochromeTwoSided)
+            )
         @JvmField val blank = IntType("blank")
         @JvmField val blankTwoSided = IntType("blank-two-sided")
         @JvmField val fullColor = IntType("full-color")
@@ -53,21 +64,6 @@ constructor(
         @JvmField val highlightColorTwoSided = IntType("highlight-color-two-sided")
         @JvmField val monochrome = IntType("monochrome")
         @JvmField val monochromeTwoSided = IntType("monochrome-two-sided")
-    }
-
-    /** Defines types for each member of [ImpressionsCol]. */
-    companion object : AttributeCollection.Converter<ImpressionsCol> {
-        override fun convert(attributes: List<Attribute<*>>): ImpressionsCol =
-            ImpressionsCol(
-                extractOne(attributes, Types.blank),
-                extractOne(attributes, Types.blankTwoSided),
-                extractOne(attributes, Types.fullColor),
-                extractOne(attributes, Types.fullColorTwoSided),
-                extractOne(attributes, Types.highlightColor),
-                extractOne(attributes, Types.highlightColorTwoSided),
-                extractOne(attributes, Types.monochrome),
-                extractOne(attributes, Types.monochromeTwoSided)
-            )
     }
     override fun toString() = "ImpressionsCol(${attributes.joinToString()})"
 }

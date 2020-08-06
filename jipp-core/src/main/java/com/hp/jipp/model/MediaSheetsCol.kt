@@ -28,30 +28,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            blank?.let { Types.blank.of(it) },
-            fullColor?.let { Types.fullColor.of(it) },
-            highlightColor?.let { Types.highlightColor.of(it) },
-            monochrome?.let { Types.monochrome.of(it) }
+            blank?.let { MediaSheetsCol.blank.of(it) },
+            fullColor?.let { MediaSheetsCol.fullColor.of(it) },
+            highlightColor?.let { MediaSheetsCol.highlightColor.of(it) },
+            monochrome?.let { MediaSheetsCol.monochrome.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val blank = IntType("blank")
-        @JvmField val fullColor = IntType("full-color")
-        @JvmField val highlightColor = IntType("highlight-color")
-        @JvmField val monochrome = IntType("monochrome")
     }
 
     /** Defines types for each member of [MediaSheetsCol]. */
     companion object : AttributeCollection.Converter<MediaSheetsCol> {
         override fun convert(attributes: List<Attribute<*>>): MediaSheetsCol =
             MediaSheetsCol(
-                extractOne(attributes, Types.blank),
-                extractOne(attributes, Types.fullColor),
-                extractOne(attributes, Types.highlightColor),
-                extractOne(attributes, Types.monochrome)
+                extractOne(attributes, blank),
+                extractOne(attributes, fullColor),
+                extractOne(attributes, highlightColor),
+                extractOne(attributes, monochrome)
             )
+        @JvmField val blank = IntType("blank")
+        @JvmField val fullColor = IntType("full-color")
+        @JvmField val highlightColor = IntType("highlight-color")
+        @JvmField val monochrome = IntType("monochrome")
     }
     override fun toString() = "MediaSheetsCol(${attributes.joinToString()})"
 }

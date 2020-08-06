@@ -28,30 +28,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            xDimension?.let { Types.xDimension.of(it) },
-            xOrigin?.let { Types.xOrigin.of(it) },
-            yDimension?.let { Types.yDimension.of(it) },
-            yOrigin?.let { Types.yOrigin.of(it) }
+            xDimension?.let { InputScanRegionsSupported.xDimension.of(it) },
+            xOrigin?.let { InputScanRegionsSupported.xOrigin.of(it) },
+            yDimension?.let { InputScanRegionsSupported.yDimension.of(it) },
+            yOrigin?.let { InputScanRegionsSupported.yOrigin.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val xDimension = IntRangeType("x-dimension")
-        @JvmField val xOrigin = IntRangeType("x-origin")
-        @JvmField val yDimension = IntRangeType("y-dimension")
-        @JvmField val yOrigin = IntRangeType("y-origin")
     }
 
     /** Defines types for each member of [InputScanRegionsSupported]. */
     companion object : AttributeCollection.Converter<InputScanRegionsSupported> {
         override fun convert(attributes: List<Attribute<*>>): InputScanRegionsSupported =
             InputScanRegionsSupported(
-                extractOne(attributes, Types.xDimension),
-                extractOne(attributes, Types.xOrigin),
-                extractOne(attributes, Types.yDimension),
-                extractOne(attributes, Types.yOrigin)
+                extractOne(attributes, xDimension),
+                extractOne(attributes, xOrigin),
+                extractOne(attributes, yDimension),
+                extractOne(attributes, yOrigin)
             )
+        @JvmField val xDimension = IntRangeType("x-dimension")
+        @JvmField val xOrigin = IntRangeType("x-origin")
+        @JvmField val yDimension = IntRangeType("y-dimension")
+        @JvmField val yOrigin = IntRangeType("y-origin")
     }
     override fun toString() = "InputScanRegionsSupported(${attributes.joinToString()})"
 }

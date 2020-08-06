@@ -27,30 +27,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            destinationUri?.let { Types.destinationUri.of(it) },
-            imagesCompleted?.let { Types.imagesCompleted.of(it) },
-            transmissionStatus?.let { Types.transmissionStatus.of(it) }
+            destinationUri?.let { DestinationStatuses.destinationUri.of(it) },
+            imagesCompleted?.let { DestinationStatuses.imagesCompleted.of(it) },
+            transmissionStatus?.let { DestinationStatuses.transmissionStatus.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val destinationUri = UriType("destination-uri")
-        @JvmField val imagesCompleted = IntType("images-completed")
-        /**
-         * "transmission-status" member type.
-         */
-        @JvmField val transmissionStatus = TransmissionStatus.Type("transmission-status")
     }
 
     /** Defines types for each member of [DestinationStatuses]. */
     companion object : AttributeCollection.Converter<DestinationStatuses> {
         override fun convert(attributes: List<Attribute<*>>): DestinationStatuses =
             DestinationStatuses(
-                extractOne(attributes, Types.destinationUri),
-                extractOne(attributes, Types.imagesCompleted),
-                extractOne(attributes, Types.transmissionStatus)
+                extractOne(attributes, destinationUri),
+                extractOne(attributes, imagesCompleted),
+                extractOne(attributes, transmissionStatus)
             )
+        @JvmField val destinationUri = UriType("destination-uri")
+        @JvmField val imagesCompleted = IntType("images-completed")
+        /**
+         * "transmission-status" member type.
+         */
+        @JvmField val transmissionStatus = TransmissionStatus.Type("transmission-status")
     }
     override fun toString() = "DestinationStatuses(${attributes.joinToString()})"
 }

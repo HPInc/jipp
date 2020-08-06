@@ -35,21 +35,34 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            destinationAttributes?.let { Types.destinationAttributes.of(it) },
-            destinationAttributesSupported?.let { Types.destinationAttributesSupported.of(it) },
-            destinationInfo?.let { Types.destinationInfo.of(it) },
-            destinationIsDirectory?.let { Types.destinationIsDirectory.of(it) },
-            destinationMandatoryAccessAttributes?.let { Types.destinationMandatoryAccessAttributes.of(it) },
-            destinationName?.let { Types.destinationName.of(it) },
-            destinationOauthScope?.let { Types.destinationOauthScope.of(it) },
-            destinationOauthToken?.let { Types.destinationOauthToken.of(it) },
-            destinationOauthUri?.let { Types.destinationOauthUri.of(it) },
-            destinationUri?.let { Types.destinationUri.of(it) }
+            destinationAttributes?.let { DestinationUriReady.destinationAttributes.of(it) },
+            destinationAttributesSupported?.let { DestinationUriReady.destinationAttributesSupported.of(it) },
+            destinationInfo?.let { DestinationUriReady.destinationInfo.of(it) },
+            destinationIsDirectory?.let { DestinationUriReady.destinationIsDirectory.of(it) },
+            destinationMandatoryAccessAttributes?.let { DestinationUriReady.destinationMandatoryAccessAttributes.of(it) },
+            destinationName?.let { DestinationUriReady.destinationName.of(it) },
+            destinationOauthScope?.let { DestinationUriReady.destinationOauthScope.of(it) },
+            destinationOauthToken?.let { DestinationUriReady.destinationOauthToken.of(it) },
+            destinationOauthUri?.let { DestinationUriReady.destinationOauthUri.of(it) },
+            destinationUri?.let { DestinationUriReady.destinationUri.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [DestinationUriReady]. */
+    companion object : AttributeCollection.Converter<DestinationUriReady> {
+        override fun convert(attributes: List<Attribute<*>>): DestinationUriReady =
+            DestinationUriReady(
+                extractAll(attributes, destinationAttributes),
+                extractAll(attributes, destinationAttributesSupported),
+                extractOne(attributes, destinationInfo)?.value,
+                extractOne(attributes, destinationIsDirectory),
+                extractAll(attributes, destinationMandatoryAccessAttributes),
+                extractOne(attributes, destinationName)?.value,
+                extractAll(attributes, destinationOauthScope),
+                extractAll(attributes, destinationOauthToken),
+                extractOne(attributes, destinationOauthUri),
+                extractOne(attributes, destinationUri)
+            )
         @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
         @JvmField val destinationAttributesSupported = KeywordType.Set("destination-attributes-supported")
         @JvmField val destinationInfo = TextType("destination-info")
@@ -60,23 +73,6 @@ constructor(
         @JvmField val destinationOauthToken = OctetsType.Set("destination-oauth-token")
         @JvmField val destinationOauthUri = UriType("destination-oauth-uri")
         @JvmField val destinationUri = UriType("destination-uri")
-    }
-
-    /** Defines types for each member of [DestinationUriReady]. */
-    companion object : AttributeCollection.Converter<DestinationUriReady> {
-        override fun convert(attributes: List<Attribute<*>>): DestinationUriReady =
-            DestinationUriReady(
-                extractAll(attributes, Types.destinationAttributes),
-                extractAll(attributes, Types.destinationAttributesSupported),
-                extractOne(attributes, Types.destinationInfo)?.value,
-                extractOne(attributes, Types.destinationIsDirectory),
-                extractAll(attributes, Types.destinationMandatoryAccessAttributes),
-                extractOne(attributes, Types.destinationName)?.value,
-                extractAll(attributes, Types.destinationOauthScope),
-                extractAll(attributes, Types.destinationOauthToken),
-                extractOne(attributes, Types.destinationOauthUri),
-                extractOne(attributes, Types.destinationUri)
-            )
     }
     override fun toString() = "DestinationUriReady(${attributes.joinToString()})"
 }

@@ -31,18 +31,28 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            currentMonthKwh?.let { Types.currentMonthKwh.of(it) },
-            currentWatts?.let { Types.currentWatts.of(it) },
-            lifetimeKwh?.let { Types.lifetimeKwh.of(it) },
-            metersAreActual?.let { Types.metersAreActual.of(it) },
-            powerState?.let { Types.powerState.of(it) },
-            powerStateMessage?.let { Types.powerStateMessage.of(it) },
-            powerUsageIsRmsWatts?.let { Types.powerUsageIsRmsWatts.of(it) }
+            currentMonthKwh?.let { PowerStateMonitorCol.currentMonthKwh.of(it) },
+            currentWatts?.let { PowerStateMonitorCol.currentWatts.of(it) },
+            lifetimeKwh?.let { PowerStateMonitorCol.lifetimeKwh.of(it) },
+            metersAreActual?.let { PowerStateMonitorCol.metersAreActual.of(it) },
+            powerState?.let { PowerStateMonitorCol.powerState.of(it) },
+            powerStateMessage?.let { PowerStateMonitorCol.powerStateMessage.of(it) },
+            powerUsageIsRmsWatts?.let { PowerStateMonitorCol.powerUsageIsRmsWatts.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [PowerStateMonitorCol]. */
+    companion object : AttributeCollection.Converter<PowerStateMonitorCol> {
+        override fun convert(attributes: List<Attribute<*>>): PowerStateMonitorCol =
+            PowerStateMonitorCol(
+                extractOne(attributes, currentMonthKwh),
+                extractOne(attributes, currentWatts),
+                extractOne(attributes, lifetimeKwh),
+                extractOne(attributes, metersAreActual),
+                extractOne(attributes, powerState),
+                extractOne(attributes, powerStateMessage)?.value,
+                extractOne(attributes, powerUsageIsRmsWatts)
+            )
         @JvmField val currentMonthKwh = IntType("current-month-kwh")
         @JvmField val currentWatts = IntType("current-watts")
         @JvmField val lifetimeKwh = IntType("lifetime-kwh")
@@ -50,20 +60,6 @@ constructor(
         @JvmField val powerState = KeywordType("power-state")
         @JvmField val powerStateMessage = TextType("power-state-message")
         @JvmField val powerUsageIsRmsWatts = BooleanType("power-usage-is-rms-watts")
-    }
-
-    /** Defines types for each member of [PowerStateMonitorCol]. */
-    companion object : AttributeCollection.Converter<PowerStateMonitorCol> {
-        override fun convert(attributes: List<Attribute<*>>): PowerStateMonitorCol =
-            PowerStateMonitorCol(
-                extractOne(attributes, Types.currentMonthKwh),
-                extractOne(attributes, Types.currentWatts),
-                extractOne(attributes, Types.lifetimeKwh),
-                extractOne(attributes, Types.metersAreActual),
-                extractOne(attributes, Types.powerState),
-                extractOne(attributes, Types.powerStateMessage)?.value,
-                extractOne(attributes, Types.powerUsageIsRmsWatts)
-            )
     }
     override fun toString() = "PowerStateMonitorCol(${attributes.joinToString()})"
 }

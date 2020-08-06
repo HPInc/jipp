@@ -28,30 +28,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            logId?.let { Types.logId.of(it) },
-            powerState?.let { Types.powerState.of(it) },
-            powerStateDateTime?.let { Types.powerStateDateTime.of(it) },
-            powerStateMessage?.let { Types.powerStateMessage.of(it) }
+            logId?.let { PowerLogCol.logId.of(it) },
+            powerState?.let { PowerLogCol.powerState.of(it) },
+            powerStateDateTime?.let { PowerLogCol.powerStateDateTime.of(it) },
+            powerStateMessage?.let { PowerLogCol.powerStateMessage.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val logId = IntType("log-id")
-        @JvmField val powerState = KeywordType("power-state")
-        @JvmField val powerStateDateTime = DateTimeType("power-state-date-time")
-        @JvmField val powerStateMessage = TextType("power-state-message")
     }
 
     /** Defines types for each member of [PowerLogCol]. */
     companion object : AttributeCollection.Converter<PowerLogCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerLogCol =
             PowerLogCol(
-                extractOne(attributes, Types.logId),
-                extractOne(attributes, Types.powerState),
-                extractOne(attributes, Types.powerStateDateTime),
-                extractOne(attributes, Types.powerStateMessage)?.value
+                extractOne(attributes, logId),
+                extractOne(attributes, powerState),
+                extractOne(attributes, powerStateDateTime),
+                extractOne(attributes, powerStateMessage)?.value
             )
+        @JvmField val logId = IntType("log-id")
+        @JvmField val powerState = KeywordType("power-state")
+        @JvmField val powerStateDateTime = DateTimeType("power-state-date-time")
+        @JvmField val powerStateMessage = TextType("power-state-message")
     }
     override fun toString() = "PowerLogCol(${attributes.joinToString()})"
 }

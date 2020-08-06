@@ -29,27 +29,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            jobSheets?.let { Types.jobSheets.of(it) },
-            media?.let { Types.media.of(it) },
-            mediaCol?.let { Types.mediaCol.of(it) }
+            jobSheets?.let { JobSheetsCol.jobSheets.of(it) },
+            media?.let { JobSheetsCol.media.of(it) },
+            mediaCol?.let { JobSheetsCol.mediaCol.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val jobSheets = KeywordOrNameType("job-sheets")
-        @JvmField val media = KeywordOrNameType("media")
-        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobSheetsCol]. */
     companion object : AttributeCollection.Converter<JobSheetsCol> {
         override fun convert(attributes: List<Attribute<*>>): JobSheetsCol =
             JobSheetsCol(
-                extractOne(attributes, Types.jobSheets),
-                extractOne(attributes, Types.media),
-                extractOne(attributes, Types.mediaCol)
+                extractOne(attributes, jobSheets),
+                extractOne(attributes, media),
+                extractOne(attributes, mediaCol)
             )
+        @JvmField val jobSheets = KeywordOrNameType("job-sheets")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
     override fun toString() = "JobSheetsCol(${attributes.joinToString()})"
 }

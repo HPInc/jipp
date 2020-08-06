@@ -61,35 +61,62 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            mediaBackCoating?.let { Types.mediaBackCoating.of(it) },
-            mediaBottomMargin?.let { Types.mediaBottomMargin.of(it) },
-            mediaColor?.let { Types.mediaColor.of(it) },
-            mediaFrontCoating?.let { Types.mediaFrontCoating.of(it) },
-            mediaGrain?.let { Types.mediaGrain.of(it) },
-            mediaHoleCount?.let { Types.mediaHoleCount.of(it) },
-            mediaInfo?.let { Types.mediaInfo.of(it) },
-            mediaKey?.let { Types.mediaKey.of(it) },
-            mediaLeftMargin?.let { Types.mediaLeftMargin.of(it) },
-            mediaOrderCount?.let { Types.mediaOrderCount.of(it) },
-            mediaPrePrinted?.let { Types.mediaPrePrinted.of(it) },
-            mediaRecycled?.let { Types.mediaRecycled.of(it) },
-            mediaRightMargin?.let { Types.mediaRightMargin.of(it) },
-            mediaSize?.let { Types.mediaSize.of(it) },
-            mediaSizeName?.let { Types.mediaSizeName.of(it) },
-            mediaSource?.let { Types.mediaSource.of(it) },
-            mediaSourceProperties?.let { Types.mediaSourceProperties.of(it) },
-            mediaThickness?.let { Types.mediaThickness.of(it) },
-            mediaTooth?.let { Types.mediaTooth.of(it) },
-            mediaTopMargin?.let { Types.mediaTopMargin.of(it) },
-            mediaTopOffset?.let { Types.mediaTopOffset.of(it) },
-            mediaTracking?.let { Types.mediaTracking.of(it) },
-            mediaType?.let { Types.mediaType.of(it) },
-            mediaWeightMetric?.let { Types.mediaWeightMetric.of(it) }
+            mediaBackCoating?.let { MediaCol.mediaBackCoating.of(it) },
+            mediaBottomMargin?.let { MediaCol.mediaBottomMargin.of(it) },
+            mediaColor?.let { MediaCol.mediaColor.of(it) },
+            mediaFrontCoating?.let { MediaCol.mediaFrontCoating.of(it) },
+            mediaGrain?.let { MediaCol.mediaGrain.of(it) },
+            mediaHoleCount?.let { MediaCol.mediaHoleCount.of(it) },
+            mediaInfo?.let { MediaCol.mediaInfo.of(it) },
+            mediaKey?.let { MediaCol.mediaKey.of(it) },
+            mediaLeftMargin?.let { MediaCol.mediaLeftMargin.of(it) },
+            mediaOrderCount?.let { MediaCol.mediaOrderCount.of(it) },
+            mediaPrePrinted?.let { MediaCol.mediaPrePrinted.of(it) },
+            mediaRecycled?.let { MediaCol.mediaRecycled.of(it) },
+            mediaRightMargin?.let { MediaCol.mediaRightMargin.of(it) },
+            mediaSize?.let { MediaCol.mediaSize.of(it) },
+            mediaSizeName?.let { MediaCol.mediaSizeName.of(it) },
+            mediaSource?.let { MediaCol.mediaSource.of(it) },
+            mediaSourceProperties?.let { MediaCol.mediaSourceProperties.of(it) },
+            mediaThickness?.let { MediaCol.mediaThickness.of(it) },
+            mediaTooth?.let { MediaCol.mediaTooth.of(it) },
+            mediaTopMargin?.let { MediaCol.mediaTopMargin.of(it) },
+            mediaTopOffset?.let { MediaCol.mediaTopOffset.of(it) },
+            mediaTracking?.let { MediaCol.mediaTracking.of(it) },
+            mediaType?.let { MediaCol.mediaType.of(it) },
+            mediaWeightMetric?.let { MediaCol.mediaWeightMetric.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [MediaCol]. */
+    companion object : AttributeCollection.Converter<MediaCol> {
+        override fun convert(attributes: List<Attribute<*>>): MediaCol =
+            MediaCol(
+                extractOne(attributes, mediaBackCoating),
+                extractOne(attributes, mediaBottomMargin),
+                extractOne(attributes, mediaColor),
+                extractOne(attributes, mediaFrontCoating),
+                extractOne(attributes, mediaGrain),
+                extractOne(attributes, mediaHoleCount),
+                extractOne(attributes, mediaInfo)?.value,
+                extractOne(attributes, mediaKey),
+                extractOne(attributes, mediaLeftMargin),
+                extractOne(attributes, mediaOrderCount),
+                extractOne(attributes, mediaPrePrinted),
+                extractOne(attributes, mediaRecycled),
+                extractOne(attributes, mediaRightMargin),
+                extractOne(attributes, mediaSize),
+                extractOne(attributes, mediaSizeName),
+                extractOne(attributes, mediaSource),
+                extractOne(attributes, mediaSourceProperties),
+                extractOne(attributes, mediaThickness),
+                extractOne(attributes, mediaTooth),
+                extractOne(attributes, mediaTopMargin),
+                extractOne(attributes, mediaTopOffset),
+                extractOne(attributes, mediaTracking),
+                extractOne(attributes, mediaType),
+                extractOne(attributes, mediaWeightMetric)
+            )
         @JvmField val mediaBackCoating = KeywordOrNameType("media-back-coating")
         @JvmField val mediaBottomMargin = IntType("media-bottom-margin")
         @JvmField val mediaColor = KeywordOrNameType("media-color")
@@ -116,37 +143,6 @@ constructor(
         @JvmField val mediaWeightMetric = IntType("media-weight-metric")
     }
 
-    /** Defines types for each member of [MediaCol]. */
-    companion object : AttributeCollection.Converter<MediaCol> {
-        override fun convert(attributes: List<Attribute<*>>): MediaCol =
-            MediaCol(
-                extractOne(attributes, Types.mediaBackCoating),
-                extractOne(attributes, Types.mediaBottomMargin),
-                extractOne(attributes, Types.mediaColor),
-                extractOne(attributes, Types.mediaFrontCoating),
-                extractOne(attributes, Types.mediaGrain),
-                extractOne(attributes, Types.mediaHoleCount),
-                extractOne(attributes, Types.mediaInfo)?.value,
-                extractOne(attributes, Types.mediaKey),
-                extractOne(attributes, Types.mediaLeftMargin),
-                extractOne(attributes, Types.mediaOrderCount),
-                extractOne(attributes, Types.mediaPrePrinted),
-                extractOne(attributes, Types.mediaRecycled),
-                extractOne(attributes, Types.mediaRightMargin),
-                extractOne(attributes, Types.mediaSize),
-                extractOne(attributes, Types.mediaSizeName),
-                extractOne(attributes, Types.mediaSource),
-                extractOne(attributes, Types.mediaSourceProperties),
-                extractOne(attributes, Types.mediaThickness),
-                extractOne(attributes, Types.mediaTooth),
-                extractOne(attributes, Types.mediaTopMargin),
-                extractOne(attributes, Types.mediaTopOffset),
-                extractOne(attributes, Types.mediaTracking),
-                extractOne(attributes, Types.mediaType),
-                extractOne(attributes, Types.mediaWeightMetric)
-            )
-    }
-
     /**
      * Data object corresponding to a "media-size" collection.
      */
@@ -163,24 +159,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                xDimension?.let { Types.xDimension.of(it) },
-                yDimension?.let { Types.yDimension.of(it) }
+                xDimension?.let { MediaSize.xDimension.of(it) },
+                yDimension?.let { MediaSize.yDimension.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val xDimension = IntType("x-dimension")
-            @JvmField val yDimension = IntType("y-dimension")
         }
 
         /** Defines types for each member of [MediaSize]. */
         companion object : AttributeCollection.Converter<MediaSize> {
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
-                    extractOne(attributes, Types.xDimension),
-                    extractOne(attributes, Types.yDimension)
+                    extractOne(attributes, xDimension),
+                    extractOne(attributes, yDimension)
                 )
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
         }
         override fun toString() = "MediaSize(${attributes.joinToString()})"
     }
@@ -202,27 +194,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                mediaSourceFeedDirection?.let { Types.mediaSourceFeedDirection.of(it) },
-                mediaSourceFeedOrientation?.let { Types.mediaSourceFeedOrientation.of(it) }
+                mediaSourceFeedDirection?.let { MediaSourceProperties.mediaSourceFeedDirection.of(it) },
+                mediaSourceFeedOrientation?.let { MediaSourceProperties.mediaSourceFeedOrientation.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val mediaSourceFeedDirection = KeywordType("media-source-feed-direction")
-            /**
-             * "media-source-feed-orientation" member type.
-             */
-            @JvmField val mediaSourceFeedOrientation = Orientation.Type("media-source-feed-orientation")
         }
 
         /** Defines types for each member of [MediaSourceProperties]. */
         companion object : AttributeCollection.Converter<MediaSourceProperties> {
             override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
                 MediaSourceProperties(
-                    extractOne(attributes, Types.mediaSourceFeedDirection),
-                    extractOne(attributes, Types.mediaSourceFeedOrientation)
+                    extractOne(attributes, mediaSourceFeedDirection),
+                    extractOne(attributes, mediaSourceFeedOrientation)
                 )
+            @JvmField val mediaSourceFeedDirection = KeywordType("media-source-feed-direction")
+            /**
+             * "media-source-feed-orientation" member type.
+             */
+            @JvmField val mediaSourceFeedOrientation = Orientation.Type("media-source-feed-orientation")
         }
         override fun toString() = "MediaSourceProperties(${attributes.joinToString()})"
     }

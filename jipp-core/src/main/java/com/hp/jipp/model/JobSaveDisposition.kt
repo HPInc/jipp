@@ -27,24 +27,20 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            saveDisposition?.let { Types.saveDisposition.of(it) },
-            saveInfo?.let { Types.saveInfo.of(it) }
+            saveDisposition?.let { JobSaveDisposition.saveDisposition.of(it) },
+            saveInfo?.let { JobSaveDisposition.saveInfo.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val saveDisposition = KeywordType("save-disposition")
-        @JvmField val saveInfo = AttributeCollection.SetType("save-info", SaveInfo)
     }
 
     /** Defines types for each member of [JobSaveDisposition]. */
     companion object : AttributeCollection.Converter<JobSaveDisposition> {
         override fun convert(attributes: List<Attribute<*>>): JobSaveDisposition =
             JobSaveDisposition(
-                extractOne(attributes, Types.saveDisposition),
-                extractAll(attributes, Types.saveInfo)
+                extractOne(attributes, saveDisposition),
+                extractAll(attributes, saveInfo)
             )
+        @JvmField val saveDisposition = KeywordType("save-disposition")
+        @JvmField val saveInfo = AttributeCollection.SetType("save-info", SaveInfo)
     }
 
     /**
@@ -64,27 +60,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                saveDocumentFormat?.let { Types.saveDocumentFormat.of(it) },
-                saveLocation?.let { Types.saveLocation.of(it) },
-                saveName?.let { Types.saveName.of(it) }
+                saveDocumentFormat?.let { SaveInfo.saveDocumentFormat.of(it) },
+                saveLocation?.let { SaveInfo.saveLocation.of(it) },
+                saveName?.let { SaveInfo.saveName.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val saveDocumentFormat = StringType(Tag.mimeMediaType, "save-document-format")
-            @JvmField val saveLocation = UriType("save-location")
-            @JvmField val saveName = NameType("save-name")
         }
 
         /** Defines types for each member of [SaveInfo]. */
         companion object : AttributeCollection.Converter<SaveInfo> {
             override fun convert(attributes: List<Attribute<*>>): SaveInfo =
                 SaveInfo(
-                    extractOne(attributes, Types.saveDocumentFormat),
-                    extractOne(attributes, Types.saveLocation),
-                    extractOne(attributes, Types.saveName)?.value
+                    extractOne(attributes, saveDocumentFormat),
+                    extractOne(attributes, saveLocation),
+                    extractOne(attributes, saveName)?.value
                 )
+            @JvmField val saveDocumentFormat = StringType(Tag.mimeMediaType, "save-document-format")
+            @JvmField val saveLocation = UriType("save-location")
+            @JvmField val saveName = NameType("save-name")
         }
         override fun toString() = "SaveInfo(${attributes.joinToString()})"
     }

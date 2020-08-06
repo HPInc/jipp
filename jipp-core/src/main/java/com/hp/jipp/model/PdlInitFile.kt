@@ -27,27 +27,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            pdlInitFileEntry?.let { Types.pdlInitFileEntry.of(it) },
-            pdlInitFileLocation?.let { Types.pdlInitFileLocation.of(it) },
-            pdlInitFileName?.let { Types.pdlInitFileName.of(it) }
+            pdlInitFileEntry?.let { PdlInitFile.pdlInitFileEntry.of(it) },
+            pdlInitFileLocation?.let { PdlInitFile.pdlInitFileLocation.of(it) },
+            pdlInitFileName?.let { PdlInitFile.pdlInitFileName.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val pdlInitFileEntry = NameType("pdl-init-file-entry")
-        @JvmField val pdlInitFileLocation = UriType("pdl-init-file-location")
-        @JvmField val pdlInitFileName = NameType("pdl-init-file-name")
     }
 
     /** Defines types for each member of [PdlInitFile]. */
     companion object : AttributeCollection.Converter<PdlInitFile> {
         override fun convert(attributes: List<Attribute<*>>): PdlInitFile =
             PdlInitFile(
-                extractOne(attributes, Types.pdlInitFileEntry)?.value,
-                extractOne(attributes, Types.pdlInitFileLocation),
-                extractOne(attributes, Types.pdlInitFileName)?.value
+                extractOne(attributes, pdlInitFileEntry)?.value,
+                extractOne(attributes, pdlInitFileLocation),
+                extractOne(attributes, pdlInitFileName)?.value
             )
+        @JvmField val pdlInitFileEntry = NameType("pdl-init-file-entry")
+        @JvmField val pdlInitFileLocation = UriType("pdl-init-file-location")
+        @JvmField val pdlInitFileName = NameType("pdl-init-file-name")
     }
     override fun toString() = "PdlInitFile(${attributes.joinToString()})"
 }

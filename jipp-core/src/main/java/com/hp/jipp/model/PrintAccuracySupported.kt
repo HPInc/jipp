@@ -29,30 +29,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            accuracyUnits?.let { Types.accuracyUnits.of(it) },
-            xAccuracy?.let { Types.xAccuracy.of(it) },
-            yAccuracy?.let { Types.yAccuracy.of(it) },
-            zAccuracy?.let { Types.zAccuracy.of(it) }
+            accuracyUnits?.let { PrintAccuracySupported.accuracyUnits.of(it) },
+            xAccuracy?.let { PrintAccuracySupported.xAccuracy.of(it) },
+            yAccuracy?.let { PrintAccuracySupported.yAccuracy.of(it) },
+            zAccuracy?.let { PrintAccuracySupported.zAccuracy.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val accuracyUnits = KeywordType("accuracy-units")
-        @JvmField val xAccuracy = IntType("x-accuracy")
-        @JvmField val yAccuracy = IntType("y-accuracy")
-        @JvmField val zAccuracy = IntType("z-accuracy")
     }
 
     /** Defines types for each member of [PrintAccuracySupported]. */
     companion object : AttributeCollection.Converter<PrintAccuracySupported> {
         override fun convert(attributes: List<Attribute<*>>): PrintAccuracySupported =
             PrintAccuracySupported(
-                extractOne(attributes, Types.accuracyUnits),
-                extractOne(attributes, Types.xAccuracy),
-                extractOne(attributes, Types.yAccuracy),
-                extractOne(attributes, Types.zAccuracy)
+                extractOne(attributes, accuracyUnits),
+                extractOne(attributes, xAccuracy),
+                extractOne(attributes, yAccuracy),
+                extractOne(attributes, zAccuracy)
             )
+        @JvmField val accuracyUnits = KeywordType("accuracy-units")
+        @JvmField val xAccuracy = IntType("x-accuracy")
+        @JvmField val yAccuracy = IntType("y-accuracy")
+        @JvmField val zAccuracy = IntType("z-accuracy")
     }
     override fun toString() = "PrintAccuracySupported(${attributes.joinToString()})"
 }

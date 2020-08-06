@@ -29,27 +29,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            xriAuthentication?.let { Types.xriAuthentication.of(it) },
-            xriSecurity?.let { Types.xriSecurity.of(it) },
-            xriUri?.let { Types.xriUri.of(it) }
+            xriAuthentication?.let { PrinterXriSupported.xriAuthentication.of(it) },
+            xriSecurity?.let { PrinterXriSupported.xriSecurity.of(it) },
+            xriUri?.let { PrinterXriSupported.xriUri.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val xriAuthentication = KeywordType("xri-authentication")
-        @JvmField val xriSecurity = KeywordType("xri-security")
-        @JvmField val xriUri = UriType("xri-uri")
     }
 
     /** Defines types for each member of [PrinterXriSupported]. */
     companion object : AttributeCollection.Converter<PrinterXriSupported> {
         override fun convert(attributes: List<Attribute<*>>): PrinterXriSupported =
             PrinterXriSupported(
-                extractOne(attributes, Types.xriAuthentication),
-                extractOne(attributes, Types.xriSecurity),
-                extractOne(attributes, Types.xriUri)
+                extractOne(attributes, xriAuthentication),
+                extractOne(attributes, xriSecurity),
+                extractOne(attributes, xriUri)
             )
+        @JvmField val xriAuthentication = KeywordType("xri-authentication")
+        @JvmField val xriSecurity = KeywordType("xri-security")
+        @JvmField val xriUri = UriType("xri-uri")
     }
     override fun toString() = "PrinterXriSupported(${attributes.joinToString()})"
 }

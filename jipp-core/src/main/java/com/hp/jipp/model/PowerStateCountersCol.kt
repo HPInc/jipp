@@ -28,30 +28,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            hibernateTransitions?.let { Types.hibernateTransitions.of(it) },
-            onTransitions?.let { Types.onTransitions.of(it) },
-            standbyTransitions?.let { Types.standbyTransitions.of(it) },
-            suspendTransitions?.let { Types.suspendTransitions.of(it) }
+            hibernateTransitions?.let { PowerStateCountersCol.hibernateTransitions.of(it) },
+            onTransitions?.let { PowerStateCountersCol.onTransitions.of(it) },
+            standbyTransitions?.let { PowerStateCountersCol.standbyTransitions.of(it) },
+            suspendTransitions?.let { PowerStateCountersCol.suspendTransitions.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val hibernateTransitions = IntType("hibernate-transitions")
-        @JvmField val onTransitions = IntType("on-transitions")
-        @JvmField val standbyTransitions = IntType("standby-transitions")
-        @JvmField val suspendTransitions = IntType("suspend-transitions")
     }
 
     /** Defines types for each member of [PowerStateCountersCol]. */
     companion object : AttributeCollection.Converter<PowerStateCountersCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerStateCountersCol =
             PowerStateCountersCol(
-                extractOne(attributes, Types.hibernateTransitions),
-                extractOne(attributes, Types.onTransitions),
-                extractOne(attributes, Types.standbyTransitions),
-                extractOne(attributes, Types.suspendTransitions)
+                extractOne(attributes, hibernateTransitions),
+                extractOne(attributes, onTransitions),
+                extractOne(attributes, standbyTransitions),
+                extractOne(attributes, suspendTransitions)
             )
+        @JvmField val hibernateTransitions = IntType("hibernate-transitions")
+        @JvmField val onTransitions = IntType("on-transitions")
+        @JvmField val standbyTransitions = IntType("standby-transitions")
+        @JvmField val suspendTransitions = IntType("suspend-transitions")
     }
     override fun toString() = "PowerStateCountersCol(${attributes.joinToString()})"
 }

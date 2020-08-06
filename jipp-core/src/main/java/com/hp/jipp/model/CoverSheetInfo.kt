@@ -30,36 +30,32 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            fromName?.let { Types.fromName.of(it) },
-            logo?.let { Types.logo.of(it) },
-            message?.let { Types.message.of(it) },
-            organizationName?.let { Types.organizationName.of(it) },
-            subject?.let { Types.subject.of(it) },
-            toName?.let { Types.toName.of(it) }
+            fromName?.let { CoverSheetInfo.fromName.of(it) },
+            logo?.let { CoverSheetInfo.logo.of(it) },
+            message?.let { CoverSheetInfo.message.of(it) },
+            organizationName?.let { CoverSheetInfo.organizationName.of(it) },
+            subject?.let { CoverSheetInfo.subject.of(it) },
+            toName?.let { CoverSheetInfo.toName.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val fromName = TextType("from-name")
-        @JvmField val logo = UriType("logo")
-        @JvmField val message = TextType("message")
-        @JvmField val organizationName = TextType("organization-name")
-        @JvmField val subject = TextType("subject")
-        @JvmField val toName = TextType("to-name")
     }
 
     /** Defines types for each member of [CoverSheetInfo]. */
     companion object : AttributeCollection.Converter<CoverSheetInfo> {
         override fun convert(attributes: List<Attribute<*>>): CoverSheetInfo =
             CoverSheetInfo(
-                extractOne(attributes, Types.fromName)?.value,
-                extractOne(attributes, Types.logo),
-                extractOne(attributes, Types.message)?.value,
-                extractOne(attributes, Types.organizationName)?.value,
-                extractOne(attributes, Types.subject)?.value,
-                extractOne(attributes, Types.toName)?.value
+                extractOne(attributes, fromName)?.value,
+                extractOne(attributes, logo),
+                extractOne(attributes, message)?.value,
+                extractOne(attributes, organizationName)?.value,
+                extractOne(attributes, subject)?.value,
+                extractOne(attributes, toName)?.value
             )
+        @JvmField val fromName = TextType("from-name")
+        @JvmField val logo = UriType("logo")
+        @JvmField val message = TextType("message")
+        @JvmField val organizationName = TextType("organization-name")
+        @JvmField val subject = TextType("subject")
+        @JvmField val toName = TextType("to-name")
     }
     override fun toString() = "CoverSheetInfo(${attributes.joinToString()})"
 }

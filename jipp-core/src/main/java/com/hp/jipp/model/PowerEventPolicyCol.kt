@@ -27,27 +27,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            eventId?.let { Types.eventId.of(it) },
-            eventName?.let { Types.eventName.of(it) },
-            requestPowerState?.let { Types.requestPowerState.of(it) }
+            eventId?.let { PowerEventPolicyCol.eventId.of(it) },
+            eventName?.let { PowerEventPolicyCol.eventName.of(it) },
+            requestPowerState?.let { PowerEventPolicyCol.requestPowerState.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val eventId = IntType("event-id")
-        @JvmField val eventName = NameType("event-name")
-        @JvmField val requestPowerState = KeywordType("request-power-state")
     }
 
     /** Defines types for each member of [PowerEventPolicyCol]. */
     companion object : AttributeCollection.Converter<PowerEventPolicyCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerEventPolicyCol =
             PowerEventPolicyCol(
-                extractOne(attributes, Types.eventId),
-                extractOne(attributes, Types.eventName)?.value,
-                extractOne(attributes, Types.requestPowerState)
+                extractOne(attributes, eventId),
+                extractOne(attributes, eventName)?.value,
+                extractOne(attributes, requestPowerState)
             )
+        @JvmField val eventId = IntType("event-id")
+        @JvmField val eventName = NameType("event-name")
+        @JvmField val requestPowerState = KeywordType("request-power-state")
     }
     override fun toString() = "PowerEventPolicyCol(${attributes.joinToString()})"
 }

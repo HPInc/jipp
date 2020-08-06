@@ -27,27 +27,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            documentCopies?.let { Types.documentCopies.of(it) },
-            documentNumbers?.let { Types.documentNumbers.of(it) },
-            pages?.let { Types.pages.of(it) }
+            documentCopies?.let { Overrides.documentCopies.of(it) },
+            documentNumbers?.let { Overrides.documentNumbers.of(it) },
+            pages?.let { Overrides.pages.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val documentCopies = IntRangeType.Set("document-copies")
-        @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
-        @JvmField val pages = IntRangeType.Set("pages")
     }
 
     /** Defines types for each member of [Overrides]. */
     companion object : AttributeCollection.Converter<Overrides> {
         override fun convert(attributes: List<Attribute<*>>): Overrides =
             Overrides(
-                extractAll(attributes, Types.documentCopies),
-                extractAll(attributes, Types.documentNumbers),
-                extractAll(attributes, Types.pages)
+                extractAll(attributes, documentCopies),
+                extractAll(attributes, documentNumbers),
+                extractAll(attributes, pages)
             )
+        @JvmField val documentCopies = IntRangeType.Set("document-copies")
+        @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
+        @JvmField val pages = IntRangeType.Set("pages")
     }
     override fun toString() = "Overrides(${attributes.joinToString()})"
 }

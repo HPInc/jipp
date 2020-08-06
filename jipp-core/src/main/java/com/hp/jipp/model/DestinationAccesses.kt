@@ -30,33 +30,29 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            accessOauthToken?.let { Types.accessOauthToken.of(it) },
-            accessOauthUri?.let { Types.accessOauthUri.of(it) },
-            accessPassword?.let { Types.accessPassword.of(it) },
-            accessPin?.let { Types.accessPin.of(it) },
-            accessUserName?.let { Types.accessUserName.of(it) }
+            accessOauthToken?.let { DestinationAccesses.accessOauthToken.of(it) },
+            accessOauthUri?.let { DestinationAccesses.accessOauthUri.of(it) },
+            accessPassword?.let { DestinationAccesses.accessPassword.of(it) },
+            accessPin?.let { DestinationAccesses.accessPin.of(it) },
+            accessUserName?.let { DestinationAccesses.accessUserName.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val accessOauthToken = OctetsType.Set("access-oauth-token")
-        @JvmField val accessOauthUri = UriType("access-oauth-uri")
-        @JvmField val accessPassword = TextType("access-password")
-        @JvmField val accessPin = TextType("access-pin")
-        @JvmField val accessUserName = TextType("access-user-name")
     }
 
     /** Defines types for each member of [DestinationAccesses]. */
     companion object : AttributeCollection.Converter<DestinationAccesses> {
         override fun convert(attributes: List<Attribute<*>>): DestinationAccesses =
             DestinationAccesses(
-                extractAll(attributes, Types.accessOauthToken),
-                extractOne(attributes, Types.accessOauthUri),
-                extractOne(attributes, Types.accessPassword)?.value,
-                extractOne(attributes, Types.accessPin)?.value,
-                extractOne(attributes, Types.accessUserName)?.value
+                extractAll(attributes, accessOauthToken),
+                extractOne(attributes, accessOauthUri),
+                extractOne(attributes, accessPassword)?.value,
+                extractOne(attributes, accessPin)?.value,
+                extractOne(attributes, accessUserName)?.value
             )
+        @JvmField val accessOauthToken = OctetsType.Set("access-oauth-token")
+        @JvmField val accessOauthUri = UriType("access-oauth-uri")
+        @JvmField val accessPassword = TextType("access-password")
+        @JvmField val accessPin = TextType("access-pin")
+        @JvmField val accessUserName = TextType("access-user-name")
     }
     override fun toString() = "DestinationAccesses(${attributes.joinToString()})"
 }

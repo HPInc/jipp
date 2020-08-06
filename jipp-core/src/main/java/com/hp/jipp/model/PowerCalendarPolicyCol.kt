@@ -32,19 +32,30 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            calendarId?.let { Types.calendarId.of(it) },
-            dayOfMonth?.let { Types.dayOfMonth.of(it) },
-            dayOfWeek?.let { Types.dayOfWeek.of(it) },
-            hour?.let { Types.hour.of(it) },
-            minute?.let { Types.minute.of(it) },
-            month?.let { Types.month.of(it) },
-            requestPowerState?.let { Types.requestPowerState.of(it) },
-            runOnce?.let { Types.runOnce.of(it) }
+            calendarId?.let { PowerCalendarPolicyCol.calendarId.of(it) },
+            dayOfMonth?.let { PowerCalendarPolicyCol.dayOfMonth.of(it) },
+            dayOfWeek?.let { PowerCalendarPolicyCol.dayOfWeek.of(it) },
+            hour?.let { PowerCalendarPolicyCol.hour.of(it) },
+            minute?.let { PowerCalendarPolicyCol.minute.of(it) },
+            month?.let { PowerCalendarPolicyCol.month.of(it) },
+            requestPowerState?.let { PowerCalendarPolicyCol.requestPowerState.of(it) },
+            runOnce?.let { PowerCalendarPolicyCol.runOnce.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [PowerCalendarPolicyCol]. */
+    companion object : AttributeCollection.Converter<PowerCalendarPolicyCol> {
+        override fun convert(attributes: List<Attribute<*>>): PowerCalendarPolicyCol =
+            PowerCalendarPolicyCol(
+                extractOne(attributes, calendarId),
+                extractOne(attributes, dayOfMonth),
+                extractOne(attributes, dayOfWeek),
+                extractOne(attributes, hour),
+                extractOne(attributes, minute),
+                extractOne(attributes, month),
+                extractOne(attributes, requestPowerState),
+                extractOne(attributes, runOnce)
+            )
         @JvmField val calendarId = IntType("calendar-id")
         @JvmField val dayOfMonth = IntType("day-of-month")
         @JvmField val dayOfWeek = IntType("day-of-week")
@@ -53,21 +64,6 @@ constructor(
         @JvmField val month = IntType("month")
         @JvmField val requestPowerState = KeywordType("request-power-state")
         @JvmField val runOnce = BooleanType("run-once")
-    }
-
-    /** Defines types for each member of [PowerCalendarPolicyCol]. */
-    companion object : AttributeCollection.Converter<PowerCalendarPolicyCol> {
-        override fun convert(attributes: List<Attribute<*>>): PowerCalendarPolicyCol =
-            PowerCalendarPolicyCol(
-                extractOne(attributes, Types.calendarId),
-                extractOne(attributes, Types.dayOfMonth),
-                extractOne(attributes, Types.dayOfWeek),
-                extractOne(attributes, Types.hour),
-                extractOne(attributes, Types.minute),
-                extractOne(attributes, Types.month),
-                extractOne(attributes, Types.requestPowerState),
-                extractOne(attributes, Types.runOnce)
-            )
     }
     override fun toString() = "PowerCalendarPolicyCol(${attributes.joinToString()})"
 }

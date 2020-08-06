@@ -31,30 +31,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            jobErrorSheetType?.let { Types.jobErrorSheetType.of(it) },
-            jobErrorSheetWhen?.let { Types.jobErrorSheetWhen.of(it) },
-            media?.let { Types.media.of(it) },
-            mediaCol?.let { Types.mediaCol.of(it) }
+            jobErrorSheetType?.let { JobErrorSheet.jobErrorSheetType.of(it) },
+            jobErrorSheetWhen?.let { JobErrorSheet.jobErrorSheetWhen.of(it) },
+            media?.let { JobErrorSheet.media.of(it) },
+            mediaCol?.let { JobErrorSheet.mediaCol.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val jobErrorSheetType = KeywordOrNameType("job-error-sheet-type")
-        @JvmField val jobErrorSheetWhen = KeywordType("job-error-sheet-when")
-        @JvmField val media = KeywordOrNameType("media")
-        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobErrorSheet]. */
     companion object : AttributeCollection.Converter<JobErrorSheet> {
         override fun convert(attributes: List<Attribute<*>>): JobErrorSheet =
             JobErrorSheet(
-                extractOne(attributes, Types.jobErrorSheetType),
-                extractOne(attributes, Types.jobErrorSheetWhen),
-                extractOne(attributes, Types.media),
-                extractOne(attributes, Types.mediaCol)
+                extractOne(attributes, jobErrorSheetType),
+                extractOne(attributes, jobErrorSheetWhen),
+                extractOne(attributes, media),
+                extractOne(attributes, mediaCol)
             )
+        @JvmField val jobErrorSheetType = KeywordOrNameType("job-error-sheet-type")
+        @JvmField val jobErrorSheetWhen = KeywordType("job-error-sheet-when")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
     override fun toString() = "JobErrorSheet(${attributes.joinToString()})"
 }

@@ -26,21 +26,17 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            presetName?.let { Types.presetName.of(it) }
+            presetName?.let { JobTriggersSupported.presetName.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val presetName = KeywordOrNameType("preset-name")
     }
 
     /** Defines types for each member of [JobTriggersSupported]. */
     companion object : AttributeCollection.Converter<JobTriggersSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobTriggersSupported =
             JobTriggersSupported(
-                extractOne(attributes, Types.presetName)
+                extractOne(attributes, presetName)
             )
+        @JvmField val presetName = KeywordOrNameType("preset-name")
     }
     override fun toString() = "JobTriggersSupported(${attributes.joinToString()})"
 }

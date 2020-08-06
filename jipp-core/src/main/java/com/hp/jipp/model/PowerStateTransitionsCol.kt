@@ -27,27 +27,23 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            endPowerState?.let { Types.endPowerState.of(it) },
-            startPowerState?.let { Types.startPowerState.of(it) },
-            stateTransitionSeconds?.let { Types.stateTransitionSeconds.of(it) }
+            endPowerState?.let { PowerStateTransitionsCol.endPowerState.of(it) },
+            startPowerState?.let { PowerStateTransitionsCol.startPowerState.of(it) },
+            stateTransitionSeconds?.let { PowerStateTransitionsCol.stateTransitionSeconds.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val endPowerState = KeywordType("end-power-state")
-        @JvmField val startPowerState = KeywordType("start-power-state")
-        @JvmField val stateTransitionSeconds = IntType("state-transition-seconds")
     }
 
     /** Defines types for each member of [PowerStateTransitionsCol]. */
     companion object : AttributeCollection.Converter<PowerStateTransitionsCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerStateTransitionsCol =
             PowerStateTransitionsCol(
-                extractOne(attributes, Types.endPowerState),
-                extractOne(attributes, Types.startPowerState),
-                extractOne(attributes, Types.stateTransitionSeconds)
+                extractOne(attributes, endPowerState),
+                extractOne(attributes, startPowerState),
+                extractOne(attributes, stateTransitionSeconds)
             )
+        @JvmField val endPowerState = KeywordType("end-power-state")
+        @JvmField val startPowerState = KeywordType("start-power-state")
+        @JvmField val stateTransitionSeconds = IntType("state-transition-seconds")
     }
     override fun toString() = "PowerStateTransitionsCol(${attributes.joinToString()})"
 }

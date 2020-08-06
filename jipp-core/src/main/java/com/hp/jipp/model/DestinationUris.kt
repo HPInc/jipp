@@ -30,33 +30,29 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            destinationAttributes?.let { Types.destinationAttributes.of(it) },
-            destinationUri?.let { Types.destinationUri.of(it) },
-            postDialString?.let { Types.postDialString.of(it) },
-            preDialString?.let { Types.preDialString.of(it) },
-            t33Subaddress?.let { Types.t33Subaddress.of(it) }
+            destinationAttributes?.let { DestinationUris.destinationAttributes.of(it) },
+            destinationUri?.let { DestinationUris.destinationUri.of(it) },
+            postDialString?.let { DestinationUris.postDialString.of(it) },
+            preDialString?.let { DestinationUris.preDialString.of(it) },
+            t33Subaddress?.let { DestinationUris.t33Subaddress.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
-        @JvmField val destinationUri = UriType("destination-uri")
-        @JvmField val postDialString = TextType("post-dial-string")
-        @JvmField val preDialString = TextType("pre-dial-string")
-        @JvmField val t33Subaddress = IntType("t33-subaddress")
     }
 
     /** Defines types for each member of [DestinationUris]. */
     companion object : AttributeCollection.Converter<DestinationUris> {
         override fun convert(attributes: List<Attribute<*>>): DestinationUris =
             DestinationUris(
-                extractAll(attributes, Types.destinationAttributes),
-                extractOne(attributes, Types.destinationUri),
-                extractOne(attributes, Types.postDialString)?.value,
-                extractOne(attributes, Types.preDialString)?.value,
-                extractOne(attributes, Types.t33Subaddress)
+                extractAll(attributes, destinationAttributes),
+                extractOne(attributes, destinationUri),
+                extractOne(attributes, postDialString)?.value,
+                extractOne(attributes, preDialString)?.value,
+                extractOne(attributes, t33Subaddress)
             )
+        @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
+        @JvmField val destinationUri = UriType("destination-uri")
+        @JvmField val postDialString = TextType("post-dial-string")
+        @JvmField val preDialString = TextType("pre-dial-string")
+        @JvmField val t33Subaddress = IntType("t33-subaddress")
     }
     override fun toString() = "DestinationUris(${attributes.joinToString()})"
 }

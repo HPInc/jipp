@@ -32,30 +32,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            jobAccountingOutputBin?.let { Types.jobAccountingOutputBin.of(it) },
-            jobAccountingSheetsType?.let { Types.jobAccountingSheetsType.of(it) },
-            media?.let { Types.media.of(it) },
-            mediaCol?.let { Types.mediaCol.of(it) }
+            jobAccountingOutputBin?.let { JobAccountingSheets.jobAccountingOutputBin.of(it) },
+            jobAccountingSheetsType?.let { JobAccountingSheets.jobAccountingSheetsType.of(it) },
+            media?.let { JobAccountingSheets.media.of(it) },
+            mediaCol?.let { JobAccountingSheets.mediaCol.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val jobAccountingOutputBin = KeywordOrNameType("job-accounting-output-bin")
-        @JvmField val jobAccountingSheetsType = KeywordOrNameType("job-accounting-sheets-type")
-        @JvmField val media = KeywordOrNameType("media")
-        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
 
     /** Defines types for each member of [JobAccountingSheets]. */
     companion object : AttributeCollection.Converter<JobAccountingSheets> {
         override fun convert(attributes: List<Attribute<*>>): JobAccountingSheets =
             JobAccountingSheets(
-                extractOne(attributes, Types.jobAccountingOutputBin),
-                extractOne(attributes, Types.jobAccountingSheetsType),
-                extractOne(attributes, Types.media),
-                extractOne(attributes, Types.mediaCol)
+                extractOne(attributes, jobAccountingOutputBin),
+                extractOne(attributes, jobAccountingSheetsType),
+                extractOne(attributes, media),
+                extractOne(attributes, mediaCol)
             )
+        @JvmField val jobAccountingOutputBin = KeywordOrNameType("job-accounting-output-bin")
+        @JvmField val jobAccountingSheetsType = KeywordOrNameType("job-accounting-sheets-type")
+        @JvmField val media = KeywordOrNameType("media")
+        @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
     }
     override fun toString() = "JobAccountingSheets(${attributes.joinToString()})"
 }

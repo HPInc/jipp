@@ -25,21 +25,17 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            resolverName?.let { Types.resolverName.of(it) }
+            resolverName?.let { JobConstraintsSupported.resolverName.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val resolverName = NameType("resolver-name")
     }
 
     /** Defines types for each member of [JobConstraintsSupported]. */
     companion object : AttributeCollection.Converter<JobConstraintsSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobConstraintsSupported =
             JobConstraintsSupported(
-                extractOne(attributes, Types.resolverName)?.value
+                extractOne(attributes, resolverName)?.value
             )
+        @JvmField val resolverName = NameType("resolver-name")
     }
     override fun toString() = "JobConstraintsSupported(${attributes.joinToString()})"
 }

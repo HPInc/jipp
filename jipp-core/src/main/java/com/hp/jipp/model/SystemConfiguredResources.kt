@@ -31,17 +31,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            resourceFormat?.let { Types.resourceFormat.of(it) },
-            resourceId?.let { Types.resourceId.of(it) },
-            resourceInfo?.let { Types.resourceInfo.of(it) },
-            resourceName?.let { Types.resourceName.of(it) },
-            resourceState?.let { Types.resourceState.of(it) },
-            resourceType?.let { Types.resourceType.of(it) }
+            resourceFormat?.let { SystemConfiguredResources.resourceFormat.of(it) },
+            resourceId?.let { SystemConfiguredResources.resourceId.of(it) },
+            resourceInfo?.let { SystemConfiguredResources.resourceInfo.of(it) },
+            resourceName?.let { SystemConfiguredResources.resourceName.of(it) },
+            resourceState?.let { SystemConfiguredResources.resourceState.of(it) },
+            resourceType?.let { SystemConfiguredResources.resourceType.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [SystemConfiguredResources]. */
+    companion object : AttributeCollection.Converter<SystemConfiguredResources> {
+        override fun convert(attributes: List<Attribute<*>>): SystemConfiguredResources =
+            SystemConfiguredResources(
+                extractOne(attributes, resourceFormat),
+                extractOne(attributes, resourceId),
+                extractOne(attributes, resourceInfo)?.value,
+                extractOne(attributes, resourceName)?.value,
+                extractOne(attributes, resourceState),
+                extractOne(attributes, resourceType)
+            )
         @JvmField val resourceFormat = StringType(Tag.mimeMediaType, "resource-format")
         @JvmField val resourceId = IntType("resource-id")
         @JvmField val resourceInfo = TextType("resource-info")
@@ -51,19 +60,6 @@ constructor(
          */
         @JvmField val resourceState = ResourceState.Type("resource-state")
         @JvmField val resourceType = KeywordType("resource-type")
-    }
-
-    /** Defines types for each member of [SystemConfiguredResources]. */
-    companion object : AttributeCollection.Converter<SystemConfiguredResources> {
-        override fun convert(attributes: List<Attribute<*>>): SystemConfiguredResources =
-            SystemConfiguredResources(
-                extractOne(attributes, Types.resourceFormat),
-                extractOne(attributes, Types.resourceId),
-                extractOne(attributes, Types.resourceInfo)?.value,
-                extractOne(attributes, Types.resourceName)?.value,
-                extractOne(attributes, Types.resourceState),
-                extractOne(attributes, Types.resourceType)
-            )
     }
     override fun toString() = "SystemConfiguredResources(${attributes.joinToString()})"
 }

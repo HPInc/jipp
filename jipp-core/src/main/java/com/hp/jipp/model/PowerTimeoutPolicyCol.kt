@@ -29,30 +29,26 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            startPowerState?.let { Types.startPowerState.of(it) },
-            timeoutId?.let { Types.timeoutId.of(it) },
-            timeoutPredicate?.let { Types.timeoutPredicate.of(it) },
-            timeoutSeconds?.let { Types.timeoutSeconds.of(it) }
+            startPowerState?.let { PowerTimeoutPolicyCol.startPowerState.of(it) },
+            timeoutId?.let { PowerTimeoutPolicyCol.timeoutId.of(it) },
+            timeoutPredicate?.let { PowerTimeoutPolicyCol.timeoutPredicate.of(it) },
+            timeoutSeconds?.let { PowerTimeoutPolicyCol.timeoutSeconds.of(it) }
         )
-    }
-
-    /** Types for each member attribute. */
-    object Types {
-        @JvmField val startPowerState = KeywordType("start-power-state")
-        @JvmField val timeoutId = IntType("timeout-id")
-        @JvmField val timeoutPredicate = KeywordType("timeout-predicate")
-        @JvmField val timeoutSeconds = IntType("timeout-seconds")
     }
 
     /** Defines types for each member of [PowerTimeoutPolicyCol]. */
     companion object : AttributeCollection.Converter<PowerTimeoutPolicyCol> {
         override fun convert(attributes: List<Attribute<*>>): PowerTimeoutPolicyCol =
             PowerTimeoutPolicyCol(
-                extractOne(attributes, Types.startPowerState),
-                extractOne(attributes, Types.timeoutId),
-                extractOne(attributes, Types.timeoutPredicate),
-                extractOne(attributes, Types.timeoutSeconds)
+                extractOne(attributes, startPowerState),
+                extractOne(attributes, timeoutId),
+                extractOne(attributes, timeoutPredicate),
+                extractOne(attributes, timeoutSeconds)
             )
+        @JvmField val startPowerState = KeywordType("start-power-state")
+        @JvmField val timeoutId = IntType("timeout-id")
+        @JvmField val timeoutPredicate = KeywordType("timeout-predicate")
+        @JvmField val timeoutSeconds = IntType("timeout-seconds")
     }
     override fun toString() = "PowerTimeoutPolicyCol(${attributes.joinToString()})"
 }

@@ -41,25 +41,42 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            baling?.let { Types.baling.of(it) },
-            binding?.let { Types.binding.of(it) },
-            coating?.let { Types.coating.of(it) },
-            covering?.let { Types.covering.of(it) },
-            finishingTemplate?.let { Types.finishingTemplate.of(it) },
-            folding?.let { Types.folding.of(it) },
-            impositionTemplate?.let { Types.impositionTemplate.of(it) },
-            laminating?.let { Types.laminating.of(it) },
-            mediaSheetsSupported?.let { Types.mediaSheetsSupported.of(it) },
-            mediaSize?.let { Types.mediaSize.of(it) },
-            mediaSizeName?.let { Types.mediaSizeName.of(it) },
-            punching?.let { Types.punching.of(it) },
-            stitching?.let { Types.stitching.of(it) },
-            trimming?.let { Types.trimming.of(it) }
+            baling?.let { FinishingsCol.baling.of(it) },
+            binding?.let { FinishingsCol.binding.of(it) },
+            coating?.let { FinishingsCol.coating.of(it) },
+            covering?.let { FinishingsCol.covering.of(it) },
+            finishingTemplate?.let { FinishingsCol.finishingTemplate.of(it) },
+            folding?.let { FinishingsCol.folding.of(it) },
+            impositionTemplate?.let { FinishingsCol.impositionTemplate.of(it) },
+            laminating?.let { FinishingsCol.laminating.of(it) },
+            mediaSheetsSupported?.let { FinishingsCol.mediaSheetsSupported.of(it) },
+            mediaSize?.let { FinishingsCol.mediaSize.of(it) },
+            mediaSizeName?.let { FinishingsCol.mediaSizeName.of(it) },
+            punching?.let { FinishingsCol.punching.of(it) },
+            stitching?.let { FinishingsCol.stitching.of(it) },
+            trimming?.let { FinishingsCol.trimming.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [FinishingsCol]. */
+    companion object : AttributeCollection.Converter<FinishingsCol> {
+        override fun convert(attributes: List<Attribute<*>>): FinishingsCol =
+            FinishingsCol(
+                extractOne(attributes, baling),
+                extractOne(attributes, binding),
+                extractOne(attributes, coating),
+                extractOne(attributes, covering),
+                extractOne(attributes, finishingTemplate),
+                extractAll(attributes, folding),
+                extractOne(attributes, impositionTemplate),
+                extractOne(attributes, laminating),
+                extractOne(attributes, mediaSheetsSupported),
+                extractOne(attributes, mediaSize),
+                extractOne(attributes, mediaSizeName),
+                extractOne(attributes, punching),
+                extractOne(attributes, stitching),
+                extractAll(attributes, trimming)
+            )
         @JvmField val baling = AttributeCollection.Type("baling", Baling)
         @JvmField val binding = AttributeCollection.Type("binding", Binding)
         @JvmField val coating = AttributeCollection.Type("coating", Coating)
@@ -74,27 +91,6 @@ constructor(
         @JvmField val punching = AttributeCollection.Type("punching", Punching)
         @JvmField val stitching = AttributeCollection.Type("stitching", Stitching)
         @JvmField val trimming = AttributeCollection.SetType("trimming", Trimming)
-    }
-
-    /** Defines types for each member of [FinishingsCol]. */
-    companion object : AttributeCollection.Converter<FinishingsCol> {
-        override fun convert(attributes: List<Attribute<*>>): FinishingsCol =
-            FinishingsCol(
-                extractOne(attributes, Types.baling),
-                extractOne(attributes, Types.binding),
-                extractOne(attributes, Types.coating),
-                extractOne(attributes, Types.covering),
-                extractOne(attributes, Types.finishingTemplate),
-                extractAll(attributes, Types.folding),
-                extractOne(attributes, Types.impositionTemplate),
-                extractOne(attributes, Types.laminating),
-                extractOne(attributes, Types.mediaSheetsSupported),
-                extractOne(attributes, Types.mediaSize),
-                extractOne(attributes, Types.mediaSizeName),
-                extractOne(attributes, Types.punching),
-                extractOne(attributes, Types.stitching),
-                extractAll(attributes, Types.trimming)
-            )
     }
 
     /**
@@ -115,24 +111,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                balingType?.let { Types.balingType.of(it) },
-                balingWhen?.let { Types.balingWhen.of(it) }
+                balingType?.let { Baling.balingType.of(it) },
+                balingWhen?.let { Baling.balingWhen.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val balingType = KeywordOrNameType("baling-type")
-            @JvmField val balingWhen = KeywordType("baling-when")
         }
 
         /** Defines types for each member of [Baling]. */
         companion object : AttributeCollection.Converter<Baling> {
             override fun convert(attributes: List<Attribute<*>>): Baling =
                 Baling(
-                    extractOne(attributes, Types.balingType),
-                    extractOne(attributes, Types.balingWhen)
+                    extractOne(attributes, balingType),
+                    extractOne(attributes, balingWhen)
                 )
+            @JvmField val balingType = KeywordOrNameType("baling-type")
+            @JvmField val balingWhen = KeywordType("baling-when")
         }
         override fun toString() = "Baling(${attributes.joinToString()})"
     }
@@ -155,24 +147,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                bindingReferenceEdge?.let { Types.bindingReferenceEdge.of(it) },
-                bindingType?.let { Types.bindingType.of(it) }
+                bindingReferenceEdge?.let { Binding.bindingReferenceEdge.of(it) },
+                bindingType?.let { Binding.bindingType.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val bindingReferenceEdge = KeywordType("binding-reference-edge")
-            @JvmField val bindingType = KeywordOrNameType("binding-type")
         }
 
         /** Defines types for each member of [Binding]. */
         companion object : AttributeCollection.Converter<Binding> {
             override fun convert(attributes: List<Attribute<*>>): Binding =
                 Binding(
-                    extractOne(attributes, Types.bindingReferenceEdge),
-                    extractOne(attributes, Types.bindingType)
+                    extractOne(attributes, bindingReferenceEdge),
+                    extractOne(attributes, bindingType)
                 )
+            @JvmField val bindingReferenceEdge = KeywordType("binding-reference-edge")
+            @JvmField val bindingType = KeywordOrNameType("binding-type")
         }
         override fun toString() = "Binding(${attributes.joinToString()})"
     }
@@ -195,24 +183,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                coatingSides?.let { Types.coatingSides.of(it) },
-                coatingType?.let { Types.coatingType.of(it) }
+                coatingSides?.let { Coating.coatingSides.of(it) },
+                coatingType?.let { Coating.coatingType.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val coatingSides = KeywordType("coating-sides")
-            @JvmField val coatingType = KeywordOrNameType("coating-type")
         }
 
         /** Defines types for each member of [Coating]. */
         companion object : AttributeCollection.Converter<Coating> {
             override fun convert(attributes: List<Attribute<*>>): Coating =
                 Coating(
-                    extractOne(attributes, Types.coatingSides),
-                    extractOne(attributes, Types.coatingType)
+                    extractOne(attributes, coatingSides),
+                    extractOne(attributes, coatingType)
                 )
+            @JvmField val coatingSides = KeywordType("coating-sides")
+            @JvmField val coatingType = KeywordOrNameType("coating-type")
         }
         override fun toString() = "Coating(${attributes.joinToString()})"
     }
@@ -233,21 +217,17 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                coveringName?.let { Types.coveringName.of(it) }
+                coveringName?.let { Covering.coveringName.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val coveringName = KeywordOrNameType("covering-name")
         }
 
         /** Defines types for each member of [Covering]. */
         companion object : AttributeCollection.Converter<Covering> {
             override fun convert(attributes: List<Attribute<*>>): Covering =
                 Covering(
-                    extractOne(attributes, Types.coveringName)
+                    extractOne(attributes, coveringName)
                 )
+            @JvmField val coveringName = KeywordOrNameType("covering-name")
         }
         override fun toString() = "Covering(${attributes.joinToString()})"
     }
@@ -271,27 +251,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                foldingDirection?.let { Types.foldingDirection.of(it) },
-                foldingOffset?.let { Types.foldingOffset.of(it) },
-                foldingReferenceEdge?.let { Types.foldingReferenceEdge.of(it) }
+                foldingDirection?.let { Folding.foldingDirection.of(it) },
+                foldingOffset?.let { Folding.foldingOffset.of(it) },
+                foldingReferenceEdge?.let { Folding.foldingReferenceEdge.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val foldingDirection = KeywordType("folding-direction")
-            @JvmField val foldingOffset = IntType("folding-offset")
-            @JvmField val foldingReferenceEdge = KeywordType("folding-reference-edge")
         }
 
         /** Defines types for each member of [Folding]. */
         companion object : AttributeCollection.Converter<Folding> {
             override fun convert(attributes: List<Attribute<*>>): Folding =
                 Folding(
-                    extractOne(attributes, Types.foldingDirection),
-                    extractOne(attributes, Types.foldingOffset),
-                    extractOne(attributes, Types.foldingReferenceEdge)
+                    extractOne(attributes, foldingDirection),
+                    extractOne(attributes, foldingOffset),
+                    extractOne(attributes, foldingReferenceEdge)
                 )
+            @JvmField val foldingDirection = KeywordType("folding-direction")
+            @JvmField val foldingOffset = IntType("folding-offset")
+            @JvmField val foldingReferenceEdge = KeywordType("folding-reference-edge")
         }
         override fun toString() = "Folding(${attributes.joinToString()})"
     }
@@ -314,24 +290,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                laminatingSides?.let { Types.laminatingSides.of(it) },
-                laminatingType?.let { Types.laminatingType.of(it) }
+                laminatingSides?.let { Laminating.laminatingSides.of(it) },
+                laminatingType?.let { Laminating.laminatingType.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val laminatingSides = KeywordType("laminating-sides")
-            @JvmField val laminatingType = KeywordOrNameType("laminating-type")
         }
 
         /** Defines types for each member of [Laminating]. */
         companion object : AttributeCollection.Converter<Laminating> {
             override fun convert(attributes: List<Attribute<*>>): Laminating =
                 Laminating(
-                    extractOne(attributes, Types.laminatingSides),
-                    extractOne(attributes, Types.laminatingType)
+                    extractOne(attributes, laminatingSides),
+                    extractOne(attributes, laminatingType)
                 )
+            @JvmField val laminatingSides = KeywordType("laminating-sides")
+            @JvmField val laminatingType = KeywordOrNameType("laminating-type")
         }
         override fun toString() = "Laminating(${attributes.joinToString()})"
     }
@@ -352,24 +324,20 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                xDimension?.let { Types.xDimension.of(it) },
-                yDimension?.let { Types.yDimension.of(it) }
+                xDimension?.let { MediaSize.xDimension.of(it) },
+                yDimension?.let { MediaSize.yDimension.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val xDimension = IntType("x-dimension")
-            @JvmField val yDimension = IntType("y-dimension")
         }
 
         /** Defines types for each member of [MediaSize]. */
         companion object : AttributeCollection.Converter<MediaSize> {
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
-                    extractOne(attributes, Types.xDimension),
-                    extractOne(attributes, Types.yDimension)
+                    extractOne(attributes, xDimension),
+                    extractOne(attributes, yDimension)
                 )
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val yDimension = IntType("y-dimension")
         }
         override fun toString() = "MediaSize(${attributes.joinToString()})"
     }
@@ -392,27 +360,23 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                punchingLocations?.let { Types.punchingLocations.of(it) },
-                punchingOffset?.let { Types.punchingOffset.of(it) },
-                punchingReferenceEdge?.let { Types.punchingReferenceEdge.of(it) }
+                punchingLocations?.let { Punching.punchingLocations.of(it) },
+                punchingOffset?.let { Punching.punchingOffset.of(it) },
+                punchingReferenceEdge?.let { Punching.punchingReferenceEdge.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val punchingLocations = IntType.Set("punching-locations")
-            @JvmField val punchingOffset = IntType("punching-offset")
-            @JvmField val punchingReferenceEdge = KeywordType("punching-reference-edge")
         }
 
         /** Defines types for each member of [Punching]. */
         companion object : AttributeCollection.Converter<Punching> {
             override fun convert(attributes: List<Attribute<*>>): Punching =
                 Punching(
-                    extractAll(attributes, Types.punchingLocations),
-                    extractOne(attributes, Types.punchingOffset),
-                    extractOne(attributes, Types.punchingReferenceEdge)
+                    extractAll(attributes, punchingLocations),
+                    extractOne(attributes, punchingOffset),
+                    extractOne(attributes, punchingReferenceEdge)
                 )
+            @JvmField val punchingLocations = IntType.Set("punching-locations")
+            @JvmField val punchingOffset = IntType("punching-offset")
+            @JvmField val punchingReferenceEdge = KeywordType("punching-reference-edge")
         }
         override fun toString() = "Punching(${attributes.joinToString()})"
     }
@@ -438,33 +402,29 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                stitchingAngle?.let { Types.stitchingAngle.of(it) },
-                stitchingLocations?.let { Types.stitchingLocations.of(it) },
-                stitchingMethod?.let { Types.stitchingMethod.of(it) },
-                stitchingOffset?.let { Types.stitchingOffset.of(it) },
-                stitchingReferenceEdge?.let { Types.stitchingReferenceEdge.of(it) }
+                stitchingAngle?.let { Stitching.stitchingAngle.of(it) },
+                stitchingLocations?.let { Stitching.stitchingLocations.of(it) },
+                stitchingMethod?.let { Stitching.stitchingMethod.of(it) },
+                stitchingOffset?.let { Stitching.stitchingOffset.of(it) },
+                stitchingReferenceEdge?.let { Stitching.stitchingReferenceEdge.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val stitchingAngle = IntType("stitching-angle")
-            @JvmField val stitchingLocations = IntType.Set("stitching-locations")
-            @JvmField val stitchingMethod = KeywordType("stitching-method")
-            @JvmField val stitchingOffset = IntType("stitching-offset")
-            @JvmField val stitchingReferenceEdge = KeywordType("stitching-reference-edge")
         }
 
         /** Defines types for each member of [Stitching]. */
         companion object : AttributeCollection.Converter<Stitching> {
             override fun convert(attributes: List<Attribute<*>>): Stitching =
                 Stitching(
-                    extractOne(attributes, Types.stitchingAngle),
-                    extractAll(attributes, Types.stitchingLocations),
-                    extractOne(attributes, Types.stitchingMethod),
-                    extractOne(attributes, Types.stitchingOffset),
-                    extractOne(attributes, Types.stitchingReferenceEdge)
+                    extractOne(attributes, stitchingAngle),
+                    extractAll(attributes, stitchingLocations),
+                    extractOne(attributes, stitchingMethod),
+                    extractOne(attributes, stitchingOffset),
+                    extractOne(attributes, stitchingReferenceEdge)
                 )
+            @JvmField val stitchingAngle = IntType("stitching-angle")
+            @JvmField val stitchingLocations = IntType.Set("stitching-locations")
+            @JvmField val stitchingMethod = KeywordType("stitching-method")
+            @JvmField val stitchingOffset = IntType("stitching-offset")
+            @JvmField val stitchingReferenceEdge = KeywordType("stitching-reference-edge")
         }
         override fun toString() = "Stitching(${attributes.joinToString()})"
     }
@@ -490,30 +450,26 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                trimmingOffset?.let { Types.trimmingOffset.of(it) },
-                trimmingReferenceEdge?.let { Types.trimmingReferenceEdge.of(it) },
-                trimmingType?.let { Types.trimmingType.of(it) },
-                trimmingWhen?.let { Types.trimmingWhen.of(it) }
+                trimmingOffset?.let { Trimming.trimmingOffset.of(it) },
+                trimmingReferenceEdge?.let { Trimming.trimmingReferenceEdge.of(it) },
+                trimmingType?.let { Trimming.trimmingType.of(it) },
+                trimmingWhen?.let { Trimming.trimmingWhen.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val trimmingOffset = IntType("trimming-offset")
-            @JvmField val trimmingReferenceEdge = KeywordType("trimming-reference-edge")
-            @JvmField val trimmingType = KeywordOrNameType("trimming-type")
-            @JvmField val trimmingWhen = KeywordType("trimming-when")
         }
 
         /** Defines types for each member of [Trimming]. */
         companion object : AttributeCollection.Converter<Trimming> {
             override fun convert(attributes: List<Attribute<*>>): Trimming =
                 Trimming(
-                    extractOne(attributes, Types.trimmingOffset),
-                    extractOne(attributes, Types.trimmingReferenceEdge),
-                    extractOne(attributes, Types.trimmingType),
-                    extractOne(attributes, Types.trimmingWhen)
+                    extractOne(attributes, trimmingOffset),
+                    extractOne(attributes, trimmingReferenceEdge),
+                    extractOne(attributes, trimmingType),
+                    extractOne(attributes, trimmingWhen)
                 )
+            @JvmField val trimmingOffset = IntType("trimming-offset")
+            @JvmField val trimmingReferenceEdge = KeywordType("trimming-reference-edge")
+            @JvmField val trimmingType = KeywordOrNameType("trimming-type")
+            @JvmField val trimmingWhen = KeywordType("trimming-when")
         }
         override fun toString() = "Trimming(${attributes.joinToString()})"
     }

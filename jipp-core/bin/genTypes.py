@@ -642,7 +642,7 @@ def fix_ktypes(type, syntax, name, group_name = ''):
                     kref = 'Types.' + camel_member(name)
                 else:
                     # These are enum types found in collections
-                    kref = camel_class_path(group_name) + '.Types.' + camel_member(name)
+                    kref = camel_class_path(group_name) + '.' + camel_member(name)
                 if kref not in real_type['krefs']:
                     real_type['krefs'].append(kref)
 

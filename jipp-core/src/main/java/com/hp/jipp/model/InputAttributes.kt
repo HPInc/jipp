@@ -48,29 +48,50 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>> by lazy {
         listOfNotNull(
-            inputAutoScaling?.let { Types.inputAutoScaling.of(it) },
-            inputAutoSkewCorrection?.let { Types.inputAutoSkewCorrection.of(it) },
-            inputBrightness?.let { Types.inputBrightness.of(it) },
-            inputColorMode?.let { Types.inputColorMode.of(it) },
-            inputContentType?.let { Types.inputContentType.of(it) },
-            inputContrast?.let { Types.inputContrast.of(it) },
-            inputFilmScanMode?.let { Types.inputFilmScanMode.of(it) },
-            inputImagesToTransfer?.let { Types.inputImagesToTransfer.of(it) },
-            inputMedia?.let { Types.inputMedia.of(it) },
-            inputOrientationRequested?.let { Types.inputOrientationRequested.of(it) },
-            inputQuality?.let { Types.inputQuality.of(it) },
-            inputResolution?.let { Types.inputResolution.of(it) },
-            inputScalingHeight?.let { Types.inputScalingHeight.of(it) },
-            inputScalingWidth?.let { Types.inputScalingWidth.of(it) },
-            inputScanRegions?.let { Types.inputScanRegions.of(it) },
-            inputSharpness?.let { Types.inputSharpness.of(it) },
-            inputSides?.let { Types.inputSides.of(it) },
-            inputSource?.let { Types.inputSource.of(it) }
+            inputAutoScaling?.let { InputAttributes.inputAutoScaling.of(it) },
+            inputAutoSkewCorrection?.let { InputAttributes.inputAutoSkewCorrection.of(it) },
+            inputBrightness?.let { InputAttributes.inputBrightness.of(it) },
+            inputColorMode?.let { InputAttributes.inputColorMode.of(it) },
+            inputContentType?.let { InputAttributes.inputContentType.of(it) },
+            inputContrast?.let { InputAttributes.inputContrast.of(it) },
+            inputFilmScanMode?.let { InputAttributes.inputFilmScanMode.of(it) },
+            inputImagesToTransfer?.let { InputAttributes.inputImagesToTransfer.of(it) },
+            inputMedia?.let { InputAttributes.inputMedia.of(it) },
+            inputOrientationRequested?.let { InputAttributes.inputOrientationRequested.of(it) },
+            inputQuality?.let { InputAttributes.inputQuality.of(it) },
+            inputResolution?.let { InputAttributes.inputResolution.of(it) },
+            inputScalingHeight?.let { InputAttributes.inputScalingHeight.of(it) },
+            inputScalingWidth?.let { InputAttributes.inputScalingWidth.of(it) },
+            inputScanRegions?.let { InputAttributes.inputScanRegions.of(it) },
+            inputSharpness?.let { InputAttributes.inputSharpness.of(it) },
+            inputSides?.let { InputAttributes.inputSides.of(it) },
+            inputSource?.let { InputAttributes.inputSource.of(it) }
         )
     }
 
-    /** Types for each member attribute. */
-    object Types {
+    /** Defines types for each member of [InputAttributes]. */
+    companion object : AttributeCollection.Converter<InputAttributes> {
+        override fun convert(attributes: List<Attribute<*>>): InputAttributes =
+            InputAttributes(
+                extractOne(attributes, inputAutoScaling),
+                extractOne(attributes, inputAutoSkewCorrection),
+                extractOne(attributes, inputBrightness),
+                extractOne(attributes, inputColorMode),
+                extractOne(attributes, inputContentType),
+                extractOne(attributes, inputContrast),
+                extractOne(attributes, inputFilmScanMode),
+                extractOne(attributes, inputImagesToTransfer),
+                extractOne(attributes, inputMedia),
+                extractOne(attributes, inputOrientationRequested),
+                extractOne(attributes, inputQuality),
+                extractOne(attributes, inputResolution),
+                extractOne(attributes, inputScalingHeight),
+                extractOne(attributes, inputScalingWidth),
+                extractAll(attributes, inputScanRegions),
+                extractOne(attributes, inputSharpness),
+                extractOne(attributes, inputSides),
+                extractOne(attributes, inputSource)
+            )
         @JvmField val inputAutoScaling = BooleanType("input-auto-scaling")
         @JvmField val inputAutoSkewCorrection = BooleanType("input-auto-skew-correction")
         @JvmField val inputBrightness = IntType("input-brightness")
@@ -97,31 +118,6 @@ constructor(
         @JvmField val inputSource = KeywordType("input-source")
     }
 
-    /** Defines types for each member of [InputAttributes]. */
-    companion object : AttributeCollection.Converter<InputAttributes> {
-        override fun convert(attributes: List<Attribute<*>>): InputAttributes =
-            InputAttributes(
-                extractOne(attributes, Types.inputAutoScaling),
-                extractOne(attributes, Types.inputAutoSkewCorrection),
-                extractOne(attributes, Types.inputBrightness),
-                extractOne(attributes, Types.inputColorMode),
-                extractOne(attributes, Types.inputContentType),
-                extractOne(attributes, Types.inputContrast),
-                extractOne(attributes, Types.inputFilmScanMode),
-                extractOne(attributes, Types.inputImagesToTransfer),
-                extractOne(attributes, Types.inputMedia),
-                extractOne(attributes, Types.inputOrientationRequested),
-                extractOne(attributes, Types.inputQuality),
-                extractOne(attributes, Types.inputResolution),
-                extractOne(attributes, Types.inputScalingHeight),
-                extractOne(attributes, Types.inputScalingWidth),
-                extractAll(attributes, Types.inputScanRegions),
-                extractOne(attributes, Types.inputSharpness),
-                extractOne(attributes, Types.inputSides),
-                extractOne(attributes, Types.inputSource)
-            )
-    }
-
     /**
      * Data object corresponding to a "input-scan-regions" collection.
      */
@@ -140,30 +136,26 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>> by lazy {
             listOfNotNull(
-                xDimension?.let { Types.xDimension.of(it) },
-                xOrigin?.let { Types.xOrigin.of(it) },
-                yDimension?.let { Types.yDimension.of(it) },
-                yOrigin?.let { Types.yOrigin.of(it) }
+                xDimension?.let { InputScanRegions.xDimension.of(it) },
+                xOrigin?.let { InputScanRegions.xOrigin.of(it) },
+                yDimension?.let { InputScanRegions.yDimension.of(it) },
+                yOrigin?.let { InputScanRegions.yOrigin.of(it) }
             )
-        }
-
-        /** Types for each member attribute. */
-        object Types {
-            @JvmField val xDimension = IntType("x-dimension")
-            @JvmField val xOrigin = IntType("x-origin")
-            @JvmField val yDimension = IntType("y-dimension")
-            @JvmField val yOrigin = IntType("y-origin")
         }
 
         /** Defines types for each member of [InputScanRegions]. */
         companion object : AttributeCollection.Converter<InputScanRegions> {
             override fun convert(attributes: List<Attribute<*>>): InputScanRegions =
                 InputScanRegions(
-                    extractOne(attributes, Types.xDimension),
-                    extractOne(attributes, Types.xOrigin),
-                    extractOne(attributes, Types.yDimension),
-                    extractOne(attributes, Types.yOrigin)
+                    extractOne(attributes, xDimension),
+                    extractOne(attributes, xOrigin),
+                    extractOne(attributes, yDimension),
+                    extractOne(attributes, yOrigin)
                 )
+            @JvmField val xDimension = IntType("x-dimension")
+            @JvmField val xOrigin = IntType("x-origin")
+            @JvmField val yDimension = IntType("y-dimension")
+            @JvmField val yOrigin = IntType("y-origin")
         }
         override fun toString() = "InputScanRegions(${attributes.joinToString()})"
     }
