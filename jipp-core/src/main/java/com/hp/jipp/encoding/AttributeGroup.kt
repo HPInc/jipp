@@ -51,6 +51,11 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
     fun toMutable(): MutableAttributeGroup =
         mutableGroupOf(tag, this)
 
+    /** Return a pretty-printed version of this packet (including separators and line breaks) */
+    fun prettyPrint(maxWidth: Int, indent: String) = PrettyPrinter(tag.name, PrettyPrinter.OBJECT, indent, maxWidth)
+        .addAll(this)
+        .print()
+
     @Suppress("TooManyFunctions")
     companion object {
         /** Return a fixed group of attributes. */

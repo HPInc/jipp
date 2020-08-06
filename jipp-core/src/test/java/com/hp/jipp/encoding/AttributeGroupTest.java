@@ -344,4 +344,11 @@ public class AttributeGroupTest {
         assertNotEquals(mutableGroup, groupOf(Tag.operationAttributes, Types.attributesCharset.of("utf-9")));
         assertNotEquals(mutableGroup, groupOf(printerAttributes, Types.attributesCharset.of("utf-8")));
     }
+
+    @Test
+    public void prettyPrint() {
+        MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
+                Types.attributesCharset.of("utf-8"));
+        assertEquals("operation-attributes { attributes-charset = utf-8 }",mutableGroup.prettyPrint(120,"    "));
+    }
 }
