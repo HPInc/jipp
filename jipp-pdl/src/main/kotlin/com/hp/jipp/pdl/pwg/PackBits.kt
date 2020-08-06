@@ -119,6 +119,7 @@ class PackBits(
             return true
         }
 
+        @Suppress("LoopWithTooManyJumpStatements")
         private fun readNextLine(): Boolean {
             lineArrayValid = false
 
@@ -140,7 +141,7 @@ class PackBits(
             lineRepeatCount = 1
             while (lineRepeatCount <= MAX_LINE_REPEAT) {
                 if (readLine(nextLineArray)) {
-                    if (Arrays.equals(lineArray, nextLineArray)) {
+                    if (lineArray.contentEquals(nextLineArray)) {
                         lineRepeatCount++
                     } else {
                         // We found a different line so hold for later

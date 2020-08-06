@@ -10,7 +10,7 @@ import java.lang.IllegalArgumentException
  *
  * See [RFC8011 Section 5.1.3](https://tools.ietf.org/html/rfc8011#section-5.1.3).
  */
-data class KeywordOrName constructor(val name: Name?, val keyword: String?) : TaggedValue(), Stringable {
+data class KeywordOrName constructor(val name: Name?, val keyword: String?) : TaggedValue, Stringable {
 
     /** Construct a [KeywordOrName] containing only a keyword. */
     constructor(keyword: String) : this(null, keyword)

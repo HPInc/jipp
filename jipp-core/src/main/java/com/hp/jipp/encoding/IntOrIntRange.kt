@@ -9,7 +9,7 @@ class IntOrIntRange private constructor(
     val endInclusive: Int,
     /** If true, this data was originally intended as a single integer, and [start] == [endInclusive] */
     val simpleInt: Boolean
-) : TaggedValue() {
+) : TaggedValue {
 
     /** Constructs an object based on a range */
     constructor(range: IntRange) : this (range.first, range.last, false)

@@ -6,7 +6,7 @@ package com.hp.jipp.encoding
 import com.hp.jipp.util.toHexString
 
 /** An attribute value formatted as an array of octets. */
-data class OtherOctets(override val tag: ValueTag, override val value: ByteArray) : TaggedValue() {
+data class OtherOctets(override val tag: ValueTag, override val value: ByteArray) : TaggedValue {
     override fun equals(other: Any?): Boolean {
         if (other !is OtherOctets) return false
         return other.tag == tag && value contentEquals other.value

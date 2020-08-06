@@ -6,12 +6,10 @@ package com.hp.jipp.encoding
 /**
  * Any attribute value which does not directly correspond to a common Java type.
  */
-abstract class TaggedValue {
-    // Defined as an abstract class so that it may be implemented by data classes.
-
+interface TaggedValue {
     /** Tag describing how the value is encoded */
-    abstract val tag: ValueTag
+    val tag: ValueTag
 
     /** The value itself. Must be [Any] because subclasses may support multiple Java types. */
-    abstract val value: Any
+    val value: Any
 }

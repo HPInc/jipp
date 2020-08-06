@@ -6,7 +6,7 @@ package com.hp.jipp.encoding
 /**
  * Describes a name object, which may or may not have a language string.
  */
-data class Name(override val value: String, val lang: String?) : TaggedValue(), Stringable {
+data class Name(override val value: String, val lang: String?) : TaggedValue, Stringable {
     constructor(value: String) : this(value, null)
 
     override val tag = if (lang == null) Tag.nameWithoutLanguage else Tag.nameWithLanguage
