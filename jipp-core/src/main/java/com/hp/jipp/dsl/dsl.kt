@@ -18,6 +18,7 @@ import com.hp.jipp.model.Status
  * [DEFAULT_VERSION_NUMBER] and its `requestId` is set to [DEFAULT_REQUEST_ID].
  */
 @Suppress("ClassName", "ClassNaming")
+@Deprecated("Use IppPacket builders")
 object ippPacket {
     /** The default request ID (1001), which can be overridden with `requestId = 123` */
     operator fun invoke(

@@ -1,23 +1,24 @@
 [![CircleCI](https://circleci.com/gh/HPInc/jipp.svg?style=svg&circle-token=4baa4b142e5cc6f6cf6e803a8c5832a9dd755a25)](https://circleci.com/gh/HPInc/jipp)
 [![CodeCov](https://codecov.io/github/HPInc/jipp/coverage.svg?branch=master)](https://codecov.io/github/HPInc/jipp)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
-[![Dokka](https://img.shields.io/badge/docs-dokka-brightgreen.svg)](https://hpinc.github.io/jipp/javadoc/index.html)
+[![Core Docs](https://img.shields.io/badge/docs-core-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-core)
+[![PDL Docs](https://img.shields.io/badge/docs-pdl-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-pdl)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.3.72-blue.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
 
-This project consists of:
+This project includes:
 
-* `jipp-core`, the core IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
-* `jipp-pdls`, which converts rasterized documents into common page description languages (PCLm and PWG-Raster).
-* `jprint`, a sample app showing how `jipp-core` can be used to send a document to a printer.
-* `jrender`, a sample app showing how `jipp-pdl` can be used to convert a PDF to PCLm or PWG-Raster.
+* `jipp-core` is an IPP parser/builder for [IPP packets](https://en.wikipedia.org/wiki/Internet_Printing_Protocol).
+* `jipp-pdls` converts rasterized documents into common page description languages (PCLm and PWG-Raster).
+* `jprint` shows how `jipp-core` can be used to send a document to a printer.
+* `jrender` shows how `jipp-pdl` can be used to convert a PDF to PCLm or PWG-Raster.
 
 `jipp-core` features:
 
 * Supports construction of IPP servers, clients, routers, gateways, etc.
-* Common operations and attributes are defined and ready to use.
+* Common operations and attributes available for use.
 * Can be extended to support new operations and attributes.
 * Can be used over any transport (typically HTTP).
 * Includes a pretty-printer for human-readable IPP packet display.
@@ -32,15 +33,14 @@ What could I do with this?
 * Implement a cloud-based print server or client.
 
 The API is Java-compatible but implemented in Kotlin.
-[JavaDoc](https://hpinc.github.io/jipp/javadoc/index.html) is available for the Java-facing API.
 
 ## Usage
 
 1. Add the current version of JIPP to your project
 ```gradle
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.7.3'
-    compile 'com.hp.jipp:jipp-pdl:0.7.3' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.7.4'
+    compile 'com.hp.jipp:jipp-pdl:0.7.4' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
@@ -58,7 +58,7 @@ transport.sendData(uri, new IppPacketData(printRequest, new FileInputStream(inpu
 
 ### jprint
 
-Demonstrates a very simple print engine. To run:
+Demonstrates a simple print engine. To run:
 
 ```bash
 # build the app
@@ -73,6 +73,7 @@ jprint-*/bin/jprint -p sample.pdf ipp://192.168.1.102:631/ipp/print
 ```
 
 ### jrender
+
 An example of rendering a PDF to PWG-Raster or PCLm. To run:
 
 ```bash
@@ -91,9 +92,7 @@ jrender-*/bin/jrender sample.pdf sample.pclm
 
 ## API Maturity
 
-Until 1.0, APIs may still be changed in non-backwards-compatible ways.
-
-See [HISTORY.md](HISTORY.md) for more details.
+Until 1.0, APIs may still be changed in non-backwards-compatible ways. See [HISTORY.md](HISTORY.md) for more details.
 
 ## Dependencies
 
@@ -101,7 +100,6 @@ See [HISTORY.md](HISTORY.md) for more details.
 
 ## Building
 
-`./gradlew build`
+To build, run `./gradlew build`.
 
 A full build of this project requires `python` (2.x) and `dot` to generate dependency graphs.
-
