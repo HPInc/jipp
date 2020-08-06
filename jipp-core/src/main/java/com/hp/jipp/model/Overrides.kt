@@ -41,6 +41,9 @@ constructor(
                 extractAll(attributes, documentNumbers),
                 extractAll(attributes, pages)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val documentCopies = IntRangeType.Set("document-copies")
         @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
         @JvmField val pages = IntRangeType.Set("pages")

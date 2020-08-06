@@ -58,6 +58,9 @@ constructor(
                 extractAll(attributes, printerStateReasons),
                 extractOne(attributes, printerXriSupported)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val printerId = IntType("printer-id")
         @JvmField val printerInfo = TextType("printer-info")
         @JvmField val printerIsAcceptingJobs = BooleanType("printer-is-accepting-jobs")

@@ -38,6 +38,9 @@ constructor(
                 extractOne(attributes, profileName)?.value,
                 extractOne(attributes, profileUrl)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val profileName = NameType("profile-name")
         @JvmField val profileUrl = UriType("profile-url")
     }

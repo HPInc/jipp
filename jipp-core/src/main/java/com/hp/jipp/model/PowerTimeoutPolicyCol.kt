@@ -45,6 +45,9 @@ constructor(
                 extractOne(attributes, timeoutPredicate),
                 extractOne(attributes, timeoutSeconds)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val startPowerState = KeywordType("start-power-state")
         @JvmField val timeoutId = IntType("timeout-id")
         @JvmField val timeoutPredicate = KeywordType("timeout-predicate")

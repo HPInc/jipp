@@ -41,6 +41,9 @@ constructor(
                 extractOne(attributes, imagesCompleted),
                 extractOne(attributes, transmissionStatus)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val destinationUri = UriType("destination-uri")
         @JvmField val imagesCompleted = IntType("images-completed")
         /**

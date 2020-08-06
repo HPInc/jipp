@@ -43,6 +43,9 @@ constructor(
                 extractOne(attributes, xriSecurity),
                 extractOne(attributes, xriUri)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val xriAuthentication = KeywordType("xri-authentication")
         @JvmField val xriSecurity = KeywordType("xri-security")
         @JvmField val xriUri = UriType("xri-uri")

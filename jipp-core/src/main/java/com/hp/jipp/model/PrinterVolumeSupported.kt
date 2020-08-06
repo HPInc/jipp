@@ -41,6 +41,9 @@ constructor(
                 extractOne(attributes, yDimension),
                 extractOne(attributes, zDimension)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val xDimension = IntType("x-dimension")
         @JvmField val yDimension = IntType("y-dimension")
         @JvmField val zDimension = IntType("z-dimension")

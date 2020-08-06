@@ -41,6 +41,9 @@ constructor(
                 extractOne(attributes, eventName)?.value,
                 extractOne(attributes, requestPowerState)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val eventId = IntType("event-id")
         @JvmField val eventName = NameType("event-name")
         @JvmField val requestPowerState = KeywordType("request-power-state")

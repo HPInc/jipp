@@ -44,6 +44,9 @@ constructor(
                 extractOne(attributes, standbyTransitions),
                 extractOne(attributes, suspendTransitions)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val hibernateTransitions = IntType("hibernate-transitions")
         @JvmField val onTransitions = IntType("on-transitions")
         @JvmField val standbyTransitions = IntType("standby-transitions")

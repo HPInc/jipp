@@ -53,6 +53,9 @@ constructor(
                 extractOne(attributes, powerStateMessage)?.value,
                 extractOne(attributes, powerUsageIsRmsWatts)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val currentMonthKwh = IntType("current-month-kwh")
         @JvmField val currentWatts = IntType("current-watts")
         @JvmField val lifetimeKwh = IntType("lifetime-kwh")

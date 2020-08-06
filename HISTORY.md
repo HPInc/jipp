@@ -1,6 +1,9 @@
 # History of Changes
 
 ## 0.7.4
+
+NOTE: This release contains a breaking change for Java callers. If you refer to `AttributeCollection` types directly, you must replace (for example): `MediaCol.Types.mediaSize` with `MediaCol.mediaSize`
+
 * Support pretty print of `AttributeGroup`s (#94).
 * Remove Types object from `AttributeCollection` subtypes (#92).
 * Update to 2020-06-20 registered IANA types (#93).

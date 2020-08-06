@@ -41,6 +41,9 @@ constructor(
                 extractOne(attributes, contactUri),
                 extractAll(attributes, contactVcard)?.map { it.value }
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val contactName = NameType("contact-name")
         @JvmField val contactUri = UriType("contact-uri")
         @JvmField val contactVcard = TextType.Set("contact-vcard")

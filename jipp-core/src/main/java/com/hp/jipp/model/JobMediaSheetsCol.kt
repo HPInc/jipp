@@ -44,6 +44,9 @@ constructor(
                 extractOne(attributes, highlightColor),
                 extractOne(attributes, monochrome)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val blank = IntType("blank")
         @JvmField val fullColor = IntType("full-color")
         @JvmField val highlightColor = IntType("highlight-color")

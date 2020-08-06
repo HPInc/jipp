@@ -44,6 +44,9 @@ constructor(
                 extractOne(attributes, objectSize),
                 extractOne(attributes, objectUuid)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val documentNumber = IntType("document-number")
         @JvmField val objectOffset = AttributeCollection.Type("object-offset", ObjectOffset)
         @JvmField val objectSize = AttributeCollection.Type("object-size", ObjectSize)
@@ -81,6 +84,9 @@ constructor(
                     extractOne(attributes, yOffset),
                     extractOne(attributes, zOffset)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val xOffset = IntType("x-offset")
             @JvmField val yOffset = IntType("y-offset")
             @JvmField val zOffset = IntType("z-offset")
@@ -119,6 +125,9 @@ constructor(
                     extractOne(attributes, yDimension),
                     extractOne(attributes, zDimension)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val xDimension = IntType("x-dimension")
             @JvmField val yDimension = IntType("y-dimension")
             @JvmField val zDimension = IntType("z-dimension")

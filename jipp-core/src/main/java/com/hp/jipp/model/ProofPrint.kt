@@ -42,6 +42,9 @@ constructor(
                 extractOne(attributes, mediaCol),
                 extractOne(attributes, proofPrintCopies)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val media = KeywordOrNameType("media")
         @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
         @JvmField val proofPrintCopies = IntType("proof-print-copies")

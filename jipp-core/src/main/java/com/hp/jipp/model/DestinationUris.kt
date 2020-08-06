@@ -48,6 +48,9 @@ constructor(
                 extractOne(attributes, preDialString)?.value,
                 extractOne(attributes, t33Subaddress)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
         @JvmField val destinationUri = UriType("destination-uri")
         @JvmField val postDialString = TextType("post-dial-string")

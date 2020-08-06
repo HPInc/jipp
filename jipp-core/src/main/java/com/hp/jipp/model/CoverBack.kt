@@ -44,6 +44,9 @@ constructor(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val coverType = KeywordType("cover-type")
         @JvmField val media = KeywordOrNameType("media")
         @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)

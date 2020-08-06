@@ -63,6 +63,9 @@ constructor(
                 extractOne(attributes, destinationOauthUri),
                 extractOne(attributes, destinationUri)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val destinationAttributes = UntypedCollection.SetType("destination-attributes")
         @JvmField val destinationAttributesSupported = KeywordType.Set("destination-attributes-supported")
         @JvmField val destinationInfo = TextType("destination-info")

@@ -45,6 +45,9 @@ constructor(
                 extractOne(attributes, yAccuracy),
                 extractOne(attributes, zAccuracy)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val accuracyUnits = KeywordType("accuracy-units")
         @JvmField val xAccuracy = IntType("x-accuracy")
         @JvmField val yAccuracy = IntType("y-accuracy")

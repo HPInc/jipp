@@ -56,6 +56,9 @@ constructor(
  {%- endif %}
 {%- endfor %}
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         {%- for name, member in collection.members | dictsort %}
         {%- if member.syntax == 'enum' %}
         /**

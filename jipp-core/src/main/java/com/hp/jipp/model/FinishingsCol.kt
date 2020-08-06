@@ -77,6 +77,9 @@ constructor(
                 extractOne(attributes, stitching),
                 extractAll(attributes, trimming)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val baling = AttributeCollection.Type("baling", Baling)
         @JvmField val binding = AttributeCollection.Type("binding", Binding)
         @JvmField val coating = AttributeCollection.Type("coating", Coating)
@@ -123,6 +126,9 @@ constructor(
                     extractOne(attributes, balingType),
                     extractOne(attributes, balingWhen)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val balingType = KeywordOrNameType("baling-type")
             @JvmField val balingWhen = KeywordType("baling-when")
         }
@@ -159,6 +165,9 @@ constructor(
                     extractOne(attributes, bindingReferenceEdge),
                     extractOne(attributes, bindingType)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val bindingReferenceEdge = KeywordType("binding-reference-edge")
             @JvmField val bindingType = KeywordOrNameType("binding-type")
         }
@@ -195,6 +204,9 @@ constructor(
                     extractOne(attributes, coatingSides),
                     extractOne(attributes, coatingType)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val coatingSides = KeywordType("coating-sides")
             @JvmField val coatingType = KeywordOrNameType("coating-type")
         }
@@ -227,6 +239,9 @@ constructor(
                 Covering(
                     extractOne(attributes, coveringName)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val coveringName = KeywordOrNameType("covering-name")
         }
         override fun toString() = "Covering(${attributes.joinToString()})"
@@ -265,6 +280,9 @@ constructor(
                     extractOne(attributes, foldingOffset),
                     extractOne(attributes, foldingReferenceEdge)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val foldingDirection = KeywordType("folding-direction")
             @JvmField val foldingOffset = IntType("folding-offset")
             @JvmField val foldingReferenceEdge = KeywordType("folding-reference-edge")
@@ -302,6 +320,9 @@ constructor(
                     extractOne(attributes, laminatingSides),
                     extractOne(attributes, laminatingType)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val laminatingSides = KeywordType("laminating-sides")
             @JvmField val laminatingType = KeywordOrNameType("laminating-type")
         }
@@ -336,6 +357,9 @@ constructor(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, yDimension)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val xDimension = IntType("x-dimension")
             @JvmField val yDimension = IntType("y-dimension")
         }
@@ -374,6 +398,9 @@ constructor(
                     extractOne(attributes, punchingOffset),
                     extractOne(attributes, punchingReferenceEdge)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val punchingLocations = IntType.Set("punching-locations")
             @JvmField val punchingOffset = IntType("punching-offset")
             @JvmField val punchingReferenceEdge = KeywordType("punching-reference-edge")
@@ -420,6 +447,9 @@ constructor(
                     extractOne(attributes, stitchingOffset),
                     extractOne(attributes, stitchingReferenceEdge)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val stitchingAngle = IntType("stitching-angle")
             @JvmField val stitchingLocations = IntType.Set("stitching-locations")
             @JvmField val stitchingMethod = KeywordType("stitching-method")
@@ -466,6 +496,9 @@ constructor(
                     extractOne(attributes, trimmingType),
                     extractOne(attributes, trimmingWhen)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val trimmingOffset = IntType("trimming-offset")
             @JvmField val trimmingReferenceEdge = KeywordType("trimming-reference-edge")
             @JvmField val trimmingType = KeywordOrNameType("trimming-type")

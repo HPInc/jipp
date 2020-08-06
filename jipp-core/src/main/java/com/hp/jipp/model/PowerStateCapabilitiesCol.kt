@@ -47,6 +47,9 @@ constructor(
                 extractOne(attributes, powerInactiveWatts),
                 extractOne(attributes, powerState)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val canAcceptJobs = BooleanType("can-accept-jobs")
         @JvmField val canProcessJobs = BooleanType("can-process-jobs")
         @JvmField val powerActiveWatts = IntType("power-active-watts")

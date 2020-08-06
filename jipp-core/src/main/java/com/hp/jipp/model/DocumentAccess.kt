@@ -48,6 +48,9 @@ constructor(
                 extractOne(attributes, accessPin)?.value,
                 extractOne(attributes, accessUserName)?.value
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val accessOauthToken = OctetsType.Set("access-oauth-token")
         @JvmField val accessOauthUri = UriType("access-oauth-uri")
         @JvmField val accessPassword = TextType("access-password")

@@ -38,6 +38,9 @@ constructor(
                 extractOne(attributes, noiseRemoval),
                 extractOne(attributes, outputCompressionQualityFactor)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val noiseRemoval = IntType("noise-removal")
         @JvmField val outputCompressionQualityFactor = IntType("output-compression-quality-factor")
     }

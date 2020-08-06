@@ -50,6 +50,9 @@ constructor(
                 extractOne(attributes, subject)?.value,
                 extractOne(attributes, toName)?.value
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val fromName = TextType("from-name")
         @JvmField val logo = UriType("logo")
         @JvmField val message = TextType("message")

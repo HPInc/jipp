@@ -51,6 +51,9 @@ constructor(
                 extractOne(attributes, resourceState),
                 extractOne(attributes, resourceType)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val resourceFormat = StringType(Tag.mimeMediaType, "resource-format")
         @JvmField val resourceId = IntType("resource-id")
         @JvmField val resourceInfo = TextType("resource-info")

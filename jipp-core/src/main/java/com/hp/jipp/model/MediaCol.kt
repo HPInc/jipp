@@ -117,6 +117,9 @@ constructor(
                 extractOne(attributes, mediaType),
                 extractOne(attributes, mediaWeightMetric)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val mediaBackCoating = KeywordOrNameType("media-back-coating")
         @JvmField val mediaBottomMargin = IntType("media-bottom-margin")
         @JvmField val mediaColor = KeywordOrNameType("media-color")
@@ -171,6 +174,9 @@ constructor(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, yDimension)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val xDimension = IntType("x-dimension")
             @JvmField val yDimension = IntType("y-dimension")
         }
@@ -206,6 +212,9 @@ constructor(
                     extractOne(attributes, mediaSourceFeedDirection),
                     extractOne(attributes, mediaSourceFeedOrientation)
                 )
+            @Deprecated("Remove this symbol")
+            @JvmField
+            val Types = this
             @JvmField val mediaSourceFeedDirection = KeywordType("media-source-feed-direction")
             /**
              * "media-source-feed-orientation" member type.

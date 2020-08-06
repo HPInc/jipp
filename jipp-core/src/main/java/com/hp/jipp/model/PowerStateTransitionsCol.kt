@@ -41,6 +41,9 @@ constructor(
                 extractOne(attributes, startPowerState),
                 extractOne(attributes, stateTransitionSeconds)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val endPowerState = KeywordType("end-power-state")
         @JvmField val startPowerState = KeywordType("start-power-state")
         @JvmField val stateTransitionSeconds = IntType("state-transition-seconds")

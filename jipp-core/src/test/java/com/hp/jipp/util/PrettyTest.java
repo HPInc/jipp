@@ -1,13 +1,12 @@
 package com.hp.jipp.util;
 
+import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 public class PrettyTest {
     @Rule

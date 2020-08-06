@@ -44,6 +44,9 @@ constructor(
                 extractOne(attributes, mediaCol),
                 extractAll(attributes, separatorSheetsType)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val media = KeywordOrNameType("media")
         @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
         @JvmField val separatorSheetsType = KeywordType.Set("separator-sheets-type")

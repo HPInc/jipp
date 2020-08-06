@@ -47,6 +47,9 @@ constructor(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol)
             )
+        @Deprecated("Remove this symbol")
+        @JvmField
+        val Types = this
         @JvmField val jobErrorSheetType = KeywordOrNameType("job-error-sheet-type")
         @JvmField val jobErrorSheetWhen = KeywordType("job-error-sheet-when")
         @JvmField val media = KeywordOrNameType("media")
