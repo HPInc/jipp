@@ -2,6 +2,7 @@ package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.DocumentState;
+import com.hp.jipp.model.FinishingsCol;
 import com.hp.jipp.model.IdentifyAction;
 import com.hp.jipp.model.ImpositionTemplate;
 import com.hp.jipp.model.JobState;
@@ -36,6 +37,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+@SuppressWarnings("ConstantConditions")
 public class AttributeGroupTest {
 
     @Test public void emptyGroup() throws IOException {
@@ -139,7 +141,7 @@ public class AttributeGroupTest {
     public void getValues() {
         AttributeGroup group = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
-        assertEquals(Arrays.asList("utf-8"), group.getValues(Types.attributesCharset));
+        assertEquals(Collections.singletonList("utf-8"), group.getValues(Types.attributesCharset));
         assertEquals(Collections.emptyList(), group.getValues(Types.attributesNaturalLanguage));
     }
 
@@ -261,8 +263,7 @@ public class AttributeGroupTest {
 
         AttributeGroup group2 = group.plus(groupOf(operationAttributes, Types.operationsSupported.of(Operation.fetchJob)));
 
-        List<Attribute<?>> all = new ArrayList<>();
-        all.addAll(group2);
+        List<Attribute<?>> all = new ArrayList<>(group2);
         assertEquals(Types.documentFormatSupported.getName(), all.get(2).getName());
         assertEquals(Types.operationsSupported.of(Operation.fetchJob), all.get(1));
     }
@@ -301,7 +302,7 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void mutableGroupDrop() throws Exception {
+    public void mutableGroupDrop() {
         Attribute<Name> printerName = Types.printerName.of("jim");
         MutableAttributeGroup mutableGroup = mutableGroupOf(printerAttributes, printerName);
         assertEquals(printerName, mutableGroup.drop(Types.printerName));
@@ -339,8 +340,6 @@ public class AttributeGroupTest {
         assertEquals(cycledGroup.hashCode(), mutableGroup.hashCode());
         assertEquals(mutableGroup, new ArrayList<>(cycledGroup));
         assertEquals(cycledGroup, new ArrayList<>(mutableGroup));
-        assertNotEquals(mutableGroup, "other");
-        assertNotEquals(mutableGroup, 5);
         assertNotEquals(mutableGroup, new ArrayList<>());
         assertNotEquals(mutableGroup, groupOf(Tag.operationAttributes, Types.attributesCharset.of("utf-9")));
         assertNotEquals(mutableGroup, groupOf(printerAttributes, Types.attributesCharset.of("utf-8")));
@@ -351,6 +350,20 @@ public class AttributeGroupTest {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
         assertEquals("operation-attributes { attributes-charset = utf-8 }",mutableGroup.prettyPrint(120,"    "));
+    }
+
+    @Test
+    public void modifyMutableInPlace() {
+        AttributeGroup group = mutableGroupOf(operationAttributes, Types.finishingsCol.of(new FinishingsCol()));
+        group.get(Types.finishingsCol).get(0).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
+        assertEquals(ImpositionTemplate.signature, group.get(Types.finishingsCol).get(0).getImpositionTemplate().getKeyword());
+    }
+
+    @Test
+    public void modifyInPlace() {
+        AttributeGroup group = groupOf(operationAttributes, Types.finishingsCol.of(new FinishingsCol()));
+        group.get(Types.finishingsCol).get(0).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
+        assertEquals(ImpositionTemplate.signature, group.get(Types.finishingsCol).get(0).getImpositionTemplate().getKeyword());
     }
 
     @Ignore // See issue #26
