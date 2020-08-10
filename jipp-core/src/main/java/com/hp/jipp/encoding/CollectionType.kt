@@ -10,12 +10,7 @@ open class CollectionType<T : AttributeCollection>(
 ) : AttributeType<T> {
 
     override fun coerce(value: Any) =
-        if (value is UntypedCollection) {
-            factory(value)
-        } else {
-            // TODO: What if it's NOT an untyped collection. What if it's been factory-cast already?
-            null
-        }
+        (value as? UntypedCollection)?.let { factory(it) }
 
     override fun toString() = "CollectionType($name)"
 

@@ -42,15 +42,19 @@ interface AttributeCollection : PrettyPrintable {
         private val converter: Converter<T>
     ) : AttributeSetType<T> {
         override fun coerce(value: Any): T? =
-            when (value) {
-                is AttributeCollection -> converter.convert(value.attributes)
+            when {
+                converter.cls.isInstance(value) ->
+                    @Suppress("UNCHECKED_CAST") // We just checked it
+                    value as T
+                value is AttributeCollection -> converter.convert(value.attributes)
                 else -> null
             }
     }
 
     /** Converts a [List] of [Attribute] objects into an [AttributeCollection]. */
     interface Converter<T : AttributeCollection> {
-        val cls : Class<T>
+        /** Class of T. */
+        val cls: Class<T>
 
         /**
          * Progressively convert attributes into the destination type

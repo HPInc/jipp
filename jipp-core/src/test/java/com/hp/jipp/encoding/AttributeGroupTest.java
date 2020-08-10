@@ -353,17 +353,31 @@ public class AttributeGroupTest {
     }
 
     @Test
-    public void modifyMutableInPlace() {
+    public void modifyCollectionSetMemberInMutable() {
         AttributeGroup group = mutableGroupOf(operationAttributes, Types.finishingsCol.of(new FinishingsCol()));
         group.get(Types.finishingsCol).get(0).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
         assertEquals(ImpositionTemplate.signature, group.get(Types.finishingsCol).get(0).getImpositionTemplate().getKeyword());
     }
 
     @Test
-    public void modifyInPlace() {
+    public void modifyCollectionSetMember() {
         AttributeGroup group = groupOf(operationAttributes, Types.finishingsCol.of(new FinishingsCol()));
         group.get(Types.finishingsCol).get(0).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
         assertEquals(ImpositionTemplate.signature, group.get(Types.finishingsCol).get(0).getImpositionTemplate().getKeyword());
+    }
+
+    @Test
+    public void modifyCollectionMemberInMutable() {
+        AttributeGroup group = mutableGroupOf(operationAttributes, Types.finishingsColDefault.of(new FinishingsCol()));
+        group.getValue(Types.finishingsColDefault).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
+        assertEquals(ImpositionTemplate.signature, group.getValue(Types.finishingsColDefault).getImpositionTemplate().getKeyword());
+    }
+
+    @Test
+    public void modifyCollectionMember() {
+        AttributeGroup group = groupOf(operationAttributes, Types.finishingsColDefault.of(new FinishingsCol()));
+        group.getValue(Types.finishingsColDefault).setImpositionTemplate(new KeywordOrName(ImpositionTemplate.signature));
+        assertEquals(ImpositionTemplate.signature, group.getValue(Types.finishingsColDefault).getImpositionTemplate().getKeyword());
     }
 
     @Ignore // See issue #26

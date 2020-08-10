@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.7.5
+* Retain modifications to collection attribute values whenever possible (#97, #98).
+
 ## 0.7.4
 NOTE: This release contains a breaking change for Java callers. If you refer to `AttributeCollection` types directly, you must replace (for example): `MediaCol.Types.mediaSize` with `MediaCol.mediaSize`
 
