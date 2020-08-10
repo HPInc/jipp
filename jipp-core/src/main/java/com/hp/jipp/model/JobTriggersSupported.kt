@@ -24,11 +24,10 @@ constructor(
     constructor() : this(null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             presetName?.let { JobTriggersSupported.presetName.of(it) }
         )
-    }
 
     /** Defines types for each member of [JobTriggersSupported]. */
     companion object : AttributeCollection.Converter<JobTriggersSupported> {

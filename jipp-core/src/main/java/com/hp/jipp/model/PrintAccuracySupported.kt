@@ -27,14 +27,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             accuracyUnits?.let { PrintAccuracySupported.accuracyUnits.of(it) },
             xAccuracy?.let { PrintAccuracySupported.xAccuracy.of(it) },
             yAccuracy?.let { PrintAccuracySupported.yAccuracy.of(it) },
             zAccuracy?.let { PrintAccuracySupported.zAccuracy.of(it) }
         )
-    }
 
     /** Defines types for each member of [PrintAccuracySupported]. */
     companion object : AttributeCollection.Converter<PrintAccuracySupported> {

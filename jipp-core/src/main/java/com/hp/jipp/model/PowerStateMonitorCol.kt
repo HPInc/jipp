@@ -29,8 +29,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             currentMonthKwh?.let { PowerStateMonitorCol.currentMonthKwh.of(it) },
             currentWatts?.let { PowerStateMonitorCol.currentWatts.of(it) },
             lifetimeKwh?.let { PowerStateMonitorCol.lifetimeKwh.of(it) },
@@ -39,7 +39,6 @@ constructor(
             powerStateMessage?.let { PowerStateMonitorCol.powerStateMessage.of(it) },
             powerUsageIsRmsWatts?.let { PowerStateMonitorCol.powerUsageIsRmsWatts.of(it) }
         )
-    }
 
     /** Defines types for each member of [PowerStateMonitorCol]. */
     companion object : AttributeCollection.Converter<PowerStateMonitorCol> {

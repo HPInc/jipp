@@ -26,14 +26,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             xDimension?.let { InputScanRegionsSupported.xDimension.of(it) },
             xOrigin?.let { InputScanRegionsSupported.xOrigin.of(it) },
             yDimension?.let { InputScanRegionsSupported.yDimension.of(it) },
             yOrigin?.let { InputScanRegionsSupported.yOrigin.of(it) }
         )
-    }
 
     /** Defines types for each member of [InputScanRegionsSupported]. */
     companion object : AttributeCollection.Converter<InputScanRegionsSupported> {

@@ -24,12 +24,11 @@ constructor(
     constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             xDimension?.let { MediaSizeSupported.xDimension.of(it) },
             yDimension?.let { MediaSizeSupported.yDimension.of(it) }
         )
-    }
 
     /** Defines types for each member of [MediaSizeSupported]. */
     companion object : AttributeCollection.Converter<MediaSizeSupported> {

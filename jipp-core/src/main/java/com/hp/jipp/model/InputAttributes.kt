@@ -46,8 +46,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             inputAutoScaling?.let { InputAttributes.inputAutoScaling.of(it) },
             inputAutoSkewCorrection?.let { InputAttributes.inputAutoSkewCorrection.of(it) },
             inputBrightness?.let { InputAttributes.inputBrightness.of(it) },
@@ -67,7 +67,6 @@ constructor(
             inputSides?.let { InputAttributes.inputSides.of(it) },
             inputSource?.let { InputAttributes.inputSource.of(it) }
         )
-    }
 
     /** Defines types for each member of [InputAttributes]. */
     companion object : AttributeCollection.Converter<InputAttributes> {
@@ -137,14 +136,13 @@ constructor(
         constructor() : this(null, null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 xDimension?.let { InputScanRegions.xDimension.of(it) },
                 xOrigin?.let { InputScanRegions.xOrigin.of(it) },
                 yDimension?.let { InputScanRegions.yDimension.of(it) },
                 yOrigin?.let { InputScanRegions.yOrigin.of(it) }
             )
-        }
 
         /** Defines types for each member of [InputScanRegions]. */
         companion object : AttributeCollection.Converter<InputScanRegions> {

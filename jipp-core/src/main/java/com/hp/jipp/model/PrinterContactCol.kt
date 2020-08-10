@@ -25,13 +25,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             contactName?.let { PrinterContactCol.contactName.of(it) },
             contactUri?.let { PrinterContactCol.contactUri.of(it) },
             contactVcard?.let { PrinterContactCol.contactVcard.of(it.map { v -> Text(v) }) }
         )
-    }
 
     /** Defines types for each member of [PrinterContactCol]. */
     companion object : AttributeCollection.Converter<PrinterContactCol> {

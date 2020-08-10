@@ -43,8 +43,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             materialAmount?.let { MaterialsCol.materialAmount.of(it) },
             materialAmountUnits?.let { MaterialsCol.materialAmountUnits.of(it) },
             materialColor?.let { MaterialsCol.materialColor.of(it) },
@@ -62,7 +62,6 @@ constructor(
             materialTemperature?.let { MaterialsCol.materialTemperature.of(it) },
             materialType?.let { MaterialsCol.materialType.of(it) }
         )
-    }
 
     /** Defines types for each member of [MaterialsCol]. */
     companion object : AttributeCollection.Converter<MaterialsCol> {

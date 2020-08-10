@@ -27,15 +27,14 @@ constructor(
     constructor() : this(null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             canAcceptJobs?.let { PowerStateCapabilitiesCol.canAcceptJobs.of(it) },
             canProcessJobs?.let { PowerStateCapabilitiesCol.canProcessJobs.of(it) },
             powerActiveWatts?.let { PowerStateCapabilitiesCol.powerActiveWatts.of(it) },
             powerInactiveWatts?.let { PowerStateCapabilitiesCol.powerInactiveWatts.of(it) },
             powerState?.let { PowerStateCapabilitiesCol.powerState.of(it) }
         )
-    }
 
     /** Defines types for each member of [PowerStateCapabilitiesCol]. */
     companion object : AttributeCollection.Converter<PowerStateCapabilitiesCol> {

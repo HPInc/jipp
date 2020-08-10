@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
+import kotlin.math.min
 
 /**
  * An [OutputStream] that can write a [RenderableDocument] in PWG-Raster format.
@@ -47,7 +48,7 @@ class PwgWriter
         var size = 0
         var byteArray: ByteArray? = null
         while (yOffset < page.heightPixels) {
-            val height = Math.min(MAX_SWATH_HEIGHT, page.heightPixels - yOffset)
+            val height = min(MAX_SWATH_HEIGHT, page.heightPixels - yOffset)
             val renderSize = page.renderSize(height, settings.output.colorSpace)
             if (byteArray?.size != renderSize) {
                 byteArray = ByteArray(renderSize)

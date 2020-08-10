@@ -59,8 +59,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             mediaBackCoating?.let { MediaCol.mediaBackCoating.of(it) },
             mediaBottomMargin?.let { MediaCol.mediaBottomMargin.of(it) },
             mediaColor?.let { MediaCol.mediaColor.of(it) },
@@ -86,7 +86,6 @@ constructor(
             mediaType?.let { MediaCol.mediaType.of(it) },
             mediaWeightMetric?.let { MediaCol.mediaWeightMetric.of(it) }
         )
-    }
 
     /** Defines types for each member of [MediaCol]. */
     companion object : AttributeCollection.Converter<MediaCol> {
@@ -160,12 +159,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 xDimension?.let { MediaSize.xDimension.of(it) },
                 yDimension?.let { MediaSize.yDimension.of(it) }
             )
-        }
 
         /** Defines types for each member of [MediaSize]. */
         companion object : AttributeCollection.Converter<MediaSize> {
@@ -198,12 +196,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 mediaSourceFeedDirection?.let { MediaSourceProperties.mediaSourceFeedDirection.of(it) },
                 mediaSourceFeedOrientation?.let { MediaSourceProperties.mediaSourceFeedOrientation.of(it) }
             )
-        }
 
         /** Defines types for each member of [MediaSourceProperties]. */
         companion object : AttributeCollection.Converter<MediaSourceProperties> {

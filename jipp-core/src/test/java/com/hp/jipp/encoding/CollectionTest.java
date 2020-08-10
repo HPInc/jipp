@@ -4,6 +4,7 @@ import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.FinishingsCol;
 import com.hp.jipp.model.FoldingDirection;
 import com.hp.jipp.model.FoldingReferenceEdge;
+import com.hp.jipp.model.MediaCol;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.KotlinTest;
 import java.util.Arrays;
@@ -14,6 +15,8 @@ import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
 import static com.hp.jipp.model.Types.finishingsColActual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class CollectionTest {
@@ -58,5 +61,12 @@ public class CollectionTest {
         UntypedCollection.Type untypedColType = new UntypedCollection.Type(Types.finishingsColActual.getName());
         UntypedCollection untyped = group.getValue(untypedColType);
         KotlinTest.cover(untyped, untyped.copy(untyped.getAttributes()), untyped.copy(Collections.emptyList()));
+    }
+
+    @Test
+    public void modify() throws Exception {
+        assertTrue(finishingsCol.toString().contains("bottom"));
+        finishingsCol.setFolding(null);
+        assertFalse(finishingsCol.toString().contains("bottom"));
     }
 }

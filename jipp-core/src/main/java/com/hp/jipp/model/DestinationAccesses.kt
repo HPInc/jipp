@@ -28,15 +28,14 @@ constructor(
     constructor() : this(null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             accessOauthToken?.let { DestinationAccesses.accessOauthToken.of(it) },
             accessOauthUri?.let { DestinationAccesses.accessOauthUri.of(it) },
             accessPassword?.let { DestinationAccesses.accessPassword.of(it) },
             accessPin?.let { DestinationAccesses.accessPin.of(it) },
             accessUserName?.let { DestinationAccesses.accessUserName.of(it) }
         )
-    }
 
     /** Defines types for each member of [DestinationAccesses]. */
     companion object : AttributeCollection.Converter<DestinationAccesses> {

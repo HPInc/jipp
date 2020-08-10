@@ -25,13 +25,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             documentCopies?.let { Overrides.documentCopies.of(it) },
             documentNumbers?.let { Overrides.documentNumbers.of(it) },
             pages?.let { Overrides.pages.of(it) }
         )
-    }
 
     /** Defines types for each member of [Overrides]. */
     companion object : AttributeCollection.Converter<Overrides> {

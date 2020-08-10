@@ -25,12 +25,11 @@ constructor(
     constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             saveDisposition?.let { JobSaveDisposition.saveDisposition.of(it) },
             saveInfo?.let { JobSaveDisposition.saveInfo.of(it) }
         )
-    }
 
     /** Defines types for each member of [JobSaveDisposition]. */
     companion object : AttributeCollection.Converter<JobSaveDisposition> {
@@ -61,13 +60,12 @@ constructor(
         constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 saveDocumentFormat?.let { SaveInfo.saveDocumentFormat.of(it) },
                 saveLocation?.let { SaveInfo.saveLocation.of(it) },
                 saveName?.let { SaveInfo.saveName.of(it) }
             )
-        }
 
         /** Defines types for each member of [SaveInfo]. */
         companion object : AttributeCollection.Converter<SaveInfo> {

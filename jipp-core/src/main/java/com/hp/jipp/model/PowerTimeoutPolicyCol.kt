@@ -27,14 +27,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             startPowerState?.let { PowerTimeoutPolicyCol.startPowerState.of(it) },
             timeoutId?.let { PowerTimeoutPolicyCol.timeoutId.of(it) },
             timeoutPredicate?.let { PowerTimeoutPolicyCol.timeoutPredicate.of(it) },
             timeoutSeconds?.let { PowerTimeoutPolicyCol.timeoutSeconds.of(it) }
         )
-    }
 
     /** Defines types for each member of [PowerTimeoutPolicyCol]. */
     companion object : AttributeCollection.Converter<PowerTimeoutPolicyCol> {

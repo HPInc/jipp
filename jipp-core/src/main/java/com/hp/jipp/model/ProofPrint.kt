@@ -26,13 +26,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             media?.let { ProofPrint.media.of(it) },
             mediaCol?.let { ProofPrint.mediaCol.of(it) },
             proofPrintCopies?.let { ProofPrint.proofPrintCopies.of(it) }
         )
-    }
 
     /** Defines types for each member of [ProofPrint]. */
     companion object : AttributeCollection.Converter<ProofPrint> {

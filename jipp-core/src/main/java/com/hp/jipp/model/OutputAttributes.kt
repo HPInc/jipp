@@ -24,12 +24,11 @@ constructor(
     constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             noiseRemoval?.let { OutputAttributes.noiseRemoval.of(it) },
             outputCompressionQualityFactor?.let { OutputAttributes.outputCompressionQualityFactor.of(it) }
         )
-    }
 
     /** Defines types for each member of [OutputAttributes]. */
     companion object : AttributeCollection.Converter<OutputAttributes> {

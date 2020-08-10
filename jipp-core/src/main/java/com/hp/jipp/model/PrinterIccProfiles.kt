@@ -24,12 +24,11 @@ constructor(
     constructor() : this(null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             profileName?.let { PrinterIccProfiles.profileName.of(it) },
             profileUrl?.let { PrinterIccProfiles.profileUrl.of(it) }
         )
-    }
 
     /** Defines types for each member of [PrinterIccProfiles]. */
     companion object : AttributeCollection.Converter<PrinterIccProfiles> {

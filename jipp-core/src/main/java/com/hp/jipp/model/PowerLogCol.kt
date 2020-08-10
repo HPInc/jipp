@@ -26,14 +26,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             logId?.let { PowerLogCol.logId.of(it) },
             powerState?.let { PowerLogCol.powerState.of(it) },
             powerStateDateTime?.let { PowerLogCol.powerStateDateTime.of(it) },
             powerStateMessage?.let { PowerLogCol.powerStateMessage.of(it) }
         )
-    }
 
     /** Defines types for each member of [PowerLogCol]. */
     companion object : AttributeCollection.Converter<PowerLogCol> {

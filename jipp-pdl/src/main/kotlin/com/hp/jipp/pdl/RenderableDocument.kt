@@ -24,8 +24,8 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
 
     /** Return a document with any necessary page insertions or re-orderings for two-sided output. */
     fun handleSides(settings: OutputSettings) =
-        when {
-            settings.sides == Sides.oneSided -> this
+        when (settings.sides) {
+            Sides.oneSided -> this
             else -> handleSidesExtraBlank()
         }.handleReversed(settings)
 

@@ -28,14 +28,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             insertAfterPageNumber?.let { InsertSheet.insertAfterPageNumber.of(it) },
             insertCount?.let { InsertSheet.insertCount.of(it) },
             media?.let { InsertSheet.media.of(it) },
             mediaCol?.let { InsertSheet.mediaCol.of(it) }
         )
-    }
 
     /** Defines types for each member of [InsertSheet]. */
     companion object : AttributeCollection.Converter<InsertSheet> {

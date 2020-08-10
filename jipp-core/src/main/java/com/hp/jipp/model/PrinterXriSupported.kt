@@ -27,13 +27,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             xriAuthentication?.let { PrinterXriSupported.xriAuthentication.of(it) },
             xriSecurity?.let { PrinterXriSupported.xriSecurity.of(it) },
             xriUri?.let { PrinterXriSupported.xriUri.of(it) }
         )
-    }
 
     /** Defines types for each member of [PrinterXriSupported]. */
     companion object : AttributeCollection.Converter<PrinterXriSupported> {

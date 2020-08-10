@@ -25,13 +25,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             eventId?.let { PowerEventPolicyCol.eventId.of(it) },
             eventName?.let { PowerEventPolicyCol.eventName.of(it) },
             requestPowerState?.let { PowerEventPolicyCol.requestPowerState.of(it) }
         )
-    }
 
     /** Defines types for each member of [PowerEventPolicyCol]. */
     companion object : AttributeCollection.Converter<PowerEventPolicyCol> {

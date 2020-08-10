@@ -30,8 +30,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             blank?.let { JobImpressionsCol.blank.of(it) },
             blankTwoSided?.let { JobImpressionsCol.blankTwoSided.of(it) },
             fullColor?.let { JobImpressionsCol.fullColor.of(it) },
@@ -41,7 +41,6 @@ constructor(
             monochrome?.let { JobImpressionsCol.monochrome.of(it) },
             monochromeTwoSided?.let { JobImpressionsCol.monochromeTwoSided.of(it) }
         )
-    }
 
     /** Defines types for each member of [JobImpressionsCol]. */
     companion object : AttributeCollection.Converter<JobImpressionsCol> {

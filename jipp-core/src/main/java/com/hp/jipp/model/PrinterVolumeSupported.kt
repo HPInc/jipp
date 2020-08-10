@@ -25,13 +25,12 @@ constructor(
     constructor() : this(null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             xDimension?.let { PrinterVolumeSupported.xDimension.of(it) },
             yDimension?.let { PrinterVolumeSupported.yDimension.of(it) },
             zDimension?.let { PrinterVolumeSupported.zDimension.of(it) }
         )
-    }
 
     /** Defines types for each member of [PrinterVolumeSupported]. */
     companion object : AttributeCollection.Converter<PrinterVolumeSupported> {

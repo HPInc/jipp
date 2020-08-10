@@ -32,8 +32,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             printerId?.let { SystemConfiguredPrinters.printerId.of(it) },
             printerInfo?.let { SystemConfiguredPrinters.printerInfo.of(it) },
             printerIsAcceptingJobs?.let { SystemConfiguredPrinters.printerIsAcceptingJobs.of(it) },
@@ -43,7 +43,6 @@ constructor(
             printerStateReasons?.let { SystemConfiguredPrinters.printerStateReasons.of(it) },
             printerXriSupported?.let { SystemConfiguredPrinters.printerXriSupported.of(it) }
         )
-    }
 
     /** Defines types for each member of [SystemConfiguredPrinters]. */
     companion object : AttributeCollection.Converter<SystemConfiguredPrinters> {

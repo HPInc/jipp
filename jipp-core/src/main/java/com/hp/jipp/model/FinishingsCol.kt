@@ -39,8 +39,8 @@ constructor(
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             baling?.let { FinishingsCol.baling.of(it) },
             binding?.let { FinishingsCol.binding.of(it) },
             coating?.let { FinishingsCol.coating.of(it) },
@@ -56,7 +56,6 @@ constructor(
             stitching?.let { FinishingsCol.stitching.of(it) },
             trimming?.let { FinishingsCol.trimming.of(it) }
         )
-    }
 
     /** Defines types for each member of [FinishingsCol]. */
     companion object : AttributeCollection.Converter<FinishingsCol> {
@@ -112,12 +111,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 balingType?.let { Baling.balingType.of(it) },
                 balingWhen?.let { Baling.balingWhen.of(it) }
             )
-        }
 
         /** Defines types for each member of [Baling]. */
         companion object : AttributeCollection.Converter<Baling> {
@@ -151,12 +149,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 bindingReferenceEdge?.let { Binding.bindingReferenceEdge.of(it) },
                 bindingType?.let { Binding.bindingType.of(it) }
             )
-        }
 
         /** Defines types for each member of [Binding]. */
         companion object : AttributeCollection.Converter<Binding> {
@@ -190,12 +187,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 coatingSides?.let { Coating.coatingSides.of(it) },
                 coatingType?.let { Coating.coatingType.of(it) }
             )
-        }
 
         /** Defines types for each member of [Coating]. */
         companion object : AttributeCollection.Converter<Coating> {
@@ -227,11 +223,10 @@ constructor(
         constructor() : this(null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 coveringName?.let { Covering.coveringName.of(it) }
             )
-        }
 
         /** Defines types for each member of [Covering]. */
         companion object : AttributeCollection.Converter<Covering> {
@@ -264,13 +259,12 @@ constructor(
         constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 foldingDirection?.let { Folding.foldingDirection.of(it) },
                 foldingOffset?.let { Folding.foldingOffset.of(it) },
                 foldingReferenceEdge?.let { Folding.foldingReferenceEdge.of(it) }
             )
-        }
 
         /** Defines types for each member of [Folding]. */
         companion object : AttributeCollection.Converter<Folding> {
@@ -306,12 +300,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 laminatingSides?.let { Laminating.laminatingSides.of(it) },
                 laminatingType?.let { Laminating.laminatingType.of(it) }
             )
-        }
 
         /** Defines types for each member of [Laminating]. */
         companion object : AttributeCollection.Converter<Laminating> {
@@ -343,12 +336,11 @@ constructor(
         constructor() : this(null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 xDimension?.let { MediaSize.xDimension.of(it) },
                 yDimension?.let { MediaSize.yDimension.of(it) }
             )
-        }
 
         /** Defines types for each member of [MediaSize]. */
         companion object : AttributeCollection.Converter<MediaSize> {
@@ -382,13 +374,12 @@ constructor(
         constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 punchingLocations?.let { Punching.punchingLocations.of(it) },
                 punchingOffset?.let { Punching.punchingOffset.of(it) },
                 punchingReferenceEdge?.let { Punching.punchingReferenceEdge.of(it) }
             )
-        }
 
         /** Defines types for each member of [Punching]. */
         companion object : AttributeCollection.Converter<Punching> {
@@ -427,15 +418,14 @@ constructor(
         constructor() : this(null, null, null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 stitchingAngle?.let { Stitching.stitchingAngle.of(it) },
                 stitchingLocations?.let { Stitching.stitchingLocations.of(it) },
                 stitchingMethod?.let { Stitching.stitchingMethod.of(it) },
                 stitchingOffset?.let { Stitching.stitchingOffset.of(it) },
                 stitchingReferenceEdge?.let { Stitching.stitchingReferenceEdge.of(it) }
             )
-        }
 
         /** Defines types for each member of [Stitching]. */
         companion object : AttributeCollection.Converter<Stitching> {
@@ -478,14 +468,13 @@ constructor(
         constructor() : this(null, null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 trimmingOffset?.let { Trimming.trimmingOffset.of(it) },
                 trimmingReferenceEdge?.let { Trimming.trimmingReferenceEdge.of(it) },
                 trimmingType?.let { Trimming.trimmingType.of(it) },
                 trimmingWhen?.let { Trimming.trimmingWhen.of(it) }
             )
-        }
 
         /** Defines types for each member of [Trimming]. */
         companion object : AttributeCollection.Converter<Trimming> {

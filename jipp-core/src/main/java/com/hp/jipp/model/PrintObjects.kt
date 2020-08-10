@@ -26,14 +26,13 @@ constructor(
     constructor() : this(null, null, null, null)
 
     /** Produce an attribute list from members. */
-    override val attributes: List<Attribute<*>> by lazy {
-        listOfNotNull(
+    override val attributes: List<Attribute<*>>
+        get() = listOfNotNull(
             documentNumber?.let { PrintObjects.documentNumber.of(it) },
             objectOffset?.let { PrintObjects.objectOffset.of(it) },
             objectSize?.let { PrintObjects.objectSize.of(it) },
             objectUuid?.let { PrintObjects.objectUuid.of(it) }
         )
-    }
 
     /** Defines types for each member of [PrintObjects]. */
     companion object : AttributeCollection.Converter<PrintObjects> {
@@ -68,13 +67,12 @@ constructor(
         constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 xOffset?.let { ObjectOffset.xOffset.of(it) },
                 yOffset?.let { ObjectOffset.yOffset.of(it) },
                 zOffset?.let { ObjectOffset.zOffset.of(it) }
             )
-        }
 
         /** Defines types for each member of [ObjectOffset]. */
         companion object : AttributeCollection.Converter<ObjectOffset> {
@@ -109,13 +107,12 @@ constructor(
         constructor() : this(null, null, null)
 
         /** Produce an attribute list from members. */
-        override val attributes: List<Attribute<*>> by lazy {
-            listOfNotNull(
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
                 xDimension?.let { ObjectSize.xDimension.of(it) },
                 yDimension?.let { ObjectSize.yDimension.of(it) },
                 zDimension?.let { ObjectSize.zDimension.of(it) }
             )
-        }
 
         /** Defines types for each member of [ObjectSize]. */
         companion object : AttributeCollection.Converter<ObjectSize> {
