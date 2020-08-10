@@ -37,9 +37,9 @@ constructor(
                 extractOne(attributes, fullColor),
                 extractOne(attributes, monochrome)
             )
+        override val cls = JobPagesCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val fullColor = IntType("full-color")
         @JvmField val monochrome = IntType("monochrome")
     }

@@ -40,9 +40,9 @@ constructor(
                 extractOne(attributes, imagesCompleted),
                 extractOne(attributes, transmissionStatus)
             )
+        override val cls = DestinationStatuses::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val destinationUri = UriType("destination-uri")
         @JvmField val imagesCompleted = IntType("images-completed")
         /**

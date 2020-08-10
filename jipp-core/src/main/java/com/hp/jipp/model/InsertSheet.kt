@@ -45,9 +45,9 @@ constructor(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol)
             )
+        override val cls = InsertSheet::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val insertAfterPageNumber = IntType("insert-after-page-number")
         @JvmField val insertCount = IntType("insert-count")
         @JvmField val media = KeywordOrNameType("media")

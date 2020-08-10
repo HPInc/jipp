@@ -91,9 +91,9 @@ constructor(
                 extractOne(attributes, inputSides),
                 extractOne(attributes, inputSource)
             )
+        override val cls = InputAttributes::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val inputAutoScaling = BooleanType("input-auto-scaling")
         @JvmField val inputAutoSkewCorrection = BooleanType("input-auto-skew-correction")
         @JvmField val inputBrightness = IntType("input-brightness")
@@ -153,9 +153,9 @@ constructor(
                     extractOne(attributes, yDimension),
                     extractOne(attributes, yOrigin)
                 )
+            override val cls = InputScanRegions::class.java
             @Deprecated("Remove this symbol")
-            @JvmField
-            val Types = this
+            @JvmField val Types = this
             @JvmField val xDimension = IntType("x-dimension")
             @JvmField val xOrigin = IntType("x-origin")
             @JvmField val yDimension = IntType("y-dimension")

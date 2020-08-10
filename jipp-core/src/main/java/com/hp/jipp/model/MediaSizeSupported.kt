@@ -37,9 +37,9 @@ constructor(
                 extractOne(attributes, xDimension),
                 extractOne(attributes, yDimension)
             )
+        override val cls = MediaSizeSupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val xDimension = IntOrIntRangeType("x-dimension")
         @JvmField val yDimension = IntOrIntRangeType("y-dimension")
     }

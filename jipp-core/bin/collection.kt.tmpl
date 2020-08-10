@@ -55,9 +55,9 @@ constructor(
  {%- endif %}
 {%- endfor %}
             )
+        override val cls = {{ collection.name | camel_class }}::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         {%- for name, member in collection.members | dictsort %}
         {%- if member.syntax == 'enum' %}
         /**

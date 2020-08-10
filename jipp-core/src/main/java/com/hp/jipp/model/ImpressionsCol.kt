@@ -55,9 +55,9 @@ constructor(
                 extractOne(attributes, monochrome),
                 extractOne(attributes, monochromeTwoSided)
             )
+        override val cls = ImpressionsCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val blank = IntType("blank")
         @JvmField val blankTwoSided = IntType("blank-two-sided")
         @JvmField val fullColor = IntType("full-color")

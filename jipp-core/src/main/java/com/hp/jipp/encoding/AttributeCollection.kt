@@ -20,11 +20,12 @@ interface AttributeCollection : PrettyPrintable {
      * it may be necessary to extract the original attribute list using an [UntypedCollection] instance.
      */
     class Type<T : AttributeCollection>(
-        override val name: String,
+        name: String,
         private val converter: Converter<T>
-    ) : AttributeType<T> {
+    ) : AttributeTypeImpl<T>(name, converter.cls) {
+        @Suppress("UNCHECKED_CAST")
         override fun coerce(value: Any): T? =
-            when (value) {
+            super.coerce(value) ?: when (value) {
                 is AttributeCollection -> converter.convert(value.attributes)
                 else -> null
             }
@@ -49,6 +50,8 @@ interface AttributeCollection : PrettyPrintable {
 
     /** Converts a [List] of [Attribute] objects into an [AttributeCollection]. */
     interface Converter<T : AttributeCollection> {
+        val cls : Class<T>
+
         /**
          * Progressively convert attributes into the destination type
          */

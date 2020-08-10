@@ -35,9 +35,9 @@ constructor(
             JobTriggersSupported(
                 extractOne(attributes, presetName)
             )
+        override val cls = JobTriggersSupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val presetName = KeywordOrNameType("preset-name")
     }
     override fun toString() = "JobTriggersSupported(${attributes.joinToString()})"

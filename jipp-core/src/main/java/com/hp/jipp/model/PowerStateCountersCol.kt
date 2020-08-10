@@ -43,9 +43,9 @@ constructor(
                 extractOne(attributes, standbyTransitions),
                 extractOne(attributes, suspendTransitions)
             )
+        override val cls = PowerStateCountersCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val hibernateTransitions = IntType("hibernate-transitions")
         @JvmField val onTransitions = IntType("on-transitions")
         @JvmField val standbyTransitions = IntType("standby-transitions")

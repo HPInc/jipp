@@ -37,9 +37,9 @@ constructor(
                 extractOne(attributes, profileName)?.value,
                 extractOne(attributes, profileUrl)
             )
+        override val cls = PrinterIccProfiles::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val profileName = NameType("profile-name")
         @JvmField val profileUrl = UriType("profile-url")
     }

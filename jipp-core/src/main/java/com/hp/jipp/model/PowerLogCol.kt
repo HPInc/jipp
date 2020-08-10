@@ -43,9 +43,9 @@ constructor(
                 extractOne(attributes, powerStateDateTime),
                 extractOne(attributes, powerStateMessage)?.value
             )
+        override val cls = PowerLogCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val logId = IntType("log-id")
         @JvmField val powerState = KeywordType("power-state")
         @JvmField val powerStateDateTime = DateTimeType("power-state-date-time")

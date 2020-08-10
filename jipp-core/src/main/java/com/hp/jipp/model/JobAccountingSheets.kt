@@ -47,9 +47,9 @@ constructor(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol)
             )
+        override val cls = JobAccountingSheets::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val jobAccountingOutputBin = KeywordOrNameType("job-accounting-output-bin")
         @JvmField val jobAccountingSheetsType = KeywordOrNameType("job-accounting-sheets-type")
         @JvmField val media = KeywordOrNameType("media")

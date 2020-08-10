@@ -13,6 +13,7 @@ open class CollectionType<T : AttributeCollection>(
         if (value is UntypedCollection) {
             factory(value)
         } else {
+            // TODO: What if it's NOT an untyped collection. What if it's been factory-cast already?
             null
         }
 

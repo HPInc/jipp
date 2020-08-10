@@ -84,9 +84,9 @@ constructor(
                 extractOne(attributes, materialTemperature),
                 extractOne(attributes, materialType)
             )
+        override val cls = MaterialsCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val materialAmount = IntType("material-amount")
         @JvmField val materialAmountUnits = KeywordType("material-amount-units")
         @JvmField val materialColor = KeywordType("material-color")

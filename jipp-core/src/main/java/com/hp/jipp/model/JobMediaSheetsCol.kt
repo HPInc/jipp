@@ -43,9 +43,9 @@ constructor(
                 extractOne(attributes, highlightColor),
                 extractOne(attributes, monochrome)
             )
+        override val cls = JobMediaSheetsCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val blank = IntType("blank")
         @JvmField val fullColor = IntType("full-color")
         @JvmField val highlightColor = IntType("highlight-color")

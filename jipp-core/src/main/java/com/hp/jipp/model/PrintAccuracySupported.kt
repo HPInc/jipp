@@ -44,9 +44,9 @@ constructor(
                 extractOne(attributes, yAccuracy),
                 extractOne(attributes, zAccuracy)
             )
+        override val cls = PrintAccuracySupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val accuracyUnits = KeywordType("accuracy-units")
         @JvmField val xAccuracy = IntType("x-accuracy")
         @JvmField val yAccuracy = IntType("y-accuracy")

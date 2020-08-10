@@ -34,9 +34,9 @@ constructor(
             JobResolversSupported(
                 extractOne(attributes, resolverName)?.value
             )
+        override val cls = JobResolversSupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val resolverName = NameType("resolver-name")
     }
     override fun toString() = "JobResolversSupported(${attributes.joinToString()})"

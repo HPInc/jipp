@@ -35,9 +35,9 @@ constructor(
             JobPresetsSupported(
                 extractOne(attributes, presetName)
             )
+        override val cls = JobPresetsSupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val presetName = KeywordOrNameType("preset-name")
     }
     override fun toString() = "JobPresetsSupported(${attributes.joinToString()})"

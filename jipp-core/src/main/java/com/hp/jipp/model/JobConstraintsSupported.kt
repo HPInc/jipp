@@ -34,9 +34,9 @@ constructor(
             JobConstraintsSupported(
                 extractOne(attributes, resolverName)?.value
             )
+        override val cls = JobConstraintsSupported::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val resolverName = NameType("resolver-name")
     }
     override fun toString() = "JobConstraintsSupported(${attributes.joinToString()})"

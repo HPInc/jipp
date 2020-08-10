@@ -40,9 +40,9 @@ constructor(
                 extractOne(attributes, pdlInitFileLocation),
                 extractOne(attributes, pdlInitFileName)?.value
             )
+        override val cls = PdlInitFile::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val pdlInitFileEntry = NameType("pdl-init-file-entry")
         @JvmField val pdlInitFileLocation = UriType("pdl-init-file-location")
         @JvmField val pdlInitFileName = NameType("pdl-init-file-name")

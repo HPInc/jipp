@@ -55,9 +55,9 @@ constructor(
                 extractOne(attributes, requestPowerState),
                 extractOne(attributes, runOnce)
             )
+        override val cls = PowerCalendarPolicyCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val calendarId = IntType("calendar-id")
         @JvmField val dayOfMonth = IntType("day-of-month")
         @JvmField val dayOfWeek = IntType("day-of-week")

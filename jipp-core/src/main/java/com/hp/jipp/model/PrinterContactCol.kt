@@ -40,9 +40,9 @@ constructor(
                 extractOne(attributes, contactUri),
                 extractAll(attributes, contactVcard)?.map { it.value }
             )
+        override val cls = PrinterContactCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val contactName = NameType("contact-name")
         @JvmField val contactUri = UriType("contact-uri")
         @JvmField val contactVcard = TextType.Set("contact-vcard")

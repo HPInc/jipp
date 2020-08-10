@@ -41,9 +41,9 @@ constructor(
                 extractOne(attributes, mediaCol),
                 extractOne(attributes, proofPrintCopies)
             )
+        override val cls = ProofPrint::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val media = KeywordOrNameType("media")
         @JvmField val mediaCol = AttributeCollection.Type("media-col", MediaCol)
         @JvmField val proofPrintCopies = IntType("proof-print-copies")

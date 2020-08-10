@@ -38,9 +38,9 @@ constructor(
                 extractOne(attributes, saveDisposition),
                 extractAll(attributes, saveInfo)
             )
+        override val cls = JobSaveDisposition::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val saveDisposition = KeywordType("save-disposition")
         @JvmField val saveInfo = AttributeCollection.SetType("save-info", SaveInfo)
     }
@@ -75,9 +75,9 @@ constructor(
                     extractOne(attributes, saveLocation),
                     extractOne(attributes, saveName)?.value
                 )
+            override val cls = SaveInfo::class.java
             @Deprecated("Remove this symbol")
-            @JvmField
-            val Types = this
+            @JvmField val Types = this
             @JvmField val saveDocumentFormat = StringType(Tag.mimeMediaType, "save-document-format")
             @JvmField val saveLocation = UriType("save-location")
             @JvmField val saveName = NameType("save-name")

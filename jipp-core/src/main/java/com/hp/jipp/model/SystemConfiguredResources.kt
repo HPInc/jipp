@@ -50,9 +50,9 @@ constructor(
                 extractOne(attributes, resourceState),
                 extractOne(attributes, resourceType)
             )
+        override val cls = SystemConfiguredResources::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val resourceFormat = StringType(Tag.mimeMediaType, "resource-format")
         @JvmField val resourceId = IntType("resource-id")
         @JvmField val resourceInfo = TextType("resource-info")

@@ -40,9 +40,9 @@ constructor(
                 extractOne(attributes, eventName)?.value,
                 extractOne(attributes, requestPowerState)
             )
+        override val cls = PowerEventPolicyCol::class.java
         @Deprecated("Remove this symbol")
-        @JvmField
-        val Types = this
+        @JvmField val Types = this
         @JvmField val eventId = IntType("event-id")
         @JvmField val eventName = NameType("event-name")
         @JvmField val requestPowerState = KeywordType("request-power-state")
