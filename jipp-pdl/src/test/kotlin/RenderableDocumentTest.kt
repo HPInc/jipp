@@ -37,6 +37,12 @@ class RenderableDocumentTest {
         assertEquals("123b", doc.handleSides(settings).joinToString("") { it.getPageName() })
     }
 
+    @Test fun `non-reversed, duplex, no padding`() {
+        val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
+            reversed = false)
+        assertEquals("123", doc.handleSides(settings, false).joinToString("") { it.getPageName() })
+    }
+
     @Test fun `reversed, duplex`() {
         val settings = OutputSettings(sides = Sides.twoSidedShortEdge,
             reversed = true)

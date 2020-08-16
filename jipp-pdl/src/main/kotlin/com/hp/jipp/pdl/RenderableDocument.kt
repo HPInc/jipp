@@ -23,23 +23,37 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
         }
 
     /** Return a document with any necessary page insertions or re-orderings for two-sided output. */
-    fun handleSides(settings: OutputSettings) =
+    fun handleSides(settings: OutputSettings, allowPadding: Boolean = true) =
         when (settings.sides) {
             Sides.oneSided -> this
-            else -> handleSidesExtraBlank()
-        }.handleReversed(settings)
+            else -> handleSidesExtraBlank(allowPadding)
+        }.handleReversed(settings).handleCopies(settings.copies)
 
-    /** For a two-sided output document, return a document with an extra blank page added if necessary. */
-    private fun handleSidesExtraBlank() =
-        when {
-            count().isOdd -> mapPages { it + listOf(it.last().blank()) }
-            else -> this
-        }
+    companion object {
+        /** For a two-sided output document, return a document with an extra blank page added if necessary. */
+        private fun RenderableDocument.handleSidesExtraBlank(allowPadding: Boolean) =
+            when {
+                allowPadding && count().isOdd -> mapPages { it + listOf(it.last().blank()) }
+                else -> this
+            }
 
-    /** For any document, return a document with the correct stacking order. */
-    private fun handleReversed(settings: OutputSettings) =
-        when {
-            settings.reversed -> mapPages { it.reversed() }
-            else -> this
-        }
+        /** For any document, return a document with the correct stacking order. */
+        private fun RenderableDocument.handleReversed(settings: OutputSettings) =
+            when {
+                settings.reversed -> mapPages { it.reversed() }
+                else -> this
+            }
+
+        /** For a document repeat by a certain number of copies. */
+        private fun RenderableDocument.handleCopies(count: Int) =
+            when {
+                count <= 1 -> this
+                else -> mapPages {
+                    sequence {
+                        (0 until count).forEach { _ ->
+                            yieldAll(this@handleCopies)
+                        } }.asIterable()
+                }
+            }
+    }
 }

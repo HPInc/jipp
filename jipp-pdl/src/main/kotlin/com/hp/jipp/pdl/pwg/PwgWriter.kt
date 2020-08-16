@@ -35,7 +35,7 @@ class PwgWriter
                     else -> page
                 }
             }
-        }.handleSides(settings.output).forEachIndexed { num, page ->
+        }.handleSides(settings.output, false).forEachIndexed { num, page ->
             val header = headerCustomizer(page, settings.buildHeader(doc, page, num))
             header.write(this)
             writePageContent(page, header)

@@ -1,5 +1,8 @@
 # History of Changes
 
+## 0.7.6
+* Handle copy count and blank page insertion in `PclmWriter` and `PwgWriter` (#99).
+
 ## 0.7.5
 * Retain modifications to collection attribute values whenever possible (#97, #98).
 
@@ -30,7 +33,7 @@ NOTE: This release contains a breaking change for Java callers. If you refer to 
 * Handle PWG raster color space of 1 (RGB) (#72).
 
 ## 0.6.21
-* Do not assume packet will be read completely before parsing it (#71).
+* Do not assume the packet will be read completely before parsing it (#71).
 
 ## 0.6.19
 * Allow both multiple groups and extensions to existing groups (follow up to #62).

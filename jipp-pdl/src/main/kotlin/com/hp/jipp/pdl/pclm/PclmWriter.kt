@@ -5,10 +5,12 @@ package com.hp.jipp.pdl.pclm
 
 import com.hp.jipp.model.PclmRasterBackSide
 import com.hp.jipp.model.Sides
+import com.hp.jipp.model.Types
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.isEven
+import com.hp.jipp.pdl.isOdd
 import java.io.ByteArrayOutputStream
 import java.io.CharArrayWriter
 import java.io.IOException
@@ -55,6 +57,15 @@ class PclmWriter(
     override fun write(chars: CharArray, offset: Int, length: Int) {
         written += length
         outputStream.write(String(chars).toByteArray(), offset, length)
+    }
+
+    /** Return the correct value for the [Types.jobPagesPerSet] value. */
+    fun calculateJobPagesPerSet(document: RenderableDocument): Int {
+        val pageCount = document.count()
+        return if (settings.output.sides != Sides.oneSided && pageCount.isOdd) {
+            // In this case alone PCLM will add a padding page between copies
+            pageCount + 1
+        } else pageCount
     }
 
     /** Write a complete document in PCLm format */
