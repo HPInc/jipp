@@ -4,35 +4,37 @@
 package com.hp.jipp.encoding
 
 /**
- * Value and delimiter tags as specified by RFC2910 and RFC3382
+ * Value and delimiter tags as specified by [RFC8010](https://tools.ietf.org/html/rfc8010) and
+ * [RFC8011](https://tools.ietf.org/html/rfc8010).
  */
 @Suppress("MagicNumber")
 abstract class Tag : Enum() {
 
-    /** Return true if this tag is a delimiter tag  */
+    /** True if this tag is used to delimit attribute groups. */
     val isDelimiter: Boolean
         get() = code in delimiterRange
 
-    /** Return true if this tag is an out-of-band tag */
+    /** True if this tag indicates an out-of-band attribute (having no value). */
     val isOutOfBand: Boolean
         get() = code in outOfBandRange
 
+    /** True if this [Tag] is used to encode collections. */
     val isCollection: Boolean
         get() = this == beginCollection || this == endCollection || this == memberAttributeName
 
-    /** Return true if this tag is encoded as an integer */
+    /** True if this tag denotes a value encoded as an integer. */
     val isInteger: Boolean
         get() = code in 0x20..0x2F
 
-    /** Return true if this tag is encoded as an octet string */
+    /** True if this tag denotes a value encoded as an octet string. */
     val isOctetString: Boolean
         get() = code in 0x30..0x3F
 
-    /** Return true if this tag is encoded as a character string */
+    /** True if this tag denotes a value encoded as a character string. */
     val isCharString: Boolean
         get() = code in 0x40..0x4F
 
-    /** Identify tags that indicate the current attribute has no more values */
+    /** True if this tag denotes an attribute with no more values. */
     internal fun isEndOfValueStream() =
         isDelimiter || isOutOfBand || this == memberAttributeName || this == endCollection
 

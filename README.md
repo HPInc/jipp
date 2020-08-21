@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Core Docs](https://img.shields.io/badge/docs-core-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-core)
 [![PDL Docs](https://img.shields.io/badge/docs-pdl-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-pdl)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.3.72-blue.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.4.0-blue.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library

@@ -2,6 +2,7 @@
 
 ## 0.7.6
 * Handle copy count and blank page insertion in `PclmWriter` and `PwgWriter` (#99).
+* Update Kotlin to 1.4.0 (#100).
 
 ## 0.7.5
 * Retain modifications to collection attribute values whenever possible (#97, #98).

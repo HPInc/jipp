@@ -5,6 +5,7 @@ package com.hp.jipp.pdl
 
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.math.roundToInt
 
 /** Identifies a color space which describes how each pixel of image data is encoded */
 @Suppress("MagicNumber")
@@ -30,7 +31,7 @@ enum class ColorSpace(val bytesPerPixel: Int) {
             Rgb ->
                 when (outputColor) {
                     Grayscale -> { input, output ->
-                        output[0] = ((LUM_R * input[0]) + (LUM_G * input[1]) + (LUM_B * input[2])).toByte()
+                        output[0] = ((LUM_R * input[0]) + (LUM_G * input[1]) + (LUM_B * input[2])).roundToInt().toByte()
                     }
                     Rgb -> { input, output -> input.copyInto(output) }
                 }
