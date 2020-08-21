@@ -1,6 +1,7 @@
 # History of Changes
 
 ## 0.7.6
+* Fetch CUPS attributes from https://www.cups.org/doc/spec-ipp.html (#95).
 * Handle copy count and blank page insertion in `PclmWriter` and `PwgWriter` (#99).
 * Update Kotlin to 1.4.0 (#100).
 
