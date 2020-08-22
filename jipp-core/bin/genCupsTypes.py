@@ -124,7 +124,7 @@ def fix_ktypes():
         elif syntax == 'type2 enum':
             if type['name'] != 'printer-type' and type['name'] != 'printer-type-mask':
                 raise Exception("Unexpected enum %s" % type['name'])
-            ktype = 'BitwiseType'
+            ktype = 'BitfieldType'
         elif syntax == 'keyword | name(max)':
             ktype = 'KeywordOrNameType'
         else:
@@ -205,14 +205,6 @@ find_operations()
 find_types()
 
 # Patch up some missing data
-types['job-sheets']['keywords'] = [{
-    'name': 'none', 'description': 'disables banner printing'
-}]
-types['job-sheets-default'] = {
-    'name': 'job-sheets-default',
-    'syntax': '(1setof type3 keyword | name(MAX))',
-    'keyword_ref': 'job-sheets'
-}
 types['printer-type-mask']['enum_ref'] = 'printer-type'
 types['notify-events'] = {
     'name': 'notify-events',
@@ -225,6 +217,13 @@ types['notify-events'] = {
         { 'name': 'server-started', 'description': 'Get notified when the server is started' },
         { 'name': 'server-stopped', 'description': 'Get notified when the server is stopped' },
     ]}
+
+# Already specified in IPP
+del types['printer-dns-sd-name']
+del types['job-cancel-after']
+del types['job-hold-until']
+del types['job-sheets']
+
 fix_ktypes()
 emit_cups()
 

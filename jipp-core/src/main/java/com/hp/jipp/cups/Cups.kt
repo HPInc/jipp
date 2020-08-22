@@ -12,7 +12,7 @@ import com.hp.jipp.model.Operation
 /**
  * Operations and Types as defined at https://www.cups.org/doc/spec-ipp.html.
  */
-@Suppress("unused")
+@Suppress("unused", "MagicNumber", "ObjectPropertyNaming")
 object Cups {
     object Operation {
         /** Get the default destination. */
@@ -44,8 +44,6 @@ object Cups {
         /** See [AuthInfoRequired] for values. */
         @JvmField val authInfoRequired = KeywordType.Set("auth-info-required")
         @JvmField val deviceUri = UriType("device-uri")
-        @JvmField val jobCancelAfter = IntType("job-cancel-after")
-        @JvmField val jobHoldUntil = KeywordOrNameType("job-hold-until")
         @JvmField val jobKLimit = IntType("job-k-limit")
         @JvmField val jobMediaProgress = IntType("job-media-progress")
         @JvmField val jobOriginatingHostName = NameType("job-originating-host-name")
@@ -53,10 +51,6 @@ object Cups {
         @JvmField val jobPrinterStateMessage = TextType("job-printer-state-message")
         @JvmField val jobPrinterStateReasons = KeywordType.Set("job-printer-state-reasons")
         @JvmField val jobQuotaPeriod = IntType("job-quota-period")
-        /** See [JobSheets] for values. */
-        @JvmField val jobSheets = KeywordType.Set("job-sheets")
-        /** See [JobSheets] for values. */
-        @JvmField val jobSheetsDefault = KeywordType.Set("job-sheets-default")
         @JvmField val markerChangeTime = IntType("marker-change-time")
         @JvmField val markerColors = NameType.Set("marker-colors")
         @JvmField val markerHighLevels = IntType.Set("marker-high-levels")
@@ -70,10 +64,9 @@ object Cups {
         @JvmField val memberUris = UriType.Set("member-uris")
         /** See [PageBorder] for values. */
         @JvmField val pageBorder = KeywordType("page-border")
-        @JvmField val printerDnsSdName = NameType("printer-dns-sd-name")
         @JvmField val printerId = IntType("printer-id")
-        @JvmField val printerType = BitwiseType("printer-type")
-        @JvmField val printerTypeMask = BitwiseType("printer-type-mask")
+        @JvmField val printerType = BitfieldType("printer-type")
+        @JvmField val printerTypeMask = BitfieldType("printer-type-mask")
         @JvmField val requestingUserNameAllowed = NameType.Set("requesting-user-name-allowed")
         @JvmField val requestingUserNameDenied = NameType.Set("requesting-user-name-denied")
     }
@@ -88,10 +81,6 @@ object Cups {
         const val password = "password"
         /** A username is required. Some protocols (like SMB) prefix the username with the domain, for example "DOMAIN\user". */
         const val username = "username"
-    }
-    object JobSheets {
-        /** disables banner printing */
-        const val none = "none"
     }
     object MarkerTypes {
         const val toner = "toner"
