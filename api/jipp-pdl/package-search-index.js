@@ -1,0 +1,1 @@
+var packageSearchIndex = [{"l":"com.hp.jipp.pdl","url":"com/hp/jipp/pdl/package-summary.html"}, {"l":"com.hp.jipp.pdl.pclm","url":"com/hp/jipp/pdl/pclm/package-summary.html"}, {"l":"com.hp.jipp.pdl.pwg","url":"com/hp/jipp/pdl/pwg/package-summary.html"}, {"l":"com.hp.jipp.pdl.util","url":"com/hp/jipp/pdl/util/package-summary.html"}, {"l":"All packages","url":"index.html"}]
