@@ -26,7 +26,7 @@ import org.junit.Test
 class PwgReaderTest {
 
     @Ignore // To use this drop a document into "resources" and comment out this line
-    @Test fun readFromDisk() {
+    @Test fun `read from disk`() {
         PwgReader(javaClass.getResourceAsStream("/document_001.pwg")!!).readDocument().forEach {
             println((it as PwgReader.PwgPage).header)
         }

@@ -52,8 +52,8 @@ class IppOutputStream(outputStream: OutputStream) : DataOutputStream(outputStrea
         group.forEach { write(it) }
     }
 
-    /** Write [attribute] to this stream. */
-    fun write(attribute: Attribute<*>, name: String = attribute.name) {
+    /** Write a single [attribute] to this stream. */
+    private fun write(attribute: Attribute<*>, name: String = attribute.name) {
         val type = attribute.type
         if (type is EmptyAttributeType) {
             // Write the out-of-band tag

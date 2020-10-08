@@ -27,12 +27,11 @@ public class Cycler {
     public static AttributeGroup cycle(AttributeGroup group) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         IppOutputStream output = new IppOutputStream(bytes);
-        IppPacket packet = new IppPacket(0, 0, 0, group);
-        output.write(packet);
+        output.write(group);
         output.close();
 
         IppInputStream input = new IppInputStream(new ByteArrayInputStream(bytes.toByteArray()));
-        return input.readPacket().getAttributeGroups().get(0);
+        return input.readGroup();
     }
 
     /** Return a packet that was written to a byte stream and read back in */

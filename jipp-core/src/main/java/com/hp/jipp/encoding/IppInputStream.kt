@@ -22,18 +22,16 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
             readShort().toInt(), // Version
             readShort().toInt(), // Code / Status
             readInt(), // ID
-            generateSequence { readNextGroup() }.toList())
+            generateSequence { readGroup() }.toList())
 
-    /** Reads the next attribute group from the stream or null if no more attributes are found. */
-    private fun readNextGroup(): AttributeGroup? =
-        readTag()?.let { tag ->
-            if (tag == Tag.endOfAttributes) {
-                null
-            } else {
-                if (tag !is DelimiterTag) throw ParseError("Illegal delimiter $tag")
-                readAttributeGroup(tag)
-            }
-        } // Note: a null tag means there was no endOfAttributes tag (which is not valid) but we ignore it.
+    /**
+     * Returns the next [AttributeGroup] from the stream or null if there are no more groups.
+     */
+    fun readGroup(): AttributeGroup? =
+        readTag()?.takeIf { it != Tag.endOfAttributes }?.let { tag ->
+            if (tag !is DelimiterTag) throw ParseError("Illegal delimiter $tag")
+            readAttributeGroup(tag)
+        } // Note: a null tag means no endOfAttributes tag (which is not valid) but we ignore it.
 
     /** Read and return the next [Tag] in the input if possible. */
     private fun readTag(): Tag? = read().takeIf { it >= 0 }?.let { Tag.fromInt(it) }
