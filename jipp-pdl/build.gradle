@@ -53,17 +53,6 @@ jacocoTestReport {
     }
 }
 
-dokka {
-    outputDirectory = "$buildDir/javadoc"
-    outputFormat = "javadoc"
-    configuration {
-        externalDocumentationLink {
-            url = new URL("https://docs.oracle.com/javase/8/docs/api/")
-            packageListUrl = new URL("https://docs.oracle.com/javase/8/docs/api/package-list")
-        }
-    }
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
