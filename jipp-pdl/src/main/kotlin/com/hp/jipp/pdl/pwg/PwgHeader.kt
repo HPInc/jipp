@@ -136,7 +136,7 @@ data class PwgHeader(
             when (this) {
                 Rgb, Srgb -> com.hp.jipp.pdl.ColorSpace.Rgb
                 Sgray -> com.hp.jipp.pdl.ColorSpace.Grayscale
-                else -> TODO("No conversion available for $this")
+                else -> throw IOException("No conversion available for $this")
             }
 
         companion object : ValueConverter<ColorSpace> {
@@ -147,6 +147,7 @@ data class PwgHeader(
                 when (from) {
                     com.hp.jipp.pdl.ColorSpace.Rgb -> Srgb
                     com.hp.jipp.pdl.ColorSpace.Grayscale -> Sgray
+                    else -> throw IOException("No conversion available for $from")
                 }
         }
     }
