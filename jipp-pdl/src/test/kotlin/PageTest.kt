@@ -3,10 +3,10 @@
 
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.RenderablePage
+import java.io.ByteArrayOutputStream
 import kotlin.math.min
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.io.ByteArrayOutputStream
 
 class PageTest {
     @Test fun generate() {
@@ -103,7 +103,7 @@ class PageTest {
                             ColorSpace.Rgb ->
                                 colorToText[listOf(pixel[0] == WHITE_BYTE, pixel[1] == WHITE_BYTE,
                                     pixel[2] == WHITE_BYTE)]
-                            ColorSpace.Argb ->
+                            ColorSpace.Bgra ->
                                 colorToText[listOf(pixel[1] == WHITE_BYTE, pixel[2] == WHITE_BYTE,
                                     pixel[3] == WHITE_BYTE)]
                         }

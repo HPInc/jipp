@@ -22,74 +22,80 @@ enum class ColorSpace(val bytesPerPixel: Int) {
     /** Return a converter lambda that will copy bytes from this color space to another. */
     fun converter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
         when (this) {
-            Grayscale ->
-                when (outputColor) {
-                    Grayscale -> { input, inputOffset, output ->
-                        output.write(input[inputOffset].toInt())
-                    }
-                    Rgb -> { input, inputOffset, output ->
-                        val byte = input[inputOffset].toInt()
-                        output.write(byte)
-                        output.write(byte)
-                        output.write(byte)
-                    }
-                    Bgra -> { input, inputOffset, output ->
-                        val byte = input[inputOffset].toInt()
+            Grayscale -> grayscaleConverter(outputColor)
+            Rgb -> rgbConverter(outputColor)
+            Bgra -> bgraConverter(outputColor)
+        }
+
+    private fun grayscaleConverter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
+        when (outputColor) {
+            Grayscale -> { input, inputOffset, output ->
+                output.write(input[inputOffset].toInt())
+            }
+            Rgb -> { input, inputOffset, output ->
+                val byte = input[inputOffset].toInt()
+                output.write(byte)
+                output.write(byte)
+                output.write(byte)
+            }
+            Bgra -> { input, inputOffset, output ->
+                val byte = input[inputOffset].toInt()
+                output.write(ALPHA_FULL)
+                output.write(byte)
+                output.write(byte)
+                output.write(byte)
+            }
+        }
+
+    private fun rgbConverter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
+        when (outputColor) {
+            Grayscale -> { input, inputOffset, output ->
+                output.write(((LUM_R * input[inputOffset]) +
+                    (LUM_G * input[inputOffset + 1]) +
+                    (LUM_B * input[inputOffset + 2])).roundToInt())
+            }
+            Rgb -> { input, inputOffset, output ->
+                output.write(input, inputOffset, bytesPerPixel)
+            }
+            Bgra -> { input, inputOffset, output ->
+                output.write(input[inputOffset + 2].toInt())
+                output.write(input[inputOffset + 1].toInt())
+                output.write(input[inputOffset].toInt())
+                output.write(ALPHA_FULL)
+            }
+        }
+
+    private fun bgraConverter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
+        when (outputColor) {
+            Grayscale -> { input, inputOffset, output ->
+                output.write((((LUM_R * input[inputOffset + 2]) +
+                    (LUM_G * input[inputOffset + 1]) +
+                    (LUM_B * input[inputOffset + 0])) * input[3] / ALPHA_FULL
+                    ).roundToInt())
+            }
+            Rgb -> { input, inputOffset, output ->
+                when (input[3]) {
+                    0x00.toByte() -> {
                         output.write(ALPHA_FULL)
-                        output.write(byte)
-                        output.write(byte)
-                        output.write(byte)
+                        output.write(ALPHA_FULL)
+                        output.write(ALPHA_FULL)
                     }
-                }
-            Rgb ->
-                when (outputColor) {
-                    Grayscale -> { input, inputOffset, output ->
-                        output.write(((LUM_R * input[inputOffset]) +
-                            (LUM_G * input[inputOffset + 1]) +
-                            (LUM_B * input[inputOffset + 2])).roundToInt())
-                    }
-                    Rgb -> { input, inputOffset, output ->
-                        output.write(input, inputOffset, bytesPerPixel)
-                    }
-                    Bgra -> { input, inputOffset, output ->
+                    0xFF.toByte() -> {
                         output.write(input[inputOffset + 2].toInt())
                         output.write(input[inputOffset + 1].toInt())
-                        output.write(input[inputOffset].toInt())
-                        output.write(ALPHA_FULL)
+                        output.write(input[inputOffset + 0].toInt())
+                    }
+                    else -> {
+                        val ratio = input[inputOffset].toDouble() / ALPHA_FULL
+                        output.write(((ALPHA_FULL - input[inputOffset + 2]) * ratio).roundToInt())
+                        output.write(((ALPHA_FULL - input[inputOffset + 1]) * ratio).roundToInt())
+                        output.write(((ALPHA_FULL - input[inputOffset + 0]) * ratio).roundToInt())
                     }
                 }
-            Bgra ->
-                when (outputColor) {
-                    Grayscale -> { input, inputOffset, output ->
-                        output.write((((LUM_R * input[inputOffset + 2]) +
-                                (LUM_G * input[inputOffset + 1]) +
-                                (LUM_B * input[inputOffset + 0])) * input[3] / ALPHA_FULL
-                            ).roundToInt())
-                    }
-                    Rgb -> { input, inputOffset, output ->
-                        when (input[3]) {
-                            0x00.toByte() -> {
-                                output.write(ALPHA_FULL)
-                                output.write(ALPHA_FULL)
-                                output.write(ALPHA_FULL)
-                            }
-                            0xFF.toByte() -> {
-                                output.write(input[inputOffset + 2].toInt())
-                                output.write(input[inputOffset + 1].toInt())
-                                output.write(input[inputOffset + 0].toInt())
-                            }
-                            else -> {
-                                val ratio = input[inputOffset].toDouble() / ALPHA_FULL
-                                output.write(((ALPHA_FULL - input[inputOffset + 2]) * ratio).roundToInt())
-                                output.write(((ALPHA_FULL - input[inputOffset + 1]) * ratio).roundToInt())
-                                output.write(((ALPHA_FULL - input[inputOffset + 0]) * ratio).roundToInt())
-                            }
-                        }
-                    }
-                    Bgra -> { input, inputOffset, output ->
-                        output.write(input, inputOffset, bytesPerPixel)
-                    }
-                }
+            }
+            Bgra -> { input, inputOffset, output ->
+                output.write(input, inputOffset, bytesPerPixel)
+            }
         }
 
     /** Write [input] pixels encoded in this [ColorSpace] to [output] in [outputColor]. */
