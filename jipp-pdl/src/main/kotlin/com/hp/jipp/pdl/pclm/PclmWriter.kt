@@ -188,7 +188,7 @@ class PclmWriter(
                 when (settings.output.colorSpace) {
                     ColorSpace.Rgb -> write("/ColorSpace /DeviceRGB\n")
                     ColorSpace.Grayscale -> write("/ColorSpace /DeviceGray\n")
-                    ColorSpace.Argb -> throw IOException("No colorspace allowed for ARGB")
+                    else -> throw IOException("${settings.output.colorSpace} not supported")
                 }
 
                 write("/Height ${swath.height}\n")

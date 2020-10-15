@@ -1,7 +1,7 @@
 # History of Changes
 
 ## 0.7.8
-* Support ARGB colorspace conversions from PwgReader
+* Support ARGB ColorSpace conversions from PwgReader.
 
 ## 0.7.7
 * Allow stream reads/writes of AttributeGroup (#103).

@@ -6,6 +6,7 @@ import com.hp.jipp.pdl.RenderablePage
 import kotlin.math.min
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.ByteArrayOutputStream
 
 class PageTest {
     @Test fun generate() {
@@ -120,14 +121,14 @@ class PageTest {
         fun fakePage(pixel: ByteArray, pixelColorSpace: ColorSpace, width: Int = 15, height: Int = 19): RenderablePage {
             return object : RenderablePage(width, height) {
                 override fun render(yOffset: Int, swathHeight: Int, colorSpace: ColorSpace, byteArray: ByteArray) {
-                    val outputPixel = ByteArray(colorSpace.bytesPerPixel)
-                    pixelColorSpace.converter(colorSpace).invoke(pixel, outputPixel)
+                    val outputStream = ByteArrayOutputStream()
+                    pixelColorSpace.converter(colorSpace).invoke(pixel, 0, outputStream)
                     byteArray.fill(WHITE_BYTE)
                     for (i in 0 until swathHeight) {
                         val x = yOffset + i
                         if (x < widthPixels) {
                             val pos = (x + (yOffset + x * widthPixels)) * colorSpace.bytesPerPixel
-                            outputPixel.copyInto(byteArray, pos)
+                            outputStream.toByteArray().copyInto(byteArray, pos)
                         }
                     }
                 }

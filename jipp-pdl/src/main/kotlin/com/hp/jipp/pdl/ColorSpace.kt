@@ -10,8 +10,8 @@ import kotlin.math.roundToInt
 /** Identifies a color space which describes how each pixel of image data is encoded */
 @Suppress("MagicNumber")
 enum class ColorSpace(val bytesPerPixel: Int) {
-    /** Four bytes per pixel: Alpha, Red, Green Blue. */
-    Argb(4),
+    /** Four bytes per pixel: Blue, Green, Red, Alpha (little-endian ARGB). */
+    Bgra(4),
 
     /** Three bytes per pixel: Red, Green, Blue */
     Rgb(3),
@@ -20,87 +20,89 @@ enum class ColorSpace(val bytesPerPixel: Int) {
     Grayscale(1);
 
     /** Return a converter lambda that will copy bytes from this color space to another. */
-    fun converter(outputColor: ColorSpace): (ByteArray, ByteArray) -> Unit =
+    fun converter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
         when (this) {
             Grayscale ->
                 when (outputColor) {
-                    Grayscale -> { input, output ->
-                        output[0] = input[0]
+                    Grayscale -> { input, inputOffset, output ->
+                        output.write(input[inputOffset].toInt())
                     }
-                    Rgb -> { input, output ->
-                        output[0] = input[0]
-                        output[1] = input[0]
-                        output[2] = input[0]
+                    Rgb -> { input, inputOffset, output ->
+                        val byte = input[inputOffset].toInt()
+                        output.write(byte)
+                        output.write(byte)
+                        output.write(byte)
                     }
-                    Argb -> { input, output ->
-                        output[0] = ALPHA_FULL
-                        output[1] = input[0]
-                        output[2] = input[0]
-                        output[3] = input[0]
+                    Bgra -> { input, inputOffset, output ->
+                        val byte = input[inputOffset].toInt()
+                        output.write(ALPHA_FULL)
+                        output.write(byte)
+                        output.write(byte)
+                        output.write(byte)
                     }
                 }
             Rgb ->
                 when (outputColor) {
-                    Grayscale -> { input, output ->
-                        output[0] = ((LUM_R * input[0]) + (LUM_G * input[1]) + (LUM_B * input[2]))
-                            .roundToInt().toByte()
+                    Grayscale -> { input, inputOffset, output ->
+                        output.write(((LUM_R * input[inputOffset]) +
+                            (LUM_G * input[inputOffset + 1]) +
+                            (LUM_B * input[inputOffset + 2])).roundToInt())
                     }
-                    Rgb -> { input, output ->
-                        input.copyInto(output)
+                    Rgb -> { input, inputOffset, output ->
+                        output.write(input, inputOffset, bytesPerPixel)
                     }
-                    Argb -> { input, output ->
-                        output[0] = ALPHA_FULL
-                        output[1] = input[0]
-                        output[2] = input[1]
-                        output[3] = input[2]
+                    Bgra -> { input, inputOffset, output ->
+                        output.write(input[inputOffset + 2].toInt())
+                        output.write(input[inputOffset + 1].toInt())
+                        output.write(input[inputOffset].toInt())
+                        output.write(ALPHA_FULL)
                     }
                 }
-            Argb ->
+            Bgra ->
                 when (outputColor) {
-                    Grayscale -> { input, output ->
-                        output[0] = (((LUM_R * input[1]) + (LUM_G * input[2]) + (LUM_B * input[3])) * input[0]
-                            / ALPHA_FULL).roundToInt().toByte()
+                    Grayscale -> { input, inputOffset, output ->
+                        output.write((((LUM_R * input[inputOffset + 2]) +
+                                (LUM_G * input[inputOffset + 1]) +
+                                (LUM_B * input[inputOffset + 0])) * input[3] / ALPHA_FULL
+                            ).roundToInt())
                     }
-                    Rgb -> { input, output ->
-                        when (input[0]) {
-                            ALPHA_EMPTY -> {
-                                output[0] = 0
-                                output[1] = 0
-                                output[2] = 0
+                    Rgb -> { input, inputOffset, output ->
+                        when (input[3]) {
+                            0x00.toByte() -> {
+                                output.write(ALPHA_FULL)
+                                output.write(ALPHA_FULL)
+                                output.write(ALPHA_FULL)
                             }
-                            ALPHA_FULL -> {
-                                output[0] = input[1]
-                                output[1] = input[2]
-                                output[2] = input[3]
+                            0xFF.toByte() -> {
+                                output.write(input[inputOffset + 2].toInt())
+                                output.write(input[inputOffset + 1].toInt())
+                                output.write(input[inputOffset + 0].toInt())
                             }
                             else -> {
-                                val ratio = input[0].toDouble() / ALPHA_FULL
-                                output[0] = (ratio * input[1]).roundToInt().toByte()
-                                output[1] = (ratio * input[2]).roundToInt().toByte()
-                                output[2] = (ratio * input[3]).roundToInt().toByte()
+                                val ratio = input[inputOffset].toDouble() / ALPHA_FULL
+                                output.write(((ALPHA_FULL - input[inputOffset + 2]) * ratio).roundToInt())
+                                output.write(((ALPHA_FULL - input[inputOffset + 1]) * ratio).roundToInt())
+                                output.write(((ALPHA_FULL - input[inputOffset + 0]) * ratio).roundToInt())
                             }
                         }
                     }
-                    Argb -> { input, output ->
-                        input.copyInto(output)
+                    Bgra -> { input, inputOffset, output ->
+                        output.write(input, inputOffset, bytesPerPixel)
                     }
                 }
         }
 
-    /** Convert pixels encoded in this colorspace into pixels in the output stream/color space. */
+    /** Write [input] pixels encoded in this [ColorSpace] to [output] in [outputColor]. */
     fun convert(input: InputStream, output: OutputStream, outputColor: ColorSpace) {
         val inputPixel = ByteArray(bytesPerPixel)
-        val outputPixel = ByteArray(outputColor.bytesPerPixel)
         val converter = converter(outputColor)
         while (input.read(inputPixel) != -1) {
-            converter(inputPixel, outputPixel)
-            output.write(outputPixel)
+            converter(inputPixel, 0, output)
         }
     }
 
     companion object {
-        private const val ALPHA_EMPTY = 0x00.toByte()
-        private const val ALPHA_FULL = 0xFF.toByte()
+        private const val ALPHA_FULL = 0xFF
         private const val LUM_R = 0.2126
         private const val LUM_G = 0.7152
         private const val LUM_B = 0.0722
