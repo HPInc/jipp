@@ -103,7 +103,7 @@ class PageTest {
                             ColorSpace.Rgb ->
                                 colorToText[listOf(pixel[0] == WHITE_BYTE, pixel[1] == WHITE_BYTE,
                                     pixel[2] == WHITE_BYTE)]
-                            ColorSpace.Bgra ->
+                            ColorSpace.Rgba ->
                                 colorToText[listOf(pixel[1] == WHITE_BYTE, pixel[2] == WHITE_BYTE,
                                     pixel[3] == WHITE_BYTE)]
                         }
