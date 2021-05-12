@@ -24,7 +24,10 @@ data class PwgSettings @JvmOverloads constructor(
     val sheetBack: String = PwgRasterDocumentSheetBack.normal,
 
     /** The orientation used when printing the current job. */
-    val orientation: Orientation = Orientation.portrait
+    val orientation: Orientation = Orientation.portrait,
+
+    /** The jobPagesPerSet job attribute if used when printing the current job. */
+    val jobPagesPerSet: Int? = null
 ) {
     /** The calculated [PwgHeader.MediaPosition] for these settings. */
     val pwgMediaPosition = output.source.toPwgMediaPosition()
