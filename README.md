@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hp.jipp/jipp-core)
 [![Core Docs](https://img.shields.io/badge/docs-core-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-core)
 [![PDL Docs](https://img.shields.io/badge/docs-pdl-brightgreen.svg)](https://hpinc.github.io/jipp/api/jipp-pdl)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.4.10-blue.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.5.0-blue.svg)](https://kotlinlang.org/)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 # JIPP: A Java-compatible IPP library
@@ -39,8 +39,8 @@ The API is Java-compatible but implemented in Kotlin.
 1. Add the current version of JIPP to your project
 ```gradle
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.7.9'
-    compile 'com.hp.jipp:jipp-pdl:0.7.9' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.7.10'
+    compile 'com.hp.jipp:jipp-pdl:0.7.10' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example

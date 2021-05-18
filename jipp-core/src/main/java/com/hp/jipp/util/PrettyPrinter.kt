@@ -147,7 +147,7 @@ class PrettyPrinter internal constructor(
                 if (prefix.isNotEmpty()) {
                     result += prefix.length + style.spacer.length
                 }
-                result += style.opener.length + style.spacer.length + items.sumBy { it.toString().length }
+                result += style.opener.length + style.spacer.length + items.sumOf { it.toString().length }
                 result += (items.size - 1) * style.separator.length + style.spacer.length
                 result += style.spacer.length + style.closer.length
                 return result

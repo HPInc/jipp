@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.10
+* Support allowPadding in PWG-Raster (#109).
+* Update Kotlin to 1.5.0.
+
 ## 0.7.9
 * Support RGBA ColorSpace conversions from PwgReader.
 

@@ -3,6 +3,8 @@
 
 package com.hp.jipp.util
 
+import kotlin.math.min
+
 // Used to convert bytes to hex
 private val hexChars = "0123456789abcdef".toCharArray()
 private const val BITS_IN_NYBBLE = 4
@@ -23,9 +25,9 @@ fun ByteArray.toHexString(): String = joinToString(separator = "") { it.toHexStr
 @Suppress("MagicNumber")
 fun ByteArray.toWrappedHexString(chunk: Int = 32) =
     (0..(size / chunk)).joinToString("\n") { at ->
-        copyOfRange(at * chunk, Math.min(size, (at + 1) * chunk)).let { bytes ->
+        copyOfRange(at * chunk, min(size, (at + 1) * chunk)).let { bytes ->
             bytes.toHexString() + " " + bytes.map {
-                if (it in 32..127) it.toChar() else '.'
+                if (it in 32..127) it.toInt().toChar() else '.'
             }.joinToString("")
         }
     }

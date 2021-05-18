@@ -39,6 +39,10 @@ afterEvaluate {
 
 test.finalizedBy jacocoTestReport
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report

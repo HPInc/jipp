@@ -96,7 +96,7 @@ fun ByteWindow.intersects(other: ByteWindow): Boolean {
 }
 
 private fun Iterable<ByteWindow>.stripComments(): Iterable<ByteWindow> =
-    filterNot { it.array[it.offset] == '%'.toByte() }
+    filterNot { it.array[it.offset] == '%'.code.toByte() }
 
 /** Return an iterator that skips any util.ByteWindow containing a comment */
 private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
@@ -112,7 +112,7 @@ private fun Iterator<ByteWindow>.stripComments(): Iterator<ByteWindow> {
         override fun hasNext(): Boolean {
             while (place == null && parent.hasNext()) {
                 place = parent.next()
-                if (place?.let { it.array[it.offset] == '%'.toByte() } == true) {
+                if (place?.let { it.array[it.offset] == '%'.code.toByte() } == true) {
                     place = null
                 }
             }
@@ -175,7 +175,7 @@ fun ByteWindow.validatePclm(): PdfStructure {
     val all = this
 
     // Header is just the comments until we reach the first body line
-    val header = copy(length = lines.first { it.array[it.offset] != '%'.toByte() }.offset - offset)
+    val header = copy(length = lines.first { it.array[it.offset] != '%'.code.toByte() }.offset - offset)
 
     // Count backwards from end to find the beginning of the trailer
     val trailer = linesFromEnd.first { it.asString() == "trailer\n" }

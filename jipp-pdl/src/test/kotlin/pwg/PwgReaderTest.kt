@@ -3,8 +3,6 @@
 
 package pwg
 
-import KotlinTest
-import PageTest
 import com.hp.jipp.model.PrintQuality
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
@@ -19,10 +17,16 @@ import com.hp.jipp.pdl.pwg.PwgWriter
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Ignore
 import org.junit.Test
+import util.KotlinTest
+import util.PageUtil
+import util.PageUtil.BLUE
+import util.PageUtil.describe
+import util.PageUtil.fakePage
 
 class PwgReaderTest {
 
@@ -36,7 +40,7 @@ class PwgReaderTest {
     @Test fun simple() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -46,7 +50,7 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.first() as PwgReader.PwgPage
-        PageTest.describe(page, ColorSpace.Rgb).also {
+        describe(page, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...B...........", it.split("\n")[3])
         }
@@ -56,8 +60,8 @@ class PwgReaderTest {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
             val pages = listOf(
-                PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
-                PageTest.fakePage(byteArrayOf(PageTest.BLACK_BYTE), ColorSpace.Grayscale))
+                fakePage(BLUE, ColorSpace.Rgb),
+                fakePage(byteArrayOf(PageUtil.BLACK_BYTE), ColorSpace.Grayscale))
             override fun iterator() = pages.iterator()
         }
 
@@ -67,12 +71,12 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.toList()[0] as PwgReader.PwgPage
-        PageTest.describe(page, ColorSpace.Rgb).also {
+        describe(page, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...B...........", it.split("\n")[3])
         }
         val page2 = read.toList()[1] as PwgReader.PwgPage
-        PageTest.describe(page2, ColorSpace.Rgb).also {
+        describe(page2, ColorSpace.Rgb).also {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }
@@ -81,7 +85,7 @@ class PwgReaderTest {
     @Test fun `allowPadding allows padding of two-sided job`() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -95,7 +99,7 @@ class PwgReaderTest {
     @Test fun colorToGray() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -105,7 +109,7 @@ class PwgReaderTest {
         val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         assertEquals(doc.dpi, read.dpi)
         val page = read.first() as PwgReader.PwgPage
-        PageTest.describe(page, ColorSpace.Grayscale).also {
+        describe(page, ColorSpace.Grayscale).also {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }
@@ -145,7 +149,7 @@ class PwgReaderTest {
         // Run typical operations to validate different classes defined for the PWG decoder
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -155,10 +159,10 @@ class PwgReaderTest {
         val page = read.first() as PwgReader.PwgPage
         KotlinTest.cover(page.header, page.header.copy(), page.header.copy(imageBoxBottom = 5))
         PwgHeader.MediaPosition.values().forEach { pos ->
-            val ippName = (pos.name.first().toLowerCase() + pos.name.drop(1)) // decapitalize first letter
+            val ippName = (pos.name.first().lowercaseChar() + pos.name.drop(1)) // decapitalize first letter
                 .split("(?=[A-Z0-9]+)".toRegex()).joinToString("-") // add dashes back
                 .replace("[0-9][0-9-]+".toRegex()) { it.value.replace("-", "") } // fix tray-1-0
-                .toLowerCase()
+                .lowercase(Locale.getDefault())
             PwgSettings(output = OutputSettings(source = ippName))
         }
 

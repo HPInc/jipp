@@ -37,7 +37,7 @@ open class DateTimeType(name: String) : AttributeTypeImpl<Calendar>(name, Calend
             calendar[Calendar.SECOND] = bytes[6].toUint()
             calendar[Calendar.MILLISECOND] = bytes[7].toUint() * 100
             val zoneString = String.format("GMT%s%02d%02d",
-                bytes[8].toChar(), // - or +
+                bytes[8].toInt().toChar(), // - or +
                 bytes[9].toUint(),
                 bytes[10].toUint())
             calendar.timeZone = TimeZone.getTimeZone(zoneString)
@@ -54,10 +54,10 @@ open class DateTimeType(name: String) : AttributeTypeImpl<Calendar>(name, Calend
 
             var zone = it.timeZone.rawOffset
             if (zone < 0) {
-                writeByte('-'.toInt())
+                writeByte('-'.code)
                 zone = -zone
             } else {
-                writeByte('+'.toInt())
+                writeByte('+'.code)
             }
             val offsetMinutes = zone / 1000 / 60
             writeByte(offsetMinutes / 60) // Hours

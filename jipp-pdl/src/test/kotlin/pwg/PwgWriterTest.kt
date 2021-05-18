@@ -3,7 +3,6 @@
 
 package pwg
 
-import PageTest
 import com.hp.jipp.model.Orientation
 import com.hp.jipp.model.PwgRasterDocumentSheetBack
 import com.hp.jipp.model.Sides
@@ -22,6 +21,10 @@ import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.ByteWindow
+import util.PageUtil.BLUE
+import util.PageUtil.RED
+import util.PageUtil.describe
+import util.PageUtil.fakePage
 import util.RandomDocument
 
 class PwgWriterTest {
@@ -76,8 +79,8 @@ class PwgWriterTest {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
             val pages = listOf(
-                PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
-                PageTest.fakePage(PageTest.RED, ColorSpace.Rgb))
+                fakePage(BLUE, ColorSpace.Rgb),
+                fakePage(RED, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -91,7 +94,7 @@ class PwgWriterTest {
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         val page = readDoc.toList()[0] as PwgReader.PwgPage
-        PageTest.describe(page).also {
+        describe(page).also {
             println(it)
             assertEquals("...........R...", it.split("\n")[11])
         }
@@ -101,8 +104,8 @@ class PwgWriterTest {
     fun `write rotated duplex job`() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb),
-                PageTest.fakePage(PageTest.RED, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb),
+                fakePage(RED, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
 
@@ -114,7 +117,7 @@ class PwgWriterTest {
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
         val page = readDoc.toList()[1] as PwgReader.PwgPage
-        PageTest.describe(page).also {
+        describe(page).also {
             println(it)
             assertEquals("...........R...", it.split("\n")[15])
         }
@@ -124,7 +127,7 @@ class PwgWriterTest {
     fun `retain orientation setting`() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb))
             override fun iterator() = pages.iterator()
         }
         val output = ByteArrayOutputStream()
