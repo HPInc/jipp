@@ -6,6 +6,7 @@ package pwg
 import KotlinTest
 import PageTest
 import com.hp.jipp.model.PrintQuality
+import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings
 import com.hp.jipp.pdl.RenderableDocument
@@ -75,6 +76,20 @@ class PwgReaderTest {
             println(it)
             assertEquals("...K...........", it.split("\n")[3])
         }
+    }
+
+    @Test fun `allowPadding allows padding of two-sided job`() {
+        val doc = object : RenderableDocument() {
+            override val dpi: Int = 1
+            val pages = listOf(PageTest.fakePage(PageTest.BLUE, ColorSpace.Rgb))
+            override fun iterator() = pages.iterator()
+        }
+
+        val output = ByteArrayOutputStream()
+        PwgWriter(output, settings = PwgSettings(output = OutputSettings(sides = Sides.twoSidedLongEdge), allowPadding = true)).write(doc)
+
+        val read = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
+        assertEquals(2, read.toList().size)
     }
 
     @Test fun colorToGray() {

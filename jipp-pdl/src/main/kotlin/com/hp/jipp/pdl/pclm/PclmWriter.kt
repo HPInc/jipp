@@ -76,7 +76,7 @@ class PclmWriter(
         startDoc()
         document.mapPages { doc ->
             doc.mapIndexed { pageNumber, page -> page.transform(pageNumber) }
-        }.handleSides(settings.output).forEach { page ->
+        }.handleSides(settings.output, allowPadding = true).forEach { page ->
             writePage(document, page)
         }
         endDoc()

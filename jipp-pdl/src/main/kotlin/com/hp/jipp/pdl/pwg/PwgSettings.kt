@@ -26,8 +26,11 @@ data class PwgSettings @JvmOverloads constructor(
     /** The orientation used when printing the current job. */
     val orientation: Orientation = Orientation.portrait,
 
-    /** The jobPagesPerSet job attribute if used when printing the current job. */
-    val jobPagesPerSet: Int? = null
+    /**
+     * True to add blank page padding for two-sided odd-page-count jobs, or false the destination knows how to pad
+     * them (for example it supports `job-pages-per-set`).
+     */
+    val allowPadding: Boolean = false,
 ) {
     /** The calculated [PwgHeader.MediaPosition] for these settings. */
     val pwgMediaPosition = output.source.toPwgMediaPosition()

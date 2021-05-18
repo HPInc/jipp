@@ -22,8 +22,11 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
             }
         }
 
-    /** Return a document with any necessary page insertions or re-orderings for two-sided output. */
-    fun handleSides(settings: OutputSettings, allowPadding: Boolean = true) =
+    /**
+     * Return a document with any necessary page insertions or re-orderings for two-sided output, padding if necessary
+     * if `allowPadding` is true.
+     */
+    fun handleSides(settings: OutputSettings, allowPadding: Boolean) =
         when (settings.sides) {
             Sides.oneSided -> this
             else -> handleSidesExtraBlank(allowPadding)
