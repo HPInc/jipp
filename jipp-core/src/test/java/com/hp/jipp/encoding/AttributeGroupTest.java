@@ -349,7 +349,7 @@ public class AttributeGroupTest {
     public void prettyPrint() {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"));
-        assertEquals("operation-attributes { attributes-charset = utf-8 }",mutableGroup.prettyPrint(120,"    "));
+        assertEquals("operation-attributes { attributes-charset = utf-8 }", mutableGroup.prettyPrint(120,"    "));
     }
 
     @Test
