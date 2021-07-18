@@ -18,18 +18,18 @@ data class PdlInitFile
 constructor(
     var pdlInitFileEntry: String? = null,
     var pdlInitFileLocation: java.net.URI? = null,
-    var pdlInitFileName: String? = null
+    var pdlInitFileName: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PdlInitFile]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             pdlInitFileEntry?.let { PdlInitFile.pdlInitFileEntry.of(it) },
             pdlInitFileLocation?.let { PdlInitFile.pdlInitFileLocation.of(it) },
-            pdlInitFileName?.let { PdlInitFile.pdlInitFileName.of(it) }
+            pdlInitFileName?.let { PdlInitFile.pdlInitFileName.of(it) },
         )
 
     /** Defines types for each member of [PdlInitFile]. */
@@ -38,7 +38,7 @@ constructor(
             PdlInitFile(
                 extractOne(attributes, pdlInitFileEntry)?.value,
                 extractOne(attributes, pdlInitFileLocation),
-                extractOne(attributes, pdlInitFileName)?.value
+                extractOne(attributes, pdlInitFileName)?.value,
             )
         override val cls = PdlInitFile::class.java
         @Deprecated("Remove this symbol")

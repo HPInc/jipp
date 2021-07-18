@@ -33,10 +33,14 @@ open class EnumType<T : Enum>(
     override fun toString() = "EnumType($name)"
 
     companion object {
-        val codec = Codec<Enum>(Tag.enumValue, {
-            UntypedEnum(readIntValue())
-        }, {
-            writeIntValue(it.code)
-        })
+        val codec = Codec<Enum>(
+            Tag.enumValue,
+            {
+                UntypedEnum(readIntValue())
+            },
+            {
+                writeIntValue(it.code)
+            }
+        )
     }
 }

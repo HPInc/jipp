@@ -4,13 +4,13 @@
 package pwg
 
 import com.hp.jipp.pdl.pwg.PackBits
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
+import util.ByteWindow
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.InputStream
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import util.ByteWindow
 
 object PwgValidator {
     private const val HEADER_SIZE = 1796
@@ -101,7 +101,7 @@ object PwgValidator {
 
             val imageBytes = ByteArrayOutputStream()
             PackBits(bytesPerPixel = bitsPerPixel / 8, pixelsPerLine = width)
-                    .decode(this, imageBytes, lines = height)
+                .decode(this, imageBytes, lines = height)
             println(ByteWindow(imageBytes.toByteArray()).toString(200))
             assertEquals(width * height, imageBytes.size() / (bitsPerPixel / 8))
             break

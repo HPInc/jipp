@@ -118,10 +118,12 @@ class PclmWriter(
             } else settings.stripHeight
 
             // Predict the object number assuming page object, page content stream object, and interleaved transforms
-            Swath(objectNumber = crossReferences.size + 2 + (index * 2),
-                    imageNumber = index,
-                    height = height,
-                    yOffset = yOffset.also { yOffset += height })
+            Swath(
+                objectNumber = crossReferences.size + 2 + (index * 2),
+                imageNumber = index,
+                height = height,
+                yOffset = yOffset.also { yOffset += height }
+            )
         }
 
         // Write the page object
@@ -149,8 +151,10 @@ class PclmWriter(
         // Write the page content stream object
         pdObject {
             val contentStream = CharArrayWriter()
-            contentStream.write("${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 " +
-                "${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 cm\n")
+            contentStream.write(
+                "${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 " +
+                    "${POINTS_PER_INCH.toDouble() / doc.dpi} 0 0 cm\n"
+            )
             contentStream.write("/P <</MCID 0>> BDC q\n")
 
             for (swath in swaths) {
@@ -229,8 +233,10 @@ class PclmWriter(
             renderBytes = ByteArray(size)
         }
 
-        page.render(yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = settings.output.colorSpace,
-            byteArray = renderBytes)
+        page.render(
+            yOffset = swath.yOffset, swathHeight = swath.height, colorSpace = settings.output.colorSpace,
+            byteArray = renderBytes
+        )
 
         if (forceNonBlank) return renderBytes
 

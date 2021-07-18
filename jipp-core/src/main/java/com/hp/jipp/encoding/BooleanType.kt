@@ -14,10 +14,14 @@ open class BooleanType(name: String) : AttributeTypeImpl<Boolean>(name, Boolean:
         value as? Boolean
 
     companion object {
-        val codec = Codec(Tag.booleanValue, {
-            readByteValue() != 0.toByte()
-        }, {
-            writeByteValue(if (it) 0x01 else 0x00)
-        })
+        val codec = Codec(
+            Tag.booleanValue,
+            {
+                readByteValue() != 0.toByte()
+            },
+            {
+                writeByteValue(if (it) 0x01 else 0x00)
+            }
+        )
     }
 }

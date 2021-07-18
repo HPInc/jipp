@@ -21,11 +21,11 @@ constructor(
     var insertCount: Int? = null,
     /** May contain any keyword from [Media] or a name. */
     var media: KeywordOrName? = null,
-    var mediaCol: MediaCol? = null
+    var mediaCol: MediaCol? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [InsertSheet]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -33,7 +33,7 @@ constructor(
             insertAfterPageNumber?.let { InsertSheet.insertAfterPageNumber.of(it) },
             insertCount?.let { InsertSheet.insertCount.of(it) },
             media?.let { InsertSheet.media.of(it) },
-            mediaCol?.let { InsertSheet.mediaCol.of(it) }
+            mediaCol?.let { InsertSheet.mediaCol.of(it) },
         )
 
     /** Defines types for each member of [InsertSheet]. */
@@ -43,7 +43,7 @@ constructor(
                 extractOne(attributes, insertAfterPageNumber),
                 extractOne(attributes, insertCount),
                 extractOne(attributes, media),
-                extractOne(attributes, mediaCol)
+                extractOne(attributes, mediaCol),
             )
         override val cls = InsertSheet::class.java
         @Deprecated("Remove this symbol")

@@ -22,11 +22,11 @@ constructor(
     var metersAreActual: Boolean? = null,
     var powerState: String? = null,
     var powerStateMessage: String? = null,
-    var powerUsageIsRmsWatts: Boolean? = null
+    var powerUsageIsRmsWatts: Boolean? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerStateMonitorCol]. */
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -37,7 +37,7 @@ constructor(
             metersAreActual?.let { PowerStateMonitorCol.metersAreActual.of(it) },
             powerState?.let { PowerStateMonitorCol.powerState.of(it) },
             powerStateMessage?.let { PowerStateMonitorCol.powerStateMessage.of(it) },
-            powerUsageIsRmsWatts?.let { PowerStateMonitorCol.powerUsageIsRmsWatts.of(it) }
+            powerUsageIsRmsWatts?.let { PowerStateMonitorCol.powerUsageIsRmsWatts.of(it) },
         )
 
     /** Defines types for each member of [PowerStateMonitorCol]. */
@@ -50,7 +50,7 @@ constructor(
                 extractOne(attributes, metersAreActual),
                 extractOne(attributes, powerState),
                 extractOne(attributes, powerStateMessage)?.value,
-                extractOne(attributes, powerUsageIsRmsWatts)
+                extractOne(attributes, powerUsageIsRmsWatts),
             )
         override val cls = PowerStateMonitorCol::class.java
         @Deprecated("Remove this symbol")

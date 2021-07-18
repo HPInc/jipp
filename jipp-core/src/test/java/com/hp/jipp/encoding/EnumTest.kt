@@ -38,7 +38,9 @@ class EnumTest {
     @Test
     @Throws(Exception::class)
     fun fetchFromGroup() {
-        assertEquals(listOf(Sample.Two, Sample.Three),
-                cycle(groupOf(Tag.jobAttributes, mySample.of(listOf(Sample.Two, Sample.Three))))[mySample])
+        assertEquals(
+            listOf(Sample.Two, Sample.Three),
+            cycle(groupOf(Tag.jobAttributes, mySample.of(listOf(Sample.Two, Sample.Three))))[mySample]
+        )
     }
 }

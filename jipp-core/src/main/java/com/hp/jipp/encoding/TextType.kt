@@ -24,22 +24,26 @@ open class TextType(override val name: String) : AttributeTypeImpl<Text>(name, T
     fun of(value: String) = of(Text(value))
 
     companion object {
-        val codec = Codec({ it == Tag.textWithLanguage || it == Tag.textWithoutLanguage }, {
-            if (it == Tag.textWithLanguage) {
-                readShort()
-                val lang = readString() // Lang comes first
-                Text(readString(), lang)
-            } else {
-                Text(readString())
+        val codec = Codec(
+            { it == Tag.textWithLanguage || it == Tag.textWithoutLanguage },
+            {
+                if (it == Tag.textWithLanguage) {
+                    readShort()
+                    val lang = readString() // Lang comes first
+                    Text(readString(), lang)
+                } else {
+                    Text(readString())
+                }
+            },
+            {
+                if (it.tag == Tag.textWithLanguage) {
+                    writeShort(IppStreams.stringLength(it.lang!!) + IppStreams.stringLength(it.value))
+                    writeStringValue(it.lang)
+                    writeStringValue(it.value)
+                } else {
+                    writeStringValue(it.value)
+                }
             }
-        }, {
-            if (it.tag == Tag.textWithLanguage) {
-                writeShort(IppStreams.stringLength(it.lang!!) + IppStreams.stringLength(it.value))
-                writeStringValue(it.lang)
-                writeStringValue(it.value)
-            } else {
-                writeStringValue(it.value)
-            }
-        })
+        )
     }
 }

@@ -38,7 +38,7 @@ data class SystemState(override val code: Int, override val name: String) : Enum
         @JvmField val all = listOf(
             idle,
             processing,
-            stopped
+            stopped,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): SystemState =

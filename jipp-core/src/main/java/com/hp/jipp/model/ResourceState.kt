@@ -44,7 +44,7 @@ data class ResourceState(override val code: Int, override val name: String) : En
             available,
             installed,
             canceled,
-            aborted
+            aborted,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): ResourceState =

@@ -18,18 +18,18 @@ data class Overrides
 constructor(
     var documentCopies: List<IntRange>? = null,
     var documentNumbers: List<IntRange>? = null,
-    var pages: List<IntRange>? = null
+    var pages: List<IntRange>? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [Overrides]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             documentCopies?.let { Overrides.documentCopies.of(it) },
             documentNumbers?.let { Overrides.documentNumbers.of(it) },
-            pages?.let { Overrides.pages.of(it) }
+            pages?.let { Overrides.pages.of(it) },
         )
 
     /** Defines types for each member of [Overrides]. */
@@ -38,7 +38,7 @@ constructor(
             Overrides(
                 extractAll(attributes, documentCopies),
                 extractAll(attributes, documentNumbers),
-                extractAll(attributes, pages)
+                extractAll(attributes, pages),
             )
         override val cls = Overrides::class.java
         @Deprecated("Remove this symbol")

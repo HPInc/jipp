@@ -37,7 +37,7 @@ data class {{ enum.name | camel_class }}(override val code: Int, override val na
 
         @JvmField val all = listOf(
 {%- for name, value in enum['values'] | dictsort(false, 'value') %}
-            {{ name | camel_member }}{{ "," if not loop.last }}{%- endfor %}
+            {{ name | camel_member }},{%- endfor %}
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): {{ enum.name | camel_class }} =

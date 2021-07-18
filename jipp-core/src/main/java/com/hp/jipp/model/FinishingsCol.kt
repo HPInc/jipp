@@ -32,11 +32,11 @@ constructor(
     var mediaSizeName: String? = null,
     var punching: Punching? = null,
     var stitching: Stitching? = null,
-    var trimming: List<Trimming>? = null
+    var trimming: List<Trimming>? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [FinishingsCol]. */
-    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -54,7 +54,7 @@ constructor(
             mediaSizeName?.let { FinishingsCol.mediaSizeName.of(it) },
             punching?.let { FinishingsCol.punching.of(it) },
             stitching?.let { FinishingsCol.stitching.of(it) },
-            trimming?.let { FinishingsCol.trimming.of(it) }
+            trimming?.let { FinishingsCol.trimming.of(it) },
         )
 
     /** Defines types for each member of [FinishingsCol]. */
@@ -74,7 +74,7 @@ constructor(
                 extractOne(attributes, mediaSizeName),
                 extractOne(attributes, punching),
                 extractOne(attributes, stitching),
-                extractAll(attributes, trimming)
+                extractAll(attributes, trimming),
             )
         override val cls = FinishingsCol::class.java
         @Deprecated("Remove this symbol")
@@ -104,17 +104,17 @@ constructor(
         /** May contain any keyword from [BalingType] or a name. */
         var balingType: KeywordOrName? = null,
         /** May contain any keyword from [BalingWhen]. */
-        var balingWhen: String? = null
+        var balingWhen: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Baling]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 balingType?.let { Baling.balingType.of(it) },
-                balingWhen?.let { Baling.balingWhen.of(it) }
+                balingWhen?.let { Baling.balingWhen.of(it) },
             )
 
         /** Defines types for each member of [Baling]. */
@@ -122,7 +122,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): Baling =
                 Baling(
                     extractOne(attributes, balingType),
-                    extractOne(attributes, balingWhen)
+                    extractOne(attributes, balingWhen),
                 )
             override val cls = Baling::class.java
             @Deprecated("Remove this symbol")
@@ -142,17 +142,17 @@ constructor(
         /** May contain any keyword from [BindingReferenceEdge]. */
         var bindingReferenceEdge: String? = null,
         /** May contain any keyword from [BindingType] or a name. */
-        var bindingType: KeywordOrName? = null
+        var bindingType: KeywordOrName? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Binding]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 bindingReferenceEdge?.let { Binding.bindingReferenceEdge.of(it) },
-                bindingType?.let { Binding.bindingType.of(it) }
+                bindingType?.let { Binding.bindingType.of(it) },
             )
 
         /** Defines types for each member of [Binding]. */
@@ -160,7 +160,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): Binding =
                 Binding(
                     extractOne(attributes, bindingReferenceEdge),
-                    extractOne(attributes, bindingType)
+                    extractOne(attributes, bindingType),
                 )
             override val cls = Binding::class.java
             @Deprecated("Remove this symbol")
@@ -180,17 +180,17 @@ constructor(
         /** May contain any keyword from [CoatingSides]. */
         var coatingSides: String? = null,
         /** May contain any keyword from [CoatingType] or a name. */
-        var coatingType: KeywordOrName? = null
+        var coatingType: KeywordOrName? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Coating]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 coatingSides?.let { Coating.coatingSides.of(it) },
-                coatingType?.let { Coating.coatingType.of(it) }
+                coatingType?.let { Coating.coatingType.of(it) },
             )
 
         /** Defines types for each member of [Coating]. */
@@ -198,7 +198,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): Coating =
                 Coating(
                     extractOne(attributes, coatingSides),
-                    extractOne(attributes, coatingType)
+                    extractOne(attributes, coatingType),
                 )
             override val cls = Coating::class.java
             @Deprecated("Remove this symbol")
@@ -216,7 +216,7 @@ constructor(
     data class Covering
     constructor(
         /** May contain any keyword from [CoveringName] or a name. */
-        var coveringName: KeywordOrName? = null
+        var coveringName: KeywordOrName? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Covering]. */
@@ -225,14 +225,14 @@ constructor(
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
-                coveringName?.let { Covering.coveringName.of(it) }
+                coveringName?.let { Covering.coveringName.of(it) },
             )
 
         /** Defines types for each member of [Covering]. */
         companion object : AttributeCollection.Converter<Covering> {
             override fun convert(attributes: List<Attribute<*>>): Covering =
                 Covering(
-                    extractOne(attributes, coveringName)
+                    extractOne(attributes, coveringName),
                 )
             override val cls = Covering::class.java
             @Deprecated("Remove this symbol")
@@ -252,18 +252,18 @@ constructor(
         var foldingDirection: String? = null,
         var foldingOffset: Int? = null,
         /** May contain any keyword from [FoldingReferenceEdge]. */
-        var foldingReferenceEdge: String? = null
+        var foldingReferenceEdge: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Folding]. */
-        constructor() : this(null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 foldingDirection?.let { Folding.foldingDirection.of(it) },
                 foldingOffset?.let { Folding.foldingOffset.of(it) },
-                foldingReferenceEdge?.let { Folding.foldingReferenceEdge.of(it) }
+                foldingReferenceEdge?.let { Folding.foldingReferenceEdge.of(it) },
             )
 
         /** Defines types for each member of [Folding]. */
@@ -272,7 +272,7 @@ constructor(
                 Folding(
                     extractOne(attributes, foldingDirection),
                     extractOne(attributes, foldingOffset),
-                    extractOne(attributes, foldingReferenceEdge)
+                    extractOne(attributes, foldingReferenceEdge),
                 )
             override val cls = Folding::class.java
             @Deprecated("Remove this symbol")
@@ -293,17 +293,17 @@ constructor(
         /** May contain any keyword from [LaminatingSides]. */
         var laminatingSides: String? = null,
         /** May contain any keyword from [LaminatingType] or a name. */
-        var laminatingType: KeywordOrName? = null
+        var laminatingType: KeywordOrName? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Laminating]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 laminatingSides?.let { Laminating.laminatingSides.of(it) },
-                laminatingType?.let { Laminating.laminatingType.of(it) }
+                laminatingType?.let { Laminating.laminatingType.of(it) },
             )
 
         /** Defines types for each member of [Laminating]. */
@@ -311,7 +311,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): Laminating =
                 Laminating(
                     extractOne(attributes, laminatingSides),
-                    extractOne(attributes, laminatingType)
+                    extractOne(attributes, laminatingType),
                 )
             override val cls = Laminating::class.java
             @Deprecated("Remove this symbol")
@@ -329,17 +329,17 @@ constructor(
     data class MediaSize
     constructor(
         var xDimension: Int? = null,
-        var yDimension: Int? = null
+        var yDimension: Int? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [MediaSize]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 xDimension?.let { MediaSize.xDimension.of(it) },
-                yDimension?.let { MediaSize.yDimension.of(it) }
+                yDimension?.let { MediaSize.yDimension.of(it) },
             )
 
         /** Defines types for each member of [MediaSize]. */
@@ -347,7 +347,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
                     extractOne(attributes, xDimension),
-                    extractOne(attributes, yDimension)
+                    extractOne(attributes, yDimension),
                 )
             override val cls = MediaSize::class.java
             @Deprecated("Remove this symbol")
@@ -367,18 +367,18 @@ constructor(
         var punchingLocations: List<Int>? = null,
         var punchingOffset: Int? = null,
         /** May contain any keyword from [PunchingReferenceEdge]. */
-        var punchingReferenceEdge: String? = null
+        var punchingReferenceEdge: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Punching]. */
-        constructor() : this(null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 punchingLocations?.let { Punching.punchingLocations.of(it) },
                 punchingOffset?.let { Punching.punchingOffset.of(it) },
-                punchingReferenceEdge?.let { Punching.punchingReferenceEdge.of(it) }
+                punchingReferenceEdge?.let { Punching.punchingReferenceEdge.of(it) },
             )
 
         /** Defines types for each member of [Punching]. */
@@ -387,7 +387,7 @@ constructor(
                 Punching(
                     extractAll(attributes, punchingLocations),
                     extractOne(attributes, punchingOffset),
-                    extractOne(attributes, punchingReferenceEdge)
+                    extractOne(attributes, punchingReferenceEdge),
                 )
             override val cls = Punching::class.java
             @Deprecated("Remove this symbol")
@@ -411,11 +411,11 @@ constructor(
         var stitchingMethod: String? = null,
         var stitchingOffset: Int? = null,
         /** May contain any keyword from [StitchingReferenceEdge]. */
-        var stitchingReferenceEdge: String? = null
+        var stitchingReferenceEdge: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Stitching]. */
-        constructor() : this(null, null, null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
@@ -424,7 +424,7 @@ constructor(
                 stitchingLocations?.let { Stitching.stitchingLocations.of(it) },
                 stitchingMethod?.let { Stitching.stitchingMethod.of(it) },
                 stitchingOffset?.let { Stitching.stitchingOffset.of(it) },
-                stitchingReferenceEdge?.let { Stitching.stitchingReferenceEdge.of(it) }
+                stitchingReferenceEdge?.let { Stitching.stitchingReferenceEdge.of(it) },
             )
 
         /** Defines types for each member of [Stitching]. */
@@ -435,7 +435,7 @@ constructor(
                     extractAll(attributes, stitchingLocations),
                     extractOne(attributes, stitchingMethod),
                     extractOne(attributes, stitchingOffset),
-                    extractOne(attributes, stitchingReferenceEdge)
+                    extractOne(attributes, stitchingReferenceEdge),
                 )
             override val cls = Stitching::class.java
             @Deprecated("Remove this symbol")
@@ -461,11 +461,11 @@ constructor(
         /** May contain any keyword from [TrimmingType] or a name. */
         var trimmingType: KeywordOrName? = null,
         /** May contain any keyword from [TrimmingWhen]. */
-        var trimmingWhen: String? = null
+        var trimmingWhen: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [Trimming]. */
-        constructor() : this(null, null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
@@ -473,7 +473,7 @@ constructor(
                 trimmingOffset?.let { Trimming.trimmingOffset.of(it) },
                 trimmingReferenceEdge?.let { Trimming.trimmingReferenceEdge.of(it) },
                 trimmingType?.let { Trimming.trimmingType.of(it) },
-                trimmingWhen?.let { Trimming.trimmingWhen.of(it) }
+                trimmingWhen?.let { Trimming.trimmingWhen.of(it) },
             )
 
         /** Defines types for each member of [Trimming]. */
@@ -483,7 +483,7 @@ constructor(
                     extractOne(attributes, trimmingOffset),
                     extractOne(attributes, trimmingReferenceEdge),
                     extractOne(attributes, trimmingType),
-                    extractOne(attributes, trimmingWhen)
+                    extractOne(attributes, trimmingWhen),
                 )
             override val cls = Trimming::class.java
             @Deprecated("Remove this symbol")

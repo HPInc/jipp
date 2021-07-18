@@ -19,11 +19,11 @@ constructor(
     var xDimension: IntRange? = null,
     var xOrigin: IntRange? = null,
     var yDimension: IntRange? = null,
-    var yOrigin: IntRange? = null
+    var yOrigin: IntRange? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [InputScanRegionsSupported]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -31,7 +31,7 @@ constructor(
             xDimension?.let { InputScanRegionsSupported.xDimension.of(it) },
             xOrigin?.let { InputScanRegionsSupported.xOrigin.of(it) },
             yDimension?.let { InputScanRegionsSupported.yDimension.of(it) },
-            yOrigin?.let { InputScanRegionsSupported.yOrigin.of(it) }
+            yOrigin?.let { InputScanRegionsSupported.yOrigin.of(it) },
         )
 
     /** Defines types for each member of [InputScanRegionsSupported]. */
@@ -41,7 +41,7 @@ constructor(
                 extractOne(attributes, xDimension),
                 extractOne(attributes, xOrigin),
                 extractOne(attributes, yDimension),
-                extractOne(attributes, yOrigin)
+                extractOne(attributes, yOrigin),
             )
         override val cls = InputScanRegionsSupported::class.java
         @Deprecated("Remove this symbol")

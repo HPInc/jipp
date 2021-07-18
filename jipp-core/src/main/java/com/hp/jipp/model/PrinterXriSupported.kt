@@ -20,18 +20,18 @@ constructor(
     var xriAuthentication: String? = null,
     /** May contain any keyword from [XriSecuritySupported]. */
     var xriSecurity: String? = null,
-    var xriUri: java.net.URI? = null
+    var xriUri: java.net.URI? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PrinterXriSupported]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             xriAuthentication?.let { PrinterXriSupported.xriAuthentication.of(it) },
             xriSecurity?.let { PrinterXriSupported.xriSecurity.of(it) },
-            xriUri?.let { PrinterXriSupported.xriUri.of(it) }
+            xriUri?.let { PrinterXriSupported.xriUri.of(it) },
         )
 
     /** Defines types for each member of [PrinterXriSupported]. */
@@ -40,7 +40,7 @@ constructor(
             PrinterXriSupported(
                 extractOne(attributes, xriAuthentication),
                 extractOne(attributes, xriSecurity),
-                extractOne(attributes, xriUri)
+                extractOne(attributes, xriUri),
             )
         override val cls = PrinterXriSupported::class.java
         @Deprecated("Remove this symbol")

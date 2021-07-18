@@ -37,16 +37,20 @@ open class IntOrIntRangeType(
         }
 
     companion object {
-        val codec = Codec<IntOrIntRange>({ false }, {
-            throw IllegalArgumentException("Cannot read")
-        }, {
-            if (it.tag == Tag.integerValue) {
-                writeIntValue(it.start)
-            } else {
-                writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
-                writeInt(it.start)
-                writeInt(it.endInclusive)
+        val codec = Codec<IntOrIntRange>(
+            { false },
+            {
+                throw IllegalArgumentException("Cannot read")
+            },
+            {
+                if (it.tag == Tag.integerValue) {
+                    writeIntValue(it.start)
+                } else {
+                    writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
+                    writeInt(it.start)
+                    writeInt(it.endInclusive)
+                }
             }
-        })
+        )
     }
 }

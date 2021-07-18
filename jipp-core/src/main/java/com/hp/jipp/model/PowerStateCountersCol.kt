@@ -19,11 +19,11 @@ constructor(
     var hibernateTransitions: Int? = null,
     var onTransitions: Int? = null,
     var standbyTransitions: Int? = null,
-    var suspendTransitions: Int? = null
+    var suspendTransitions: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerStateCountersCol]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -31,7 +31,7 @@ constructor(
             hibernateTransitions?.let { PowerStateCountersCol.hibernateTransitions.of(it) },
             onTransitions?.let { PowerStateCountersCol.onTransitions.of(it) },
             standbyTransitions?.let { PowerStateCountersCol.standbyTransitions.of(it) },
-            suspendTransitions?.let { PowerStateCountersCol.suspendTransitions.of(it) }
+            suspendTransitions?.let { PowerStateCountersCol.suspendTransitions.of(it) },
         )
 
     /** Defines types for each member of [PowerStateCountersCol]. */
@@ -41,7 +41,7 @@ constructor(
                 extractOne(attributes, hibernateTransitions),
                 extractOne(attributes, onTransitions),
                 extractOne(attributes, standbyTransitions),
-                extractOne(attributes, suspendTransitions)
+                extractOne(attributes, suspendTransitions),
             )
         override val cls = PowerStateCountersCol::class.java
         @Deprecated("Remove this symbol")

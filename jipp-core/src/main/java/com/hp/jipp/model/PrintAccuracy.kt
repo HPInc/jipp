@@ -20,11 +20,11 @@ constructor(
     var accuracyUnits: String? = null,
     var xAccuracy: Int? = null,
     var yAccuracy: Int? = null,
-    var zAccuracy: Int? = null
+    var zAccuracy: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PrintAccuracy]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -32,7 +32,7 @@ constructor(
             accuracyUnits?.let { PrintAccuracy.accuracyUnits.of(it) },
             xAccuracy?.let { PrintAccuracy.xAccuracy.of(it) },
             yAccuracy?.let { PrintAccuracy.yAccuracy.of(it) },
-            zAccuracy?.let { PrintAccuracy.zAccuracy.of(it) }
+            zAccuracy?.let { PrintAccuracy.zAccuracy.of(it) },
         )
 
     /** Defines types for each member of [PrintAccuracy]. */
@@ -42,7 +42,7 @@ constructor(
                 extractOne(attributes, accuracyUnits),
                 extractOne(attributes, xAccuracy),
                 extractOne(attributes, yAccuracy),
-                extractOne(attributes, zAccuracy)
+                extractOne(attributes, zAccuracy),
             )
         override val cls = PrintAccuracy::class.java
         @Deprecated("Remove this symbol")

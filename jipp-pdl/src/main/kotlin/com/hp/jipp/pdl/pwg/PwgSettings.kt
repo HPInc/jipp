@@ -80,7 +80,8 @@ data class PwgSettings @JvmOverloads constructor(
                 (Sides.twoSidedLongEdge to PwgRasterDocumentSheetBack.flipped) to PwgFeedTransform(1, -1),
                 (Sides.twoSidedLongEdge to PwgRasterDocumentSheetBack.rotated) to PwgFeedTransform(-1, -1),
                 (Sides.twoSidedShortEdge to PwgRasterDocumentSheetBack.flipped) to PwgFeedTransform(-1, 1),
-                (Sides.twoSidedShortEdge to PwgRasterDocumentSheetBack.manualTumble) to PwgFeedTransform(-1, -1))
+                (Sides.twoSidedShortEdge to PwgRasterDocumentSheetBack.manualTumble) to PwgFeedTransform(-1, -1)
+            )
             val default = PwgFeedTransform(1, 1)
 
             /** Return the correct transform given a 0-based page number, sides mode, and sheet-back requirements. */

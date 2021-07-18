@@ -21,11 +21,11 @@ constructor(
     var accessOauthUri: java.net.URI? = null,
     var accessPassword: String? = null,
     var accessPin: String? = null,
-    var accessUserName: String? = null
+    var accessUserName: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [DocumentAccess]. */
-    constructor() : this(null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -34,7 +34,7 @@ constructor(
             accessOauthUri?.let { DocumentAccess.accessOauthUri.of(it) },
             accessPassword?.let { DocumentAccess.accessPassword.of(it) },
             accessPin?.let { DocumentAccess.accessPin.of(it) },
-            accessUserName?.let { DocumentAccess.accessUserName.of(it) }
+            accessUserName?.let { DocumentAccess.accessUserName.of(it) },
         )
 
     /** Defines types for each member of [DocumentAccess]. */
@@ -45,7 +45,7 @@ constructor(
                 extractOne(attributes, accessOauthUri),
                 extractOne(attributes, accessPassword)?.value,
                 extractOne(attributes, accessPin)?.value,
-                extractOne(attributes, accessUserName)?.value
+                extractOne(attributes, accessUserName)?.value,
             )
         override val cls = DocumentAccess::class.java
         @Deprecated("Remove this symbol")

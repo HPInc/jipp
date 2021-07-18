@@ -22,11 +22,11 @@ constructor(
     var jobErrorSheetWhen: String? = null,
     /** May contain any keyword from [Media] or a name. */
     var media: KeywordOrName? = null,
-    var mediaCol: MediaCol? = null
+    var mediaCol: MediaCol? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [JobErrorSheet]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -34,7 +34,7 @@ constructor(
             jobErrorSheetType?.let { JobErrorSheet.jobErrorSheetType.of(it) },
             jobErrorSheetWhen?.let { JobErrorSheet.jobErrorSheetWhen.of(it) },
             media?.let { JobErrorSheet.media.of(it) },
-            mediaCol?.let { JobErrorSheet.mediaCol.of(it) }
+            mediaCol?.let { JobErrorSheet.mediaCol.of(it) },
         )
 
     /** Defines types for each member of [JobErrorSheet]. */
@@ -44,7 +44,7 @@ constructor(
                 extractOne(attributes, jobErrorSheetType),
                 extractOne(attributes, jobErrorSheetWhen),
                 extractOne(attributes, media),
-                extractOne(attributes, mediaCol)
+                extractOne(attributes, mediaCol),
             )
         override val cls = JobErrorSheet::class.java
         @Deprecated("Remove this symbol")

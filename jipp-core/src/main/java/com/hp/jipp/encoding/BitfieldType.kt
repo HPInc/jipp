@@ -22,10 +22,14 @@ class BitfieldType(
     override fun toString() = "BitwiseType($name)"
 
     companion object {
-        val codec = Codec(Tag.enumValue, {
-            readIntValue().toLong()
-        }, {
-            writeIntValue(it.toInt())
-        })
+        val codec = Codec(
+            Tag.enumValue,
+            {
+                readIntValue().toLong()
+            },
+            {
+                writeIntValue(it.toInt())
+            }
+        )
     }
 }

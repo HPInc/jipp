@@ -26,11 +26,11 @@ constructor(
     var destinationOauthScope: List<ByteArray>? = null,
     var destinationOauthToken: List<ByteArray>? = null,
     var destinationOauthUri: java.net.URI? = null,
-    var destinationUri: java.net.URI? = null
+    var destinationUri: java.net.URI? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [DestinationUriReady]. */
-    constructor() : this(null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -44,7 +44,7 @@ constructor(
             destinationOauthScope?.let { DestinationUriReady.destinationOauthScope.of(it) },
             destinationOauthToken?.let { DestinationUriReady.destinationOauthToken.of(it) },
             destinationOauthUri?.let { DestinationUriReady.destinationOauthUri.of(it) },
-            destinationUri?.let { DestinationUriReady.destinationUri.of(it) }
+            destinationUri?.let { DestinationUriReady.destinationUri.of(it) },
         )
 
     /** Defines types for each member of [DestinationUriReady]. */
@@ -60,7 +60,7 @@ constructor(
                 extractAll(attributes, destinationOauthScope),
                 extractAll(attributes, destinationOauthToken),
                 extractOne(attributes, destinationOauthUri),
-                extractOne(attributes, destinationUri)
+                extractOne(attributes, destinationUri),
             )
         override val cls = DestinationUriReady::class.java
         @Deprecated("Remove this symbol")

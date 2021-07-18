@@ -14,10 +14,6 @@ import com.hp.jipp.pdl.pwg.PwgReader
 import com.hp.jipp.pdl.pwg.PwgSettings
 import com.hp.jipp.pdl.pwg.PwgSettings.Companion.BITS_PER_BYTE
 import com.hp.jipp.pdl.pwg.PwgWriter
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Ignore
@@ -27,6 +23,10 @@ import util.PageUtil
 import util.PageUtil.BLUE
 import util.PageUtil.describe
 import util.PageUtil.fakePage
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.Locale
 
 class PwgReaderTest {
 
@@ -61,7 +61,8 @@ class PwgReaderTest {
             override val dpi: Int = 1
             val pages = listOf(
                 fakePage(BLUE, ColorSpace.Rgb),
-                fakePage(byteArrayOf(PageUtil.BLACK_BYTE), ColorSpace.Grayscale))
+                fakePage(byteArrayOf(PageUtil.BLACK_BYTE), ColorSpace.Grayscale)
+            )
             override fun iterator() = pages.iterator()
         }
 
@@ -170,9 +171,11 @@ class PwgReaderTest {
         PwgSettings(output = OutputSettings(quality = PrintQuality.normal))
         PwgSettings(output = OutputSettings(quality = PrintQuality.high))
 
-        val pwgHeader = PwgHeader(bitsPerColor = BITS_PER_BYTE,
+        val pwgHeader = PwgHeader(
+            bitsPerColor = BITS_PER_BYTE,
             bitsPerPixel = BITS_PER_BYTE * ColorSpace.Rgb.bytesPerPixel, colorSpace = PwgHeader.ColorSpace.Srgb,
-            width = 100, height = 100, hwResolutionY = 100, hwResolutionX = 100)
+            width = 100, height = 100, hwResolutionY = 100, hwResolutionX = 100
+        )
         KotlinTest.cover(pwgHeader, pwgHeader.copy(), pwgHeader.copy(alternatePrimary = 0))
     }
 }

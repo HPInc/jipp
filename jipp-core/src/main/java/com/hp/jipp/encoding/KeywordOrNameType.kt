@@ -55,14 +55,18 @@ open class KeywordOrNameType(name: String) : AttributeTypeImpl<KeywordOrName>(na
     }
 
     companion object {
-        val codec = Codec<KeywordOrName>({ false }, {
-            throw IllegalArgumentException("This codec is not used for reading")
-        }, {
-            if (NameType.codec.handlesTag(it.tag)) {
-                NameType.codec.writeValue(this, it.name!!)
-            } else {
-                KeywordType.codec.writeValue(this, it.keyword!!)
+        val codec = Codec<KeywordOrName>(
+            { false },
+            {
+                throw IllegalArgumentException("This codec is not used for reading")
+            },
+            {
+                if (NameType.codec.handlesTag(it.tag)) {
+                    NameType.codec.writeValue(this, it.name!!)
+                } else {
+                    KeywordType.codec.writeValue(this, it.keyword!!)
+                }
             }
-        })
+        )
     }
 }

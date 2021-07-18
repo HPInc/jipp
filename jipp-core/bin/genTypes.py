@@ -42,6 +42,13 @@ key_value_type_names = [
     'printer-supply'
 ]
 
+# XML Limit: Certain collections can carry with them an unbounded number of other attributes.
+collections_with_extras = {
+    'job-resolvers-supported': 'jobAttributes',
+    'job-constraints-supported': 'jobAttributes',
+    'printer-icc-profiles': 'jobAttributes',
+}
+
 def pretty(o):
     return pp.pformat(o).replace('\n', '\n    ')
 
@@ -344,6 +351,11 @@ def parse_attribute(record):
 
     if attr_name in ignored_attributes:
         return
+
+    # XML fix (date-time-at-creation | unknown)
+    if attr_name == "date-time-at-creation | unknown":
+        attr_name = "date-time-at-creation"
+        syntax_name += " | unknown"
 
     attr = collection.setdefault(attr_name, {
         'name': attr_name, 'specs': [ ], 'syntax': syntax_name, 'members': { } } )
@@ -691,7 +703,7 @@ def fix_ktypes(type, syntax, name, group_name = ''):
         else:
             name = type['name']
 
-        # Some collections are beyond our ability to model cleanly, having too many possibilities
+        # Kotlin limit: Some collections are beyond our ability to model cleanly, having too many possibilities
         if name == 'destination-attributes' or name == 'preferred-attributes':
             intro = 'UntypedCollection.%sType(' % set[1:]
             type['ktype'] = 'UntypedCollection'
@@ -897,6 +909,9 @@ def emit_collection(env, type):
     collection_template = env.get_template('collection.kt.tmpl')
     name = type['name']
 
+    if type['name'] in collections_with_extras:
+        type['extras'] = collections_with_extras[type['name']]
+
     if name in collections:
         if collections[name]['members'] != type['members']:
             # Look at the new members in the un-emitted version: are they already represented?
@@ -1002,14 +1017,6 @@ for elem in tree.iter('{*}registry'):
 
 parse_records(tree, "Enum Attribute Values", parse_enum)
 parse_records(tree, "Keyword Attribute Values", parse_keyword)
-
-# XML Fix: missing printer-kind keyword
-keywords['printer-kind'] = {
-    'name': 'printer-kind',
-    'specs': [ 'PWG5100.16'],
-    'syntax': 'keyword',
-    'values' : [ 'disc', 'document', 'envelope', 'label', 'large-format', 'photo', 'postcard', 'receipt', 'roll']
-}
 
 # XML Fix: preset-name not in keywords listing because no values are defined for it.
 keywords['preset-name'] = {

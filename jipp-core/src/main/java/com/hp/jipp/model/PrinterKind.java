@@ -9,7 +9,7 @@
 package com.hp.jipp.model;
 
 /**
- * Values applicable for "printer-kind" keywords.
+ * Values applicable for "printer-kind" keywords (or names).
  *
  * @see <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf">PWG5100.16</a>
  */

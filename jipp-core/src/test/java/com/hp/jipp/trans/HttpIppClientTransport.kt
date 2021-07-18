@@ -58,7 +58,7 @@ class HttpIppClientTransport : IppClientTransport {
     /** Opens a new [HttpURLConnection] for the specified URL */
     private fun openConnection(url: URL): HttpURLConnection {
         val connection = url.openConnection() as HttpURLConnection?
-                ?: throw IOException("could not open connection")
+            ?: throw IOException("could not open connection")
         connection.connectTimeout = CONNECT_TIMEOUT
         return connection
     }

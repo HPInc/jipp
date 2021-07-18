@@ -19,11 +19,11 @@ constructor(
     var documentNumber: Int? = null,
     var objectOffset: ObjectOffset? = null,
     var objectSize: ObjectSize? = null,
-    var objectUuid: java.net.URI? = null
+    var objectUuid: java.net.URI? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PrintObjects]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -31,7 +31,7 @@ constructor(
             documentNumber?.let { PrintObjects.documentNumber.of(it) },
             objectOffset?.let { PrintObjects.objectOffset.of(it) },
             objectSize?.let { PrintObjects.objectSize.of(it) },
-            objectUuid?.let { PrintObjects.objectUuid.of(it) }
+            objectUuid?.let { PrintObjects.objectUuid.of(it) },
         )
 
     /** Defines types for each member of [PrintObjects]. */
@@ -41,7 +41,7 @@ constructor(
                 extractOne(attributes, documentNumber),
                 extractOne(attributes, objectOffset),
                 extractOne(attributes, objectSize),
-                extractOne(attributes, objectUuid)
+                extractOne(attributes, objectUuid),
             )
         override val cls = PrintObjects::class.java
         @Deprecated("Remove this symbol")
@@ -60,18 +60,18 @@ constructor(
     constructor(
         var xOffset: Int? = null,
         var yOffset: Int? = null,
-        var zOffset: Int? = null
+        var zOffset: Int? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [ObjectOffset]. */
-        constructor() : this(null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 xOffset?.let { ObjectOffset.xOffset.of(it) },
                 yOffset?.let { ObjectOffset.yOffset.of(it) },
-                zOffset?.let { ObjectOffset.zOffset.of(it) }
+                zOffset?.let { ObjectOffset.zOffset.of(it) },
             )
 
         /** Defines types for each member of [ObjectOffset]. */
@@ -80,7 +80,7 @@ constructor(
                 ObjectOffset(
                     extractOne(attributes, xOffset),
                     extractOne(attributes, yOffset),
-                    extractOne(attributes, zOffset)
+                    extractOne(attributes, zOffset),
                 )
             override val cls = ObjectOffset::class.java
             @Deprecated("Remove this symbol")
@@ -100,18 +100,18 @@ constructor(
     constructor(
         var xDimension: Int? = null,
         var yDimension: Int? = null,
-        var zDimension: Int? = null
+        var zDimension: Int? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [ObjectSize]. */
-        constructor() : this(null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 xDimension?.let { ObjectSize.xDimension.of(it) },
                 yDimension?.let { ObjectSize.yDimension.of(it) },
-                zDimension?.let { ObjectSize.zDimension.of(it) }
+                zDimension?.let { ObjectSize.zDimension.of(it) },
             )
 
         /** Defines types for each member of [ObjectSize]. */
@@ -120,7 +120,7 @@ constructor(
                 ObjectSize(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, yDimension),
-                    extractOne(attributes, zDimension)
+                    extractOne(attributes, zDimension),
                 )
             override val cls = ObjectSize::class.java
             @Deprecated("Remove this symbol")

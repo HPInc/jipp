@@ -65,8 +65,10 @@ enum class ColorSpace(val bytesPerPixel: Int) {
     private fun rgbaConverter(outputColor: ColorSpace): (ByteArray, Int, OutputStream) -> Unit =
         when (outputColor) {
             Grayscale -> { input, inputOffset, output ->
-                output.write(input.rgbLuminosityAt(inputOffset)
-                    .applyAlpha(input[inputOffset + 3].uByteInt))
+                output.write(
+                    input.rgbLuminosityAt(inputOffset)
+                        .applyAlpha(input[inputOffset + 3].uByteInt)
+                )
             }
             Rgb -> { input, inputOffset, output ->
                 when (val alpha = input[inputOffset + 3].uByteInt) {

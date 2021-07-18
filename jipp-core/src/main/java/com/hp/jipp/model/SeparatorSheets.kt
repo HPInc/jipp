@@ -21,18 +21,18 @@ constructor(
     var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null,
     /** May contain any keyword from [SeparatorSheetsType]. */
-    var separatorSheetsType: List<String>? = null
+    var separatorSheetsType: List<String>? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [SeparatorSheets]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             media?.let { SeparatorSheets.media.of(it) },
             mediaCol?.let { SeparatorSheets.mediaCol.of(it) },
-            separatorSheetsType?.let { SeparatorSheets.separatorSheetsType.of(it) }
+            separatorSheetsType?.let { SeparatorSheets.separatorSheetsType.of(it) },
         )
 
     /** Defines types for each member of [SeparatorSheets]. */
@@ -41,7 +41,7 @@ constructor(
             SeparatorSheets(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                extractAll(attributes, separatorSheetsType)
+                extractAll(attributes, separatorSheetsType),
             )
         override val cls = SeparatorSheets::class.java
         @Deprecated("Remove this symbol")

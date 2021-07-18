@@ -16,15 +16,19 @@ open class UriType(name: String) : AttributeTypeImpl<URI>(name, URI::class.java)
     override fun toString() = "UriType($name)"
 
     companion object {
-        val codec = Codec<URI>(Tag.uri, {
-            val uriString = readString()
-            try {
-                URI.create(uriString)
-            } catch (e: IllegalArgumentException) {
-                throw ParseError("Could not parse URI $uriString", e)
+        val codec = Codec<URI>(
+            Tag.uri,
+            {
+                val uriString = readString()
+                try {
+                    URI.create(uriString)
+                } catch (e: IllegalArgumentException) {
+                    throw ParseError("Could not parse URI $uriString", e)
+                }
+            },
+            {
+                writeStringValue(it.toString())
             }
-        }, {
-            writeStringValue(it.toString())
-        })
+        )
     }
 }

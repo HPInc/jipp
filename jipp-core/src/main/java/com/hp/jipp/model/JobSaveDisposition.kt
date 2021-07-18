@@ -18,17 +18,17 @@ data class JobSaveDisposition
 constructor(
     /** May contain any keyword from [SaveDisposition]. */
     var saveDisposition: String? = null,
-    var saveInfo: List<SaveInfo>? = null
+    var saveInfo: List<SaveInfo>? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [JobSaveDisposition]. */
-    constructor() : this(null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             saveDisposition?.let { JobSaveDisposition.saveDisposition.of(it) },
-            saveInfo?.let { JobSaveDisposition.saveInfo.of(it) }
+            saveInfo?.let { JobSaveDisposition.saveInfo.of(it) },
         )
 
     /** Defines types for each member of [JobSaveDisposition]. */
@@ -36,7 +36,7 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): JobSaveDisposition =
             JobSaveDisposition(
                 extractOne(attributes, saveDisposition),
-                extractAll(attributes, saveInfo)
+                extractAll(attributes, saveInfo),
             )
         override val cls = JobSaveDisposition::class.java
         @Deprecated("Remove this symbol")
@@ -53,18 +53,18 @@ constructor(
     constructor(
         var saveDocumentFormat: String? = null,
         var saveLocation: java.net.URI? = null,
-        var saveName: String? = null
+        var saveName: String? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [SaveInfo]. */
-        constructor() : this(null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 saveDocumentFormat?.let { SaveInfo.saveDocumentFormat.of(it) },
                 saveLocation?.let { SaveInfo.saveLocation.of(it) },
-                saveName?.let { SaveInfo.saveName.of(it) }
+                saveName?.let { SaveInfo.saveName.of(it) },
             )
 
         /** Defines types for each member of [SaveInfo]. */
@@ -73,7 +73,7 @@ constructor(
                 SaveInfo(
                     extractOne(attributes, saveDocumentFormat),
                     extractOne(attributes, saveLocation),
-                    extractOne(attributes, saveName)?.value
+                    extractOne(attributes, saveName)?.value,
                 )
             override val cls = SaveInfo::class.java
             @Deprecated("Remove this symbol")

@@ -20,18 +20,18 @@ constructor(
     var jobSheets: KeywordOrName? = null,
     /** May contain any keyword from [Media] or a name. */
     var media: KeywordOrName? = null,
-    var mediaCol: MediaCol? = null
+    var mediaCol: MediaCol? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [JobSheetsCol]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             jobSheets?.let { JobSheetsCol.jobSheets.of(it) },
             media?.let { JobSheetsCol.media.of(it) },
-            mediaCol?.let { JobSheetsCol.mediaCol.of(it) }
+            mediaCol?.let { JobSheetsCol.mediaCol.of(it) },
         )
 
     /** Defines types for each member of [JobSheetsCol]. */
@@ -40,7 +40,7 @@ constructor(
             JobSheetsCol(
                 extractOne(attributes, jobSheets),
                 extractOne(attributes, media),
-                extractOne(attributes, mediaCol)
+                extractOne(attributes, mediaCol),
             )
         override val cls = JobSheetsCol::class.java
         @Deprecated("Remove this symbol")

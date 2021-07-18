@@ -44,8 +44,13 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
 
     /** Return a new [AttributeGroup] with additional attributes added to the end. */
     operator fun plus(attributes: List<Attribute<*>>): AttributeGroup =
-        AttributeGroupImpl(tag, (map { it.type to it }.toMap() + attributes.map { it.type to it }
-            .toMap()).values.toList())
+        AttributeGroupImpl(
+            tag,
+            (
+                map { it.type to it }.toMap() + attributes.map { it.type to it }
+                    .toMap()
+                ).values.toList()
+        )
 
     /** Return a copy of this attribute group in mutable form. */
     fun toMutable(): MutableAttributeGroup =
@@ -83,8 +88,10 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
          */
         @JvmStatic
         @Throws(IOException::class)
-        @Deprecated("Use IppInputStream.read()",
-            ReplaceWith("readAttributeGroup()", "com.hp.jipp.encoding.IppInputStream"))
+        @Deprecated(
+            "Use IppInputStream.read()",
+            ReplaceWith("readAttributeGroup()", "com.hp.jipp.encoding.IppInputStream")
+        )
         fun read(input: IppInputStream, groupTag: DelimiterTag) =
             input.readAttributeGroup(groupTag)
     }

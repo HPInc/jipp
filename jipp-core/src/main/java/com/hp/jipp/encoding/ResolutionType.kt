@@ -16,14 +16,18 @@ open class ResolutionType(override val name: String) : AttributeType<Resolution>
     override fun toString() = "ResolutionType($name)"
 
     companion object {
-        val codec = Codec(Tag.resolution, {
-            takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
-            Resolution(readInt(), readInt(), ResolutionUnit[readByte().toInt()])
-        }, {
-            writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
-            writeInt(it.crossFeedResolution)
-            writeInt(it.feedResolution)
-            writeByte(it.unit.code.toByte().toInt())
-        })
+        val codec = Codec(
+            Tag.resolution,
+            {
+                takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
+                Resolution(readInt(), readInt(), ResolutionUnit[readByte().toInt()])
+            },
+            {
+                writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH + IppStreams.BYTE_LENGTH)
+                writeInt(it.crossFeedResolution)
+                writeInt(it.feedResolution)
+                writeByte(it.unit.code.toByte().toInt())
+            }
+        )
     }
 }

@@ -47,7 +47,7 @@ data class TransmissionStatus(override val code: Int, override val name: String)
             processing,
             canceled,
             aborted,
-            completed
+            completed,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): TransmissionStatus =

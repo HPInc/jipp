@@ -19,11 +19,15 @@ internal object IppStreams {
             IntType.codec,
             BooleanType.codec,
             EnumType.codec,
-            Codec(Tag.octetString, {
-                readValueBytes()
-            }, {
-                writeBytesValue(it)
-            }),
+            Codec(
+                Tag.octetString,
+                {
+                    readValueBytes()
+                },
+                {
+                    writeBytesValue(it)
+                }
+            ),
             DateTimeType.codec,
             ResolutionType.codec,
             IntRangeType.codec,
@@ -33,23 +37,31 @@ internal object IppStreams {
             NameType.codec,
             OctetsType.codec,
             KeyValues.codec,
-            Codec({ it.isOctetString || it.isInteger }, { tag ->
-                // Used when we don't know how to interpret the content. Even with integers,
-                // we don't know whether to expect a short or byte or int or whatever.
-                OtherOctets(tag, readValueBytes())
-            }, {
-                writeBytesValue(it.value)
-            }),
+            Codec(
+                { it.isOctetString || it.isInteger },
+                { tag ->
+                    // Used when we don't know how to interpret the content. Even with integers,
+                    // we don't know whether to expect a short or byte or int or whatever.
+                    OtherOctets(tag, readValueBytes())
+                },
+                {
+                    writeBytesValue(it.value)
+                }
+            ),
             KeywordType.codec,
             KeywordOrNameType.codec, // Must follow both Keyword and Name
             UriType.codec,
-            Codec({ it.isCharString }, { tag ->
-                // Handle other harder-to-type values here:
-                // uriScheme, naturalLanguage, mimeMediaType, charset etc.
-                OtherString(tag, readString())
-            }, {
-                writeStringValue(it.value)
-            })
+            Codec(
+                { it.isCharString },
+                { tag ->
+                    // Handle other harder-to-type values here:
+                    // uriScheme, naturalLanguage, mimeMediaType, charset etc.
+                    OtherString(tag, readString())
+                },
+                {
+                    writeStringValue(it.value)
+                }
+            )
         )
 
     /** Map for looking up codecs by native Java class. */

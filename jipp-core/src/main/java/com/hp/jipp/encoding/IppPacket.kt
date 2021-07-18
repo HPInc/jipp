@@ -74,8 +74,10 @@ data class IppPacket constructor(
 
     /** Write this packet to the [OutputStream] as per RFC2910.  */
     @Throws(IOException::class)
-    @Deprecated("use IppInputStream.write()",
-        ReplaceWith("write()", "com.hp.jipp.encoding.IppInputStream"))
+    @Deprecated(
+        "use IppInputStream.write()",
+        ReplaceWith("write()", "com.hp.jipp.encoding.IppInputStream")
+    )
     fun write(output: OutputStream) {
         val ippOutput = IppOutputStream(output)
         ippOutput.write(this)
@@ -127,7 +129,8 @@ data class IppPacket constructor(
             // All packets must have an operation attributes group with these initial attributes
             putOperationAttributes(
                 Types.attributesCharset.of(DEFAULT_CHARSET),
-                Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE))
+                Types.attributesNaturalLanguage.of(DEFAULT_LANGUAGE)
+            )
         }
 
         var status
@@ -244,17 +247,25 @@ data class IppPacket constructor(
             /** Other job attributes, if any. */
             vararg attributes: Attribute<*>
         ) = apply {
-            addGroup(MutableAttributeGroup(Tag.jobAttributes, listOf(
-                Types.jobId.of(jobId),
-                Types.jobUri.of(jobUri),
-                Types.jobState.of(jobState),
-                Types.jobStateReasons.of(jobStateReasons)) + attributes.toList()))
+            addGroup(
+                MutableAttributeGroup(
+                    Tag.jobAttributes,
+                    listOf(
+                        Types.jobId.of(jobId),
+                        Types.jobUri.of(jobUri),
+                        Types.jobState.of(jobState),
+                        Types.jobStateReasons.of(jobStateReasons)
+                    ) + attributes.toList()
+                )
+            )
         }
 
         /** Construct and return an [IppPacket] containing all settings given to this [Builder]. */
-        fun build() = IppPacket(versionNumber, code, requestId,
+        fun build() = IppPacket(
+            versionNumber, code, requestId,
             // Strip out any empty unsupported-attributes or job-attributes groups.
-            groups.filterNot { (it.tag == Tag.unsupportedAttributes || it.tag == Tag.jobAttributes) && it.isEmpty() })
+            groups.filterNot { (it.tag == Tag.unsupportedAttributes || it.tag == Tag.jobAttributes) && it.isEmpty() }
+        )
     }
 
     companion object {
@@ -272,15 +283,19 @@ data class IppPacket constructor(
 
         @JvmStatic
         @Throws(IOException::class)
-        @Deprecated("use IppInputStream.readPacket()",
-            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
+        @Deprecated(
+            "use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream")
+        )
         fun parse(input: InputStream): IppPacket =
             (input as? IppInputStream ?: IppInputStream(input)).readPacket()
 
         @JvmStatic
         @Throws(IOException::class)
-        @Deprecated("use IppInputStream.readPacket()",
-            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream"))
+        @Deprecated(
+            "use IppInputStream.readPacket()",
+            ReplaceWith("readPacket()", "com.hp.jipp.encoding.IppInputStream")
+        )
         fun read(input: InputStream) =
             (input as? IppInputStream ?: IppInputStream(input)).readPacket()
 
@@ -305,8 +320,10 @@ data class IppPacket constructor(
         /** If supplied types are not empty, attach them as requested attributes. */
         private fun Builder.putRequestedAttributes(types: List<AttributeType<*>>) = apply {
             if (types.isNotEmpty()) {
-                putAttributes(Tag.operationAttributes,
-                    Types.requestedAttributes.of(types.toList().map { it.name }))
+                putAttributes(
+                    Tag.operationAttributes,
+                    Types.requestedAttributes.of(types.toList().map { it.name })
+                )
             }
         }
 
@@ -347,9 +364,11 @@ data class IppPacket constructor(
             printerUri: URI,
             jobId: Int
         ) = Builder(Operation.sendDocument.code)
-            .putAttributes(Tag.operationAttributes,
+            .putAttributes(
+                Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
-                Types.jobId.of(jobId))
+                Types.jobId.of(jobId)
+            )
 
         /** Return a Send-Document request [Builder] */
         @JvmStatic
@@ -369,9 +388,11 @@ data class IppPacket constructor(
             /** Job attributes of interest. */
             vararg types: AttributeType<*>
         ) = Builder(Operation.getJobAttributes.code)
-            .putAttributes(Tag.operationAttributes,
+            .putAttributes(
+                Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
-                Types.jobId.of(jobId))
+                Types.jobId.of(jobId)
+            )
             .putRequestedAttributes(types.toList())
 
         /** Return a Get-Job-Attributes request [Builder]. */
@@ -390,9 +411,11 @@ data class IppPacket constructor(
             printerUri: URI,
             jobId: Int
         ) = Builder(Operation.cancelJob.code)
-            .putAttributes(Tag.operationAttributes,
+            .putAttributes(
+                Tag.operationAttributes,
                 Types.printerUri.of(printerUri),
-                Types.jobId.of(jobId))
+                Types.jobId.of(jobId)
+            )
 
         /** Return a Cancel-Job request [Builder]. */
         @JvmStatic

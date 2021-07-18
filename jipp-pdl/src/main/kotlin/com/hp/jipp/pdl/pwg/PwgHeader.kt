@@ -388,7 +388,8 @@ data class PwgHeader(
                         skip(64L + (1088 - it.size))
                     },
                     renderingIntent = readCString(),
-                    pageSizeName = readCString())
+                    pageSizeName = readCString()
+                )
             }
 
         /**

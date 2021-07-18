@@ -20,11 +20,11 @@ constructor(
     var timeoutId: Int? = null,
     /** May contain any keyword from [TimeoutPredicate]. */
     var timeoutPredicate: String? = null,
-    var timeoutSeconds: Int? = null
+    var timeoutSeconds: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerTimeoutPolicyCol]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -32,7 +32,7 @@ constructor(
             startPowerState?.let { PowerTimeoutPolicyCol.startPowerState.of(it) },
             timeoutId?.let { PowerTimeoutPolicyCol.timeoutId.of(it) },
             timeoutPredicate?.let { PowerTimeoutPolicyCol.timeoutPredicate.of(it) },
-            timeoutSeconds?.let { PowerTimeoutPolicyCol.timeoutSeconds.of(it) }
+            timeoutSeconds?.let { PowerTimeoutPolicyCol.timeoutSeconds.of(it) },
         )
 
     /** Defines types for each member of [PowerTimeoutPolicyCol]. */
@@ -42,7 +42,7 @@ constructor(
                 extractOne(attributes, startPowerState),
                 extractOne(attributes, timeoutId),
                 extractOne(attributes, timeoutPredicate),
-                extractOne(attributes, timeoutSeconds)
+                extractOne(attributes, timeoutSeconds),
             )
         override val cls = PowerTimeoutPolicyCol::class.java
         @Deprecated("Remove this symbol")

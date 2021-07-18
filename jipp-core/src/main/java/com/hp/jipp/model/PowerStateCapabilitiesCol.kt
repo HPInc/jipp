@@ -20,11 +20,11 @@ constructor(
     var canProcessJobs: Boolean? = null,
     var powerActiveWatts: Int? = null,
     var powerInactiveWatts: Int? = null,
-    var powerState: String? = null
+    var powerState: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerStateCapabilitiesCol]. */
-    constructor() : this(null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -33,7 +33,7 @@ constructor(
             canProcessJobs?.let { PowerStateCapabilitiesCol.canProcessJobs.of(it) },
             powerActiveWatts?.let { PowerStateCapabilitiesCol.powerActiveWatts.of(it) },
             powerInactiveWatts?.let { PowerStateCapabilitiesCol.powerInactiveWatts.of(it) },
-            powerState?.let { PowerStateCapabilitiesCol.powerState.of(it) }
+            powerState?.let { PowerStateCapabilitiesCol.powerState.of(it) },
         )
 
     /** Defines types for each member of [PowerStateCapabilitiesCol]. */
@@ -44,7 +44,7 @@ constructor(
                 extractOne(attributes, canProcessJobs),
                 extractOne(attributes, powerActiveWatts),
                 extractOne(attributes, powerInactiveWatts),
-                extractOne(attributes, powerState)
+                extractOne(attributes, powerState),
             )
         override val cls = PowerStateCapabilitiesCol::class.java
         @Deprecated("Remove this symbol")

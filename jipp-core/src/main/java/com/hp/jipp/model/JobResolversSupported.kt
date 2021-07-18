@@ -8,6 +8,7 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 
 /**
  * Data object corresponding to a "job-resolvers-supported" collection as defined in:
@@ -16,7 +17,9 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class JobResolversSupported
 constructor(
-    var resolverName: String? = null
+    var resolverName: String? = null,
+    /** Additional attributes (see specification for valid values). */
+    var extras: AttributeGroup = groupOf(Tag.jobAttributes),
 ) : AttributeCollection {
 
     /** Construct an empty [JobResolversSupported]. */
@@ -24,15 +27,19 @@ constructor(
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
-        get() = listOfNotNull(
-            resolverName?.let { JobResolversSupported.resolverName.of(it) }
+        get() = extras + listOfNotNull(
+            resolverName?.let { JobResolversSupported.resolverName.of(it) },
         )
 
     /** Defines types for each member of [JobResolversSupported]. */
     companion object : AttributeCollection.Converter<JobResolversSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobResolversSupported =
             JobResolversSupported(
-                extractOne(attributes, resolverName)?.value
+                extractOne(attributes, resolverName)?.value,
+                groupOf(
+                    Tag.jobAttributes,
+                    attributes.filterNot { it.name == resolverName.name }
+                ),
             )
         override val cls = JobResolversSupported::class.java
         @Deprecated("Remove this symbol")

@@ -18,18 +18,18 @@ data class DestinationStatuses
 constructor(
     var destinationUri: java.net.URI? = null,
     var imagesCompleted: Int? = null,
-    var transmissionStatus: TransmissionStatus? = null
+    var transmissionStatus: TransmissionStatus? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [DestinationStatuses]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             destinationUri?.let { DestinationStatuses.destinationUri.of(it) },
             imagesCompleted?.let { DestinationStatuses.imagesCompleted.of(it) },
-            transmissionStatus?.let { DestinationStatuses.transmissionStatus.of(it) }
+            transmissionStatus?.let { DestinationStatuses.transmissionStatus.of(it) },
         )
 
     /** Defines types for each member of [DestinationStatuses]. */
@@ -38,7 +38,7 @@ constructor(
             DestinationStatuses(
                 extractOne(attributes, destinationUri),
                 extractOne(attributes, imagesCompleted),
-                extractOne(attributes, transmissionStatus)
+                extractOne(attributes, transmissionStatus),
             )
         override val cls = DestinationStatuses::class.java
         @Deprecated("Remove this symbol")

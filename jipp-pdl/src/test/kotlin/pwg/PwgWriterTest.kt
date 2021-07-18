@@ -15,9 +15,6 @@ import com.hp.jipp.pdl.pwg.PwgReader
 import com.hp.jipp.pdl.pwg.PwgSettings
 import com.hp.jipp.pdl.pwg.PwgWriter
 import com.hp.jipp.util.toWrappedHexString
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.ByteWindow
@@ -26,6 +23,9 @@ import util.PageUtil.RED
 import util.PageUtil.describe
 import util.PageUtil.fakePage
 import util.RandomDocument
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
 
 class PwgWriterTest {
     @Test
@@ -48,12 +48,14 @@ class PwgWriterTest {
 
     @Test
     fun cycleDefaultHeader() {
-        val header = PwgHeader(bitsPerColor = 8, bitsPerPixel = 24,
+        val header = PwgHeader(
+            bitsPerColor = 8, bitsPerPixel = 24,
             colorSpace = PwgHeader.ColorSpace.Srgb,
             hwResolutionX = 300,
             hwResolutionY = 300,
             height = 1000,
-            width = 2000)
+            width = 2000
+        )
         val output = ByteArrayOutputStream()
         header.write(output)
         val read = PwgHeader.read(ByteArrayInputStream(output.toByteArray()))
@@ -80,16 +82,22 @@ class PwgWriterTest {
             override val dpi: Int = 1
             val pages = listOf(
                 fakePage(BLUE, ColorSpace.Rgb),
-                fakePage(RED, ColorSpace.Rgb))
+                fakePage(RED, ColorSpace.Rgb)
+            )
             override fun iterator() = pages.iterator()
         }
 
         val output = ByteArrayOutputStream()
-        PwgWriter(output, settings = PwgSettings(
-            output = OutputSettings(
-                sides = Sides.oneSided,
-                reversed = true),
-            sheetBack = PwgRasterDocumentSheetBack.rotated)) // Rotated doesn't mater, this isn't duplex
+        PwgWriter(
+            output,
+            settings = PwgSettings(
+                output = OutputSettings(
+                    sides = Sides.oneSided,
+                    reversed = true
+                ),
+                sheetBack = PwgRasterDocumentSheetBack.rotated
+            )
+        ) // Rotated doesn't mater, this isn't duplex
             .write(doc)
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
@@ -104,15 +112,21 @@ class PwgWriterTest {
     fun `write rotated duplex job`() {
         val doc = object : RenderableDocument() {
             override val dpi: Int = 1
-            val pages = listOf(fakePage(BLUE, ColorSpace.Rgb),
-                fakePage(RED, ColorSpace.Rgb))
+            val pages = listOf(
+                fakePage(BLUE, ColorSpace.Rgb),
+                fakePage(RED, ColorSpace.Rgb)
+            )
             override fun iterator() = pages.iterator()
         }
 
         val output = ByteArrayOutputStream()
-        PwgWriter(output, settings = PwgSettings(
-            output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
-            sheetBack = PwgRasterDocumentSheetBack.rotated))
+        PwgWriter(
+            output,
+            settings = PwgSettings(
+                output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
+                sheetBack = PwgRasterDocumentSheetBack.rotated
+            )
+        )
             .write(doc)
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
@@ -131,14 +145,22 @@ class PwgWriterTest {
             override fun iterator() = pages.iterator()
         }
         val output = ByteArrayOutputStream()
-        PwgWriter(output, settings = PwgSettings(
-            output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
-            sheetBack = PwgRasterDocumentSheetBack.rotated,
-            orientation = Orientation.reverseLandscape))
+        PwgWriter(
+            output,
+            settings = PwgSettings(
+                output = OutputSettings(sides = Sides.twoSidedLongEdge, reversed = false),
+                sheetBack = PwgRasterDocumentSheetBack.rotated,
+                orientation = Orientation.reverseLandscape
+            )
+        )
             .write(doc)
 
-        val read = PwgHeader.read(ByteArrayInputStream(output.toByteArray()
-            .sliceArray(4 until PwgHeader.HEADER_SIZE + 4)))
+        val read = PwgHeader.read(
+            ByteArrayInputStream(
+                output.toByteArray()
+                    .sliceArray(4 until PwgHeader.HEADER_SIZE + 4)
+            )
+        )
         assertEquals(PwgHeader.Orientation.ReverseLandscape, read.orientation)
     }
 
@@ -154,8 +176,11 @@ class PwgWriterTest {
 
     @Test
     fun packExtendedRepeat() {
-        cyclePackBits(130, 1, 1, original =
-        "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCAAA")
+        cyclePackBits(
+            130, 1, 1,
+            original =
+            "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCAAA"
+        )
     }
 
     @Test
@@ -170,8 +195,10 @@ class PwgWriterTest {
 
     @Test
     fun repeatingLines() {
-        cyclePackBits(lineLength = 20, lines = 6, bytesPerPixel = 2,
-                original = "ab".repeat(20).repeat(2) + "cd".repeat(20).repeat(2) + "ab".repeat(20).repeat(2))
+        cyclePackBits(
+            lineLength = 20, lines = 6, bytesPerPixel = 2,
+            original = "ab".repeat(20).repeat(2) + "cd".repeat(20).repeat(2) + "ab".repeat(20).repeat(2)
+        )
     }
 
     @Test
@@ -220,12 +247,14 @@ class PwgWriterTest {
         val pixels = palette.chunked(bytesPerPixel).map { it.toByteArray() }
 
         while (bytesOut.size() < totalPixels * bytesPerPixel) {
-            val length = Math.min(totalPixels - bytesOut.size() / bytesPerPixel,
+            val length = Math.min(
+                totalPixels - bytesOut.size() / bytesPerPixel,
                 when ((Math.random() * 6).toInt()) {
                     0 -> (Math.random() * 130).toInt()
                     1 -> 2
                     else -> 1
-                })
+                }
+            )
             when ((Math.random() * 2).toInt()) {
                 0 -> {
                     // Repeat

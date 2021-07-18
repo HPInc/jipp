@@ -19,7 +19,9 @@ class BitfieldTest {
 
     @Test
     fun `native representation`() {
-        assertEquals(UnknownAttribute("printer-type", 0x40000000),
-            cycle(printerType.of(0x40000000)))
+        assertEquals(
+            UnknownAttribute("printer-type", 0x40000000),
+            cycle(printerType.of(0x40000000))
+        )
     }
 }

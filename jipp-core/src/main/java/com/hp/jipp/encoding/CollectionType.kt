@@ -15,11 +15,15 @@ open class CollectionType<T : AttributeCollection>(
     override fun toString() = "CollectionType($name)"
 
     companion object {
-        val codec = Codec<AttributeCollection>(Tag.beginCollection, {
-            skipValueBytes()
-            UntypedCollection(readCollectionAttributes())
-        }, {
-            writeCollectionAttributes(it.attributes)
-        })
+        val codec = Codec<AttributeCollection>(
+            Tag.beginCollection,
+            {
+                skipValueBytes()
+                UntypedCollection(readCollectionAttributes())
+            },
+            {
+                writeCollectionAttributes(it.attributes)
+            }
+        )
     }
 }

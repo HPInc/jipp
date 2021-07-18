@@ -52,11 +52,11 @@ constructor(
     var mediaTracking: String? = null,
     /** May contain any keyword from [MediaType] or a name. */
     var mediaType: KeywordOrName? = null,
-    var mediaWeightMetric: Int? = null
+    var mediaWeightMetric: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [MediaCol]. */
-    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -84,7 +84,7 @@ constructor(
             mediaTopOffset?.let { MediaCol.mediaTopOffset.of(it) },
             mediaTracking?.let { MediaCol.mediaTracking.of(it) },
             mediaType?.let { MediaCol.mediaType.of(it) },
-            mediaWeightMetric?.let { MediaCol.mediaWeightMetric.of(it) }
+            mediaWeightMetric?.let { MediaCol.mediaWeightMetric.of(it) },
         )
 
     /** Defines types for each member of [MediaCol]. */
@@ -114,7 +114,7 @@ constructor(
                 extractOne(attributes, mediaTopOffset),
                 extractOne(attributes, mediaTracking),
                 extractOne(attributes, mediaType),
-                extractOne(attributes, mediaWeightMetric)
+                extractOne(attributes, mediaWeightMetric),
             )
         override val cls = MediaCol::class.java
         @Deprecated("Remove this symbol")
@@ -152,17 +152,17 @@ constructor(
     data class MediaSize
     constructor(
         var xDimension: Int? = null,
-        var yDimension: Int? = null
+        var yDimension: Int? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [MediaSize]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 xDimension?.let { MediaSize.xDimension.of(it) },
-                yDimension?.let { MediaSize.yDimension.of(it) }
+                yDimension?.let { MediaSize.yDimension.of(it) },
             )
 
         /** Defines types for each member of [MediaSize]. */
@@ -170,7 +170,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): MediaSize =
                 MediaSize(
                     extractOne(attributes, xDimension),
-                    extractOne(attributes, yDimension)
+                    extractOne(attributes, yDimension),
                 )
             override val cls = MediaSize::class.java
             @Deprecated("Remove this symbol")
@@ -189,17 +189,17 @@ constructor(
     constructor(
         /** May contain any keyword from [FeedOrientation]. */
         var mediaSourceFeedDirection: String? = null,
-        var mediaSourceFeedOrientation: Orientation? = null
+        var mediaSourceFeedOrientation: Orientation? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [MediaSourceProperties]. */
-        constructor() : this(null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
             get() = listOfNotNull(
                 mediaSourceFeedDirection?.let { MediaSourceProperties.mediaSourceFeedDirection.of(it) },
-                mediaSourceFeedOrientation?.let { MediaSourceProperties.mediaSourceFeedOrientation.of(it) }
+                mediaSourceFeedOrientation?.let { MediaSourceProperties.mediaSourceFeedOrientation.of(it) },
             )
 
         /** Defines types for each member of [MediaSourceProperties]. */
@@ -207,7 +207,7 @@ constructor(
             override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
                 MediaSourceProperties(
                     extractOne(attributes, mediaSourceFeedDirection),
-                    extractOne(attributes, mediaSourceFeedOrientation)
+                    extractOne(attributes, mediaSourceFeedOrientation),
                 )
             override val cls = MediaSourceProperties::class.java
             @Deprecated("Remove this symbol")

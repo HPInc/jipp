@@ -22,11 +22,11 @@ constructor(
     var resourceName: String? = null,
     var resourceState: ResourceState? = null,
     /** May contain any keyword from [ResourceType]. */
-    var resourceType: String? = null
+    var resourceType: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [SystemConfiguredResources]. */
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -36,7 +36,7 @@ constructor(
             resourceInfo?.let { SystemConfiguredResources.resourceInfo.of(it) },
             resourceName?.let { SystemConfiguredResources.resourceName.of(it) },
             resourceState?.let { SystemConfiguredResources.resourceState.of(it) },
-            resourceType?.let { SystemConfiguredResources.resourceType.of(it) }
+            resourceType?.let { SystemConfiguredResources.resourceType.of(it) },
         )
 
     /** Defines types for each member of [SystemConfiguredResources]. */
@@ -48,7 +48,7 @@ constructor(
                 extractOne(attributes, resourceInfo)?.value,
                 extractOne(attributes, resourceName)?.value,
                 extractOne(attributes, resourceState),
-                extractOne(attributes, resourceType)
+                extractOne(attributes, resourceType),
             )
         override val cls = SystemConfiguredResources::class.java
         @Deprecated("Remove this symbol")

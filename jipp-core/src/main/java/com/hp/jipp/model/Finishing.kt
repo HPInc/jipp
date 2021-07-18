@@ -243,7 +243,7 @@ data class Finishing(override val code: Int, override val name: String) : Enum()
             foldPoster,
             foldRightGate,
             foldZ,
-            foldEngineeringZ
+            foldEngineeringZ,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): Finishing =

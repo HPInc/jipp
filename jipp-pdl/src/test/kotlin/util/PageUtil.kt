@@ -39,11 +39,19 @@ object PageUtil {
                     when (colorSpace) {
                         ColorSpace.Grayscale -> if (pixel[0] == WHITE_BYTE) "." else "K"
                         ColorSpace.Rgb ->
-                            colorToText[listOf(pixel[0] == WHITE_BYTE, pixel[1] == WHITE_BYTE,
-                                pixel[2] == WHITE_BYTE)]
+                            colorToText[
+                                listOf(
+                                    pixel[0] == WHITE_BYTE, pixel[1] == WHITE_BYTE,
+                                    pixel[2] == WHITE_BYTE
+                                )
+                            ]
                         ColorSpace.Rgba ->
-                            colorToText[listOf(pixel[1] == WHITE_BYTE, pixel[2] == WHITE_BYTE,
-                                pixel[3] == WHITE_BYTE)]
+                            colorToText[
+                                listOf(
+                                    pixel[1] == WHITE_BYTE, pixel[2] == WHITE_BYTE,
+                                    pixel[3] == WHITE_BYTE
+                                )
+                            ]
                     }
                 )
             }

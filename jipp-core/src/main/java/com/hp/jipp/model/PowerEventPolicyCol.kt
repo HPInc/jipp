@@ -18,18 +18,18 @@ data class PowerEventPolicyCol
 constructor(
     var eventId: Int? = null,
     var eventName: String? = null,
-    var requestPowerState: String? = null
+    var requestPowerState: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerEventPolicyCol]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             eventId?.let { PowerEventPolicyCol.eventId.of(it) },
             eventName?.let { PowerEventPolicyCol.eventName.of(it) },
-            requestPowerState?.let { PowerEventPolicyCol.requestPowerState.of(it) }
+            requestPowerState?.let { PowerEventPolicyCol.requestPowerState.of(it) },
         )
 
     /** Defines types for each member of [PowerEventPolicyCol]. */
@@ -38,7 +38,7 @@ constructor(
             PowerEventPolicyCol(
                 extractOne(attributes, eventId),
                 extractOne(attributes, eventName)?.value,
-                extractOne(attributes, requestPowerState)
+                extractOne(attributes, requestPowerState),
             )
         override val cls = PowerEventPolicyCol::class.java
         @Deprecated("Remove this symbol")

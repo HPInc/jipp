@@ -331,7 +331,7 @@ data class Operation(override val code: Int, override val name: String) : Enum()
             startupAllPrinters,
             getPrinterResources,
             getUserPrinterAttributes,
-            restartOnePrinter
+            restartOnePrinter,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): Operation =

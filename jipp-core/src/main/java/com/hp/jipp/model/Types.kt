@@ -270,10 +270,10 @@ object Types {
      */
     @JvmField val dateTimeAtCreated = DateTimeType("date-time-at-created")
     /**
-     * "date-time-at-creation | unknown" type as defined in:
+     * "date-time-at-creation" type as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).
      */
-    @JvmField val dateTimeAtCreation|Unknown = DateTimeType("date-time-at-creation | unknown")
+    @JvmField val dateTimeAtCreation = DateTimeType("date-time-at-creation")
     /**
      * "date-time-at-installed" type as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem10-20191122-5100.22.pdf).

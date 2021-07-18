@@ -38,7 +38,7 @@ data class PrintQuality(override val code: Int, override val name: String) : Enu
         @JvmField val all = listOf(
             draft,
             normal,
-            high
+            high,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): PrintQuality =

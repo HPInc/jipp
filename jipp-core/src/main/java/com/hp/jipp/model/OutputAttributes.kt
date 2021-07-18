@@ -17,17 +17,17 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class OutputAttributes
 constructor(
     var noiseRemoval: Int? = null,
-    var outputCompressionQualityFactor: Int? = null
+    var outputCompressionQualityFactor: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [OutputAttributes]. */
-    constructor() : this(null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             noiseRemoval?.let { OutputAttributes.noiseRemoval.of(it) },
-            outputCompressionQualityFactor?.let { OutputAttributes.outputCompressionQualityFactor.of(it) }
+            outputCompressionQualityFactor?.let { OutputAttributes.outputCompressionQualityFactor.of(it) },
         )
 
     /** Defines types for each member of [OutputAttributes]. */
@@ -35,7 +35,7 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): OutputAttributes =
             OutputAttributes(
                 extractOne(attributes, noiseRemoval),
-                extractOne(attributes, outputCompressionQualityFactor)
+                extractOne(attributes, outputCompressionQualityFactor),
             )
         override val cls = OutputAttributes::class.java
         @Deprecated("Remove this symbol")

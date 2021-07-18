@@ -1,7 +1,7 @@
 package pclm
 
-import java.math.BigDecimal
 import util.ByteWindow
+import java.math.BigDecimal
 
 /** Parent class for all PCLM data types */
 interface PclmData {
@@ -22,7 +22,7 @@ data class PclmDictionary(val items: List<Pair<String, PclmData>>) : PclmData {
 
 /** DSL for defining a PCLm dictionary */
 fun pclmDictionary(block: PclmDictionaryContext.() -> Unit) =
-        PclmDictionaryContext().apply { block() }.build()
+    PclmDictionaryContext().apply { block() }.build()
 
 /** Context in which PCLM dictionary pairs are added */
 open class PclmDictionaryContext {
@@ -38,7 +38,7 @@ data class PclmArray(val items: List<PclmData>) : PclmData
 
 /** DSL for defining a PCLm array */
 fun pclmArray(block: PclmArrayContext.() -> Unit) =
-        PclmArrayContext().apply { block() }.build()
+    PclmArrayContext().apply { block() }.build()
 
 class PclmArrayContext {
     private val items = ArrayList<PclmData>()

@@ -36,11 +36,11 @@ constructor(
     var materialShellThickness: Int? = null,
     var materialTemperature: IntOrIntRange? = null,
     /** May contain any keyword from [MaterialType] or a name. */
-    var materialType: KeywordOrName? = null
+    var materialType: KeywordOrName? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [MaterialsCol]. */
-    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -60,7 +60,7 @@ constructor(
             materialRetraction?.let { MaterialsCol.materialRetraction.of(it) },
             materialShellThickness?.let { MaterialsCol.materialShellThickness.of(it) },
             materialTemperature?.let { MaterialsCol.materialTemperature.of(it) },
-            materialType?.let { MaterialsCol.materialType.of(it) }
+            materialType?.let { MaterialsCol.materialType.of(it) },
         )
 
     /** Defines types for each member of [MaterialsCol]. */
@@ -82,7 +82,7 @@ constructor(
                 extractOne(attributes, materialRetraction),
                 extractOne(attributes, materialShellThickness),
                 extractOne(attributes, materialTemperature),
-                extractOne(attributes, materialType)
+                extractOne(attributes, materialType),
             )
         override val cls = MaterialsCol::class.java
         @Deprecated("Remove this symbol")

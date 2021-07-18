@@ -21,18 +21,18 @@ constructor(
     var coverType: String? = null,
     /** May contain any keyword from [Media] or a name. */
     var media: KeywordOrName? = null,
-    var mediaCol: MediaCol? = null
+    var mediaCol: MediaCol? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [CoverBack]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             coverType?.let { CoverBack.coverType.of(it) },
             media?.let { CoverBack.media.of(it) },
-            mediaCol?.let { CoverBack.mediaCol.of(it) }
+            mediaCol?.let { CoverBack.mediaCol.of(it) },
         )
 
     /** Defines types for each member of [CoverBack]. */
@@ -41,7 +41,7 @@ constructor(
             CoverBack(
                 extractOne(attributes, coverType),
                 extractOne(attributes, media),
-                extractOne(attributes, mediaCol)
+                extractOne(attributes, mediaCol),
             )
         override val cls = CoverBack::class.java
         @Deprecated("Remove this symbol")

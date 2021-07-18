@@ -24,22 +24,26 @@ open class NameType(name: String) : AttributeTypeImpl<Name>(name, Name::class.ja
     fun of(value: String) = of(Name(value))
 
     companion object {
-        val codec = Codec({ it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage }, {
-            if (it == Tag.nameWithLanguage) {
-                readShort()
-                val lang = readString() // Lang comes first
-                Name(readString(), lang)
-            } else {
-                Name(readString())
+        val codec = Codec(
+            { it == Tag.nameWithLanguage || it == Tag.nameWithoutLanguage },
+            {
+                if (it == Tag.nameWithLanguage) {
+                    readShort()
+                    val lang = readString() // Lang comes first
+                    Name(readString(), lang)
+                } else {
+                    Name(readString())
+                }
+            },
+            {
+                if (it.tag == Tag.nameWithLanguage) {
+                    writeShort(IppStreams.stringLength(it.lang!!) + IppStreams.stringLength(it.value))
+                    writeStringValue(it.lang)
+                    writeStringValue(it.value)
+                } else {
+                    writeStringValue(it.value)
+                }
             }
-        }, {
-            if (it.tag == Tag.nameWithLanguage) {
-                writeShort(IppStreams.stringLength(it.lang!!) + IppStreams.stringLength(it.value))
-                writeStringValue(it.lang)
-                writeStringValue(it.value)
-            } else {
-                writeStringValue(it.value)
-            }
-        })
+        )
     }
 }

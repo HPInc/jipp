@@ -77,8 +77,9 @@ class PackBits(
             // Multiple repeating pixels, seek EOL or non-matching pixel
             var nextPixelIndex = bytePos + pixelCount * bytesPerPixel
             while (pixelCount < MAX_GROUP &&
-                    nextPixelIndex < lineArray.size &&
-                    lineArray.equals(bytePos, bytesPerPixel, lineArray, nextPixelIndex)) {
+                nextPixelIndex < lineArray.size &&
+                lineArray.equals(bytePos, bytesPerPixel, lineArray, nextPixelIndex)
+            ) {
                 pixelCount++
                 nextPixelIndex += bytesPerPixel
             }
@@ -87,8 +88,11 @@ class PackBits(
         private fun seekMatchingPixels() {
             var nextPixelIndex = bytePos + pixelCount * bytesPerPixel
             while (nextPixelIndex < lineArray.size && pixelCount < MAX_GROUP) {
-                if (lineArray.equals(nextPixelIndex - bytesPerPixel, bytesPerPixel,
-                                lineArray, nextPixelIndex)) {
+                if (lineArray.equals(
+                        nextPixelIndex - bytesPerPixel, bytesPerPixel,
+                        lineArray, nextPixelIndex
+                    )
+                ) {
                     // We found two matching pixels so back up
                     pixelCount--
                     break

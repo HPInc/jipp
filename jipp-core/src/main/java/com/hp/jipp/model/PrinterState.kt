@@ -38,7 +38,7 @@ data class PrinterState(override val code: Int, override val name: String) : Enu
         @JvmField val all = listOf(
             idle,
             processing,
-            stopped
+            stopped,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): PrinterState =

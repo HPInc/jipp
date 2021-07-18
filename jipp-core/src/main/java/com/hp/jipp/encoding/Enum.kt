@@ -19,6 +19,6 @@ abstract class Enum {
     companion object {
         /** Convert a List of T into a Map of integer codes to T, where T is a Enum subclass. */
         fun <T : Enum> toCodeMap(nameCodes: Iterable<T>): Map<Int, T> =
-                nameCodes.map { it.code to it }.toMap()
+            nameCodes.map { it.code to it }.toMap()
     }
 }

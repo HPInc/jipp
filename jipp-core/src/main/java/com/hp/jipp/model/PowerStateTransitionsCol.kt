@@ -18,18 +18,18 @@ data class PowerStateTransitionsCol
 constructor(
     var endPowerState: String? = null,
     var startPowerState: String? = null,
-    var stateTransitionSeconds: Int? = null
+    var stateTransitionSeconds: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerStateTransitionsCol]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             endPowerState?.let { PowerStateTransitionsCol.endPowerState.of(it) },
             startPowerState?.let { PowerStateTransitionsCol.startPowerState.of(it) },
-            stateTransitionSeconds?.let { PowerStateTransitionsCol.stateTransitionSeconds.of(it) }
+            stateTransitionSeconds?.let { PowerStateTransitionsCol.stateTransitionSeconds.of(it) },
         )
 
     /** Defines types for each member of [PowerStateTransitionsCol]. */
@@ -38,7 +38,7 @@ constructor(
             PowerStateTransitionsCol(
                 extractOne(attributes, endPowerState),
                 extractOne(attributes, startPowerState),
-                extractOne(attributes, stateTransitionSeconds)
+                extractOne(attributes, stateTransitionSeconds),
             )
         override val cls = PowerStateTransitionsCol::class.java
         @Deprecated("Remove this symbol")

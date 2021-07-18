@@ -45,7 +45,7 @@ data class Orientation(override val code: Int, override val name: String) : Enum
             landscape,
             reverseLandscape,
             reversePortrait,
-            none
+            none,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): Orientation =

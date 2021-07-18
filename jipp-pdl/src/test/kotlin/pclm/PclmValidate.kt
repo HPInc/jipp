@@ -65,7 +65,8 @@ val ByteWindow.lines get() = object : Iterable<ByteWindow> {
                 lineStart += lineLength + 1
                 if (lineStart < offset + length &&
                     array[lineStart - 1] == CARRIAGE_RETURN &&
-                    array[lineStart] == LINE_FEED) {
+                    array[lineStart] == LINE_FEED
+                ) {
                     lineStart++
                 }
             }
@@ -179,12 +180,12 @@ fun ByteWindow.validatePclm(): PdfStructure {
 
     // Count backwards from end to find the beginning of the trailer
     val trailer = linesFromEnd.first { it.asString() == "trailer\n" }
-            .run { copy(length = all.length - offset) }
+        .run { copy(length = all.length - offset) }
 
     // Seek backwards again from start of trailer to find the xref line
     val xref = copy(length = trailer.offset - offset).linesFromEnd.first { it.asString() == "xref\n" }
-            // Extend the xref section forward to hit the start of the trailer
-            .run { copy(length = trailer.offset - offset) }
+        // Extend the xref section forward to hit the start of the trailer
+        .run { copy(length = trailer.offset - offset) }
 
     // The body covers everything after the header up to the start of the xref section
     val body = copy(offset = offset + header.length, length = xref.offset - (offset + header.length))
@@ -195,41 +196,43 @@ fun ByteWindow.validatePclm(): PdfStructure {
 
     // Carve out all xrefable objects
     val xrefObjectPairs = xref.lines
-            .stripComments()
-            .drop(1)
-            .map {
-                val fields = it.asString().trim().split(" ")
-                // Each item must be either 20 lines long or a two-value group delimiter
-                if (it.length != 19 && it.length != 18) {
-                    assertEquals("$it must be 20 bytes long or a 2-field line", 2, fields.size)
-                }
-                fields
+        .stripComments()
+        .drop(1)
+        .map {
+            val fields = it.asString().trim().split(" ")
+            // Each item must be either 20 lines long or a two-value group delimiter
+            if (it.length != 19 && it.length != 18) {
+                assertEquals("$it must be 20 bytes long or a 2-field line", 2, fields.size)
             }
-            .delimit { it.size == 2 }
-            .filterNot { it.isEmpty() }
-            .flatMap { group ->
-                val startObjectNum = group[0][0].toInt()
-                val count = group[0][1].toInt()
-                (0 until count).mapNotNull { index ->
-                    val line = group[index + 1]
-                    when (line[2]) {
-                        "f" -> {
-                            freeObjectsCount++
-                            // Ignore, isn't really needed
-                            null
-                        }
-                        "n" -> {
-                            val offset = line[0].toInt()
-                            val objectWindow = copy(offset = offset, length = xref.offset - offset)
-                            val obj = objectWindow.parseObject()
-                            assertEquals("Object number (${obj.second.number}) must match the xref table",
-                                    startObjectNum + index, obj.second.number)
-                            obj
-                        }
-                        else -> throw AssertionError("Trouble while parsing $group at $index, neither f nor n: \"${group[index][2]}\"")
+            fields
+        }
+        .delimit { it.size == 2 }
+        .filterNot { it.isEmpty() }
+        .flatMap { group ->
+            val startObjectNum = group[0][0].toInt()
+            val count = group[0][1].toInt()
+            (0 until count).mapNotNull { index ->
+                val line = group[index + 1]
+                when (line[2]) {
+                    "f" -> {
+                        freeObjectsCount++
+                        // Ignore, isn't really needed
+                        null
                     }
+                    "n" -> {
+                        val offset = line[0].toInt()
+                        val objectWindow = copy(offset = offset, length = xref.offset - offset)
+                        val obj = objectWindow.parseObject()
+                        assertEquals(
+                            "Object number (${obj.second.number}) must match the xref table",
+                            startObjectNum + index, obj.second.number
+                        )
+                        obj
+                    }
+                    else -> throw AssertionError("Trouble while parsing $group at $index, neither f nor n: \"${group[index][2]}\"")
                 }
             }
+        }
 
     // Validate there are no intersections between objects and the rest of the file
     val allWindows = xrefObjectPairs.map { it.first } + listOf(header, trailer, xref)
@@ -251,8 +254,10 @@ fun ByteWindow.validatePclm(): PdfStructure {
     assertEquals("startxref", trailerIterator.next().asString())
     // We already did this the hard way, but verify the offset is correct
     assertEquals(xref.offset, trailerIterator.next().asString().trim().toInt())
-    assertEquals("trailer specifies incorrect number of objects in xref table",
-        PclmNumber(xrefObjects.size + freeObjectsCount), trailerDictionary["Size"])
+    assertEquals(
+        "trailer specifies incorrect number of objects in xref table",
+        PclmNumber(xrefObjects.size + freeObjectsCount), trailerDictionary["Size"]
+    )
 
     // Chase down all other objects starting from the root.
     val catalog = xrefObjects.byRef(trailerDictionary["Root"].toRef())
@@ -267,7 +272,7 @@ fun ByteWindow.validatePclm(): PdfStructure {
 
     // Validate each page
     kids.items.map { it.toRef().number }
-            .forEach { validatePage(pageTree.number, xrefObjects, xrefObjects.byNumber(it)) }
+        .forEach { validatePage(pageTree.number, xrefObjects, xrefObjects.byNumber(it)) }
 
     return PdfStructure(header, body, xref, trailerDictionary, xrefObjects)
 }
@@ -308,10 +313,10 @@ fun validateStrip(stripObject: PclmObject) {
 }
 
 fun validatePageContentStream(pageContentStream: PclmObject) =
-        // Ignore all other lines, just get the image names
-        pageContentStream.stream!!.lines.mapNotNull {
-            "/(\\w+) Do Q".toRegex().matchEntire(it.asString())?.run { groups[1]?.value }
-        }
+    // Ignore all other lines, just get the image names
+    pageContentStream.stream!!.lines.mapNotNull {
+        "/(\\w+) Do Q".toRegex().matchEntire(it.asString())?.run { groups[1]?.value }
+    }
 
 internal fun ByteWindow.parseObject(): Pair<ByteWindow, PclmObject> {
     val rawIterator = lines.iterator() as ByteWindowIterator

@@ -57,8 +57,13 @@ class PrettyPrinter internal constructor(
         if (startPos + closed.width() < maxWidth) {
             innerAdd(closed.compressed())
         } else {
-            innerAdd(closed.expanded(startPos, String(CharArray(mGroups.size))
-                    .replace("\u0000", indent)))
+            innerAdd(
+                closed.expanded(
+                    startPos,
+                    String(CharArray(mGroups.size))
+                        .replace("\u0000", indent)
+                )
+            )
         }
     }
 

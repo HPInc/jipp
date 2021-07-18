@@ -50,7 +50,7 @@ data class JobState(override val code: Int, override val name: String) : Enum() 
             processingStopped,
             canceled,
             aborted,
-            completed
+            completed,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): JobState =

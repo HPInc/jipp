@@ -19,11 +19,11 @@ constructor(
     var blank: Int? = null,
     var fullColor: Int? = null,
     var highlightColor: Int? = null,
-    var monochrome: Int? = null
+    var monochrome: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [MediaSheetsCol]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -31,7 +31,7 @@ constructor(
             blank?.let { MediaSheetsCol.blank.of(it) },
             fullColor?.let { MediaSheetsCol.fullColor.of(it) },
             highlightColor?.let { MediaSheetsCol.highlightColor.of(it) },
-            monochrome?.let { MediaSheetsCol.monochrome.of(it) }
+            monochrome?.let { MediaSheetsCol.monochrome.of(it) },
         )
 
     /** Defines types for each member of [MediaSheetsCol]. */
@@ -41,7 +41,7 @@ constructor(
                 extractOne(attributes, blank),
                 extractOne(attributes, fullColor),
                 extractOne(attributes, highlightColor),
-                extractOne(attributes, monochrome)
+                extractOne(attributes, monochrome),
             )
         override val cls = MediaSheetsCol::class.java
         @Deprecated("Remove this symbol")

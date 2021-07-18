@@ -158,7 +158,7 @@ data class PowerState(override val code: Int, override val name: String) : Enum(
             resetHardGraceful,
             resetInit,
             notApplicable,
-            noChange
+            noChange,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): PowerState =

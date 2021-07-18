@@ -8,7 +8,8 @@ import java.util.regex.Pattern
 
 object MediaSizes {
     private val widthHeightPattern = Pattern.compile(
-        "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$")
+        "_([0-9]+(\\.[0-9]+)?)?x([0-9]+(\\.[0-9]+)?)([a-z]+)?$"
+    )
     private const val WIDTH_AT = 1
     private const val HEIGHT_AT = 3
     private const val WIDTH_HEIGHT_DIMENSION_COUNT = 4

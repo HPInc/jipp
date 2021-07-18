@@ -23,11 +23,11 @@ constructor(
     var highlightColor: Int? = null,
     var highlightColorTwoSided: Int? = null,
     var monochrome: Int? = null,
-    var monochromeTwoSided: Int? = null
+    var monochromeTwoSided: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [ImpressionsCol]. */
-    constructor() : this(null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -39,7 +39,7 @@ constructor(
             highlightColor?.let { ImpressionsCol.highlightColor.of(it) },
             highlightColorTwoSided?.let { ImpressionsCol.highlightColorTwoSided.of(it) },
             monochrome?.let { ImpressionsCol.monochrome.of(it) },
-            monochromeTwoSided?.let { ImpressionsCol.monochromeTwoSided.of(it) }
+            monochromeTwoSided?.let { ImpressionsCol.monochromeTwoSided.of(it) },
         )
 
     /** Defines types for each member of [ImpressionsCol]. */
@@ -53,7 +53,7 @@ constructor(
                 extractOne(attributes, highlightColor),
                 extractOne(attributes, highlightColorTwoSided),
                 extractOne(attributes, monochrome),
-                extractOne(attributes, monochromeTwoSided)
+                extractOne(attributes, monochromeTwoSided),
             )
         override val cls = ImpressionsCol::class.java
         @Deprecated("Remove this symbol")

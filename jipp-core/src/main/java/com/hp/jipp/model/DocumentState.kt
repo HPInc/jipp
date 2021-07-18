@@ -48,7 +48,7 @@ data class DocumentState(override val code: Int, override val name: String) : En
             processingStopped,
             canceled,
             aborted,
-            completed
+            completed,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): DocumentState =

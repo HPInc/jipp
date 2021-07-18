@@ -21,11 +21,11 @@ constructor(
     var destinationUri: java.net.URI? = null,
     var postDialString: String? = null,
     var preDialString: String? = null,
-    var t33Subaddress: Int? = null
+    var t33Subaddress: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [DestinationUris]. */
-    constructor() : this(null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -34,7 +34,7 @@ constructor(
             destinationUri?.let { DestinationUris.destinationUri.of(it) },
             postDialString?.let { DestinationUris.postDialString.of(it) },
             preDialString?.let { DestinationUris.preDialString.of(it) },
-            t33Subaddress?.let { DestinationUris.t33Subaddress.of(it) }
+            t33Subaddress?.let { DestinationUris.t33Subaddress.of(it) },
         )
 
     /** Defines types for each member of [DestinationUris]. */
@@ -45,7 +45,7 @@ constructor(
                 extractOne(attributes, destinationUri),
                 extractOne(attributes, postDialString)?.value,
                 extractOne(attributes, preDialString)?.value,
-                extractOne(attributes, t33Subaddress)
+                extractOne(attributes, t33Subaddress),
             )
         override val cls = DestinationUris::class.java
         @Deprecated("Remove this symbol")

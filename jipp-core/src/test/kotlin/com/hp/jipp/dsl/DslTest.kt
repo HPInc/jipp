@@ -18,10 +18,10 @@ import com.hp.jipp.model.MediaType
 import com.hp.jipp.model.Operation
 import com.hp.jipp.model.Status
 import com.hp.jipp.model.Types
-import java.net.URI
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.net.URI
 
 /** Test for some Kotlin-specific and some deprecated elements */
 class DslTest {
@@ -33,8 +33,10 @@ class DslTest {
         val packet = IppPacket.printJob(uri)
             .putOperationAttributes(Types.requestingUserName.of("Test User"))
             .setOperation(Operation.createJob)
-            .putJobAttributes(Types.mediaCol.of(MediaCol(mediaSize = mediaSize)),
-                Types.documentMessage.of("A description of the document"))
+            .putJobAttributes(
+                Types.mediaCol.of(MediaCol(mediaSize = mediaSize)),
+                Types.documentMessage.of("A description of the document")
+            )
             .putPrinterAttributes(Types.bindingTypeSupported.of(BindingType.adhesive))
             .putUnsupportedAttributes(Types.outputBin.noValue())
             .build()
@@ -92,8 +94,10 @@ class DslTest {
         val packet = IppPacket.response(Status.successfulOk)
             .putPrinterAttributes(Types.numberUpSupported.of(5..6))
             .build()
-        Assert.assertNotEquals(listOf<IntOrIntRange>(),
-            packet.getValues(Tag.printerAttributes, Types.numberUpSupported))
+        Assert.assertNotEquals(
+            listOf<IntOrIntRange>(),
+            packet.getValues(Tag.printerAttributes, Types.numberUpSupported)
+        )
     }
 
     @Test
@@ -124,8 +128,13 @@ class DslTest {
         assertEquals("utf-16", packet.getValue(Tag.operationAttributes, Types.attributesCharset))
 
         // Order is preserved
-        assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
-            Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
+        assertEquals(
+            listOf(
+                Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
+                Types.requestingUserName
+            ),
+            packet[Tag.operationAttributes]!!.map { it.type }
+        )
     }
 
     @Test
@@ -157,8 +166,13 @@ class DslTest {
         assertEquals("utf-16", packet.getValue(Tag.operationAttributes, Types.attributesCharset))
 
         // Order is preserved
-        assertEquals(listOf(Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
-            Types.requestingUserName), packet[Tag.operationAttributes]!!.map { it.type })
+        assertEquals(
+            listOf(
+                Types.attributesCharset, Types.attributesNaturalLanguage, Types.printerUri,
+                Types.requestingUserName
+            ),
+            packet[Tag.operationAttributes]!!.map { it.type }
+        )
     }
 
     @Test
@@ -224,8 +238,10 @@ class DslTest {
             mediaSource = KeywordOrName(MediaSource.main)
             mediaType = KeywordOrName(MediaType.stationery)
         }
-        val packet = IppPacket(Status.successfulOk, 1234, groupOf(Tag.operationAttributes),
-            groupOf(Tag.printerAttributes, Types.mediaColReady.of(mediaType1)))
+        val packet = IppPacket(
+            Status.successfulOk, 1234, groupOf(Tag.operationAttributes),
+            groupOf(Tag.printerAttributes, Types.mediaColReady.of(mediaType1))
+        )
         val printerAttributes = mutableGroupOf(Tag.printerAttributes, cycle(packet)[Tag.printerAttributes]!!)
         assertEquals(listOf(mediaType1), printerAttributes.getValues(Types.mediaColReady))
     }

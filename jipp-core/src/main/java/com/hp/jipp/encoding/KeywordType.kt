@@ -13,10 +13,14 @@ open class KeywordType(name: String) : AttributeTypeImpl<String>(name, String::c
     override fun toString() = "KeywordType($name)"
 
     companion object {
-        val codec = Codec(Tag.keyword, {
-            readString()
-        }, {
-            writeStringValue(it)
-        })
+        val codec = Codec(
+            Tag.keyword,
+            {
+                readString()
+            },
+            {
+                writeStringValue(it)
+            }
+        )
     }
 }

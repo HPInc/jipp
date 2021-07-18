@@ -39,11 +39,11 @@ constructor(
     /** May contain any keyword from [Sides]. */
     var inputSides: String? = null,
     /** May contain any keyword from [InputSource]. */
-    var inputSource: String? = null
+    var inputSource: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [InputAttributes]. */
-    constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -65,7 +65,7 @@ constructor(
             inputScanRegions?.let { InputAttributes.inputScanRegions.of(it) },
             inputSharpness?.let { InputAttributes.inputSharpness.of(it) },
             inputSides?.let { InputAttributes.inputSides.of(it) },
-            inputSource?.let { InputAttributes.inputSource.of(it) }
+            inputSource?.let { InputAttributes.inputSource.of(it) },
         )
 
     /** Defines types for each member of [InputAttributes]. */
@@ -89,7 +89,7 @@ constructor(
                 extractAll(attributes, inputScanRegions),
                 extractOne(attributes, inputSharpness),
                 extractOne(attributes, inputSides),
-                extractOne(attributes, inputSource)
+                extractOne(attributes, inputSource),
             )
         override val cls = InputAttributes::class.java
         @Deprecated("Remove this symbol")
@@ -129,11 +129,11 @@ constructor(
         var xDimension: Int? = null,
         var xOrigin: Int? = null,
         var yDimension: Int? = null,
-        var yOrigin: Int? = null
+        var yOrigin: Int? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [InputScanRegions]. */
-        constructor() : this(null, null, null, null)
+        constructor() : this(null)
 
         /** Produce an attribute list from members. */
         override val attributes: List<Attribute<*>>
@@ -141,7 +141,7 @@ constructor(
                 xDimension?.let { InputScanRegions.xDimension.of(it) },
                 xOrigin?.let { InputScanRegions.xOrigin.of(it) },
                 yDimension?.let { InputScanRegions.yDimension.of(it) },
-                yOrigin?.let { InputScanRegions.yOrigin.of(it) }
+                yOrigin?.let { InputScanRegions.yOrigin.of(it) },
             )
 
         /** Defines types for each member of [InputScanRegions]. */
@@ -151,7 +151,7 @@ constructor(
                     extractOne(attributes, xDimension),
                     extractOne(attributes, xOrigin),
                     extractOne(attributes, yDimension),
-                    extractOne(attributes, yOrigin)
+                    extractOne(attributes, yOrigin),
                 )
             override val cls = InputScanRegions::class.java
             @Deprecated("Remove this symbol")

@@ -8,6 +8,7 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 
 /**
  * Data object corresponding to a "printer-icc-profiles" collection as defined in:
@@ -17,17 +18,19 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class PrinterIccProfiles
 constructor(
     var profileName: String? = null,
-    var profileUrl: java.net.URI? = null
+    var profileUrl: java.net.URI? = null,
+    /** Additional attributes (see specification for valid values). */
+    var extras: AttributeGroup = groupOf(Tag.jobAttributes),
 ) : AttributeCollection {
 
     /** Construct an empty [PrinterIccProfiles]. */
-    constructor() : this(null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
-        get() = listOfNotNull(
+        get() = extras + listOfNotNull(
             profileName?.let { PrinterIccProfiles.profileName.of(it) },
-            profileUrl?.let { PrinterIccProfiles.profileUrl.of(it) }
+            profileUrl?.let { PrinterIccProfiles.profileUrl.of(it) },
         )
 
     /** Defines types for each member of [PrinterIccProfiles]. */
@@ -35,7 +38,11 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): PrinterIccProfiles =
             PrinterIccProfiles(
                 extractOne(attributes, profileName)?.value,
-                extractOne(attributes, profileUrl)
+                extractOne(attributes, profileUrl),
+                groupOf(
+                    Tag.jobAttributes,
+                    attributes.filterNot { it.name == profileName.name || it.name == profileUrl.name }
+                ),
             )
         override val cls = PrinterIccProfiles::class.java
         @Deprecated("Remove this symbol")

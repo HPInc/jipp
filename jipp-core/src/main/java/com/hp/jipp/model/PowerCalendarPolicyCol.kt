@@ -23,11 +23,11 @@ constructor(
     var minute: Int? = null,
     var month: Int? = null,
     var requestPowerState: String? = null,
-    var runOnce: Boolean? = null
+    var runOnce: Boolean? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerCalendarPolicyCol]. */
-    constructor() : this(null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -39,7 +39,7 @@ constructor(
             minute?.let { PowerCalendarPolicyCol.minute.of(it) },
             month?.let { PowerCalendarPolicyCol.month.of(it) },
             requestPowerState?.let { PowerCalendarPolicyCol.requestPowerState.of(it) },
-            runOnce?.let { PowerCalendarPolicyCol.runOnce.of(it) }
+            runOnce?.let { PowerCalendarPolicyCol.runOnce.of(it) },
         )
 
     /** Defines types for each member of [PowerCalendarPolicyCol]. */
@@ -53,7 +53,7 @@ constructor(
                 extractOne(attributes, minute),
                 extractOne(attributes, month),
                 extractOne(attributes, requestPowerState),
-                extractOne(attributes, runOnce)
+                extractOne(attributes, runOnce),
             )
         override val cls = PowerCalendarPolicyCol::class.java
         @Deprecated("Remove this symbol")

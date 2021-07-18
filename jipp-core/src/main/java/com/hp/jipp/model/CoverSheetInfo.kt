@@ -21,11 +21,11 @@ constructor(
     var message: String? = null,
     var organizationName: String? = null,
     var subject: String? = null,
-    var toName: String? = null
+    var toName: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [CoverSheetInfo]. */
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -35,7 +35,7 @@ constructor(
             message?.let { CoverSheetInfo.message.of(it) },
             organizationName?.let { CoverSheetInfo.organizationName.of(it) },
             subject?.let { CoverSheetInfo.subject.of(it) },
-            toName?.let { CoverSheetInfo.toName.of(it) }
+            toName?.let { CoverSheetInfo.toName.of(it) },
         )
 
     /** Defines types for each member of [CoverSheetInfo]. */
@@ -47,7 +47,7 @@ constructor(
                 extractOne(attributes, message)?.value,
                 extractOne(attributes, organizationName)?.value,
                 extractOne(attributes, subject)?.value,
-                extractOne(attributes, toName)?.value
+                extractOne(attributes, toName)?.value,
             )
         override val cls = CoverSheetInfo::class.java
         @Deprecated("Remove this symbol")

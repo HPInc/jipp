@@ -35,20 +35,27 @@ class KeyValues(
     companion object {
         private const val ELEMENT_SEPARATOR = ";"
         private const val PART_SEPARATOR = "="
-        val codec = Codec(Tag.octetString, {
-            parse(readString())
-        }, {
-            // Write the original string, or fall back to pairs if _encoded is not present
-            writeStringValue(it._encoded ?: it.combine())
-        })
+        val codec = Codec(
+            Tag.octetString,
+            {
+                parse(readString())
+            },
+            {
+                // Write the original string, or fall back to pairs if _encoded is not present
+                writeStringValue(it._encoded ?: it.combine())
+            }
+        )
 
         /** Convert an IPP string to an ordered KeyValues map. */
         fun parse(combined: String) =
-            KeyValues(combined.split(ELEMENT_SEPARATOR)
-                .map { it.split(PART_SEPARATOR) }
-                .filter { it.size == 2 && it[0].isNotEmpty() && it[1].isNotEmpty() }
-                .map { it[0] to it[1] }
-                .toMap(), combined)
+            KeyValues(
+                combined.split(ELEMENT_SEPARATOR)
+                    .map { it.split(PART_SEPARATOR) }
+                    .filter { it.size == 2 && it[0].isNotEmpty() && it[1].isNotEmpty() }
+                    .map { it[0] to it[1] }
+                    .toMap(),
+                combined
+            )
 
         /** Convert an array of items (key1, value1, ...) into pairs of items. */
         fun fromPairs(keyValues: Array<out String>) =

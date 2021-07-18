@@ -22,7 +22,8 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
             readShort().toInt(), // Version
             readShort().toInt(), // Code / Status
             readInt(), // ID
-            generateSequence { readGroup() }.toList())
+            generateSequence { readGroup() }.toList()
+        )
 
     /**
      * Returns the next [AttributeGroup] from the stream or null if there are no more groups.
@@ -71,8 +72,11 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
             }
             is ValueTag ->
                 IppStreams.codecs.find { it.handlesTag(initTag) }?.let {
-                    UnknownAttribute(attributeName, listOf(readValue(it, initTag, attributeName)) +
-                        generateSequence { readNextValue(attributeName) })
+                    UnknownAttribute(
+                        attributeName,
+                        listOf(readValue(it, initTag, attributeName)) +
+                            generateSequence { readNextValue(attributeName) }
+                    )
                 } ?: throw ParseError("No codec found for tag $initTag")
             else -> throw ParseError("invalid attribute tag $initTag")
         }

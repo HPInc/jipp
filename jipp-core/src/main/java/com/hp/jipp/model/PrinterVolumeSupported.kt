@@ -18,18 +18,18 @@ data class PrinterVolumeSupported
 constructor(
     var xDimension: Int? = null,
     var yDimension: Int? = null,
-    var zDimension: Int? = null
+    var zDimension: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PrinterVolumeSupported]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             xDimension?.let { PrinterVolumeSupported.xDimension.of(it) },
             yDimension?.let { PrinterVolumeSupported.yDimension.of(it) },
-            zDimension?.let { PrinterVolumeSupported.zDimension.of(it) }
+            zDimension?.let { PrinterVolumeSupported.zDimension.of(it) },
         )
 
     /** Defines types for each member of [PrinterVolumeSupported]. */
@@ -38,7 +38,7 @@ constructor(
             PrinterVolumeSupported(
                 extractOne(attributes, xDimension),
                 extractOne(attributes, yDimension),
-                extractOne(attributes, zDimension)
+                extractOne(attributes, zDimension),
             )
         override val cls = PrinterVolumeSupported::class.java
         @Deprecated("Remove this symbol")

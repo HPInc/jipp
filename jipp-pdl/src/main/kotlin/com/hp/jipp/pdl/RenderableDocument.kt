@@ -55,7 +55,8 @@ abstract class RenderableDocument : Iterable<RenderablePage> {
                     sequence {
                         (0 until count).forEach { _ ->
                             yieldAll(this@handleCopies)
-                        } }.asIterable()
+                        }
+                    }.asIterable()
                 }
             }
     }

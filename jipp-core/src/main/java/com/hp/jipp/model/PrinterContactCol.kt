@@ -18,18 +18,18 @@ data class PrinterContactCol
 constructor(
     var contactName: String? = null,
     var contactUri: java.net.URI? = null,
-    var contactVcard: List<String>? = null
+    var contactVcard: List<String>? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PrinterContactCol]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             contactName?.let { PrinterContactCol.contactName.of(it) },
             contactUri?.let { PrinterContactCol.contactUri.of(it) },
-            contactVcard?.let { PrinterContactCol.contactVcard.of(it.map { v -> Text(v) }) }
+            contactVcard?.let { PrinterContactCol.contactVcard.of(it.map { v -> Text(v) }) },
         )
 
     /** Defines types for each member of [PrinterContactCol]. */
@@ -38,7 +38,7 @@ constructor(
             PrinterContactCol(
                 extractOne(attributes, contactName)?.value,
                 extractOne(attributes, contactUri),
-                extractAll(attributes, contactVcard)?.map { it.value }
+                extractAll(attributes, contactVcard)?.map { it.value },
             )
         override val cls = PrinterContactCol::class.java
         @Deprecated("Remove this symbol")

@@ -15,7 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 object KeyValuesTypes {
     @JvmField val all: Map<String, KeyValuesType> = listOf(
 {%- for type in types %}
-        {{ type.kref }}{{ "," if not loop.last }}
+        {{ type.kref }},
 {%- endfor %}
     ).map { it.name to it }.toMap()
 }

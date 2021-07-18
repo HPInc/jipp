@@ -19,18 +19,18 @@ constructor(
     /** May contain any keyword from [Media] or a name. */
     var media: KeywordOrName? = null,
     var mediaCol: MediaCol? = null,
-    var proofPrintCopies: Int? = null
+    var proofPrintCopies: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [ProofPrint]. */
-    constructor() : this(null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             media?.let { ProofPrint.media.of(it) },
             mediaCol?.let { ProofPrint.mediaCol.of(it) },
-            proofPrintCopies?.let { ProofPrint.proofPrintCopies.of(it) }
+            proofPrintCopies?.let { ProofPrint.proofPrintCopies.of(it) },
         )
 
     /** Defines types for each member of [ProofPrint]. */
@@ -39,7 +39,7 @@ constructor(
             ProofPrint(
                 extractOne(attributes, media),
                 extractOne(attributes, mediaCol),
-                extractOne(attributes, proofPrintCopies)
+                extractOne(attributes, proofPrintCopies),
             )
         override val cls = ProofPrint::class.java
         @Deprecated("Remove this symbol")

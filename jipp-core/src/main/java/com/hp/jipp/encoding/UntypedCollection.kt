@@ -15,7 +15,8 @@ data class UntypedCollection(override val attributes: List<Attribute<*>>) : Attr
     class Type(name: String) : AttributeTypeImpl<UntypedCollection>(name, UntypedCollection::class.java)
 
     /** An [AttributeType] for multiple [UntypedCollection] values */
-    class SetType(name: String) : AttributeTypeImpl<UntypedCollection>(name, UntypedCollection::class.java),
+    class SetType(name: String) :
+        AttributeTypeImpl<UntypedCollection>(name, UntypedCollection::class.java),
         AttributeSetType<UntypedCollection> {
         override fun toString() = "UntypedCollection.Set($name)"
     }

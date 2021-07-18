@@ -11,13 +11,17 @@ open class IntRangeType(name: String) : AttributeTypeImpl<IntRange>(name, IntRan
     }
 
     companion object {
-        val codec = Codec(Tag.rangeOfInteger, {
-            takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
-            IntRange(readInt(), readInt())
-        }, {
-            writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
-            writeInt(it.first)
-            writeInt(it.last)
-        })
+        val codec = Codec(
+            Tag.rangeOfInteger,
+            {
+                takeLength(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
+                IntRange(readInt(), readInt())
+            },
+            {
+                writeShort(IppStreams.INT_LENGTH + IppStreams.INT_LENGTH)
+                writeInt(it.first)
+                writeInt(it.last)
+            }
+        )
     }
 }

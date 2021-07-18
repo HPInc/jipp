@@ -187,7 +187,7 @@ data class Status(override val code: Int, override val name: String) : Enum() {
             serverErrorMultipleDocumentJobsNotSupported,
             serverErrorPrinterIsDeactivated,
             serverErrorTooManyJobs,
-            serverErrorTooManyDocuments
+            serverErrorTooManyDocuments,
         ).map { it.code to it }.toMap()
 
         operator fun get(value: Int): Status =

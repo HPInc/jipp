@@ -20,6 +20,6 @@ object KeyValuesTypes {
         Types.printerFinisherSupplies,
         Types.printerInputTray,
         Types.printerOutputTray,
-        Types.printerSupply
+        Types.printerSupply,
     ).map { it.name to it }.toMap()
 }

@@ -17,17 +17,17 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class MediaSizeSupported
 constructor(
     var xDimension: IntOrIntRange? = null,
-    var yDimension: IntOrIntRange? = null
+    var yDimension: IntOrIntRange? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [MediaSizeSupported]. */
-    constructor() : this(null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             xDimension?.let { MediaSizeSupported.xDimension.of(it) },
-            yDimension?.let { MediaSizeSupported.yDimension.of(it) }
+            yDimension?.let { MediaSizeSupported.yDimension.of(it) },
         )
 
     /** Defines types for each member of [MediaSizeSupported]. */
@@ -35,7 +35,7 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): MediaSizeSupported =
             MediaSizeSupported(
                 extractOne(attributes, xDimension),
-                extractOne(attributes, yDimension)
+                extractOne(attributes, yDimension),
             )
         override val cls = MediaSizeSupported::class.java
         @Deprecated("Remove this symbol")

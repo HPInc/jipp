@@ -4,9 +4,12 @@ import com.hp.jipp.model.CoveringName;
 import com.hp.jipp.model.FinishingsCol;
 import com.hp.jipp.model.FoldingDirection;
 import com.hp.jipp.model.FoldingReferenceEdge;
+import com.hp.jipp.model.JobResolversSupported;
+import com.hp.jipp.model.Media;
 import com.hp.jipp.model.MediaCol;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.KotlinTest;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import org.junit.Test;
@@ -68,5 +71,18 @@ public class CollectionTest {
         assertTrue(finishingsCol.toString().contains("bottom"));
         finishingsCol.setFolding(null);
         assertFalse(finishingsCol.toString().contains("bottom"));
+    }
+
+    @Test
+    public void jobResolversSupported() throws IOException {
+        MediaCol mediaType1 = new MediaCol();
+        mediaType1.setMediaSize(MediaSizes.parse(Media.naLetter8p5x11in));
+        AttributeGroup group = cycle(groupOf(Tag.printerAttributes, Types.jobResolversSupported.of(new JobResolversSupported(
+                "my-resolver",
+                groupOf(Tag.jobAttributes, Types.mediaCol.of(mediaType1))
+        ))));
+
+        assertEquals(group.getValue(Types.jobResolversSupported).getResolverName(), "my-resolver");
+        assertEquals(group.getValue(Types.jobResolversSupported).getExtras().getValue(Types.mediaCol).getMediaSize(), MediaSizes.parse(Media.naLetter8p5x11in));
     }
 }

@@ -17,17 +17,17 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobPagesCol
 constructor(
     var fullColor: Int? = null,
-    var monochrome: Int? = null
+    var monochrome: Int? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [JobPagesCol]. */
-    constructor() : this(null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             fullColor?.let { JobPagesCol.fullColor.of(it) },
-            monochrome?.let { JobPagesCol.monochrome.of(it) }
+            monochrome?.let { JobPagesCol.monochrome.of(it) },
         )
 
     /** Defines types for each member of [JobPagesCol]. */
@@ -35,7 +35,7 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): JobPagesCol =
             JobPagesCol(
                 extractOne(attributes, fullColor),
-                extractOne(attributes, monochrome)
+                extractOne(attributes, monochrome),
             )
         override val cls = JobPagesCol::class.java
         @Deprecated("Remove this symbol")

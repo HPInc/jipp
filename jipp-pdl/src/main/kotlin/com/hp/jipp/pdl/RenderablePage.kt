@@ -80,18 +80,22 @@ abstract class RenderablePage(
             val height = size / (width * bytesPerPixel)
             for (y in 0 until (height / 2)) {
                 for (x in 0 until width) {
-                    swap((y * width + x) * bytesPerPixel,
+                    swap(
+                        (y * width + x) * bytesPerPixel,
                         (((height - y) * width) - x - 1) * bytesPerPixel,
-                        bytesPerPixel)
+                        bytesPerPixel
+                    )
                 }
             }
             // If height is odd then we have to also flip the middle line end-to-end
             val middle = height / 2
             if (middle % 2 != 0) {
                 for (x in 0 until width / 2) {
-                    swap((middle * width + x) * bytesPerPixel,
+                    swap(
+                        (middle * width + x) * bytesPerPixel,
                         ((middle * width + width - x - 1) * bytesPerPixel),
-                        bytesPerPixel)
+                        bytesPerPixel
+                    )
                 }
             }
         }
@@ -101,9 +105,11 @@ abstract class RenderablePage(
             val height = size / (width * bytesPerPixel)
             for (y in 0 until height) {
                 for (x in 0 until width / 2) {
-                    swap((y * width + x) * bytesPerPixel,
+                    swap(
+                        (y * width + x) * bytesPerPixel,
                         ((y * width + width - x - 1) * bytesPerPixel),
-                        bytesPerPixel)
+                        bytesPerPixel
+                    )
                 }
             }
         }
@@ -112,9 +118,11 @@ abstract class RenderablePage(
         private fun ByteArray.flipY(width: Int, bytesPerPixel: Int) {
             val height = size / (width * bytesPerPixel)
             for (y in 0 until height / 2) {
-                swap(y * width * bytesPerPixel,
+                swap(
+                    y * width * bytesPerPixel,
                     (height - y - 1) * width * bytesPerPixel,
-                    width * bytesPerPixel)
+                    width * bytesPerPixel
+                )
             }
         }
 

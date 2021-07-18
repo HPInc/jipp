@@ -14,10 +14,14 @@ open class IntType(name: String) : AttributeTypeImpl<Int>(name, Int::class.java)
         value as? Int
 
     companion object {
-        val codec = Codec(Tag.integerValue, {
-            readIntValue()
-        }, {
-            writeIntValue(it)
-        })
+        val codec = Codec(
+            Tag.integerValue,
+            {
+                readIntValue()
+            },
+            {
+                writeIntValue(it)
+            }
+        )
     }
 }

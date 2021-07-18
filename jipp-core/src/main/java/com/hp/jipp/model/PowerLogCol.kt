@@ -19,11 +19,11 @@ constructor(
     var logId: Int? = null,
     var powerState: String? = null,
     var powerStateDateTime: java.util.Calendar? = null,
-    var powerStateMessage: String? = null
+    var powerStateMessage: String? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [PowerLogCol]. */
-    constructor() : this(null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -31,7 +31,7 @@ constructor(
             logId?.let { PowerLogCol.logId.of(it) },
             powerState?.let { PowerLogCol.powerState.of(it) },
             powerStateDateTime?.let { PowerLogCol.powerStateDateTime.of(it) },
-            powerStateMessage?.let { PowerLogCol.powerStateMessage.of(it) }
+            powerStateMessage?.let { PowerLogCol.powerStateMessage.of(it) },
         )
 
     /** Defines types for each member of [PowerLogCol]. */
@@ -41,7 +41,7 @@ constructor(
                 extractOne(attributes, logId),
                 extractOne(attributes, powerState),
                 extractOne(attributes, powerStateDateTime),
-                extractOne(attributes, powerStateMessage)?.value
+                extractOne(attributes, powerStateMessage)?.value,
             )
         override val cls = PowerLogCol::class.java
         @Deprecated("Remove this symbol")

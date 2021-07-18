@@ -17,7 +17,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 data class JobPresetsSupported
 constructor(
     /** May contain any keyword from [PresetName] or a name. */
-    var presetName: KeywordOrName? = null
+    var presetName: KeywordOrName? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [JobPresetsSupported]. */
@@ -26,14 +26,14 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
-            presetName?.let { JobPresetsSupported.presetName.of(it) }
+            presetName?.let { JobPresetsSupported.presetName.of(it) },
         )
 
     /** Defines types for each member of [JobPresetsSupported]. */
     companion object : AttributeCollection.Converter<JobPresetsSupported> {
         override fun convert(attributes: List<Attribute<*>>): JobPresetsSupported =
             JobPresetsSupported(
-                extractOne(attributes, presetName)
+                extractOne(attributes, presetName),
             )
         override val cls = JobPresetsSupported::class.java
         @Deprecated("Remove this symbol")

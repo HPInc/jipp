@@ -15,10 +15,14 @@ open class OctetsType(name: String) : AttributeTypeImpl<ByteArray>(name, ByteArr
     override fun toString() = "OctetsType($name)"
 
     companion object {
-        val codec = Codec(Tag.octetString, {
-            readValueBytes()
-        }, {
-            writeBytesValue(it)
-        })
+        val codec = Codec(
+            Tag.octetString,
+            {
+                readValueBytes()
+            },
+            {
+                writeBytesValue(it)
+            }
+        )
     }
 }

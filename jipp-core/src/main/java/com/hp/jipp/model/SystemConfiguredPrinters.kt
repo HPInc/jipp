@@ -25,11 +25,11 @@ constructor(
     var printerState: PrinterState? = null,
     /** May contain any keyword from [PrinterStateReason]. */
     var printerStateReasons: List<String>? = null,
-    var printerXriSupported: PrinterXriSupported? = null
+    var printerXriSupported: PrinterXriSupported? = null,
 ) : AttributeCollection {
 
     /** Construct an empty [SystemConfiguredPrinters]. */
-    constructor() : this(null, null, null, null, null, null, null, null)
+    constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
@@ -41,7 +41,7 @@ constructor(
             printerServiceType?.let { SystemConfiguredPrinters.printerServiceType.of(it) },
             printerState?.let { SystemConfiguredPrinters.printerState.of(it) },
             printerStateReasons?.let { SystemConfiguredPrinters.printerStateReasons.of(it) },
-            printerXriSupported?.let { SystemConfiguredPrinters.printerXriSupported.of(it) }
+            printerXriSupported?.let { SystemConfiguredPrinters.printerXriSupported.of(it) },
         )
 
     /** Defines types for each member of [SystemConfiguredPrinters]. */
@@ -55,7 +55,7 @@ constructor(
                 extractOne(attributes, printerServiceType),
                 extractOne(attributes, printerState),
                 extractAll(attributes, printerStateReasons),
-                extractOne(attributes, printerXriSupported)
+                extractOne(attributes, printerXriSupported),
             )
         override val cls = SystemConfiguredPrinters::class.java
         @Deprecated("Remove this symbol")

@@ -42,8 +42,10 @@ class PwgReader(inputStream: InputStream) : DataInputStream(inputStream) {
             val magicNumbers = ByteArray(PwgWriter.MAGIC_NUMBER.size)
             input.read(magicNumbers)
             if (!magicNumbers.contentEquals(PwgWriter.MAGIC_NUMBER)) {
-                throw IOException("Expected ${PwgWriter.MAGIC_NUMBER.toHexString()} but read " +
-                    magicNumbers.toHexString())
+                throw IOException(
+                    "Expected ${PwgWriter.MAGIC_NUMBER.toHexString()} but read " +
+                        magicNumbers.toHexString()
+                )
             }
 
             val headerBytes = ByteArray(PwgHeader.HEADER_SIZE)
@@ -92,7 +94,8 @@ class PwgReader(inputStream: InputStream) : DataInputStream(inputStream) {
                 header.packBits.decode(input, pixelOutput, swathHeight)
                 header.colorSpace.toPdlColorSpace().convert(
                     ByteArrayInputStream(pixelOutput.toByteArray()),
-                    WrappedByteArrayOutputStream(byteArray), colorSpace)
+                    WrappedByteArrayOutputStream(byteArray), colorSpace
+                )
             }
         }
     }
