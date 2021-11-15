@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.12
+
+* Update to 2021-10 registered IANA types (#118).
+
 ## 0.7.11
 
 * Better support for "extra" attributes found e.g. in `job-resolvers-supported`
