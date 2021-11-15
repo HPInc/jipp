@@ -35,7 +35,7 @@ jobs:
           - v1-dependencies-
 
       # Build (not dokka, it takes 10 minutes and generates reams of useless warnings)
-      - run: gradle dependencies check graphDeps
+      - run: gradle dependencies check #graphDeps (needs python3 update)
 
       # Upload coverage report
       - run: bash <(curl -s https://codecov.io/bash)
