@@ -12,20 +12,68 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A simple HTTP-only transport for IPP.
+ * A simple HTTP/HTTPS transport for IPP.
  *
  * It is assumed that the remote server will not deliver additional data (just an IPP packet).
  */
 class HttpIppClientTransport implements IppClientTransport {
+    private static final String SSL_PROTOCOL = "TLSv1.2";
+
+    private static final TrustManager[] TRUST_ALL_CERTS;
+    private static final HostnameVerifier ALL_HOSTS_VALID;
+    static {
+        TRUST_ALL_CERTS = new TrustManager[] {
+                new X509TrustManager() {
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+        };
+        ALL_HOSTS_VALID = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+    }
+
+    private final SSLContext sslContext;
+	private final boolean acceptSelfSignedCerts;
+
+    HttpIppClientTransport(boolean acceptSelfSignedCerts) {
+        this.acceptSelfSignedCerts = acceptSelfSignedCerts;
+        this.sslContext = createSSLContext();
+    }
+
+    /**
+     * @param acceptSelfSignedCerts If true, auto-accept self-signed HTTPS certificates. Real implementations should
+     * implement a Trust-On-First-Use approach to minimize the potential for MITM attacks.
+     */
+    HttpIppClientTransport() {
+        this(false);
+    }
+
     @Override
     @NotNull
     public IppPacketData sendData(@NotNull URI uri, @NotNull IppPacketData request) throws IOException {
-        URL url = new URL(uri.toString().replaceAll("^ipp", "http"));
-
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = createURLConnection(uri);
         connection.setConnectTimeout(6 * 1000);
         connection.setRequestMethod("POST");
         connection.addRequestProperty("Content-type", "application/ipp");
@@ -59,6 +107,32 @@ class HttpIppClientTransport implements IppClientTransport {
         while (readAmount != -1) {
             output.write(buffer, 0, readAmount);
             readAmount = data.read(buffer);
+        }
+    }
+
+    private HttpURLConnection createURLConnection(URI uri) throws IOException {
+        URL url = new URL(uri.toString().replaceAll("^ipp", "http"));
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        if (acceptSelfSignedCerts && connection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+		    httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+		    httpsConnection.setHostnameVerifier(ALL_HOSTS_VALID);
+        }
+        return connection;
+    }
+
+    private SSLContext createSSLContext() {
+        try {
+            if (!acceptSelfSignedCerts) {
+                return SSLContext.getDefault();
+            }
+
+            SSLContext sslContext = SSLContext.getInstance(SSL_PROTOCOL);
+            sslContext.init(null, TRUST_ALL_CERTS, new java.security.SecureRandom());
+            return sslContext;
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new RuntimeException(e);
         }
     }
 }

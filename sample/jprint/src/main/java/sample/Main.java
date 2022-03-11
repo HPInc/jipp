@@ -30,7 +30,7 @@ import static com.hp.jipp.model.Types.requestingUserName;
 class Main {
     private final static String FORMAT_PDF = "application/pdf";
     private final static String CMD_NAME = "jprint";
-    private final static IppClientTransport transport = new HttpIppClientTransport();
+    private static IppClientTransport transport;
     private final static Map<String, String> extensionTypes = new HashMap<String, String>() {{
         put("pdf", FORMAT_PDF);
         put("pclm", "application/PCLm");
@@ -55,7 +55,8 @@ class Main {
                 .addOption("h", "help", false, "show help")
                 .addOptionGroup(requiredOptions)
                 .addOption("d", "media-col-database", false, "get-attributes also queries media-col-database")
-                .addOption(mimeTypeOption);
+                .addOption(mimeTypeOption)
+                .addOption("s", "self-signed", false, "accept self signed certificates");
     }
 
     public static void main(String[] args) throws IOException {
@@ -66,6 +67,8 @@ class Main {
             if (command.hasOption("h")) {
                 help();
             }
+
+            transport = new HttpIppClientTransport(command.hasOption("s"));
 
             List<String> argList = command.getArgList();
             if (argList.size() != 1) {
