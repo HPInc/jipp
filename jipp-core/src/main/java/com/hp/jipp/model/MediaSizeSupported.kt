@@ -21,7 +21,9 @@ constructor(
 ) : AttributeCollection {
 
     /** Construct an empty [MediaSizeSupported]. */
-    constructor() : this(null)
+    //constructor() : this(null)
+    constructor(x: Int? = null, y: Int? = null) :
+            this(x?.let { IntOrIntRange(x) }, y?.let {IntOrIntRange(y)})
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
