@@ -8,6 +8,7 @@ import com.hp.jipp.model.ImpositionTemplate;
 import com.hp.jipp.model.JobState;
 import com.hp.jipp.model.JobStateReason;
 import com.hp.jipp.model.MediaCol;
+import com.hp.jipp.model.MediaColDatabase;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
@@ -221,7 +222,7 @@ public class AttributeGroupTest {
     @Test
     public void mutableSetMultiple() {
         MutableAttributeGroup mutableGroup = mutableGroupOf(operationAttributes);
-        mutableGroup.set(Types.mediaColDatabase, Arrays.asList(new MediaCol(), new MediaCol()));
+        mutableGroup.set(Types.mediaColDatabase, Arrays.asList(new MediaColDatabase(), new MediaColDatabase()));
         assertEquals(2, mutableGroup.get(Types.mediaColDatabase).size());
     }
 

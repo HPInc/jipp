@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static com.hp.jipp.encoding.AttributeGroup.groupOf;
 import static com.hp.jipp.encoding.Cycler.cycle;
+import static com.hp.jipp.encoding.MediaSizes.toMediaColDatabaseMediaSize;
 import static com.hp.jipp.model.Types.attributesNaturalLanguage;
 import static com.hp.jipp.model.Types.copiesSupported;
 import static com.hp.jipp.model.Types.operationsSupported;
@@ -133,7 +134,32 @@ public class AttributeTypeTest {
         mediaType1.setMediaType(new KeywordOrName(MediaType.stationery));
         // And others...
 
-        List<MediaCol> readyList = new ArrayList<>();
+        List<MediaCol> actualList = new ArrayList<>();
+        actualList.add(mediaType1);
+        // Etc.
+
+        IppPacket packet = new IppPacket(Status.successfulOk, 1234,
+                groupOf(Tag.operationAttributes /* +default operation attributes */),
+                groupOf(Tag.printerAttributes,
+                        Types.mediaColActual.of(actualList) /* + other requested attributes */ ));
+
+        MediaCol first = cycle(packet).get(Tag.printerAttributes).get(Types.mediaColActual).get(0);
+        assertEquals(mediaType1, first);
+    }
+
+    @Test
+    public void mediaColDatabaseTypeTest() throws IOException {
+        MediaColDatabase mediaType1 = new MediaColDatabase();
+        mediaType1.setMediaSize(toMediaColDatabaseMediaSize(MediaSizes.parse(Media.naLetter8p5x11in)));
+        mediaType1.setMediaLeftMargin(750);
+        mediaType1.setMediaRightMargin(750);
+        mediaType1.setMediaBottomMargin(750);
+        mediaType1.setMediaTopMargin(750);
+        mediaType1.setMediaSource(new KeywordOrName(MediaSource.main));
+        mediaType1.setMediaType(new KeywordOrName(MediaType.stationery));
+        // And others...
+
+        List<MediaColDatabase> readyList = new ArrayList<>();
         readyList.add(mediaType1);
         // Etc.
 
@@ -143,7 +169,7 @@ public class AttributeTypeTest {
                         Types.mediaColReady.of(readyList),
                         Types.mediaColDatabase.of(readyList) /* + other requested attributes */ ));
 
-        MediaCol first = cycle(packet).get(Tag.printerAttributes).get(Types.mediaColReady).get(0);
+        MediaColDatabase first = cycle(packet).get(Tag.printerAttributes).get(Types.mediaColReady).get(0);
         assertEquals(mediaType1, first);
     }
 
