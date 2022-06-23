@@ -1862,7 +1862,7 @@ object Types {
      * "media-col-database" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
      */
-    @JvmField val mediaColDatabase = AttributeCollection.SetType("media-col-database", MediaCol)
+    @JvmField val mediaColDatabase = AttributeCollection.SetType("media-col-database", MediaColDatabase)
     /**
      * "media-col-default" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
@@ -1872,7 +1872,7 @@ object Types {
      * "media-col-ready" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
      */
-    @JvmField val mediaColReady = AttributeCollection.SetType("media-col-ready", MediaCol)
+    @JvmField val mediaColReady = AttributeCollection.SetType("media-col-ready", MediaColDatabase)
     /**
      * "media-col-supported" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
