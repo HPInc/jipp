@@ -49,6 +49,9 @@ collections_with_extras = {
     'printer-icc-profiles': 'jobAttributes',
 }
 
+special_ref_logic = ('media-col-database', 'media-col-ready')
+
+
 def pretty(o):
     return pp.pformat(o).replace('\n', '\n    ')
 
@@ -328,8 +331,11 @@ crossover_attributes = {
 
 ignored_attributes = [
     # XML Fix (obsolete or maybe just deprecated)
-    'document-format-details-supported',
+    'document-format-details-supported'
 ]
+
+# list of members that are obsolete or deprecated in one attribute but used in other
+suffix_ignore_list = ['compression', 'ipp-attribute-fidelity']
 
 # Parse a single attribute record
 def parse_attribute(record):
@@ -343,11 +349,18 @@ def parse_attribute(record):
     collection = attributes.setdefault(collection_name, { })
 
     # Ignore (UnderReview) (Deprecated) etc
-    if re.search("\(.*\)", attr_name):
+    suffix = re.search("\(([A-Z a-z]+)\)", attr_name)
+    if suffix:
         attr_name = re.sub(' *\(.*\)', '', attr_name)
-        if attr_name in collection:
-            del collection[attr_name]
-        return
+
+        # Do not delete attributes with extension suffix
+        if not (suffix.group(1) == 'extension'):
+            if attr_name in collection:
+                del collection[attr_name]
+                return
+            elif attr_name not in suffix_ignore_list:
+                ignored_attributes.append(attr_name)
+
 
     if attr_name in ignored_attributes:
         return
@@ -405,6 +418,10 @@ def parse_attribute(record):
         fix_syntax(attr)
 
         if submember_name is not None:
+            if submember_name.endswith('(extension)'):
+                # Chop off (extension) and use it to replace former member syntax
+                submember_name = submember_name[:-len('(extension)')]
+
             if submember_name.startswith('<'):
                 if not assign_ref(submember_name, attr):
                     warn("Unparseable '" + attr_name + "' member '" + member_name + "'" +
@@ -761,12 +778,24 @@ def emit_attributes(env):
                 referent = attributes[type['ref_group']][type['ref_col']]
                 # Push members over to referent
                 for new_member in list(type['members'].values()):
-                    if new_member['name'] in referent['members'] and \
+                    if type['name'] not in special_ref_logic and new_member['name'] in referent['members'] and \
                             referent['members'][new_member['name']] != new_member:
                         warn("Collection type already has different member " + new_member['name'], referent)
+
+                # add member attributes of media-col to media-col-database due to [PWG5100.7]
+                if type['name'] == 'media-col-database':
+                    for k, v in referent['members'].items():
+                        type['members'][k] = v
+                    type['members']['media-size'] = copy.deepcopy(type['members']['media-size'])
+                    type['members']['media-size']['members']['x-dimension']['syntax'] = 'integer(1:MAX) | rangeOfInteger(1:MAX)'
+                    type['members']['media-size']['members']['y-dimension']['syntax'] = 'integer(1:MAX) | rangeOfInteger(1:MAX)'
+                    type['ref_col'] = type['name']
+                elif type['name'] == 'media-col-ready':
+                    type['ref_col'] = 'media-col-database'
+                    type['members'] = {}
                 else:
                     referent['members'][new_member['name']] = new_member
-                type['members'] = { }
+                    type['members'] = {}
 
     # Pass 2: Emit collection types having members
     for group in list(attributes.values()):
