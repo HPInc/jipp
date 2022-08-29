@@ -15,6 +15,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
  * [PWG5100.18](https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
  */
 @Suppress("RedundantCompanionReference", "unused")
+
 data class DocumentAccess
 constructor(
     var accessOauthToken: List<ByteArray>? = null,
