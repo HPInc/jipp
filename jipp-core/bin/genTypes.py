@@ -825,7 +825,6 @@ def emit_attributes(env):
                 old_type = types[name]
                 if type['syntax'] == 'collection' and old_type['name'] == type['name']:
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
-
                     if old_type.get('set') != type.get('set'):
                         warn("Difference is syntax detected for '%s'" % name)
 
