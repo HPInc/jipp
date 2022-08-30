@@ -572,7 +572,7 @@ object Types {
      * [PWG5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings10-20010205-5100.1.pdf),
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */
-    @JvmField val finishingsCol = AttributeCollection.Type("finishings-col", FinishingsCol)
+    @JvmField val finishingsCol = AttributeCollection.SetType("finishings-col", FinishingsCol)
     /**
      * "finishings-col-actual" type as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf),

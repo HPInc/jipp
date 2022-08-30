@@ -825,7 +825,14 @@ def emit_attributes(env):
                 old_type = types[name]
                 if type['syntax'] == 'collection' and old_type['name'] == type['name']:
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
-                    type = None
+
+                    if old_type.get('set') != type.get('set'):
+                        warn("Difference is syntax detected for '%s'" % name)
+
+                    if type['name'] == 'finishings-col':
+                        type['specs'] = sorted(set(old_type['specs'] + type['specs']))
+                    else:
+                        type = None
                 elif set([type['syntax'], old_type['syntax']]) == set(['name', 'keyword | name']):
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
                     old_type['syntax'] = 'keyword | name'
