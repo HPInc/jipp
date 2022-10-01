@@ -10,12 +10,11 @@ package com.hp.jipp.model
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 
 /**
- * Data object corresponding to a "media-col" collection as defined in:
- * [IPPLABEL](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ipplabel10-20200213.pdf),
+ * Data object corresponding to a "media-col-database" collection as defined in:
  * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
  */
 @Suppress("RedundantCompanionReference", "unused")
-data class MediaCol
+data class MediaColDatabase
 constructor(
     /** May contain any keyword from [MediaBackCoating] or a name. */
     var mediaBackCoating: KeywordOrName? = null,
@@ -42,6 +41,7 @@ constructor(
     var mediaSizeName: KeywordOrName? = null,
     /** May contain any keyword from [MediaSource] or a name. */
     var mediaSource: KeywordOrName? = null,
+    var mediaSourceProperties: MediaSourceProperties? = null,
     var mediaThickness: Int? = null,
     /** May contain any keyword from [MediaTooth] or a name. */
     var mediaTooth: KeywordOrName? = null,
@@ -54,41 +54,42 @@ constructor(
     var mediaWeightMetric: Int? = null,
 ) : AttributeCollection {
 
-    /** Construct an empty [MediaCol]. */
+    /** Construct an empty [MediaColDatabase]. */
     constructor() : this(null)
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
-            mediaBackCoating?.let { MediaCol.mediaBackCoating.of(it) },
-            mediaBottomMargin?.let { MediaCol.mediaBottomMargin.of(it) },
-            mediaColor?.let { MediaCol.mediaColor.of(it) },
-            mediaFrontCoating?.let { MediaCol.mediaFrontCoating.of(it) },
-            mediaGrain?.let { MediaCol.mediaGrain.of(it) },
-            mediaHoleCount?.let { MediaCol.mediaHoleCount.of(it) },
-            mediaInfo?.let { MediaCol.mediaInfo.of(it) },
-            mediaKey?.let { MediaCol.mediaKey.of(it) },
-            mediaLeftMargin?.let { MediaCol.mediaLeftMargin.of(it) },
-            mediaOrderCount?.let { MediaCol.mediaOrderCount.of(it) },
-            mediaPrePrinted?.let { MediaCol.mediaPrePrinted.of(it) },
-            mediaRecycled?.let { MediaCol.mediaRecycled.of(it) },
-            mediaRightMargin?.let { MediaCol.mediaRightMargin.of(it) },
-            mediaSize?.let { MediaCol.mediaSize.of(it) },
-            mediaSizeName?.let { MediaCol.mediaSizeName.of(it) },
-            mediaSource?.let { MediaCol.mediaSource.of(it) },
-            mediaThickness?.let { MediaCol.mediaThickness.of(it) },
-            mediaTooth?.let { MediaCol.mediaTooth.of(it) },
-            mediaTopMargin?.let { MediaCol.mediaTopMargin.of(it) },
-            mediaTopOffset?.let { MediaCol.mediaTopOffset.of(it) },
-            mediaTracking?.let { MediaCol.mediaTracking.of(it) },
-            mediaType?.let { MediaCol.mediaType.of(it) },
-            mediaWeightMetric?.let { MediaCol.mediaWeightMetric.of(it) },
+            mediaBackCoating?.let { MediaColDatabase.mediaBackCoating.of(it) },
+            mediaBottomMargin?.let { MediaColDatabase.mediaBottomMargin.of(it) },
+            mediaColor?.let { MediaColDatabase.mediaColor.of(it) },
+            mediaFrontCoating?.let { MediaColDatabase.mediaFrontCoating.of(it) },
+            mediaGrain?.let { MediaColDatabase.mediaGrain.of(it) },
+            mediaHoleCount?.let { MediaColDatabase.mediaHoleCount.of(it) },
+            mediaInfo?.let { MediaColDatabase.mediaInfo.of(it) },
+            mediaKey?.let { MediaColDatabase.mediaKey.of(it) },
+            mediaLeftMargin?.let { MediaColDatabase.mediaLeftMargin.of(it) },
+            mediaOrderCount?.let { MediaColDatabase.mediaOrderCount.of(it) },
+            mediaPrePrinted?.let { MediaColDatabase.mediaPrePrinted.of(it) },
+            mediaRecycled?.let { MediaColDatabase.mediaRecycled.of(it) },
+            mediaRightMargin?.let { MediaColDatabase.mediaRightMargin.of(it) },
+            mediaSize?.let { MediaColDatabase.mediaSize.of(it) },
+            mediaSizeName?.let { MediaColDatabase.mediaSizeName.of(it) },
+            mediaSource?.let { MediaColDatabase.mediaSource.of(it) },
+            mediaSourceProperties?.let { MediaColDatabase.mediaSourceProperties.of(it) },
+            mediaThickness?.let { MediaColDatabase.mediaThickness.of(it) },
+            mediaTooth?.let { MediaColDatabase.mediaTooth.of(it) },
+            mediaTopMargin?.let { MediaColDatabase.mediaTopMargin.of(it) },
+            mediaTopOffset?.let { MediaColDatabase.mediaTopOffset.of(it) },
+            mediaTracking?.let { MediaColDatabase.mediaTracking.of(it) },
+            mediaType?.let { MediaColDatabase.mediaType.of(it) },
+            mediaWeightMetric?.let { MediaColDatabase.mediaWeightMetric.of(it) },
         )
 
-    /** Defines types for each member of [MediaCol]. */
-    companion object : AttributeCollection.Converter<MediaCol> {
-        override fun convert(attributes: List<Attribute<*>>): MediaCol =
-            MediaCol(
+    /** Defines types for each member of [MediaColDatabase]. */
+    companion object : AttributeCollection.Converter<MediaColDatabase> {
+        override fun convert(attributes: List<Attribute<*>>): MediaColDatabase =
+            MediaColDatabase(
                 extractOne(attributes, mediaBackCoating),
                 extractOne(attributes, mediaBottomMargin),
                 extractOne(attributes, mediaColor),
@@ -105,6 +106,7 @@ constructor(
                 extractOne(attributes, mediaSize),
                 extractOne(attributes, mediaSizeName),
                 extractOne(attributes, mediaSource),
+                extractOne(attributes, mediaSourceProperties),
                 extractOne(attributes, mediaThickness),
                 extractOne(attributes, mediaTooth),
                 extractOne(attributes, mediaTopMargin),
@@ -113,7 +115,7 @@ constructor(
                 extractOne(attributes, mediaType),
                 extractOne(attributes, mediaWeightMetric),
             )
-        override val cls = MediaCol::class.java
+        override val cls = MediaColDatabase::class.java
         @Deprecated("Remove this symbol")
         @JvmField val Types = this
         @JvmField val mediaBackCoating = KeywordOrNameType("media-back-coating")
@@ -132,6 +134,7 @@ constructor(
         @JvmField val mediaSize = AttributeCollection.Type("media-size", MediaSize)
         @JvmField val mediaSizeName = KeywordOrNameType("media-size-name")
         @JvmField val mediaSource = KeywordOrNameType("media-source")
+        @JvmField val mediaSourceProperties = AttributeCollection.Type("media-source-properties", MediaSourceProperties)
         @JvmField val mediaThickness = IntType("media-thickness")
         @JvmField val mediaTooth = KeywordOrNameType("media-tooth")
         @JvmField val mediaTopMargin = IntType("media-top-margin")
@@ -147,8 +150,8 @@ constructor(
     @Suppress("RedundantCompanionReference", "unused")
     data class MediaSize
     constructor(
-        var xDimension: Int? = null,
-        var yDimension: Int? = null,
+        var xDimension: IntOrIntRange? = null,
+        var yDimension: IntOrIntRange? = null,
     ) : AttributeCollection {
 
         /** Construct an empty [MediaSize]. */
@@ -171,10 +174,50 @@ constructor(
             override val cls = MediaSize::class.java
             @Deprecated("Remove this symbol")
             @JvmField val Types = this
-            @JvmField val xDimension = IntType("x-dimension")
-            @JvmField val yDimension = IntType("y-dimension")
+            @JvmField val xDimension = IntOrIntRangeType("x-dimension")
+            @JvmField val yDimension = IntOrIntRangeType("y-dimension")
         }
         override fun toString() = "MediaSize(${attributes.joinToString()})"
     }
-    override fun toString() = "MediaCol(${attributes.joinToString()})"
+
+    /**
+     * Data object corresponding to a "media-source-properties" collection.
+     */
+    @Suppress("RedundantCompanionReference", "unused")
+    data class MediaSourceProperties
+    constructor(
+        /** May contain any keyword from [FeedOrientation]. */
+        var mediaSourceFeedDirection: String? = null,
+        var mediaSourceFeedOrientation: Orientation? = null,
+    ) : AttributeCollection {
+
+        /** Construct an empty [MediaSourceProperties]. */
+        constructor() : this(null)
+
+        /** Produce an attribute list from members. */
+        override val attributes: List<Attribute<*>>
+            get() = listOfNotNull(
+                mediaSourceFeedDirection?.let { MediaSourceProperties.mediaSourceFeedDirection.of(it) },
+                mediaSourceFeedOrientation?.let { MediaSourceProperties.mediaSourceFeedOrientation.of(it) },
+            )
+
+        /** Defines types for each member of [MediaSourceProperties]. */
+        companion object : AttributeCollection.Converter<MediaSourceProperties> {
+            override fun convert(attributes: List<Attribute<*>>): MediaSourceProperties =
+                MediaSourceProperties(
+                    extractOne(attributes, mediaSourceFeedDirection),
+                    extractOne(attributes, mediaSourceFeedOrientation),
+                )
+            override val cls = MediaSourceProperties::class.java
+            @Deprecated("Remove this symbol")
+            @JvmField val Types = this
+            @JvmField val mediaSourceFeedDirection = KeywordType("media-source-feed-direction")
+            /**
+             * "media-source-feed-orientation" member type.
+             */
+            @JvmField val mediaSourceFeedOrientation = Orientation.Type("media-source-feed-orientation")
+        }
+        override fun toString() = "MediaSourceProperties(${attributes.joinToString()})"
+    }
+    override fun toString() = "MediaColDatabase(${attributes.joinToString()})"
 }

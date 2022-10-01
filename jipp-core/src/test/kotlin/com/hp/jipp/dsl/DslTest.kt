@@ -8,11 +8,13 @@ import com.hp.jipp.encoding.IppPacket
 import com.hp.jipp.encoding.IppPacket.Companion.DEFAULT_REQUEST_ID
 import com.hp.jipp.encoding.KeywordOrName
 import com.hp.jipp.encoding.MediaSizes
+import com.hp.jipp.encoding.MediaSizes.toMediaColDatabaseMediaSize
 import com.hp.jipp.encoding.Name
 import com.hp.jipp.encoding.Tag
 import com.hp.jipp.model.BindingType
 import com.hp.jipp.model.Media
 import com.hp.jipp.model.MediaCol
+import com.hp.jipp.model.MediaColDatabase
 import com.hp.jipp.model.MediaSource
 import com.hp.jipp.model.MediaType
 import com.hp.jipp.model.Operation
@@ -229,8 +231,8 @@ class DslTest {
 
     @Test
     fun `coerce types from mutableGroups`() {
-        val mediaType1 = MediaCol().apply {
-            mediaSize = MediaSizes.parse(Media.naLetter8p5x11in)
+        val mediaType1 = MediaColDatabase().apply {
+            mediaSize = MediaSizes.parse(Media.naLetter8p5x11in).toMediaColDatabaseMediaSize()
             mediaLeftMargin = 750
             mediaRightMargin = 750
             mediaBottomMargin = 750
@@ -244,5 +246,6 @@ class DslTest {
         )
         val printerAttributes = mutableGroupOf(Tag.printerAttributes, cycle(packet)[Tag.printerAttributes]!!)
         assertEquals(listOf(mediaType1), printerAttributes.getValues(Types.mediaColReady))
+        assertEquals(mediaType1.mediaSize, printerAttributes.getValues(Types.mediaColReady).first().mediaSize)
     }
 }

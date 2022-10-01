@@ -4,6 +4,7 @@
 package com.hp.jipp.encoding
 
 import com.hp.jipp.model.MediaCol
+import com.hp.jipp.model.MediaColDatabase
 import java.util.regex.Pattern
 
 object MediaSizes {
@@ -37,5 +38,13 @@ object MediaSizes {
         val x = (matches.group(WIDTH_AT).toDouble() * units).toInt()
         val y = (matches.group(HEIGHT_AT).toDouble() * units).toInt()
         return MediaCol.MediaSize(x, y)
+    }
+
+    /** Convert a [MediaCol.MediaSize] object to [MediaColDatabase.MediaSize] object. */
+    @JvmStatic
+    fun MediaCol.MediaSize?.toMediaColDatabaseMediaSize(): MediaColDatabase.MediaSize? {
+        return this?.let {
+            MediaColDatabase.MediaSize(IntOrIntRange(xDimension!!), IntOrIntRange(yDimension!!))
+        }
     }
 }
