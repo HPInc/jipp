@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.13
+
+* Update to 2022-08 registered IANA types (#125).
+
 ## 0.7.12
 
 * Update to 2021-10 registered IANA types (#118).
