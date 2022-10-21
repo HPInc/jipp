@@ -354,7 +354,7 @@ def parse_attribute(record):
         attr_name = re.sub(' *\(.*\)', '', attr_name)
 
         # Do not delete attributes with extension suffix
-        if not (suffix.group(1) == 'extension'):
+        if not (suffix.group(1) == 'extension' or suffix.group(1) == 'deprecated'):
             if attr_name in collection:
                 del collection[attr_name]
                 return
