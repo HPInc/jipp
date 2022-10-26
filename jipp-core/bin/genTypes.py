@@ -180,9 +180,14 @@ def parse_enum(record):
             warn("enum " + attribute + " has unparseable value '" + value + "'")
         return
 
-    # Totally ignore (deprecated), Reserved, (Under Review), etc.
-    if re.search("\(.*\)", name) or "Reserved" in name:
+    # Totally ignore Reserved, (Under Review), etc.
+    suffix = re.search("\(([A-Z a-z]+)\)", name)
+    if (suffix and not suffix.group(1) == "deprecated") or "Reserved" in name:
         return
+
+    # Fix the name by stripping suffix (deprecated)
+    if suffix:
+        name = re.sub(' *\(.*\)', '', name)
 
     try:
         if value.startswith("0x"):
@@ -330,11 +335,11 @@ crossover_attributes = {
 }
 
 ignored_attributes = [
-    # XML Fix (obsolete or maybe just deprecated)
-    'document-format-details-supported'
+    # XML Fix (obsolete)
+    #'document-format-details-supported'
 ]
 
-# list of members that are obsolete or deprecated in one attribute but used in other
+# list of members that are obsolete in one attribute but used in other
 suffix_ignore_list = ['compression', 'ipp-attribute-fidelity']
 
 # Parse a single attribute record
@@ -353,7 +358,7 @@ def parse_attribute(record):
     if suffix:
         attr_name = re.sub(' *\(.*\)', '', attr_name)
 
-        # Do not delete attributes with extension suffix
+        # Do not delete attributes with extension or deprecated suffix
         if not (suffix.group(1) == 'extension' or suffix.group(1) == 'deprecated'):
             if attr_name in collection:
                 del collection[attr_name]
@@ -826,7 +831,7 @@ def emit_attributes(env):
                 if type['syntax'] == 'collection' and old_type['name'] == type['name']:
                     old_type['specs'] = sorted(set(old_type['specs'] + type['specs']))
                     if old_type.get('set') != type.get('set'):
-                        warn("Difference is syntax detected for '%s'" % name)
+                        warn("Difference in syntax detected for '%s'" % name)
 
                     if type['name'] == 'finishings-col':
                         type['specs'] = sorted(set(old_type['specs'] + type['specs']))

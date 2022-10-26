@@ -420,6 +420,12 @@ object Types {
      */
     @JvmField val documentFormatDetails = AttributeCollection.Type("document-format-details", DocumentFormatDetails)
     /**
+     * "document-format-details-supported" type as defined in:
+     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
+     * May contain any keyword from [DocumentFormatDetails.Name].
+     */
+    @JvmField val documentFormatDetailsSupported = KeywordType.Set("document-format-details-supported")
+    /**
      * "document-format-detected" type as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */
