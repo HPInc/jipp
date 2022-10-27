@@ -87,6 +87,7 @@ data class Operation(override val code: Int, override val name: String) : Enum()
         const val cancelDocument = 0x0033
         const val getDocumentAttributes = 0x0034
         const val getDocuments = 0x0035
+        const val deleteDocument = 0x0036
         const val setDocumentAttributes = 0x0037
         const val cancelJobs = 0x0038
         const val cancelMyJobs = 0x0039
@@ -186,6 +187,7 @@ data class Operation(override val code: Int, override val name: String) : Enum()
         @JvmField val cancelDocument = Operation(Code.cancelDocument, "Cancel-Document")
         @JvmField val getDocumentAttributes = Operation(Code.getDocumentAttributes, "Get-Document-Attributes")
         @JvmField val getDocuments = Operation(Code.getDocuments, "Get-Documents")
+        @JvmField val deleteDocument = Operation(Code.deleteDocument, "Delete-Document")
         @JvmField val setDocumentAttributes = Operation(Code.setDocumentAttributes, "Set-Document-Attributes")
         @JvmField val cancelJobs = Operation(Code.cancelJobs, "Cancel-Jobs")
         @JvmField val cancelMyJobs = Operation(Code.cancelMyJobs, "Cancel-My-Jobs")
@@ -284,6 +286,7 @@ data class Operation(override val code: Int, override val name: String) : Enum()
             cancelDocument,
             getDocumentAttributes,
             getDocuments,
+            deleteDocument,
             setDocumentAttributes,
             cancelJobs,
             cancelMyJobs,

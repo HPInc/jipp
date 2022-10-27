@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.14
+
+* Restore support for deprecated registered IANA types (#130).
+
 ## 0.7.13
 
 * Update to 2022-08 registered IANA types (#125).

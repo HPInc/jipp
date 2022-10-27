@@ -344,6 +344,32 @@ object Types {
      */
     @JvmField val deviceUuid = UriType("device-uuid")
     /**
+     * "document-access" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [IPPWG20180620](https://ftp.pwg.org/pub/pwg/ipp/registrations/ippwg-access-x509-certificate-obsolete-20180620.txt),
+     * [PWG5100.18](https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     */
+    @JvmField val documentAccess = AttributeCollection.Type("document-access", DocumentAccess)
+    /**
+     * "document-access-error" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentAccessError = TextType("document-access-error")
+    /**
+     * "document-access-errors" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
+     */
+    @JvmField val documentAccessErrors = TextType.Set("document-access-errors")
+    /**
+     * "document-access-supported" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [PWG5100.18](https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf).
+     * May contain any keyword from [DocumentAccess.Name].
+     */
+    @JvmField val documentAccessSupported = KeywordType.Set("document-access-supported")
+    /**
      * "document-charset" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
      */
@@ -388,6 +414,17 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val documentFormatDefault = StringType(Tag.mimeMediaType, "document-format-default")
+    /**
+     * "document-format-details" type as defined in:
+     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
+     */
+    @JvmField val documentFormatDetails = AttributeCollection.Type("document-format-details", DocumentFormatDetails)
+    /**
+     * "document-format-details-supported" type as defined in:
+     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext20-20190816-5100.7.pdf).
+     * May contain any keyword from [DocumentFormatDetails.Name].
+     */
+    @JvmField val documentFormatDetailsSupported = KeywordType.Set("document-format-details-supported")
     /**
      * "document-format-detected" type as defined in:
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
@@ -508,6 +545,12 @@ object Types {
      * May contain any keyword from [DocumentStateReason].
      */
     @JvmField val documentStateReasons = KeywordType.Set("document-state-reasons")
+    /**
+     * "document-uri" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val documentUri = UriType("document-uri")
     /**
      * "document-uuid" type as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -1057,6 +1100,12 @@ object Types {
      * [RFC8011](http://www.iana.org/go/rfc8011).
      */
     @JvmField val jobDetailedStatusMessages = TextType.Set("job-detailed-status-messages")
+    /**
+     * "job-document-access-errors" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val jobDocumentAccessErrors = TextType.Set("job-document-access-errors")
     /**
      * "job-error-action" type as defined in:
      * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
@@ -2591,6 +2640,18 @@ object Types {
      */
     @JvmField val pagesPerMinuteColor = IntType("pages-per-minute-color")
     /**
+     * "pages-per-subset" type as defined in:
+     * [IPP20190509A](https://ftp.pwg.org/pub/pwg/ipp/registrations/ippwg-pages-per-subset-deprecated-20190509.txt),
+     * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pagesPerSubset = IntType.Set("pages-per-subset")
+    /**
+     * "pages-per-subset-supported" type as defined in:
+     * [IPP20190509A](https://ftp.pwg.org/pub/pwg/ipp/registrations/ippwg-pages-per-subset-deprecated-20190509.txt),
+     * [PWG5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf).
+     */
+    @JvmField val pagesPerSubsetSupported = BooleanType("pages-per-subset-supported")
+    /**
      * "parent-printers-supported" type as defined in:
      * [RFC3998](http://www.iana.org/go/rfc3998).
      */
@@ -3518,6 +3579,12 @@ object Types {
      */
     @JvmField val queuedJobCount = IntType("queued-job-count")
     /**
+     * "reference-uri-schemes-supported" type as defined in:
+     * [DEPURI](https://ftp.pwg.org/pub/pwg/ipp/registrations/reg-ippdepuri10-20211215.pdf),
+     * [RFC8011](http://www.iana.org/go/rfc8011).
+     */
+    @JvmField val referenceUriSchemesSupported = StringType.Set(Tag.uriScheme, "reference-uri-schemes-supported")
+    /**
      * "repertoire-supported" type as defined in:
      * [PWG5101.2](https://ftp.pwg.org/pub/pwg/candidates/cs-crrepsup10-20040201-5101.2.pdf).
      */
@@ -3771,6 +3838,12 @@ object Types {
      * [PWG5100.5](https://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject11-20190521-5100.5.pdf).
      */
     @JvmField val sheetCollate = KeywordType("sheet-collate")
+    /**
+     * "sheet-collate-actual" type as defined in:
+     * [APPLE20150505-1](https://ftp.pwg.org/pub/pwg/ipp/registrations/apple-rfc3381-deprecated-20150505.txt),
+     * [PWG5100.8](https://ftp.pwg.org/pub/pwg/candidates/cs-ippactuals10-20030313-5100.8.pdf).
+     */
+    @JvmField val sheetCollateActual = KeywordType.Set("sheet-collate-actual")
     /**
      * "sides" type as defined in:
      * [RFC8011](http://www.iana.org/go/rfc8011).
