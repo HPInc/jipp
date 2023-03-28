@@ -41,6 +41,9 @@ class DslTest {
             )
             .putPrinterAttributes(Types.bindingTypeSupported.of(BindingType.adhesive))
             .putUnsupportedAttributes(Types.outputBin.noValue())
+            .putSubscriptionAttributes(Types.notifyAttributes.noValue())
+            .putEventNotificationAttributes(Types.notifyEvents.noValue())
+            .putDocumentAttributes(Types.compression.noValue())
             .build()
 
         val cycled = cycle(packet)
@@ -72,6 +75,15 @@ class DslTest {
             }
             unsupportedAttributes {
                 attr(Types.outputBin.noValue())
+            }
+            subscriptionAttributes {
+                attr(Types.notifyAttributes.noValue())
+            }
+            eventNotificationAttributes {
+                attr(Types.notifyEvents.noValue())
+            }
+            documentAttributes {
+                attr(Types.compression.noValue())
             }
         }
         val cycled = cycle(packet)
