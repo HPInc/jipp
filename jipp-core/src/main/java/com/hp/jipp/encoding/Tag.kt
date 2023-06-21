@@ -59,6 +59,11 @@ abstract class Tag : Enum() {
         @JvmField val endOfAttributes = DelimiterTag(0x03, "end-of-attributes")
         @JvmField val printerAttributes = DelimiterTag(0x04, "printer-attributes")
         @JvmField val unsupportedAttributes = DelimiterTag(0x05, "unsupported-attributes")
+        @JvmField val subscriptionAttributes = DelimiterTag(0x06, "subscription-attributes-tag")
+        @JvmField val eventNotificationAttributes = DelimiterTag(0x07, "event-notification-attributes-tag")
+        @JvmField val resourceAttributes = DelimiterTag(0x08, "resource-attributes-tag")
+        @JvmField val documentAttributes = DelimiterTag(0x09, "document-attributes-tag")
+        @JvmField val systemAttributes = DelimiterTag(0x0A, "system-attributes-tag")
 
         // "Out-of-band" values
         @JvmField val unsupported = OutOfBandTag(0x10, "unsupported")
@@ -96,7 +101,9 @@ abstract class Tag : Enum() {
 
         @JvmField
         val delimiterTags = listOf(
-            operationAttributes, jobAttributes, endOfAttributes, printerAttributes, unsupportedAttributes
+            operationAttributes, jobAttributes, endOfAttributes, printerAttributes, unsupportedAttributes,
+            subscriptionAttributes, eventNotificationAttributes, resourceAttributes, documentAttributes,
+            systemAttributes
         )
 
         @JvmField
