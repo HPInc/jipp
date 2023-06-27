@@ -13,6 +13,7 @@ import pprint
 import os.path
 import sys
 from jinja2 import Environment, FileSystemLoader # pip install Jinja2
+from datetime import datetime
 
 # Global data
 specs = { }
@@ -87,7 +88,30 @@ def parse_spec(xref, target):
         if spec not in specs:
             specs[spec.lower()] = uri
             specs[spec.upper()] = uri
-
+        # handle spec that exists with same name but different uri
+        elif specs[spec.lower()] != uri:
+            if uri.find("pipermail/ipp") and uri.endswith(".html"):
+                found = re.search('ipp/(\d\d\d\d)', uri)
+                if found and found.group(1):
+                    spec_year = int(found.group(1))
+            else:
+                m = re.search('(\d\d\d\d\d\d\d\d)', uri)        
+                if m:
+                    try:
+                        dt_object = datetime.strptime(m.group(1), "%Y%m%d").date()
+                        spec_year = dt_object.year
+                    except ValueError:
+                        warn("unparseable failed parse '%s' to datetime object from uri: %s" % (m.group(1), uri))
+                else:
+                    warn("unparseable failed to extract spec timestamp from uri: %s" % uri)
+            if spec_year:
+                spec += "-%d" % spec_year
+                if spec not in specs:
+                    specs[spec.lower()] = uri
+                    specs[spec.upper()] = uri
+            else:
+                warn("unparseable failed to extract spec timestamp from uri: %s" % uri)   
+            
     if spec is not None and spec not in target['specs']:
         target['specs'].append(spec)
 
@@ -135,9 +159,9 @@ def fix_syntax(item, syntax = None):
     syntax = re.sub("\|([^ ])", r"| \1", syntax)
 
     if " | " in syntax:
-        # Ignore no-value and unknown since those are accepted everywhere
+        # Ignore no-value, 'no-value' and unknown since those are accepted everywhere
         parts = sorted([fix_syntax({}, part.strip()) for part in syntax.split("|")])
-        syntax = " | ".join([part for part in parts if part != "no-value" and part != "unknown"])
+        syntax = " | ".join([part for part in parts if part != "no-value" and part != "'no-value'" and part != "unknown"])
     item['syntax'] = syntax
     return syntax
 
@@ -223,6 +247,16 @@ def parse_keyword(record):
 
     if attribute in obsolete_keywords:
         return
+    
+    suffix = re.search("\(([A-Z a-z]+)\)", attribute)
+    if suffix:
+        attr_name = re.sub(' *\(.*\)', '', attribute)
+
+        # Handle keywords with suffix for now we only handle (deprecated)
+        if not (suffix.group(1) == 'deprecated'):
+               warn("keyword " + attribute + " suffix '" + suffix.group(1) + "' is unparseable")
+        else:
+            return
 
     # XML Fix: proof-print-supported really should point to "< any proof-print member attribute name >"
     # But it's defined manually and correctly so no modification is required.
@@ -264,12 +298,11 @@ def assign_ref(ref, target):
         return True
 
     # XML fix: Correct some known irregularities
-    ref = re.sub('"media" color name$', 'media-color name', ref)
     ref = re.sub('job-default-output-until', 'job-delay-output-until', ref)
-    ref = re.sub(' the "media-col"$', ' the "media-col" Job Template attribute', ref)
-    ref = re.sub(' the "separator-sheets"$', ' the "separator-sheets" Job Template attribute', ref)
-    ref = re.sub(' the "cover-back"$', ' the "cover-back" Job Template attribute', ref)
-    ref = re.sub(' the "cover-front"$', ' the "cover-front" Job Template attribute', ref)
+    ref = re.sub('"media-col" member attribute$', '"media-col" Job Template attribute', ref)
+    ref = re.sub('"separator-sheets" member attribute$', '"separator-sheets" Job Template attribute', ref)
+    ref = re.sub('"cover-back" member attribute$', '"cover-back" Job Template attribute', ref)
+    ref = re.sub('"cover-front" member attribute$', '"cover-front" Job Template attribute', ref)
 
     # A reference to a keyword
     m = re.search("^\"?([a-z-]+)\"?( |keyword|value(s?)|name(s?))*$", ref)
@@ -299,24 +332,25 @@ def assign_ref(ref, target):
         target['ref_members'] = m.group(1)
         return True
 
-    m = re.search("^\"([a-z-]+)\"( .* attribute)?$", ref)
     if m and m.group(1):
         target['ref'] = m.group(1)
         return True
 
-    m = re.search("^Member attributes are the same as the \"([a-z-]+)\" (.*) attribute$", ref, re.IGNORECASE)
+    m = re.search("\"([a-z-]+)\" (.*) attribute$", ref, re.IGNORECASE)
     if m and m.group(1) and m.group(2):
         target['ref_col'] = m.group(1)
+        ref_group = None
         target['ref_group'] = m.group(2)
         return True
 
     m = re.search("^Member attributes are the same as \"([a-z-]+)\"$", ref, re.IGNORECASE)
     if m and m.group(1):
         target['ref_col'] = m.group(1)
+        target['ref_group'] = 'Job Template'
         return True
 
-    # e.g. "<Any Job Template attribute>"
-    m = re.search("([A-Za-z ]+) attribute", ref)
+    # e.g. "<Any Job Template attribute> or <Any Job Template Attribute>"
+    m = re.search("([A-Za-z ]+) attribute", ref, re.IGNORECASE)
     if m and ' ' in m.group(1):
         target['ref_group'] = m.group(1)
         return True
@@ -325,6 +359,7 @@ def assign_ref(ref, target):
 
 crossover_attributes = {
     'system-xri-supported': 'printer-xri-supported',
+    'printer-xri-requested': 'printer-xri-supported',
     'system-contact-col': 'printer-contact-col',
     'system-impressions-completed-col': 'job-impressions-col',
     'system-media-sheets-completed-col': 'job-media-sheets-col',
@@ -332,6 +367,8 @@ crossover_attributes = {
     'printer-impressions-completed-col': 'job-impressions-col',
     'printer-media-sheets-completed-col': 'job-media-sheets-col',
     'printer-pages-completed-col': 'job-pages-col',
+    'media-overprint-default': 'media-overprint',
+    'document-format-details-detected': 'document-format-details'
 }
 
 ignored_attributes = [
@@ -386,16 +423,17 @@ def parse_attribute(record):
 
     # XML fix (no members referenced)
     if member_name is None and attr_name in crossover_attributes:
-        member_name = '< Member attributes are the same as "%s" >' % crossover_attributes[attr_name]
+        member_name = '<Any "%s" member attribute>' % crossover_attributes[attr_name]
 
     if submember_name is not None:
         submember_name = submember_name.text
 
-    if attr_name == 'printer-xri-requested':
+    # Handle non specified reference in Job Status
+    if collection_name != 'Operation' and attr_name == 'client-info':
         if member_name:
-            warn("printer-xri-requested members are now specified and should be used")
-        attr['ref_col'] = 'printer-xri-supported'
-        return
+            warn("client-info members are now specified and should be used")
+        attr['ref_col'] = 'client-info'
+        attr['ref_group'] = 'Operation'
 
     if member_name is not None:
         if member_name.endswith('(extension)'):
@@ -1061,7 +1099,7 @@ parse_records(tree, "Keyword Attribute Values", parse_keyword)
 # XML Fix: preset-name not in keywords listing because no values are defined for it.
 keywords['preset-name'] = {
     'name': 'preset-name',
-    'specs': [ 'IPPPRESET'],
+    'specs': [ 'PWG5100.13'],
     'syntax': 'keyword | name',
     'values' : [ ],
     'empty_ok' : True
