@@ -105,8 +105,11 @@ data class IppPacket constructor(
     class Builder
     @JvmOverloads
     constructor(
+        @set:JvmSynthetic
         var code: Int,
+        @set:JvmSynthetic
         var versionNumber: Int = DEFAULT_VERSION_NUMBER,
+        @set:JvmSynthetic
         var requestId: Int = DEFAULT_REQUEST_ID
     ) {
         @JvmOverloads
@@ -133,6 +136,7 @@ data class IppPacket constructor(
             )
         }
 
+        @set:JvmSynthetic
         var status
             get() = Status[code]
             set(value) { code = value.code }
@@ -141,6 +145,7 @@ data class IppPacket constructor(
             this.status = status
         }
 
+        @set:JvmSynthetic
         var operation
             get() = Operation[code]
             set(value) { code = value.code }
