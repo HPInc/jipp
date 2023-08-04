@@ -1,5 +1,10 @@
 # History of Changes
 
+## 0.7.15-beta2
+
+* Added fix to set IppPacket elements in Java (#147).
+* Updated access modifier for AttributeGroupImpl (#151)
+
 ## 0.7.15-beta1
 
 * Update to 2023-03 registered IANA types (#142).
