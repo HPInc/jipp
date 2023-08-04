@@ -9,7 +9,7 @@ import java.util.HashSet
 /**
  * An implementation of [AttributeGroup].
  */
-internal class AttributeGroupImpl(
+class AttributeGroupImpl(
     override val tag: DelimiterTag,
     private val attributes: List<Attribute<*>>
 ) : AttributeGroup, List<Attribute<*>> by attributes {
