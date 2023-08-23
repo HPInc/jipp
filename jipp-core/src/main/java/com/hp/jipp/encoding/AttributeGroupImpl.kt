@@ -14,19 +14,6 @@ class AttributeGroupImpl(
     private val attributes: List<Attribute<*>>
 ) : AttributeGroup, List<Attribute<*>> by attributes {
 
-    init {
-        // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-        // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
-        val names = HashSet<String>()
-        for (attribute in attributes) {
-            val name = attribute.name
-            if (names.contains(name)) {
-                throw BuildError("Attribute Group contains more than one '$name` in $attributes")
-            }
-            names.add(name)
-        }
-    }
-
     /** Return the attribute corresponding to the specified [name]. */
     override operator fun get(name: String): Attribute<*>? = firstOrNull { it.name == name }
 
