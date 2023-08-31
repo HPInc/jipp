@@ -12,7 +12,6 @@ import com.hp.jipp.model.MediaColDatabase;
 import com.hp.jipp.model.Operation;
 import com.hp.jipp.model.Status;
 import com.hp.jipp.model.Types;
-import com.hp.jipp.util.BuildError;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -120,11 +119,21 @@ public class AttributeGroupTest {
         assertNull(group.get(Types.attributesNaturalLanguage));
     }
 
-    @Test(expected = BuildError.class)
+    @Test
     public void duplicateName() {
-        groupOf(operationAttributes,
+        AttributeGroup grp = groupOf(operationAttributes,
                 Types.attributesCharset.of("utf-8"),
-                Types.attributesCharset.of("utf-8"));
+                Types.attributesCharset.of("utf-8"),
+                Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")),
+                Types.attributesNaturalLanguage.of("en"),
+                Types.attributesNaturalLanguage.of("en-us"),
+                Types.attributesNaturalLanguage.of("fr"),
+                Types.attributesNaturalLanguage.of("de")
+        );
+
+        assertEquals(Types.attributesCharset.of("utf-8"), grp.get(Types.attributesCharset));
+        assertEquals(Types.printerUri.of(URI.create("ipp://10.0.0.23/ipp/printer")), grp.get(Types.printerUri));
+        assertEquals(Types.attributesNaturalLanguage.of("de"), grp.get(Types.attributesNaturalLanguage));
     }
 
     @Test

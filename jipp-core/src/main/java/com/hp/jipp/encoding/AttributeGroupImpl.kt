@@ -3,7 +3,7 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.BuildError
+import java.util.ArrayList
 import java.util.HashSet
 
 /**
@@ -11,19 +11,26 @@ import java.util.HashSet
  */
 class AttributeGroupImpl(
     override val tag: DelimiterTag,
-    private val attributes: List<Attribute<*>>
+    private val attributes: MutableList<Attribute<*>>
 ) : AttributeGroup, List<Attribute<*>> by attributes {
 
     init {
-        // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-        // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
+        // RFC8011: The attributes within a group MUST be unique; if an attribute with
+        // the same name occurs more than once, the group is malformed (see [RFC8011] section 4.1.3).
+        // Select the last value for the duplicate attribute.
         val names = HashSet<String>()
+        val duplicateAttributes = mutableListOf<Attribute<*>>()
         for (attribute in attributes) {
             val name = attribute.name
-            if (names.contains(name)) {
-                throw BuildError("Attribute Group contains more than one '$name` in $attributes")
+            if (names.contains(name) && !duplicateAttributes.any { it.name == name }) {
+                attributes.findLast { it.name == name }?.let { duplicateAttributes.add(it) }
             }
             names.add(name)
+        }
+
+        duplicateAttributes.forEach { duplicate ->
+            attributes.removeAll { duplicate.name == it.name }
+            attributes.add(duplicate)
         }
     }
 
