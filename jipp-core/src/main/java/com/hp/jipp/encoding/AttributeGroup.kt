@@ -49,7 +49,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
             (
                 map { it.type to it }.toMap() + attributes.map { it.type to it }
                     .toMap()
-                ).values.toMutableList()
+                ).values.toList()
         )
 
     /** Return a copy of this attribute group in mutable form. */
@@ -66,7 +66,7 @@ interface AttributeGroup : PrettyPrintable, List<Attribute<*>> {
         /** Return a fixed group of attributes. */
         @JvmStatic
         fun groupOf(tag: DelimiterTag, attributes: Iterable<Attribute<*>>): AttributeGroup =
-            AttributeGroupImpl(tag, attributes.toMutableList())
+            AttributeGroupImpl(tag, attributes.toList())
 
         /** Return a fixed group of attributes. */
         @JvmStatic
