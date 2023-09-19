@@ -3,29 +3,14 @@
 
 package com.hp.jipp.encoding
 
-import com.hp.jipp.util.BuildError
-import java.util.HashSet
-
 /**
  * An implementation of [AttributeGroup].
  */
 class AttributeGroupImpl(
     override val tag: DelimiterTag,
-    private val attributes: List<Attribute<*>>
-) : AttributeGroup, List<Attribute<*>> by attributes {
-
-    init {
-        // RFC2910: Within an attribute group, if two or more attributes have the same name, the attribute group
-        // is malformed (see [RFC2911] section 3.1.3). Throw if someone attempts this.
-        val names = HashSet<String>()
-        for (attribute in attributes) {
-            val name = attribute.name
-            if (names.contains(name)) {
-                throw BuildError("Attribute Group contains more than one '$name` in $attributes")
-            }
-            names.add(name)
-        }
-    }
+    attributes: List<Attribute<*>>
+) : AttributeGroup, List<Attribute<*>> by attributes.handleDuplicates() {
+    private val attributes = toList()
 
     /** Return the attribute corresponding to the specified [name]. */
     override operator fun get(name: String): Attribute<*>? = firstOrNull { it.name == name }
@@ -51,5 +36,18 @@ class AttributeGroupImpl(
 
     override fun toString(): String {
         return "AttributeGroup($tag, $attributes)"
+    }
+
+    companion object {
+        /**
+         * Return a list of attributes with the last value of a duplicate, if present.
+         *
+         * Note: As per RFC8011: The attributes within a group MUST be unique; if an attribute with
+         * the same name occurs more than once, the group is malformed (see [RFC8011] section 4.1.3).
+         */
+        @JvmStatic
+        fun List<Attribute<*>>.handleDuplicates(): List<Attribute<*>> {
+            return groupBy { it.name }.values.map { it.last() }
+        }
     }
 }
