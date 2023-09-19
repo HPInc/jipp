@@ -1,5 +1,10 @@
 # History of Changes
 
+## 0.7.15-beta3
+
+* Handle duplicate attributes and take last (#133).
+* Remove api code for circleci (#158).
+
 ## 0.7.15-beta2
 
 * Added fix to set IppPacket elements in Java (#147).
