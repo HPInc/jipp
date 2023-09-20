@@ -56,13 +56,13 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.9"
 }
 
 jacocoTestReport {
     reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
+        xml.required = true // coveralls plugin depends on xml format report
+        html.outputLocation = layout.buildDirectory.dir('reports/jacocoHtml')
     }
 
     afterEvaluate {
