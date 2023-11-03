@@ -1,5 +1,10 @@
 # History of Changes
 
+## 0.7.15
+
+* Handle sonatype vulnerability (#160).
+* Revert kotlin lib version (#161).
+
 ## 0.7.15-beta3
 
 * Handle duplicate attributes and take last (#133).
