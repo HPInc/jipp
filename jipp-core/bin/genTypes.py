@@ -407,11 +407,6 @@ def parse_attribute(record):
     if attr_name in ignored_attributes:
         return
 
-    # XML fix (date-time-at-creation | unknown)
-    if attr_name == "date-time-at-creation | unknown":
-        attr_name = "date-time-at-creation"
-        syntax_name += " | unknown"
-
     attr = collection.setdefault(attr_name, {
         'name': attr_name, 'specs': [ ], 'syntax': syntax_name, 'members': { } } )
     fix_syntax(attr)
