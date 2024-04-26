@@ -48,6 +48,7 @@ collections_with_extras = {
     'job-resolvers-supported': 'jobAttributes',
     'job-constraints-supported': 'jobAttributes',
     'printer-icc-profiles': 'jobAttributes',
+    'overrides': 'jobAttributes',
 }
 
 special_ref_logic = ('media-col-database', 'media-col-ready')
