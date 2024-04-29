@@ -1,3 +1,6 @@
+// Copyright 2018 - 2021 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.util.toHexString
 import org.junit.Assert.assertEquals

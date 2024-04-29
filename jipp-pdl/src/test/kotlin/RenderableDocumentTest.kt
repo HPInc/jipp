@@ -1,3 +1,6 @@
+// Copyright 2019 - 2021 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.ColorSpace
 import com.hp.jipp.pdl.OutputSettings

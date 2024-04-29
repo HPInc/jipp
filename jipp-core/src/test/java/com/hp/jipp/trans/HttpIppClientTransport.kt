@@ -1,3 +1,6 @@
+// Copyright 2018 - 2021 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.trans
 
 import com.hp.jipp.encoding.IppInputStream

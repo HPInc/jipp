@@ -1,3 +1,6 @@
+// Copyright 2018 - 2019 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package util
 
 import java.util.* // ktlint-disable no-wildcard-imports

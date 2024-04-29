@@ -1,3 +1,6 @@
+// Copyright 2017 - 2018 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.util
 
 import org.junit.Assert.* // ktlint-disable no-wildcard-imports
