@@ -1,3 +1,6 @@
+// Copyright 2018 - 2022 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package sample;
 
 import com.hp.jipp.encoding.IppInputStream;
