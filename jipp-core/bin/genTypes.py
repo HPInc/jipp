@@ -1018,13 +1018,19 @@ def emit_collection(env, type):
         if member['members']:
             member['kimpl'] = '    ' + collection_template.render(
                 name=member['name'], collection=member, app=os.path.basename(sys.argv[0]), updated=updated,
-                specs=specs, noheader=True).replace('\n', '\n    ').strip()
+                specs=specs, noheader=True, obverse=True).replace('\n', '\n    ').strip()
 
     original_type['emitted'] = True
+
+    # Maintain sequence of overrides attributes
+    flag = True
+    if name == "overrides":
+        flag = False
+
     with open(prep_file(name), 'w') as file:
         file.write(rstrip_all(collection_template.render(
             name=name, collection=type, app=os.path.basename(sys.argv[0]),
-            updated=updated, specs=specs)))
+            updated=updated, specs=specs, obverse=flag)))
 
 def rstrip_all(text):
     return re.sub(' +\n', '\n', text)
