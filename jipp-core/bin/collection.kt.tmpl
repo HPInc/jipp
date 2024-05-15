@@ -13,11 +13,7 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 {%-  endif %}
 {%- endif %}
-{%- if obverse %}
- {% set reversed=False %}
-{%- else %}
- {% set reversed=True %}
-{%- endif %}
+
 /**
  * Data object corresponding to a "{{ collection.name }}" collection{%- if collection.specs %} as defined in:{%- for spec in collection.specs | sort %}
  * [{{ spec | upper }}]({{ specs[spec] }}){{ "," if not loop.last }}{%- endfor %}{%- else %}{%- endif %}.{%- if collection['refs']%}
@@ -28,7 +24,7 @@ import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 @Suppress("RedundantCompanionReference", "unused")
 data class {{ collection.name | camel_class }}
 constructor(
-{%- for name, member in collection.members | dictsort(reverse=reversed) %}
+{%- for name, member in collection.members | dictsort %}
 {%- if member.kdoc %}
     /** {{ member.kdoc }} */
 {%- endif %}
@@ -46,7 +42,7 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
-{%- for name, member in collection.members | dictsort(reverse=reversed) %}
+{%- for name, member in collection.members | dictsort %}
             {{ name | camel_member }}?.let { {{ collection.name | camel_class }}.{{ name | camel_member }}.of(it{%- if member.set and member.kbase %}.map { v -> {{ member.kbase }}(v) }{%- endif %}) },
 {%- endfor %}
         ) {%- if collection.extras %} + extras {%- endif %}
@@ -55,7 +51,7 @@ constructor(
     companion object : AttributeCollection.Converter<{{ collection.name | camel_class }}> {
         override fun convert(attributes: List<Attribute<*>>): {{ collection.name | camel_class }} =
             {{ collection.name | camel_class }}(
-{%- for name, member in collection.members | dictsort(reverse=reversed) %}
+{%- for name, member in collection.members | dictsort %}
  {%- if member.set %}
                 extractAll(attributes, {{ name | camel_member }})
   {%- if member.ktype_accessor %}?.map { it.{{ member.ktype_accessor }} }{%- endif %},
@@ -68,14 +64,14 @@ constructor(
                 groupOf(
                     Tag.{{ collection.extras }},
                     attributes{%- if collection.members %}.filterNot {
-                        {%- for name, member in collection.members | dictsort(reverse=reversed) %} it.name == {{ name | camel_member }}.name{{ " ||" if not loop.last }}{%- endfor %} }{%- endif %}
+                        {%- for name, member in collection.members | dictsort %} it.name == {{ name | camel_member }}.name{{ " ||" if not loop.last }}{%- endfor %} }{%- endif %}
                 ),
 {%- endif %}
             )
         override val cls = {{ collection.name | camel_class }}::class.java
         @Deprecated("Remove this symbol")
         @JvmField val Types = this
-        {%- for name, member in collection.members | dictsort(reverse=reversed) %}
+        {%- for name, member in collection.members | dictsort %}
         {%- if member.syntax == 'enum' %}
         /**
          * "{{ member.name }}" member type. {%- if member.kdoc %}
@@ -86,7 +82,7 @@ constructor(
         {%- endfor %}
     }
 
-{%- for name, member in collection.members | dictsort(reverse=reversed) %}{%- if member.kimpl %}
+{%- for name, member in collection.members | dictsort %}{%- if member.kimpl %}
 
 {{ member.kimpl }}{%- endif %}{%- endfor %}
     override fun toString() = "{{ collection.name | camel_class }}(${attributes.joinToString()})"
