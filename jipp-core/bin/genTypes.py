@@ -14,7 +14,6 @@ import os.path
 import sys
 from jinja2 import Environment, FileSystemLoader # pip install Jinja2
 from datetime import datetime, date
-import argparse
 import git
 
 # Global data
@@ -1107,16 +1106,6 @@ def emit_code():
 
 # MAIN
 
-# Initialize parser
-parser = argparse.ArgumentParser()
-parser.add_argument("-y", "--Year", help = "Copyright year")
-
-# Read arguments from command line
-args = parser.parse_args()
-copyright_year = date.today().year
-if args.Year:
-    copyright_year = args.Year
-
 xml_file = proj_dir + 'build/ipp-registrations.xml'
 if not os.path.exists(os.path.dirname(xml_file)):
     os.makedirs(os.path.dirname(xml_file))
@@ -1132,6 +1121,14 @@ tree = etree.parse(xml_file)
 for elem in tree.iter('{*}registry'):
     if elem.find('{*}title').text == "Internet Printing Protocol (IPP) Registrations":
         updated = elem.find('{*}updated').text
+
+copyright_year = None
+if updated:
+    updated_dt_obj = datetime.strptime(updated, "%Y-%m-%d").date()
+    copyright_year = updated_dt_obj.year
+
+if not copyright_year:
+    warn("Unable to calculate updated timestamp")
 
 parse_records(tree, "Enum Attribute Values", parse_enum)
 parse_records(tree, "Keyword Attribute Values", parse_keyword)
