@@ -41,9 +41,11 @@ data class Operation(override val code: Int, override val name: String) : Enum()
 
     object Code {
         const val printJob = 0x0002
+        const val printUri = 0x0003
         const val validateJob = 0x0004
         const val createJob = 0x0005
         const val sendDocument = 0x0006
+        const val sendUri = 0x0007
         const val cancelJob = 0x0008
         const val getJobAttributes = 0x0009
         const val getJobs = 0x000A
@@ -138,9 +140,11 @@ data class Operation(override val code: Int, override val name: String) : Enum()
 
     companion object {
         @JvmField val printJob = Operation(Code.printJob, "Print-Job")
+        @JvmField val printUri = Operation(Code.printUri, "Print-URI")
         @JvmField val validateJob = Operation(Code.validateJob, "Validate-Job")
         @JvmField val createJob = Operation(Code.createJob, "Create-Job")
         @JvmField val sendDocument = Operation(Code.sendDocument, "Send-Document")
+        @JvmField val sendUri = Operation(Code.sendUri, "Send-URI")
         @JvmField val cancelJob = Operation(Code.cancelJob, "Cancel-Job")
         @JvmField val getJobAttributes = Operation(Code.getJobAttributes, "Get-Job-Attributes")
         @JvmField val getJobs = Operation(Code.getJobs, "Get-Jobs")
@@ -234,9 +238,11 @@ data class Operation(override val code: Int, override val name: String) : Enum()
 
         @JvmField val all = listOf(
             printJob,
+            printUri,
             validateJob,
             createJob,
             sendDocument,
+            sendUri,
             cancelJob,
             getJobAttributes,
             getJobs,

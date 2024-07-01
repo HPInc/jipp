@@ -214,12 +214,20 @@ def parse_enum(record):
         name = re.sub(' *\(.*\)', '', name)
 
     try:
+        value = fix_suffix(value)
         if value.startswith("0x"):
             enum['hex'] = True
         value = int(value, 0)
         enum['values'][name] = value
     except ValueError:
         warn("enum " + attribute + " has non-integer value " + value)
+
+# Fix the value by stripping suffix (deprecated)
+def fix_suffix(suffixed_val):
+    suffix = re.search("\(([A-Z a-z]+)\)", suffixed_val)
+    if suffix and suffix.group(1) == "deprecated":
+        suffixed_val = re.sub(' *\(.*\)', '', suffixed_val)
+    return suffixed_val
 
 # Parse a single status code
 def parse_status_code(record):
