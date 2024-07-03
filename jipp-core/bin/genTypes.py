@@ -224,10 +224,11 @@ def parse_enum(record):
 
 # Fix the value by stripping suffix (deprecated)
 def fix_suffix(suffixed_val):
+    stripped_val = suffixed_val
     suffix = re.search("\(([A-Z a-z]+)\)", suffixed_val)
     if suffix and suffix.group(1) == "deprecated":
-        suffixed_val = re.sub(' *\(.*\)', '', suffixed_val)
-    return suffixed_val
+        stripped_val = re.sub(' *\(.*\)', '', suffixed_val)
+    return stripped_val
 
 # Parse a single status code
 def parse_status_code(record):
