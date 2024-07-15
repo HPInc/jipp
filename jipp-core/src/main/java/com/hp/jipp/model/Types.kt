@@ -1351,6 +1351,11 @@ object Types {
      */
     @JvmField val jobKOctetsSupported = IntRangeType("job-k-octets-supported")
     /**
+     * "job-mandatory-attributes" type as defined in:
+     * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext21-20230210-5100.7.pdf).
+     */
+    @JvmField val jobMandatoryAttributes = KeywordType.Set("job-mandatory-attributes")
+    /**
      * "job-mandatory-attributes-supported" type as defined in:
      * [PWG5100.7](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext21-20230210-5100.7.pdf).
      */

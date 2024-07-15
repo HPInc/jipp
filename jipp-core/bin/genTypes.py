@@ -51,6 +51,7 @@ collections_with_extras = {
 }
 
 special_ref_logic = ('media-col-database', 'media-col-ready')
+ignore_value_suffix = ('Print-URI', 'Send-URI')
 
 
 def pretty(o):
@@ -214,7 +215,8 @@ def parse_enum(record):
         name = re.sub(' *\(.*\)', '', name)
 
     try:
-        value = fix_suffix(value)
+        if name in ignore_value_suffix:
+            value = fix_suffix(value)
         if value.startswith("0x"):
             enum['hex'] = True
         value = int(value, 0)
@@ -386,7 +388,7 @@ ignored_attributes = [
 ]
 
 # list of members that are obsolete in one attribute but used in other
-suffix_ignore_list = ['compression', 'ipp-attribute-fidelity']
+suffix_ignore_list = ['compression', 'ipp-attribute-fidelity', 'job-mandatory-attributes']
 
 # Parse a single attribute record
 def parse_attribute(record):
