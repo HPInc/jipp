@@ -522,9 +522,9 @@ def copyright_period(class_name, extension = ".kt"):
 
     if os.path.isfile(file_path):
         creation_year = get_creation_year(file_path)
-        if creation_year:
-            return "%d - %d" % (creation_year, copyright_year)
-    return "%d" % copyright_year
+        if creation_year and creation_year != xml_update_year:
+            return "%d - %d" % (creation_year, xml_update_year)
+    return "%d" % xml_update_year
 
 def get_creation_year(file_path):
     try:
@@ -1128,12 +1128,12 @@ for elem in tree.iter('{*}registry'):
     if elem.find('{*}title').text == "Internet Printing Protocol (IPP) Registrations":
         updated = elem.find('{*}updated').text
 
-copyright_year = None
+xml_update_year = None
 if updated:
     updated_dt_obj = datetime.strptime(updated, "%Y-%m-%d").date()
-    copyright_year = updated_dt_obj.year
+    xml_update_year = updated_dt_obj.year
 
-if not copyright_year:
+if not xml_update_year:
     warn("Unable to calculate updated timestamp")
 
 parse_records(tree, "Enum Attribute Values", parse_enum)
