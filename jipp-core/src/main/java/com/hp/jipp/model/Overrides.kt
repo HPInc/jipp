@@ -8,7 +8,6 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
-import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 
 /**
  * Data object corresponding to a "overrides" collection as defined in:
@@ -20,8 +19,6 @@ constructor(
     var documentCopies: List<IntRange>? = null,
     var documentNumbers: List<IntRange>? = null,
     var pages: List<IntRange>? = null,
-    /** Additional attributes (see specification for valid values). */
-    var extras: AttributeGroup = groupOf(Tag.jobAttributes),
 ) : AttributeCollection {
 
     /** Construct an empty [Overrides]. */
@@ -29,7 +26,7 @@ constructor(
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
-        get() = extras + listOfNotNull(
+        get() = listOfNotNull(
             documentCopies?.let { Overrides.documentCopies.of(it) },
             documentNumbers?.let { Overrides.documentNumbers.of(it) },
             pages?.let { Overrides.pages.of(it) },
@@ -42,10 +39,6 @@ constructor(
                 extractAll(attributes, documentCopies),
                 extractAll(attributes, documentNumbers),
                 extractAll(attributes, pages),
-                groupOf(
-                    Tag.jobAttributes,
-                    attributes.filterNot { it.name == documentCopies.name || it.name == documentNumbers.name || it.name == pages.name }
-                ),
             )
         override val cls = Overrides::class.java
         @Deprecated("Remove this symbol")
