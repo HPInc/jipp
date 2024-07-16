@@ -55,6 +55,7 @@ collections_with_extras = {
 }
 
 special_ref_logic = ('media-col-database', 'media-col-ready')
+ignore_value_suffix = ('Print-URI', 'Send-URI')
 
 
 def pretty(o):
@@ -218,12 +219,22 @@ def parse_enum(record):
         name = re.sub(' *\(.*\)', '', name)
 
     try:
+        if name in ignore_value_suffix:
+            value = fix_suffix(value)
         if value.startswith("0x"):
             enum['hex'] = True
         value = int(value, 0)
         enum['values'][name] = value
     except ValueError:
         warn("enum " + attribute + " has non-integer value " + value)
+
+# Fix the value by stripping suffix (deprecated)
+def fix_suffix(suffixed_val):
+    stripped_val = suffixed_val
+    suffix = re.search("\(([A-Z a-z]+)\)", suffixed_val)
+    if suffix and suffix.group(1) == "deprecated":
+        stripped_val = re.sub(' *\(.*\)', '', suffixed_val)
+    return stripped_val
 
 # Parse a single status code
 def parse_status_code(record):
@@ -381,7 +392,7 @@ ignored_attributes = [
 ]
 
 # list of members that are obsolete in one attribute but used in other
-suffix_ignore_list = ['compression', 'ipp-attribute-fidelity']
+suffix_ignore_list = ['compression', 'ipp-attribute-fidelity', 'job-mandatory-attributes']
 
 # Parse a single attribute record
 def parse_attribute(record):
@@ -410,11 +421,6 @@ def parse_attribute(record):
 
     if attr_name in ignored_attributes:
         return
-
-    # XML fix (date-time-at-creation | unknown)
-    if attr_name == "date-time-at-creation | unknown":
-        attr_name = "date-time-at-creation"
-        syntax_name += " | unknown"
 
     attr = collection.setdefault(attr_name, {
         'name': attr_name, 'specs': [ ], 'syntax': syntax_name, 'members': { } } )
