@@ -28,9 +28,9 @@ constructor(
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
-        get() = extras + listOfNotNull(
+        get() = listOfNotNull(
             resolverName?.let { JobConstraintsSupported.resolverName.of(it) },
-        )
+        ) + extras
 
     /** Defines types for each member of [JobConstraintsSupported]. */
     companion object : AttributeCollection.Converter<JobConstraintsSupported> {

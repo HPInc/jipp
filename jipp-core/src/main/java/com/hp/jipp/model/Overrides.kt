@@ -8,6 +8,7 @@
 package com.hp.jipp.model
 
 import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
+import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 
 /**
  * Data object corresponding to a "overrides" collection as defined in:
@@ -16,9 +17,11 @@ import com.hp.jipp.encoding.* // ktlint-disable no-wildcard-imports
 @Suppress("RedundantCompanionReference", "unused")
 data class Overrides
 constructor(
-    var documentCopies: List<IntRange>? = null,
-    var documentNumbers: List<IntRange>? = null,
     var pages: List<IntRange>? = null,
+    var documentNumbers: List<IntRange>? = null,
+    var documentCopies: List<IntRange>? = null,
+    /** Additional attributes (see specification for valid values). */
+    var extras: AttributeGroup = groupOf(Tag.jobAttributes),
 ) : AttributeCollection {
 
     /** Construct an empty [Overrides]. */
@@ -27,25 +30,29 @@ constructor(
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
-            documentCopies?.let { Overrides.documentCopies.of(it) },
-            documentNumbers?.let { Overrides.documentNumbers.of(it) },
             pages?.let { Overrides.pages.of(it) },
-        )
+            documentNumbers?.let { Overrides.documentNumbers.of(it) },
+            documentCopies?.let { Overrides.documentCopies.of(it) },
+        ) + extras
 
     /** Defines types for each member of [Overrides]. */
     companion object : AttributeCollection.Converter<Overrides> {
         override fun convert(attributes: List<Attribute<*>>): Overrides =
             Overrides(
-                extractAll(attributes, documentCopies),
-                extractAll(attributes, documentNumbers),
                 extractAll(attributes, pages),
+                extractAll(attributes, documentNumbers),
+                extractAll(attributes, documentCopies),
+                groupOf(
+                    Tag.jobAttributes,
+                    attributes.filterNot { it.name == pages.name || it.name == documentNumbers.name || it.name == documentCopies.name }
+                ),
             )
         override val cls = Overrides::class.java
         @Deprecated("Remove this symbol")
         @JvmField val Types = this
-        @JvmField val documentCopies = IntRangeType.Set("document-copies")
-        @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
         @JvmField val pages = IntRangeType.Set("pages")
+        @JvmField val documentNumbers = IntRangeType.Set("document-numbers")
+        @JvmField val documentCopies = IntRangeType.Set("document-copies")
     }
     override fun toString() = "Overrides(${attributes.joinToString()})"
 }

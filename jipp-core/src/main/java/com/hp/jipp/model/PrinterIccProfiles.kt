@@ -28,10 +28,10 @@ constructor(
 
     /** Produce an attribute list from members. */
     override val attributes: List<Attribute<*>>
-        get() = extras + listOfNotNull(
+        get() = listOfNotNull(
             profileName?.let { PrinterIccProfiles.profileName.of(it) },
             profileUrl?.let { PrinterIccProfiles.profileUrl.of(it) },
-        )
+        ) + extras
 
     /** Defines types for each member of [PrinterIccProfiles]. */
     companion object : AttributeCollection.Converter<PrinterIccProfiles> {
