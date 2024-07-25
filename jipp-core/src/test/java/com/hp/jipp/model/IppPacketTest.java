@@ -1,4 +1,4 @@
-// Copyright 2018 HP Development Company, L.P.
+// Copyright 2016 - 2020 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package com.hp.jipp.model;

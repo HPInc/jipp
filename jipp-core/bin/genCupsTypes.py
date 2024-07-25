@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+# Copyright 2020 HP Development Company, L.P.
 #
 # * Reads registrations from https://www.cups.org/doc/spec-ipp.html
 # * Converts them into Kotlin files

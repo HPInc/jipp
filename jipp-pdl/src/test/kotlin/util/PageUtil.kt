@@ -1,3 +1,6 @@
+// Copyright 2021 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package util
 
 import com.hp.jipp.pdl.ColorSpace

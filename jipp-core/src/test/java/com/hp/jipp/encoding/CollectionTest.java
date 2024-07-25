@@ -1,3 +1,6 @@
+// Copyright 2018 - 2021 HP Development Company, L.P.
+// SPDX-License-Identifier: MIT
+
 package com.hp.jipp.encoding;
 
 import com.hp.jipp.model.CoveringName;
