@@ -15,7 +15,8 @@ import pprint
 import os.path
 import sys
 from jinja2 import Environment, FileSystemLoader # pip install Jinja2
-from datetime import datetime
+from datetime import datetime, date
+import git
 
 # Global data
 specs = { }
@@ -27,6 +28,8 @@ collections = { }
 pending_collections = { }
 out_files = [ ]
 proj_dir = os.path.dirname(os.path.realpath(__file__)) + "/../"
+path_model_dir = proj_dir + 'src/main/java/com/hp/jipp/model/'
+proj_root = os.path.dirname(os.path.realpath(__file__)) + "/../../"
 warns = 0
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -515,6 +518,30 @@ def camel_class(string):
 
 def camel_class_path(string):
     return "".join([word.title() for word in re.split("[ _-]", string) if len(word) > 0])
+
+def copyright_period(class_name, extension = ".kt"):
+    file_path = os.path.abspath(path_model_dir + class_name + extension)
+
+    if os.path.isfile(file_path):
+        creation_year = get_creation_year(file_path)
+        if creation_year and creation_year != xml_update_year:
+            return "%d - %d" % (creation_year, xml_update_year)
+    return "%d" % xml_update_year
+
+def get_creation_year(file_path):
+    try:
+        repository = git.Repo(proj_root);
+        git_add_timestamp =  repository.git.log('--diff-filter=A', '--follow', '--format=%aD', '-1', '--' , file_path)
+        try:
+            if git_add_timestamp:
+                date_object = datetime.strptime(git_add_timestamp, "%a, %d %b %Y %H:%M:%S %z")
+                return date_object.year
+        except:
+            warn("Failed to parse git timestamp")
+    except Exception as error:
+        warn("Unable to initialize git, please setup git in environment path")
+        warn(error)
+    return None
 
 java_keywords = [
     "abstract", "continue", "for", "new", "switch", "assert", "default", "goto", "package", "synchronized",
@@ -1072,6 +1099,7 @@ def emit_code():
     env.filters['camel_member'] = camel_member
     env.filters['spaced_title'] = spaced_title
     env.filters['upper'] = upper
+    env.filters['copyright_period'] = copyright_period
 
     emit_kind(env, 'enum.kt.tmpl', enums, emit_enum)
     emit_kind(env, 'keyword.java.tmpl', keywords, emit_keyword)
@@ -1107,6 +1135,14 @@ tree = etree.parse(xml_file)
 for elem in tree.iter('{*}registry'):
     if elem.find('{*}title').text == "Internet Printing Protocol (IPP) Registrations":
         updated = elem.find('{*}updated').text
+
+xml_update_year = None
+if updated:
+    updated_dt_obj = datetime.strptime(updated, "%Y-%m-%d").date()
+    xml_update_year = updated_dt_obj.year
+
+if not xml_update_year:
+    warn("Unable to calculate updated timestamp")
 
 parse_records(tree, "Enum Attribute Values", parse_enum)
 parse_records(tree, "Keyword Attribute Values", parse_keyword)
