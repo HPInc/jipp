@@ -1,8 +1,12 @@
 # History of Changes
 
-## 0.7.16
+## 0.7.16-beta1
 
 * Updated kotlin and gradle version (#167).
+* Update copyright information in model files (#175).
+* Update copyright info in source files.
+* Added missing overrides to extra list (#139).
+* Upgraded IPP registrations to 2024-06-13
 
 ## 0.7.15
 
