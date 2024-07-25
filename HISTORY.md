@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.16
+
+* Updated kotlin and gradle version (#167).
+
 ## 0.7.15
 
 * Handle sonatype vulnerability (#160).
