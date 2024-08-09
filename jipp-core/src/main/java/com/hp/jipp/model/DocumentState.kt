@@ -26,7 +26,7 @@ data class DocumentState(override val code: Int, override val name: String) : En
 
     object Code {
         const val pending = 3
-        const val procesing = 5
+        const val processing = 5
         const val processingStopped = 6
         const val canceled = 7
         const val aborted = 8
@@ -35,7 +35,7 @@ data class DocumentState(override val code: Int, override val name: String) : En
 
     companion object {
         @JvmField val pending = DocumentState(Code.pending, "pending")
-        @JvmField val procesing = DocumentState(Code.procesing, "procesing")
+        @JvmField val processing = DocumentState(Code.processing, "processing")
         @JvmField val processingStopped = DocumentState(Code.processingStopped, "processing-stopped")
         @JvmField val canceled = DocumentState(Code.canceled, "canceled")
         @JvmField val aborted = DocumentState(Code.aborted, "aborted")
@@ -43,7 +43,7 @@ data class DocumentState(override val code: Int, override val name: String) : En
 
         @JvmField val all = listOf(
             pending,
-            procesing,
+            processing,
             processingStopped,
             canceled,
             aborted,

@@ -46,7 +46,7 @@ public class AttributeTest {
         UnknownAttribute intAttr = new UnknownAttribute("document-state", new UntypedEnum(3), new UntypedEnum(5), new UntypedEnum(6));
         DocumentState.Type documentStateType = new DocumentState.Type("document-state");
         assertEquals(Arrays.asList(
-                DocumentState.pending, DocumentState.procesing, DocumentState.processingStopped
+                DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
         ), documentStateType.coerce(intAttr));
     }
 
