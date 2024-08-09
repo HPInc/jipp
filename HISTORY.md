@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.16
+
+* Fix DocumentState enum (#185).
+
 ## 0.7.16-beta1
 
 * Updated kotlin and gradle version (#167).
