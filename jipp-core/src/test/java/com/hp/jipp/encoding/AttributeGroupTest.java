@@ -62,7 +62,7 @@ public class AttributeGroupTest {
         DocumentState.Type documentStateType = new DocumentState.Type("document-state");
 
         assertEquals(Arrays.asList(
-                DocumentState.pending, DocumentState.procesing, DocumentState.processingStopped
+                DocumentState.pending, DocumentState.processing, DocumentState.processingStopped
         ), group.get(documentStateType));
     }
 
