@@ -14,15 +14,15 @@ import java.util.* // ktlint-disable no-wildcard-imports
  * Specification v1.1
  */
 class PackBits(
-    /** Number of bytes per pixel (1 for grayscale, 3 for RGB) */
-    private val bytesPerPixel: Int,
+    /** Number of bits per pixel (1 for bi-level, 8 for grayscale, 24 for RGB) */
+    private val bitsPerPixel: Int,
     /** Total number of pixels on each horizontal line */
     private val pixelsPerLine: Int
 ) {
 
     /** Reads [inputPixels] until there are no more, writing encoded bytes to [outputBytes] */
     fun encode(inputPixels: InputStream, outputBytes: OutputStream) {
-        EncodeContext(inputPixels, outputBytes, bytesPerPixel, pixelsPerLine).encode()
+        EncodeContext(inputPixels, outputBytes, bitsPerPixel * PwgSettings.BITS_PER_BYTE, pixelsPerLine).encode()
     }
 
     /** Manage the mutable context during encoding */
@@ -189,8 +189,8 @@ class PackBits(
 
     private fun decodeLine(bytes: InputStream, pixelsPerLine: Int): ByteArray {
         val pixels = ByteArrayOutputStream()
-        val pixel = ByteArray(bytesPerPixel)
-        while (pixels.size() < pixelsPerLine * bytesPerPixel) {
+        val pixel = ByteArray(bitsPerPixel * PwgSettings.BITS_PER_BYTE)
+        while (pixels.size() < pixelsPerLine * bitsPerPixel * PwgSettings.BITS_PER_BYTE) {
             val control = bytes.read()
             if (control == -1) throw IOException("EOF before EOL")
             if (control < MAX_GROUP) {
@@ -206,8 +206,8 @@ class PackBits(
                 }
             }
         }
-        if (pixels.size() > pixelsPerLine * bytesPerPixel) {
-            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine * bytesPerPixel}")
+        if (pixels.size() > pixelsPerLine * bitsPerPixel * PwgSettings.BITS_PER_BYTE) {
+            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine * bitsPerPixel * PwgSettings.BITS_PER_BYTE}")
         }
         return pixels.toByteArray()
     }

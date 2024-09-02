@@ -100,7 +100,7 @@ object PwgValidator {
             println("renderingIntent=$renderingIntent, pageSizeName=$pageSizeName")
 
             val imageBytes = ByteArrayOutputStream()
-            PackBits(bytesPerPixel = bitsPerPixel / 8, pixelsPerLine = width)
+            PackBits(bitsPerPixel = bitsPerPixel, pixelsPerLine = width)
                 .decode(this, imageBytes, lines = height)
             println(ByteWindow(imageBytes.toByteArray()).toString(200))
             assertEquals(width * height, imageBytes.size() / (bitsPerPixel / 8))
