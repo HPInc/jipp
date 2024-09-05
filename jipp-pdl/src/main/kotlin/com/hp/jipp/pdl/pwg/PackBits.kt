@@ -3,6 +3,7 @@
 
 package com.hp.jipp.pdl.pwg
 
+import com.hp.jipp.pdl.pwg.PwgSettings.Companion.BITS_PER_BYTE
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -25,7 +26,7 @@ class PackBits(
         EncodeContext(
             inputPixels,
             outputBytes,
-            bitsPerPixel / PwgSettings.BITS_PER_BYTE,
+            bitsPerPixel / PwgSettings.BITS_PER_BYTE,//bitsPerPixel,
             pixelsPerLine
         ).encode()
     }
@@ -34,10 +35,11 @@ class PackBits(
     private class EncodeContext(
         private val pixelsIn: InputStream,
         private val bytesOut: OutputStream,
-        private val bytesPerPixel: Int,
+        private val bytesPerPixel: Int,//bitsPerPixel: Int,
         pixelsPerLine: Int
     ) {
-        private val bytesPerLine = bytesPerPixel * pixelsPerLine//ceil(bytesPerPixel * pixelsPerLine).toInt()
+        private val bytesPerLine =
+            bytesPerPixel * pixelsPerLine//ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE * pixelsPerLine).toInt()
         private var lineArrayValid = false
         private var lineArray = ByteArray(bytesPerLine)
         private var nextLineArrayValid = false
@@ -194,8 +196,8 @@ class PackBits(
 
     private fun decodeLine(bytes: InputStream, pixelsPerLine: Int): ByteArray {
         val pixels = ByteArrayOutputStream()
-        val pixel = ByteArray(ceil(bitsPerPixel.toDouble() / PwgSettings.BITS_PER_BYTE).toInt())
-        while (pixels.size() < pixelsPerLine * bitsPerPixel.toDouble() / PwgSettings.BITS_PER_BYTE) {
+        val pixel = ByteArray(ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt())
+        while (pixels.size() < pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE) {
             val control = bytes.read()
             if (control == -1) throw IOException("EOF before EOL")
             if (control < MAX_GROUP) {
@@ -211,8 +213,8 @@ class PackBits(
                 }
             }
         }
-        if (pixels.size() > ceil(pixelsPerLine * bitsPerPixel.toDouble() / PwgSettings.BITS_PER_BYTE)) {
-            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine / bitsPerPixel * PwgSettings.BITS_PER_BYTE}")
+        if (pixels.size() > ceil(pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE)) {
+            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine / bitsPerPixel * BITS_PER_BYTE}")
         }
         return pixels.toByteArray()
     }
