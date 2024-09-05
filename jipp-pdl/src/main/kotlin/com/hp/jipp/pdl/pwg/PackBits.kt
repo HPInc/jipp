@@ -26,7 +26,7 @@ class PackBits(
         EncodeContext(
             inputPixels,
             outputBytes,
-            bitsPerPixel / PwgSettings.BITS_PER_BYTE,//bitsPerPixel,
+            bitsPerPixel / BITS_PER_BYTE,//bitsPerPixel,
             pixelsPerLine
         ).encode()
     }
