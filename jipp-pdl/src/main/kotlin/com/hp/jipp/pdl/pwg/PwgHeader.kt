@@ -72,7 +72,7 @@ data class PwgHeader(
     val numColors: Int = bitsPerPixel / bitsPerColor
 
     /** PackBits object used for encoding/decoding pixels of data. */
-    val packBits = PackBits(bytesPerPixel = bitsPerPixel / PwgSettings.BITS_PER_BYTE, pixelsPerLine = width)
+    val packBits = PackBits(bitsPerPixel = bitsPerPixel, pixelsPerLine = width)
 
     init {
         if (vendorData.size > MAX_VENDOR_DATA_SIZE) {
