@@ -8,7 +8,6 @@ allprojects {
     buildscript {
         repositories {
             mavenCentral()
-            jcenter()
             maven {
                 url = 'https://plugins.gradle.org/m2/'
             }
@@ -25,7 +24,9 @@ allprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
+        maven {
+            url = 'https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven'
+        }
     }
 
     version = ext.jipp_version

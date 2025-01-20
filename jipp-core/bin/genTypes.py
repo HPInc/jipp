@@ -256,6 +256,7 @@ def parse_status_code(record):
 obsolete_keywords = [
     'job-cover-back-supported',
     'job-cover-front-supported',
+    'feed-orientation-supported'
 ]
 
 # Parse a single keyword record
@@ -270,7 +271,7 @@ def parse_keyword(record):
         attr_name = re.sub(' *\(.*\)', '', attribute)
 
         # Handle keywords with suffix for now we only handle (deprecated)
-        if not (suffix.group(1) == 'deprecated'):
+        if not (suffix.group(1) == 'deprecated' or suffix.group(1) == 'obsolete'):
                warn("keyword " + attribute + " suffix '" + suffix.group(1) + "' is unparseable")
         else:
             return
@@ -293,8 +294,11 @@ def parse_keyword(record):
 
     # Ignore blank value or values containing stuff like (Reserved)
     if value is None or re.search("\(.*\)", value):
+        if value is not None and re.search("\(.*\)", value).group(0) == "(obsolete)":
+            substring = re.sub(r'\(.*\)', '', value)
+            if substring in keyword['values']:
+                keyword['values'].remove(substring)
         return
-
     if ' ' not in value:
         keyword['values'].append(value)
     else:
@@ -776,7 +780,7 @@ def fix_ktypes(type, syntax, name, group_name = ''):
         intro = 'IntOrIntRangeType%s(' % set
         type['ktype'] = 'IntOrIntRange'
         type['kalt'] = [ 'Int', 'IntRange' ]
-    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
+    elif re.search('^integer\s?(\([0-9MINAX: -]*\))?$', syntax):
         intro = 'IntType%s(' % set
         type['ktype'] = "Int"
     elif syntax == "boolean":
@@ -1124,9 +1128,10 @@ xml_file = proj_dir + 'build/ipp-registrations.xml'
 if not os.path.exists(os.path.dirname(xml_file)):
     os.makedirs(os.path.dirname(xml_file))
 
+print("navjot here is xml file path %s" % xml_file)
 # Fetch the file into xml_file if necessary
-if not os.path.isfile(xml_file):
-    urllib.request.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
+# if not os.path.isfile(xml_file):
+#    urllib.request.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
 
 # Parse from file
 tree = etree.parse(xml_file)
