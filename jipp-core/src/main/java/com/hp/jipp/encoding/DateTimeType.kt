@@ -8,7 +8,7 @@ import java.util.Calendar
 import java.util.TimeZone
 
 /** An [AttributeType] for a DateTime value represented as a [Calendar] object. */
-@Suppress("MagicNumber", "ImplicitDefaultLocale")
+@Suppress("MagicNumber")
 open class DateTimeType(name: String) : AttributeTypeImpl<Calendar>(name, Calendar::class.java) {
     /** An [AttributeType] for multiple DateTime values represented as [Calendar] objects. */
     class Set(name: String) : DateTimeType(name), AttributeSetType<Calendar> {

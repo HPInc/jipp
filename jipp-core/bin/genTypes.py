@@ -1128,10 +1128,9 @@ xml_file = proj_dir + 'build/ipp-registrations.xml'
 if not os.path.exists(os.path.dirname(xml_file)):
     os.makedirs(os.path.dirname(xml_file))
 
-print("navjot here is xml file path %s" % xml_file)
 # Fetch the file into xml_file if necessary
-# if not os.path.isfile(xml_file):
-#    urllib.request.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
+if not os.path.isfile(xml_file):
+    urllib.request.urlretrieve('http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml', xml_file)
 
 # Parse from file
 tree = etree.parse(xml_file)
