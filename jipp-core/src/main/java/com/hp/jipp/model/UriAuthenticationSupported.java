@@ -19,9 +19,9 @@ package com.hp.jipp.model;
 public class UriAuthenticationSupported {
     public static final String basic = "basic";
     public static final String certificate = "certificate";
-    public static final String certificate+basic = "certificate+basic";
-    public static final String certificate+digest = "certificate+digest";
-    public static final String certificate+oauth = "certificate+oauth";
+    public static final String certificatePlusBasic = "certificate+basic";
+    public static final String certificatePlusDigest = "certificate+digest";
+    public static final String certificatePlusOauth = "certificate+oauth";
     public static final String digest = "digest";
     public static final String negotiate = "negotiate";
     public static final String none = "none";

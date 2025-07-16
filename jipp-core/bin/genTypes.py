@@ -555,6 +555,7 @@ java_keywords = [
     "long", "strictfp", "volatile", "const", "float", "native", "super", "while"
 ]
 def java_safe(string):
+
     if string in java_keywords:
         return "_" + string
     else:
@@ -562,6 +563,8 @@ def java_safe(string):
 
 # Accepts any string, returning in the form camelClass
 def camel_member(string):
+    # handle values like certificate+basic, etc.
+    string = string.replace("+", "-plus-")
     value = camel_class(string)
     if len(value) > 1:
         return java_safe(not_numeric(value[0].lower() + value[1:]))
