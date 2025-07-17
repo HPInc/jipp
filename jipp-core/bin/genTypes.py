@@ -259,6 +259,11 @@ obsolete_keywords = [
     'feed-orientation-supported'
 ]
 
+# fix keyword that refers to another keyword and has own members as well
+reference_fix_keyword = {
+    'resource-state-reasons' : 'job-state-reasons'
+}
+
 # Parse a single keyword record
 def parse_keyword(record):
     attribute = record.find('{*}attribute').text
@@ -382,6 +387,7 @@ crossover_attributes = {
     'system-xri-supported': 'printer-xri-supported',
     'printer-xri-requested': 'printer-xri-supported',
     'system-contact-col': 'printer-contact-col',
+    'system-service-contact-col': 'printer-contact-col',
     'system-impressions-completed-col': 'job-impressions-col',
     'system-media-sheets-completed-col': 'job-media-sheets-col',
     'system-pages-completed-col': 'job-pages-col',
@@ -640,7 +646,10 @@ def emit_kind(env, template_name, items, emit_func):
         if 'bad' in item:
             continue
 
-        if 'ref' in item:
+        if item['name'] in reference_fix_keyword:
+            item['values'] = keywords[reference_fix_keyword[item['name']]]['values'] + item['values']
+
+        if 'ref' in item and item['name'] not in reference_fix_keyword:
             if item['ref'] not in items:
                 warn(item['name'] + " has bad ref=" + item['ref'], item)
             continue

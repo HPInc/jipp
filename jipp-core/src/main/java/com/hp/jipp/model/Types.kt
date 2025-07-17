@@ -4279,6 +4279,11 @@ object Types {
      */
     @JvmField val systemSerialNumber = TextType("system-serial-number")
     /**
+     * "system-service-contact-col" type as defined in:
+     * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem11-20250328-5100.22.pdf).
+     */
+    @JvmField val systemServiceContactCol = AttributeCollection.Type("system-service-contact-col", PrinterContactCol)
+    /**
      * "system-settable-attributes-supported" type as defined in:
      * [PWG5100.22](https://ftp.pwg.org/pub/pwg/candidates/cs-ippsystem11-20250328-5100.22.pdf).
      */
