@@ -26,7 +26,7 @@ class PackBits(
         EncodeContext(
             inputPixels,
             outputBytes,
-            bitsPerPixel / BITS_PER_BYTE,//bitsPerPixel,
+            ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt(),
             pixelsPerLine
         ).encode()
     }
