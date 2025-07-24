@@ -3,36 +3,43 @@
 
 package com.hp.jipp.pdl.pwg
 
+import com.hp.jipp.pdl.pwg.PwgSettings.Companion.BITS_PER_BYTE
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.* // ktlint-disable no-wildcard-imports
+import kotlin.math.ceil
 
 /**
  * Encoder/Decoder for the PackBits algorithm described in the Wi-Fi Peer-to-Peer Services Print Technical
  * Specification v1.1
  */
 class PackBits(
-    /** Number of bytes per pixel (1 for grayscale, 3 for RGB) */
-    private val bytesPerPixel: Int,
+    /** Number of bits per pixel (1 for bi-level, 8 for grayscale, 24 for RGB) */
+    private val bitsPerPixel: Int,
     /** Total number of pixels on each horizontal line */
     private val pixelsPerLine: Int
 ) {
 
     /** Reads [inputPixels] until there are no more, writing encoded bytes to [outputBytes] */
     fun encode(inputPixels: InputStream, outputBytes: OutputStream) {
-        EncodeContext(inputPixels, outputBytes, bytesPerPixel, pixelsPerLine).encode()
+        EncodeContext(
+            inputPixels,
+            outputBytes,
+            ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt(),
+            pixelsPerLine
+        ).encode()
     }
 
     /** Manage the mutable context during encoding */
     private class EncodeContext(
         private val pixelsIn: InputStream,
         private val bytesOut: OutputStream,
-        private val bytesPerPixel: Int,
+        private val bytesPerPixel: Int,//bitsPerPixel: Int,
         pixelsPerLine: Int
     ) {
-        private val bytesPerLine = bytesPerPixel * pixelsPerLine
+        private val bytesPerLine =
+            bytesPerPixel * pixelsPerLine//ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE * pixelsPerLine).toInt()
         private var lineArrayValid = false
         private var lineArray = ByteArray(bytesPerLine)
         private var nextLineArrayValid = false
@@ -189,8 +196,8 @@ class PackBits(
 
     private fun decodeLine(bytes: InputStream, pixelsPerLine: Int): ByteArray {
         val pixels = ByteArrayOutputStream()
-        val pixel = ByteArray(bytesPerPixel)
-        while (pixels.size() < pixelsPerLine * bytesPerPixel) {
+        val pixel = ByteArray(ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt())
+        while (pixels.size() < pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE) {
             val control = bytes.read()
             if (control == -1) throw IOException("EOF before EOL")
             if (control < MAX_GROUP) {
@@ -206,8 +213,8 @@ class PackBits(
                 }
             }
         }
-        if (pixels.size() > pixelsPerLine * bytesPerPixel) {
-            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine * bytesPerPixel}")
+        if (pixels.size() > ceil(pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE)) {
+            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine / bitsPerPixel * BITS_PER_BYTE}")
         }
         return pixels.toByteArray()
     }
