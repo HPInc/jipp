@@ -1,4 +1,4 @@
-// Copyright 2018 - 2021 HP Development Company, L.P.
+// Copyright 2018 - 2025 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package pwg
@@ -97,7 +97,7 @@ class PwgWriterTest {
                 ),
                 sheetBack = PwgRasterDocumentSheetBack.rotated
             )
-        ) // Rotated doesn't mater, this isn't duplex
+        ) // Rotated doesn't matter, this isn't duplex
             .write(doc)
 
         val readDoc = PwgReader(ByteArrayInputStream(output.toByteArray())).readDocument()
@@ -236,10 +236,10 @@ class PwgWriterTest {
         val outputByteArray = outputBytes.toByteArray()
         val encodedOutput = ByteArrayOutputStream()
 
-        PackBits(bytesPerPixel, lineLength).encode(ByteArrayInputStream(outputByteArray), encodedOutput)
+        PackBits(bytesPerPixel * 8, lineLength).encode(ByteArrayInputStream(outputByteArray), encodedOutput)
 
         val decodedStream = ByteArrayOutputStream()
-        PackBits(bytesPerPixel, lineLength).decode(ByteArrayInputStream(encodedOutput.toByteArray()), decodedStream, lines)
+        PackBits(bytesPerPixel * 8, lineLength).decode(ByteArrayInputStream(encodedOutput.toByteArray()), decodedStream, lines)
     }
 
     private fun randomBuffer(palette: String, bytesPerPixel: Int, totalPixels: Int): ByteArray {
@@ -279,12 +279,12 @@ class PwgWriterTest {
 
     private fun cyclePackBits(lineLength: Int, lines: Int, bytesPerPixel: Int, original: ByteArray) {
         val out = ByteArrayOutputStream()
-        PackBits(bytesPerPixel, lineLength).encode(ByteArrayInputStream(original), out)
+        PackBits(bytesPerPixel * 8, lineLength).encode(ByteArrayInputStream(original), out)
         println("Packed ${original.size} into ${out.size()}:")
         println(ByteWindow(out.toByteArray()).toString(out.size()))
 
         val restored = ByteArrayOutputStream()
-        PackBits(bytesPerPixel, lineLength).decode(ByteArrayInputStream(out.toByteArray()), restored, lines = lines)
+        PackBits(bytesPerPixel * 8, lineLength).decode(ByteArrayInputStream(out.toByteArray()), restored, lines = lines)
         println("Restored to ${restored.size()}:")
         val restoredString = String(restored.toByteArray())
         println(restoredString.chunked(lineLength * bytesPerPixel).joinToString("\n"))
