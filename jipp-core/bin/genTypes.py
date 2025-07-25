@@ -256,7 +256,13 @@ def parse_status_code(record):
 obsolete_keywords = [
     'job-cover-back-supported',
     'job-cover-front-supported',
+    'feed-orientation-supported'
 ]
+
+# fix keyword that refers to another keyword and has own members as well
+reference_fix_keyword = {
+    'resource-state-reasons' : 'job-state-reasons'
+}
 
 # Parse a single keyword record
 def parse_keyword(record):
@@ -270,7 +276,7 @@ def parse_keyword(record):
         attr_name = re.sub(' *\(.*\)', '', attribute)
 
         # Handle keywords with suffix for now we only handle (deprecated)
-        if not (suffix.group(1) == 'deprecated'):
+        if not (suffix.group(1) == 'deprecated' or suffix.group(1) == 'obsolete'):
                warn("keyword " + attribute + " suffix '" + suffix.group(1) + "' is unparseable")
         else:
             return
@@ -293,8 +299,11 @@ def parse_keyword(record):
 
     # Ignore blank value or values containing stuff like (Reserved)
     if value is None or re.search("\(.*\)", value):
+        if value is not None and re.search("\(.*\)", value).group(0) == "(obsolete)":
+            substring = re.sub(r'\(.*\)', '', value)
+            if substring in keyword['values']:
+                keyword['values'].remove(substring)
         return
-
     if ' ' not in value:
         keyword['values'].append(value)
     else:
@@ -378,6 +387,7 @@ crossover_attributes = {
     'system-xri-supported': 'printer-xri-supported',
     'printer-xri-requested': 'printer-xri-supported',
     'system-contact-col': 'printer-contact-col',
+    'system-service-contact-col': 'printer-contact-col',
     'system-impressions-completed-col': 'job-impressions-col',
     'system-media-sheets-completed-col': 'job-media-sheets-col',
     'system-pages-completed-col': 'job-pages-col',
@@ -551,6 +561,7 @@ java_keywords = [
     "long", "strictfp", "volatile", "const", "float", "native", "super", "while"
 ]
 def java_safe(string):
+
     if string in java_keywords:
         return "_" + string
     else:
@@ -558,6 +569,8 @@ def java_safe(string):
 
 # Accepts any string, returning in the form camelClass
 def camel_member(string):
+    # handle values like certificate+basic, etc.
+    string = string.replace("+", "-plus-")
     value = camel_class(string)
     if len(value) > 1:
         return java_safe(not_numeric(value[0].lower() + value[1:]))
@@ -633,7 +646,10 @@ def emit_kind(env, template_name, items, emit_func):
         if 'bad' in item:
             continue
 
-        if 'ref' in item:
+        if item['name'] in reference_fix_keyword:
+            item['values'] = keywords[reference_fix_keyword[item['name']]]['values'] + item['values']
+
+        if 'ref' in item and item['name'] not in reference_fix_keyword:
             if item['ref'] not in items:
                 warn(item['name'] + " has bad ref=" + item['ref'], item)
             continue
@@ -776,7 +792,7 @@ def fix_ktypes(type, syntax, name, group_name = ''):
         intro = 'IntOrIntRangeType%s(' % set
         type['ktype'] = 'IntOrIntRange'
         type['kalt'] = [ 'Int', 'IntRange' ]
-    elif re.search('^integer(\([0-9MINAX: -]*\))?$', syntax):
+    elif re.search('^integer\s?(\([0-9MINAX: -]*\))?$', syntax):
         intro = 'IntType%s(' % set
         type['ktype'] = "Int"
     elif syntax == "boolean":
