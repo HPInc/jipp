@@ -1,4 +1,4 @@
-// Copyright 2018 - 2021 HP Development Company, L.P.
+// Copyright 2018 - 2025 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package com.hp.jipp.pdl.pwg
@@ -35,11 +35,11 @@ class PackBits(
     private class EncodeContext(
         private val pixelsIn: InputStream,
         private val bytesOut: OutputStream,
-        private val bytesPerPixel: Int,//bitsPerPixel: Int,
+        private val bytesPerPixel: Int, // bitsPerPixel: Int,
         pixelsPerLine: Int
     ) {
         private val bytesPerLine =
-            bytesPerPixel * pixelsPerLine//ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE * pixelsPerLine).toInt()
+            bytesPerPixel * pixelsPerLine // ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE * pixelsPerLine).toInt()
         private var lineArrayValid = false
         private var lineArray = ByteArray(bytesPerLine)
         private var nextLineArrayValid = false
@@ -214,7 +214,9 @@ class PackBits(
             }
         }
         if (pixels.size() > ceil(pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE)) {
-            throw IOException("Line too long; ${pixels.size()} with max ${pixelsPerLine / bitsPerPixel * BITS_PER_BYTE}")
+            throw IOException(
+                "Line too long; ${pixels.size()} with max" + " ${pixelsPerLine / bitsPerPixel * BITS_PER_BYTE}"
+            )
         }
         return pixels.toByteArray()
     }
