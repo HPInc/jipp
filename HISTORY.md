@@ -1,5 +1,11 @@
 # History of Changes
 
+## 0.7.17-beta1
+
+* Fix unit testcase failure due to PackBits changes (#203)
+* upgraded IPP registrations to 2024-10-09 release (#192)
+* Bi-level support (#187).
+
 ## 0.7.16
 
 * Fix DocumentState enum (#185).

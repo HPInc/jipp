@@ -39,8 +39,8 @@ The API is Java-compatible but implemented in Kotlin.
 1. Add the current version of JIPP to your project
 ```gradle
 dependencies {
-    compile 'com.hp.jipp:jipp-core:0.7.16'
-    compile 'com.hp.jipp:jipp-pdl:0.7.16' // Only needed if transforming PDLs
+    compile 'com.hp.jipp:jipp-core:0.7.17-beta1'
+    compile 'com.hp.jipp:jipp-pdl:0.7.17-beta1' // Only needed if transforming PDLs
 }
 ```
 2. Create an `IppClientTransport` or `IppServerTransport` (see example
