@@ -104,7 +104,7 @@ publishing {
 
     repositories {
         maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            url = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
             credentials {
                 username = project.ext.properties.sonatypeUsername
                 password = project.ext.properties.sonatypePassword
@@ -116,3 +116,24 @@ publishing {
 signing {
     sign publishing.publications.mavenJava
 }
+
+task notifySonatype {
+    doLast {
+        def url = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.hp.jipp" +
+                "?publishing_type=user_managed"
+        def conn = new URL(url).openConnection() as HttpURLConnection
+        def creds = "${project.ext.properties.sonatypeUsername}:${project.ext.properties.sonatypePassword}"
+        def token = Base64.encoder.encodeToString(creds.bytes)
+
+        conn.requestMethod = "POST"
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.setRequestProperty("Authorization", "Bearer $token")
+
+        if (conn.responseCode != 200) {
+            throw new IOException("Failed to upload to OSSRH. Response code: ${conn.responseCode}, message: ${conn.responseMessage}")
+        }
+    }
+}
+
+// Post notification once for both pdl and core artifacts
+publish.finalizedBy(notifySonatype)
