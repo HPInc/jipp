@@ -142,7 +142,7 @@ publishing {
 
     repositories {
         maven {
-            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            url = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
             credentials {
                 username = project.ext.properties.sonatypeUsername
                 password = project.ext.properties.sonatypePassword
