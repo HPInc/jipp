@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# © Copyright 2018 - 2023 HP Development Company, L.P.
+# © Copyright 2018 - 2025 HP Development Company, L.P.
 #
 # * Reads registrations from http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml
 # * Converts them into Kotlin files
