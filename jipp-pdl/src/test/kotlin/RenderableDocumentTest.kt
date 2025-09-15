@@ -1,4 +1,4 @@
-// Copyright 2019 - 2021 HP Development Company, L.P.
+// © Copyright 2019 - 2021 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 import com.hp.jipp.model.Sides

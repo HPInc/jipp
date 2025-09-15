@@ -1,3 +1,4 @@
+// © Copyright 2018 - 2025 HP Development Company, L.P.
 apply plugin: 'kotlin'
 apply plugin: 'java-library'
 apply plugin: 'jacoco'

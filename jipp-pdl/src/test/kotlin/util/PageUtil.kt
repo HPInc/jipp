@@ -1,4 +1,4 @@
-// Copyright 2021 HP Development Company, L.P.
+// © Copyright 2021 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package util
