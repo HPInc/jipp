@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#
+# © Copyright 2017 - 2018 HP Development Company, L.P.
 # Analyzes dependencies and builds a graph of them. Assumes a recent build.
 #
 

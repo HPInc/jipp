@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.17
+
+* Fix copyright in source code (#208)
+
 ## 0.7.17-beta1
 
 * Unable to post artifacts to sonatype (#207)

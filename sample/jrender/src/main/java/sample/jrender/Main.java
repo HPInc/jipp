@@ -1,4 +1,4 @@
-// Copyright 2019 - 2020 HP Development Company, L.P.
+// © Copyright 2019 - 2020 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package sample.jrender;
