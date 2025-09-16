@@ -6,7 +6,7 @@ allprojects {
     ext.ktlint_version = '0.41.0'
 
     // Version of JIPP & friends to publish
-    ext.jipp_version = '0.7.17-beta1'
+    ext.jipp_version = '0.7.17'
 
     buildscript {
         repositories {
