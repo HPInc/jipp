@@ -46,7 +46,7 @@ class PwgWriter
     }
 
     private fun handleTransform(jobPagesPerSet: Int, numOfInputPages: Int): MutableList<Boolean> {
-        val copies = numOfInputPages / settings.output.jobPagesPerSet
+        val copies = numOfInputPages / jobPagesPerSet
         val totalPages = jobPagesPerSet * copies
         val transFormChecklist = MutableList(totalPages) { it % 2 != 0 }
         println("Initial transFormChecklist: $transFormChecklist")
