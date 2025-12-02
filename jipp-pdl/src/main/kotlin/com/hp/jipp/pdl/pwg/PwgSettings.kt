@@ -48,9 +48,10 @@ data class PwgSettings @JvmOverloads constructor(
         doc: RenderableDocument,
         page: RenderablePage,
         /** 0-based page number. */
-        pageNumber: Int
+        pageNumber: Int,
+        transformList: MutableList<Boolean> = MutableList(doc.toList().size) { it % 2 != 0 }
     ): PwgHeader {
-        val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack)
+        val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack, transformList)
         return PwgHeader(
             hwResolutionX = doc.dpi,
             hwResolutionY = doc.dpi,
@@ -85,8 +86,8 @@ data class PwgSettings @JvmOverloads constructor(
             val default = PwgFeedTransform(1, 1)
 
             /** Return the correct transform given a 0-based page number, sides mode, and sheet-back requirements. */
-            fun lookup(pageNumber: Int, sides: String, sheetBack: String) =
-                if (pageNumber.isEven) default else transforms.getOrDefault(sides to sheetBack, default)
+            fun lookup(pageNumber: Int, sides: String, sheetBack: String, transformList: MutableList<Boolean>) =
+                if (transformList[pageNumber]) default else transforms.getOrDefault(sides to sheetBack, default)
         }
     }
 
