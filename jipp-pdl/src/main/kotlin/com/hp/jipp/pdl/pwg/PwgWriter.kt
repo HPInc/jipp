@@ -27,7 +27,7 @@ class PwgWriter
     /** Write a document to this [outputStream]. */
     fun write(doc: RenderableDocument) {
         write(MAGIC_NUMBER)
-        val handleTransformList = handleTransform(settings.output.jobPagesPerSet, doc.toList().size)
+        val handleTransformList = getHandleTransformList(settings.output.jobPagesPerSet, doc.toList().size)
         doc.mapPages {
             it.mapIndexed { num, page ->
                 val header = settings.buildHeader(doc, page, num, handleTransformList)
@@ -45,17 +45,14 @@ class PwgWriter
         }
     }
 
-    private fun handleTransform(jobPagesPerSet: Int, numOfInputPages: Int): MutableList<Boolean> {
+    private fun getHandleTransformList(jobPagesPerSet: Int, numOfInputPages: Int): MutableList<Boolean> {
         val copies = numOfInputPages / jobPagesPerSet
-        val totalPages = jobPagesPerSet * copies
-        val transFormChecklist = MutableList(totalPages) { it % 2 != 0 }
-        println("Initial transFormChecklist: $transFormChecklist")
+        val feedTransFormChecklist = MutableList(numOfInputPages) { it % 2 != 0 }
+        println("Initial transFormChecklist: $feedTransFormChecklist")
 
         if (jobPagesPerSet.isEven || copies < 2) {
-            println("Pages $jobPagesPerSet is Even, or Copies is lesser than 2 $copies")
-            return transFormChecklist
+            return feedTransFormChecklist
         }
-
         // Determine the starting index for each copy
         // Filter the starting indices (copy start indices) that are odd (0-based).
         val oddStartIndices = (0 until copies)
@@ -66,12 +63,12 @@ class PwgWriter
         oddStartIndices.forEach { pageNumber ->
             var isTransform = false
             for (i in pageNumber until pageNumber + jobPagesPerSet) {
-                transFormChecklist[i] = isTransform
+                feedTransFormChecklist[i] = isTransform
                 isTransform = !isTransform
             }
         }
-        println("Transformed transFormChecklist: $transFormChecklist")
-        return transFormChecklist
+        println("Transformed transFormChecklist: $feedTransFormChecklist")
+        return feedTransFormChecklist
     }
 
 

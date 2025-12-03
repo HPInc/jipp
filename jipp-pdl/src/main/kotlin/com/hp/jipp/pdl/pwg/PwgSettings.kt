@@ -11,7 +11,6 @@ import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.OutputSettings
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
-import com.hp.jipp.pdl.isEven
 
 /**
  * Provide settings for PWG-Raster output.
@@ -49,9 +48,9 @@ data class PwgSettings @JvmOverloads constructor(
         page: RenderablePage,
         /** 0-based page number. */
         pageNumber: Int,
-        transformList: MutableList<Boolean> = MutableList(doc.toList().size) { it % 2 != 0 }
+        handleFeedTransformList: MutableList<Boolean> = MutableList(doc.toList().size) { it % 2 != 0 }
     ): PwgHeader {
-        val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack, transformList)
+        val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack, handleFeedTransformList)
         return PwgHeader(
             hwResolutionX = doc.dpi,
             hwResolutionY = doc.dpi,
@@ -86,8 +85,8 @@ data class PwgSettings @JvmOverloads constructor(
             val default = PwgFeedTransform(1, 1)
 
             /** Return the correct transform given a 0-based page number, sides mode, and sheet-back requirements. */
-            fun lookup(pageNumber: Int, sides: String, sheetBack: String, transformList: MutableList<Boolean>) =
-                if (transformList[pageNumber]) default else transforms.getOrDefault(sides to sheetBack, default)
+            fun lookup(pageNumber: Int, sides: String, sheetBack: String, handleFeedTransformList: MutableList<Boolean>) =
+                if (handleFeedTransformList[pageNumber]) default else transforms.getOrDefault(sides to sheetBack, default)
         }
     }
 
