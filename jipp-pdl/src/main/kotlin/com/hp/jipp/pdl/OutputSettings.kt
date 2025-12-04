@@ -39,5 +39,5 @@ data class OutputSettings @JvmOverloads constructor(
      * if included [copies] must use the value 1.
      *
      */
-    val jobPagesPerSet: Int = 1
+    val jobPagesPerSet: Int? = null
 )

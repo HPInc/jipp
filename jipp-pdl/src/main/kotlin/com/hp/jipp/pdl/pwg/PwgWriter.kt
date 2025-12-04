@@ -3,6 +3,7 @@
 
 package com.hp.jipp.pdl.pwg
 
+import com.hp.jipp.model.Sides
 import com.hp.jipp.pdl.RenderableDocument
 import com.hp.jipp.pdl.RenderablePage
 import com.hp.jipp.pdl.isEven
@@ -27,7 +28,14 @@ class PwgWriter
     /** Write a document to this [outputStream]. */
     fun write(doc: RenderableDocument) {
         write(MAGIC_NUMBER)
-        val handleTransformList = getHandleTransformList(settings.output.jobPagesPerSet, doc.toList().size)
+        val docSize = doc.toList().size
+        val handleTransformList = getHandleTransformList(settings.output.jobPagesPerSet, docSize).apply {
+            // Add an additional value to the Transform list if a blank page is needed.
+            if (settings.output.jobPagesPerSet == null && settings.output.sides != Sides.oneSided && docSize.isOdd) {
+                add(true)
+            }
+        }
+        println("Final handleTransformList: $handleTransformList")
         doc.mapPages {
             it.mapIndexed { num, page ->
                 val header = settings.buildHeader(doc, page, num, handleTransformList)
@@ -45,32 +53,26 @@ class PwgWriter
         }
     }
 
-    private fun getHandleTransformList(jobPagesPerSet: Int, numOfInputPages: Int): MutableList<Boolean> {
-        val copies = numOfInputPages / jobPagesPerSet
+    private fun getHandleTransformList(jobPagesPerSet: Int?, numOfInputPages: Int): MutableList<Boolean> {
         val feedTransFormChecklist = MutableList(numOfInputPages) { it % 2 != 0 }
-        println("Initial transFormChecklist: $feedTransFormChecklist")
 
-        if (jobPagesPerSet.isEven || copies < 2) {
+        if (jobPagesPerSet == null || jobPagesPerSet.isEven || numOfInputPages / jobPagesPerSet < 2) {
             return feedTransFormChecklist
         }
-        // Determine the starting index for each copy
-        // Filter the starting indices (copy start indices) that are odd (0-based).
-        val oddStartIndices = (0 until copies)
+
+        (0 until numOfInputPages / jobPagesPerSet)
             .map { it * jobPagesPerSet }
             .filter { it.isOdd }
-        println("Odd start indices: $oddStartIndices")
-
-        oddStartIndices.forEach { pageNumber ->
-            var isTransform = false
-            for (i in pageNumber until pageNumber + jobPagesPerSet) {
-                feedTransFormChecklist[i] = isTransform
-                isTransform = !isTransform
+            .forEach { pageNumber ->
+                var isTransform = false
+                for (i in pageNumber until pageNumber + jobPagesPerSet) {
+                    feedTransFormChecklist[i] = isTransform
+                    isTransform = !isTransform
+                }
             }
-        }
-        println("Transformed transFormChecklist: $feedTransFormChecklist")
+
         return feedTransFormChecklist
     }
-
 
     private fun writePageContent(page: RenderablePage, header: PwgHeader) {
         // Pack and write the content bytes

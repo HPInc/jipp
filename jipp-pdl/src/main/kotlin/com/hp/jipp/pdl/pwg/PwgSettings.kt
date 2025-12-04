@@ -48,7 +48,7 @@ data class PwgSettings @JvmOverloads constructor(
         page: RenderablePage,
         /** 0-based page number. */
         pageNumber: Int,
-        handleFeedTransformList: MutableList<Boolean> = MutableList(doc.toList().size) { it % 2 != 0 }
+        handleFeedTransformList: MutableList<Boolean>
     ): PwgHeader {
         val transform = PwgFeedTransform.lookup(pageNumber, output.sides, sheetBack, handleFeedTransformList)
         return PwgHeader(
