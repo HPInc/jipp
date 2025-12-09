@@ -1,4 +1,4 @@
-// Â© Copyright 2018 - 2025 HP Development Company, L.P.
+// © Copyright 2018 - 2025 HP Development Company, L.P.
 // SPDX-License-Identifier: MIT
 
 package com.hp.jipp.pdl.pwg
@@ -197,23 +197,32 @@ class PackBits(
     private fun decodeLine(bytes: InputStream, pixelsPerLine: Int): ByteArray {
         val pixels = ByteArrayOutputStream()
         val pixel = ByteArray(ceil(bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt())
-        while (pixels.size() < pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE) {
+        val lineSizeBytes = ceil(pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE).toInt()
+
+        while (pixels.size() < lineSizeBytes) {
             val control = bytes.read()
             if (control == -1) throw IOException("EOF before EOL")
-            if (control < MAX_GROUP) {
+            if (control == MAX_GROUP) {
+                // Clear to end of line, fill with 0xFF (white) like CUPS does for common color spaces
+                val remaining = lineSizeBytes - pixels.size()
+                // write remaining bytes with 0xFF
+                val fill = 0xFF
+                repeat(remaining) { pixels.write(fill) }
+                break
+            } else if (control < MAX_GROUP) {
                 bytes.read(pixel)
                 for (i in 0 until control + 1) {
                     pixels.write(pixel)
                 }
             } else {
-                // 257 - control = count
+                // 257 - control = count of literal pixels
                 for (i in 0 until (NON_REPEAT_SUBTRACT_FROM - control)) {
                     bytes.read(pixel)
                     pixels.write(pixel)
                 }
             }
         }
-        if (pixels.size() > ceil(pixelsPerLine * bitsPerPixel.toDouble() / BITS_PER_BYTE)) {
+        if (pixels.size() > lineSizeBytes) {
             throw IOException(
                 "Line too long; ${pixels.size()} with max" + " ${pixelsPerLine / bitsPerPixel * BITS_PER_BYTE}"
             )
