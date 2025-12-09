@@ -2,7 +2,7 @@
 
 ## 0.7.18-alpha1
 
-* Backside page transformation based on jpps (#212)
+* Backside page transformation based on JPPS (#212)
 
 ## 0.7.17
 
