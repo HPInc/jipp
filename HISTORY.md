@@ -1,5 +1,9 @@
 # History of Changes
 
+## 0.7.18
+
+* Address changes in IPP registrations release 2025-10-31 (#215)
+
 ## 0.7.18-alpha1
 
 * Backside page transformation based on jpps (#212)
