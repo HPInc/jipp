@@ -1,6 +1,6 @@
 # History of Changes
 
-## 0.7.19
+## 0.7.18
 
 * Address changes in IPP registrations release 2025-10-31 (#215)
 
