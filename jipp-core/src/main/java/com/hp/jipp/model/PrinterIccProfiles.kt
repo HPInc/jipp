@@ -18,7 +18,7 @@ import com.hp.jipp.encoding.AttributeGroup.Companion.groupOf
 data class PrinterIccProfiles
 constructor(
     var profileName: String? = null,
-    var profileUrl: java.net.URI? = null,
+    var profileUri: java.net.URI? = null,
     /** Additional attributes (see specification for valid values). */
     var extras: AttributeGroup = groupOf(Tag.jobAttributes),
 ) : AttributeCollection {
@@ -30,7 +30,7 @@ constructor(
     override val attributes: List<Attribute<*>>
         get() = listOfNotNull(
             profileName?.let { PrinterIccProfiles.profileName.of(it) },
-            profileUrl?.let { PrinterIccProfiles.profileUrl.of(it) },
+            profileUri?.let { PrinterIccProfiles.profileUri.of(it) },
         ) + extras
 
     /** Defines types for each member of [PrinterIccProfiles]. */
@@ -38,17 +38,17 @@ constructor(
         override fun convert(attributes: List<Attribute<*>>): PrinterIccProfiles =
             PrinterIccProfiles(
                 extractOne(attributes, profileName)?.value,
-                extractOne(attributes, profileUrl),
+                extractOne(attributes, profileUri),
                 groupOf(
                     Tag.jobAttributes,
-                    attributes.filterNot { it.name == profileName.name || it.name == profileUrl.name }
+                    attributes.filterNot { it.name == profileName.name || it.name == profileUri.name }
                 ),
             )
         override val cls = PrinterIccProfiles::class.java
         @Deprecated("Remove this symbol")
         @JvmField val Types = this
         @JvmField val profileName = NameType("profile-name")
-        @JvmField val profileUrl = UriType("profile-url")
+        @JvmField val profileUri = UriType("profile-uri")
     }
     override fun toString() = "PrinterIccProfiles(${attributes.joinToString()})"
 }
