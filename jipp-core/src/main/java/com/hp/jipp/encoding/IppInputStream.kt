@@ -114,6 +114,9 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
     /** Read a length-value pair, returning it as a [ByteArray]. */
     internal fun readValueBytes(): ByteArray {
         val valueLength = readShort().toInt()
+        if (valueLength < 0) {
+            throw ParseError("Bad value length: $valueLength")
+        }
         val valueBytes = ByteArray(valueLength)
         if (valueLength > 0) {
             readFully(valueBytes)
@@ -164,6 +167,9 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
     /** Read and discard a length-value pair. */
     internal fun skipValueBytes() {
         val valueLength = readShort().toLong()
+        if (valueLength < 0) {
+            throw ParseError("Bad value length: $valueLength")
+        }
         if (valueLength != skip(valueLength)) throw ParseError("Value too short")
     }
 

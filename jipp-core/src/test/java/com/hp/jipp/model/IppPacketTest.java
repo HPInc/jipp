@@ -12,6 +12,7 @@ import com.hp.jipp.encoding.Name;
 import com.hp.jipp.encoding.OtherString;
 import com.hp.jipp.encoding.StringType;
 import com.hp.jipp.encoding.Tag;
+import com.hp.jipp.util.ParseError;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -488,5 +489,47 @@ public class IppPacketTest {
         assertEquals(Integer.valueOf(12), packet.getValue(Tag.jobAttributes, Types.copies));
         assertEquals(new Name("Test Printer"), packet.getValue(Tag.printerAttributes, Types.printerName));
         assertEquals(0, packet.getValues(Tag.unsupportedAttributes, Types.finishingsCol).size());
+    }
+
+    @Test
+    public void negativeValueLengthThrowsParseError() throws Exception {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.DataOutputStream data = new java.io.DataOutputStream(out);
+        data.writeByte(0x02);
+        data.writeByte(0x00);
+        data.writeShort(0x0000);
+        data.writeInt(1);
+        data.writeByte(0x01);
+        data.writeByte(0x47);
+        data.writeShort("attributes-charset".length());
+        data.writeBytes("attributes-charset");
+        data.writeShort(0xffff);
+        data.writeByte(0x03);
+
+        exception.expect(ParseError.class);
+        exception.expectMessage("Bad value length: -1");
+        new IppInputStream(new ByteArrayInputStream(out.toByteArray())).readPacket();
+    }
+
+    @Test
+    public void skipNegativeValueLengthInCollectionThrowsParseError() throws Exception {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.DataOutputStream data = new java.io.DataOutputStream(out);
+        data.writeByte(0x02);
+        data.writeByte(0x00);
+        data.writeShort(0x0000);
+        data.writeInt(1);
+        data.writeByte(0x01);
+        data.writeByte(0x34);
+        data.writeShort("media-col".length());
+        data.writeBytes("media-col");
+        data.writeShort(0);
+        data.writeByte(0x37);
+        data.writeShort(0xffff);
+        data.writeByte(0x03);
+
+        exception.expect(ParseError.class);
+        exception.expectMessage("Bad value length: -1");
+        new IppInputStream(new ByteArrayInputStream(out.toByteArray())).readPacket();
    }
 }
