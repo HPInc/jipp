@@ -65,16 +65,17 @@ class Main {
 
                     @Override
                     public void render(int yOffset, int swathHeight, ColorSpace colorSpace, byte[] byteArray) {
-                        int red, green, blue, rgb;
+                        // Bulk-extract the entire swath in ONE call instead of width×swathHeight calls
+                        int[] pixels = image.getRGB(0, yOffset, width, swathHeight, null, 0, width);
 
                         int byteIndex = 0;
-                        for (int y = yOffset; y < (yOffset + swathHeight); y++) {
-                            for (int x = 0; x < width; x++) {
-
-                                rgb = image.getRGB(x, y);
-                                red = (rgb >> 16) & 0xFF;
-                                green = (rgb >> 8) & 0xFF;
-                                blue = rgb & 0xFF;
+                        int pixIdx = 0;
+                        for (int row = 0; row < swathHeight; row++) {
+                            for (int col = 0; col < width; col++) {
+                                int argb = pixels[pixIdx++];
+                                int red = (argb >> 16) & 0xFF;
+                                int green = (argb >> 8) & 0xFF;
+                                int blue = argb & 0xFF;
 
                                 if (colorSpace == ColorSpace.Grayscale) {
                                     byteArray[byteIndex++] = (byte) (RED_COEFFICIENT * red +
