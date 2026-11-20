@@ -15,6 +15,8 @@ import java.io.InputStream
 @Suppress("TooManyFunctions") // This utility class must handle many different data types.
 class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputStream(inputStream)) {
 
+    private var collectionDepth = 0
+
     /** Reads a complete packet from this stream. */
     @Throws(IOException::class)
     fun readPacket() =
@@ -143,24 +145,32 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
     }
 
     internal fun readCollectionAttributes(): List<Attribute<*>> {
-        val attributes = mutableListOf<Attribute<*>>()
-        while (true) {
-            when (val tag = readTag()) {
-                Tag.endCollection -> {
-                    skipValueBytes()
-                    skipValueBytes()
-                    return attributes
+        // Bound recursion so deeply nested collections cannot exhaust the stack
+        if (++collectionDepth > MAX_COLLECTION_DEPTH) {
+            throw ParseError("Collection nesting exceeds maximum depth of $MAX_COLLECTION_DEPTH")
+        }
+        try {
+            val attributes = mutableListOf<Attribute<*>>()
+            while (true) {
+                when (val tag = readTag()) {
+                    Tag.endCollection -> {
+                        skipValueBytes()
+                        skipValueBytes()
+                        return attributes
+                    }
+                    Tag.memberAttributeName -> {
+                        skipValueBytes()
+                        val memberName = readString()
+                        val memberTag = readTag() ?: throw ParseError("Missing member tag in $tag")
+                        // Read and throw away the (blank) attribute value
+                        readValueBytes()
+                        attributes.add(readAnyAttribute(memberName, memberTag))
+                    }
+                    else -> throw ParseError("Bad tag in collection: $tag")
                 }
-                Tag.memberAttributeName -> {
-                    skipValueBytes()
-                    val memberName = readString()
-                    val memberTag = readTag() ?: throw ParseError("Missing member tag in $tag")
-                    // Read and throw away the (blank) attribute value
-                    readValueBytes()
-                    attributes.add(readAnyAttribute(memberName, memberTag))
-                }
-                else -> throw ParseError("Bad tag in collection: $tag")
             }
+        } finally {
+            collectionDepth--
         }
     }
 
@@ -176,5 +186,10 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
     internal fun readByteValue(): Byte {
         takeLength(IppStreams.BYTE_LENGTH)
         return readByte()
+    }
+
+    companion object {
+        /** Maximum nesting depth of collection values, matching CUPS. */
+        private const val MAX_COLLECTION_DEPTH = 10
     }
 }
