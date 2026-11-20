@@ -12,6 +12,10 @@ import com.hp.jipp.model.Media;
 import com.hp.jipp.model.MediaCol;
 import com.hp.jipp.model.Types;
 import com.hp.jipp.util.KotlinTest;
+import com.hp.jipp.util.ParseError;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,5 +91,59 @@ public class CollectionTest {
 
         assertEquals(group.getValue(Types.jobResolversSupported).getResolverName(), "my-resolver");
         assertEquals(group.getValue(Types.jobResolversSupported).getExtras().getValue(Types.mediaCol).getMediaSize(), MediaSizes.parse(Media.naLetter8p5x11in));
+    }
+
+    @Test
+    public void nestedCollectionAtMaxDepth() throws IOException {
+        IppPacket packet = new IppInputStream(new ByteArrayInputStream(nestedCollectionPacket(10))).readPacket();
+        assertEquals(1, packet.getAttributeGroups().size());
+    }
+
+    @Test(expected = ParseError.class)
+    public void nestedCollectionBeyondMaxDepth() throws IOException {
+        new IppInputStream(new ByteArrayInputStream(nestedCollectionPacket(11))).readPacket();
+    }
+
+    @Test(expected = ParseError.class)
+    public void deeplyNestedCollectionDoesNotOverflowStack() throws IOException {
+        new IppInputStream(new ByteArrayInputStream(nestedCollectionPacket(20000))).readPacket();
+    }
+
+    @Test
+    public void siblingCollectionsDoNotAccumulateDepth() throws IOException {
+        // Many sequential (non-nested) collections must not trip the depth limit
+        AttributeGroup group = groupOf(Tag.operationAttributes,
+                finishingsColActual.of(Collections.nCopies(50, finishingsCol)));
+        assertEquals(50, cycle(group).get(finishingsColActual).size());
+    }
+
+    /** Build a packet with a single attribute containing [depth] nested collections. */
+    private static byte[] nestedCollectionPacket(int depth) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(bytes);
+        out.writeShort(0x0200); // Version
+        out.writeShort(0x0002); // Operation
+        out.writeInt(1); // Request ID
+        out.writeByte(Tag.operationAttributes.getCode());
+        out.writeByte(Tag.beginCollection.getCode());
+        out.writeShort(1);
+        out.writeByte('a'); // Attribute name
+        out.writeShort(0); // Empty value
+        for (int i = 1; i < depth; i++) {
+            out.writeByte(Tag.memberAttributeName.getCode());
+            out.writeShort(0);
+            out.writeShort(1);
+            out.writeByte('m'); // Member name
+            out.writeByte(Tag.beginCollection.getCode());
+            out.writeShort(0);
+            out.writeShort(0);
+        }
+        for (int i = 0; i < depth; i++) {
+            out.writeByte(Tag.endCollection.getCode());
+            out.writeShort(0);
+            out.writeShort(0);
+        }
+        out.writeByte(Tag.endOfAttributes.getCode());
+        return bytes.toByteArray();
     }
 }
