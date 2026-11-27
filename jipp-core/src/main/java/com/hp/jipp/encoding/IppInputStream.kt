@@ -146,9 +146,10 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
 
     internal fun readCollectionAttributes(): List<Attribute<*>> {
         // Bound recursion so deeply nested collections cannot exhaust the stack
-        if (++collectionDepth > MAX_COLLECTION_DEPTH) {
+        if (collectionDepth >= MAX_COLLECTION_DEPTH) {
             throw ParseError("Collection nesting exceeds maximum depth of $MAX_COLLECTION_DEPTH")
         }
+        collectionDepth++
         try {
             val attributes = mutableListOf<Attribute<*>>()
             while (true) {
