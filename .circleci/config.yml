@@ -1,8 +1,8 @@
-# Java Gradle CircleCI 2.0 configuration file
+# Java Gradle CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -15,10 +15,6 @@ jobs:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-
-    branches:
-      ignore:
-        - gh-pages
 
     steps:
       - run: sudo apt update
@@ -70,3 +66,11 @@ jobs:
           path: ./sample/jrender/build/distributions
           destination: app
 
+workflows:
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
