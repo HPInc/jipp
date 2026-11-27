@@ -16,6 +16,12 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.15.0'
 }
 
+configurations.detekt {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.5'
+    }
+}
+
 tasks.withType(JavaCompile) {
     sourceCompatibility = "1.8"
     targetCompatibility = "1.8"
