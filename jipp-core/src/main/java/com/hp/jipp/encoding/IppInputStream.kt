@@ -144,6 +144,7 @@ class IppInputStream(inputStream: InputStream) : DataInputStream(BufferedInputSt
         }
     }
 
+    @Suppress("ThrowsCount") // Distinct parse failures need distinct errors
     internal fun readCollectionAttributes(): List<Attribute<*>> {
         // Bound recursion so deeply nested collections cannot exhaust the stack
         if (collectionDepth >= MAX_COLLECTION_DEPTH) {
