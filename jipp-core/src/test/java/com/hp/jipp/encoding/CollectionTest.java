@@ -104,6 +104,26 @@ public class CollectionTest {
         new IppInputStream(new ByteArrayInputStream(nestedCollectionPacket(11))).readPacket();
     }
 
+    @Test
+    public void depthResetAfterBeyondMaxDepthFailure() throws IOException {
+        byte[] tooDeep = nestedCollectionPacket(11);
+        byte[] maxDepth = nestedCollectionPacket(10);
+        byte[] both = new byte[tooDeep.length + maxDepth.length];
+        System.arraycopy(tooDeep, 0, both, 0, tooDeep.length);
+        System.arraycopy(maxDepth, 0, both, tooDeep.length, maxDepth.length);
+
+        IppInputStream in = new IppInputStream(new ByteArrayInputStream(both));
+        try {
+            in.readPacket();
+            fail("Expected ParseError");
+        } catch (ParseError ignored) {
+            // Expected
+        }
+        // Skip the unread remainder of the first packet: 11 endCollection entries plus endOfAttributes
+        assertEquals(11 * 5 + 1, in.skipBytes(11 * 5 + 1));
+        assertEquals(1, in.readPacket().getAttributeGroups().size());
+    }
+
     @Test(expected = ParseError.class)
     public void deeplyNestedCollectionDoesNotOverflowStack() throws IOException {
         new IppInputStream(new ByteArrayInputStream(nestedCollectionPacket(20000))).readPacket();
